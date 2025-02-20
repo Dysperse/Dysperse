@@ -1,4 +1,4 @@
-import { RenderWidget, Widgets } from "@/app/(app)/home";
+import { RenderWidget } from "@/app/(app)/home";
 import { useCommandPaletteContext } from "@/components/command-palette/context";
 import { useFocusPanelContext } from "@/components/focus-panel/context";
 import { useBadgingService } from "@/context/BadgingProvider";
@@ -191,7 +191,8 @@ function FocusPanel() {
     thaw: () => setFrozen(false),
   }));
 
-  const pinnedWidget = widgets?.find((i) => i.pinned);
+  const pinnedWidgets = widgets.filter((i) => i.pinned);
+  const pinnedWidget = pinnedWidgets[0];
 
   return (
     pinnedWidget && (
@@ -216,11 +217,24 @@ function FocusPanel() {
           onClose={() => sheetRef.current.close()}
           sheetRef={sheetRef}
           snapPoints={["80%"]}
+          maxWidth={400}
         >
           <BottomSheetScrollView
             contentContainerStyle={{ padding: 20, gap: 20 }}
           >
-            <Widgets />
+            <Text
+              style={{
+                fontFamily: "serifText700",
+                fontSize: 25,
+                marginBottom: -10,
+                color: theme[11],
+              }}
+            >
+              Pinned
+            </Text>
+            {pinnedWidgets.map((w) => (
+              <RenderWidget widget={w} key={w.id} />
+            ))}
           </BottomSheetScrollView>
         </BottomSheet>
         <Button
@@ -238,25 +252,28 @@ function FocusPanel() {
             alignItems: "stretch",
             gap: 0,
             paddingVertical: 0,
-            paddingHorizontal: 0,
+            paddingHorizontal: 10,
           }}
-          height={50}
+          height={pinnedWidgets.length > 1 ? 60 : 50}
           onPress={() => sheetRef.current?.present()}
         >
-          {/* <View
-          style={{
-            backgroundColor: theme[4],
-            height: 10,
-            marginBottom: -6,
-            marginHorizontal: 13,
-            borderTopLeftRadius: 15,
-            borderTopRightRadius: 15,
-          }}
-        /> */}
+          {pinnedWidgets.length > 1 && (
+            <View
+              style={{
+                backgroundColor: theme[4],
+                height: 10,
+                marginBottom: -6,
+                marginHorizontal: 13,
+                borderTopLeftRadius: 15,
+                borderTopRightRadius: 15,
+              }}
+            />
+          )}
           <View
             style={{
               borderRadius: 20,
               padding: 10,
+              paddingHorizontal: 20,
               backgroundColor: theme[3],
               alignItems: "center",
               height: 50,
@@ -513,4 +530,3 @@ function OpenTabsList() {
 }
 
 export default memo(OpenTabsList);
-

@@ -2,38 +2,76 @@ import MarkdownRenderer from "@/components/MarkdownRenderer";
 import { Button } from "@/ui/Button";
 import { useColorTheme } from "@/ui/color/theme-provider";
 import ErrorAlert from "@/ui/Error";
+import MenuPopover from "@/ui/MenuPopover";
 import Spinner from "@/ui/Spinner";
 import Text from "@/ui/Text";
 import capitalizeFirstLetter from "@/utils/capitalizeFirstLetter";
 import { View } from "react-native";
 import useSWR from "swr";
 
-export default function WordOfTheDay({ handlePin, widget }) {
+export default function WordOfTheDay({ small, handlePin, widget }) {
   const { data, error } = useSWR(["user/focus-panel/word-of-the-day"]);
   const theme = useColorTheme();
 
-  return (
+  return small ? (
+    !data ? (
+      <Spinner />
+    ) : (
+      <View style={{ flexDirection: "row", flex: 1, alignItems: "center" }}>
+        <View>
+          <Text weight={700} style={{ color: theme[11] }}>
+            {data.word}
+          </Text>
+          <Text
+            style={{
+              fontSize: 11,
+              opacity: 0.6,
+              marginTop: -3,
+              color: theme[11],
+            }}
+          >
+            {data.pronunciation}
+          </Text>
+        </View>
+        <Text style={{ color: theme[11], marginLeft: "auto" }}>
+          {data.partOfSpeech}
+        </Text>
+      </View>
+    )
+  ) : (
     <View>
-      <Text variant="eyebrow" style={{ marginBottom: 7 }}>
-        Word of the day
-      </Text>
-      <Button
-        variant="outlined"
-        height="auto"
-        backgroundColors={{
-          default: theme[2],
-          pressed: theme[4],
-          hovered: theme[3],
+      <MenuPopover
+        menuProps={{
+          rendererProps: { placement: "bottom" },
+          style: { marginRight: "auto", marginLeft: -10 },
         }}
-        borderColors={{
-          default: theme[5],
-          pressed: theme[5],
-          hovered: theme[5],
-        }}
-        containerStyle={{ borderRadius: 20 }}
+        containerStyle={{ marginLeft: 20, marginTop: -10 }}
+        options={[
+          {
+            text: widget.pinned ? "Pinned" : "Pin",
+            icon: "push_pin",
+            callback: handlePin,
+            selected: widget.pinned,
+          },
+        ]}
+        trigger={
+          <Button
+            dense
+            textProps={{ variant: "eyebrow" }}
+            text="Word of the day"
+            icon="expand_more"
+            iconPosition="end"
+            containerStyle={{ marginBottom: 5 }}
+            iconStyle={{ opacity: 0.6 }}
+          />
+        }
+      />
+      <View
         style={{
-          flexDirection: "column",
           gap: 0,
+          backgroundColor: theme[2],
+          borderWidth: 1,
+          borderColor: theme[5],
           borderRadius: 20,
           padding: 20,
           paddingHorizontal: 20,
@@ -70,8 +108,7 @@ export default function WordOfTheDay({ handlePin, widget }) {
         ) : (
           <Spinner />
         )}
-      </Button>
+      </View>
     </View>
   );
 }
-

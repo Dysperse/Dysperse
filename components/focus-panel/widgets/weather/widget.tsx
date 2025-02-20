@@ -155,7 +155,6 @@ export default function WeatherWidget({
         alignItems: "center",
         flexDirection: "row",
         gap: 10,
-        paddingHorizontal: 5,
         flex: 1,
       }}
     >
@@ -437,4 +436,3 @@ export default function WeatherWidget({
     </Pressable>
   );
 }
-

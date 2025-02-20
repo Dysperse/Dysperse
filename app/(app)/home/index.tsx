@@ -413,9 +413,9 @@ export function RenderWidget({ navigation, widget, index, small }) {
     case "word of the day":
       return (
         <WordOfTheDay
-          navigation={navigation}
-          menuActions={menuActions}
+          small={small}
           widget={widget}
+          handlePin={() => handlePin(widget)}
           key={index}
         />
       );
@@ -513,4 +513,3 @@ function Page() {
 }
 
 export default memo(Page);
-

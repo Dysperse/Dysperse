@@ -35,12 +35,18 @@ const styles = StyleSheet.create({
 
 function Widgets() {
   const theme = useColorTheme();
+  const { sessionToken } = useUser();
   const { data, mutate } = useSWR(["user/focus-panel"]);
   const iconStyles = { backgroundColor: theme[3], borderRadius: 10 };
 
+  const handleWidgetDelete = async (id) => {
+    mutate((o) => o.filter((e) => e.id !== id), { revalidate: false });
+    await sendApiRequest(sessionToken, "DELETE", "user/focus-panel", { id });
+  };
+
   const sections = [
-    { name: "Start", icon: "change_history", disabled: true },
-    { name: "Goals", icon: "flag", disabled: true },
+    { id: "", name: "Start", icon: "change_history", disabled: true },
+    { id: "", name: "Goals", icon: "flag", disabled: true },
     ...(Array.isArray(data)
       ? data
           .map((t) => {
@@ -49,6 +55,7 @@ function Widgets() {
             )?.widgets.find((w) => w.key == t.type);
             if (!widget) return null;
             return {
+              id: t.id,
               name: widget.text,
               icon: widget?.icon || "square",
               disabled: false,
@@ -92,7 +99,10 @@ function Widgets() {
             <View style={{ flexDirection: "row" }}>
               <IconButton icon="south" />
               <IconButton icon="north" />
-              <IconButton icon="close" />
+              <IconButton
+                icon="close"
+                onPress={() => handleWidgetDelete(section.id)}
+              />
             </View>
           )}
         </ListItemButton>
@@ -211,6 +221,7 @@ export default function Page() {
           <View
             style={{
               flexDirection: "row",
+              marginBottom: 40,
               flexWrap: "wrap",
               alignItems: "center",
             }}
@@ -279,4 +290,3 @@ export default function Page() {
     </>
   );
 }
-
