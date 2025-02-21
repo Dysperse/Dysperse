@@ -20,7 +20,6 @@ export const FocusPanelProvider = ({
   focusPanelFreezerRef,
 }) => {
   const { data, mutate } = useSWR(["user/focus-panel"]);
-  // const breakpoints = useResponsiveBreakpoints();
   const activeStateRef = useRef(0);
 
   return (

@@ -644,4 +644,3 @@ export default function Clock({ widget, navigation, setParam }) {
     </View>
   );
 }
-

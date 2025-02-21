@@ -8,4 +8,3 @@ export default function Page() {
 
   return <SettingsSidebar forceShow />;
 }
-

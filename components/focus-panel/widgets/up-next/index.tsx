@@ -64,10 +64,10 @@ const UpNext = ({ widget, setParam, params, handlePin, small }) => {
   if (params.hideWhenEmpty && incomplete.length === 0) return null;
 
   return small ? (
-    <View>
+    <View style={{ flex: 1 }}>
       {incomplete[0] ? (
         <>
-          <Text weight={700} style={{ color: theme[11] }}>
+          <Text weight={700} style={{ color: theme[11] }} numberOfLines={1}>
             {incomplete[0].name}
           </Text>
           <Text style={{ fontSize: 12, color: theme[11], opacity: 0.6 }}>
