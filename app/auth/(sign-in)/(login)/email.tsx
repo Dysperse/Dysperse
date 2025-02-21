@@ -453,7 +453,7 @@ export default function SignIn() {
             return;
           }
           signIn(sessionRequest.session);
-          router.push("/home");
+          router.push("/insights");
         }
       } catch (e) {
         console.error(e);
