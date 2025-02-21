@@ -440,26 +440,44 @@ export function RenderWidget({ navigation, widget, index, small }) {
 export function Widgets() {
   const { data, error } = useSWR(["user/focus-panel"], null);
 
-  if (!Array.isArray(data)) {
-    return <Spinner />;
-  } else if (error) {
-    return <ErrorAlert />;
-  }
-
-  return data
-    .sort(function (a, b) {
-      if (a.order < b.order) return -1;
-      if (a.order > b.order) return 1;
-      return 0;
-    })
-    .map((widget, index) => (
-      <RenderWidget
-        // navigation={navigation}
-        key={index}
-        index={index}
-        widget={widget}
-      />
-    ));
+  return !Array.isArray(data) ? (
+    <View
+      style={{
+        flex: 1,
+        justifyContent: "center",
+        alignItems: "center",
+        height: 200,
+      }}
+    >
+      <Spinner />
+    </View>
+  ) : error ? (
+    <View
+      style={{
+        flex: 1,
+        justifyContent: "center",
+        alignItems: "center",
+        height: 200,
+      }}
+    >
+      <ErrorAlert />
+    </View>
+  ) : (
+    data
+      .sort(function (a, b) {
+        if (a.order < b.order) return -1;
+        if (a.order > b.order) return 1;
+        return 0;
+      })
+      .map((widget, index) => (
+        <RenderWidget
+          // navigation={navigation}
+          key={index}
+          index={index}
+          widget={widget}
+        />
+      ))
+  );
 }
 
 function Page() {
@@ -522,3 +540,4 @@ function Page() {
 }
 
 export default memo(Page);
+

@@ -171,6 +171,7 @@ export default function AppLayout() {
 
   useEffect(() => {
     if (session && !isUserLoading && !sessionData?.user) {
+      console.log("User not found, signing out");
       Toast.show({
         type: "error",
         text1: "You've been signed out",
@@ -190,15 +191,14 @@ export default function AppLayout() {
   }
 
   InteractionManager.runAfterInteractions(() => SplashScreen.hide());
-  if (!session) return <Redirect href="/auth" />;
-
+  if (!session || !sessionData?.user) return <Redirect href="/auth" />;
   const renderNavigationView = (v: Animated.Value) => {
     progressValue.current = v;
 
     return !breakpoints.md ||
       (!pathname.includes("settings/") && !pathname.includes("create")) ? (
       <Pressable style={{ flex: 1 }}>
-        <Sidebar progressValue={v} />
+        {sessionData?.user && <Sidebar progressValue={v} />}
       </Pressable>
     ) : null;
   };
@@ -445,3 +445,4 @@ export default function AppLayout() {
     </WebAnimationComponent>
   );
 }
+
