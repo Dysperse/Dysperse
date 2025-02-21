@@ -12,8 +12,10 @@ import { sendApiRequest } from "@/helpers/api";
 import { hslToHex } from "@/helpers/hslToHex";
 import { useResponsiveBreakpoints } from "@/helpers/useResponsiveBreakpoints";
 import { Button } from "@/ui/Button";
+import ErrorAlert from "@/ui/Error";
 import IconButton from "@/ui/IconButton";
 import { MenuOption } from "@/ui/MenuPopover";
+import Spinner from "@/ui/Spinner";
 import { addHslAlpha } from "@/ui/color";
 import { useColorTheme } from "@/ui/color/theme-provider";
 import Logo from "@/ui/logo";
@@ -436,9 +438,15 @@ export function RenderWidget({ navigation, widget, index, small }) {
 }
 
 export function Widgets() {
-  const { data } = useSWR(["user/focus-panel"], null);
+  const { data, error } = useSWR(["user/focus-panel"], null);
 
-  return (data || [])
+  if (!Array.isArray(data)) {
+    return <Spinner />;
+  } else if (error) {
+    return <ErrorAlert />;
+  }
+
+  return data
     .sort(function (a, b) {
       if (a.order < b.order) return -1;
       if (a.order > b.order) return 1;
