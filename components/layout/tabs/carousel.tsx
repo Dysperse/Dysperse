@@ -279,6 +279,7 @@ function FocusPanel() {
                 pinnedWidgets.length > 1 ? theme[4] : "transparent",
               height: 50,
               marginBottom: -45,
+              zIndex: -9,
               marginHorizontal: 13,
               borderTopLeftRadius: 15,
               borderTopRightRadius: 15,
