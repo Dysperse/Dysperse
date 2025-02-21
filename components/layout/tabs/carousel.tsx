@@ -513,7 +513,7 @@ function OpenTabsList() {
                   Try opening a view or one of your collections
                 </Text>
               </View>
-              {footer}
+              {/* {footer} */}
             </>
           ) : (
             <View style={{ flex: 1, gap: 25, marginTop: 10, marginLeft: 5 }}>

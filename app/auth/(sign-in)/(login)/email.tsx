@@ -478,11 +478,6 @@ export default function SignIn() {
     }
   }, [session]);
 
-  const handleBack = useCallback(() => {
-    if (router.canGoBack()) router.back();
-    else router.push("/");
-  }, []);
-
   return (
     <>
       <View style={{ flex: 1 }}>
@@ -594,4 +589,3 @@ export default function SignIn() {
     </>
   );
 }
-
