@@ -151,7 +151,7 @@ function Insights({ year }) {
             marginTop: 5,
           }}
         >
-          {Object.entries(data.insights.viewCount)
+          {Object.entries(data.insights?.viewCount || {})
             .sort((a, b) => b[1] - a[1])
             .map(([key, value]) => (
               <View
@@ -170,12 +170,15 @@ function Insights({ year }) {
                     height: `${Math.max(
                       1,
                       (value /
-                        Math.max(...Object.values(data.insights.viewCount))) *
+                        Math.max(
+                          ...Object.values(data.insights?.viewCount || {})
+                        )) *
                         100 -
                         15
                     )}%`,
                     justifyContent: "flex-end",
                     alignItems: "center",
+                    maxWidth: 35,
                   }}
                 />
                 <Icon
@@ -363,4 +366,3 @@ export default function Page() {
     </View>
   );
 }
-

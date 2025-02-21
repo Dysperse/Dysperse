@@ -387,6 +387,25 @@ function OpenTabsList() {
 
   const { widgets } = useFocusPanelContext();
 
+  const newTab = (
+    <Button
+      icon="add"
+      text="New tab"
+      onPress={onOpen}
+      backgroundColors={{
+        default: theme[2],
+        hovered: theme[3],
+        pressed: theme[4],
+      }}
+      height={50}
+      iconStyle={{ marginLeft: 2 }}
+      containerStyle={{
+        borderRadius: 15,
+      }}
+      style={{ justifyContent: "flex-start", columnGap: 15 }}
+    />
+  );
+
   return (
     <View
       style={{
@@ -424,24 +443,7 @@ function OpenTabsList() {
             ListFooterComponentStyle={{
               marginTop: "auto",
             }}
-            ListFooterComponent={() => (
-              <Button
-                icon="add"
-                text="New tab"
-                onPress={onOpen}
-                backgroundColors={{
-                  default: theme[2],
-                  hovered: theme[3],
-                  pressed: theme[4],
-                }}
-                height={50}
-                iconStyle={{ marginLeft: 2 }}
-                containerStyle={{
-                  borderRadius: 15,
-                }}
-                style={{ justifyContent: "flex-start", columnGap: 15 }}
-              />
-            )}
+            ListFooterComponent={() => newTab}
             data={data}
             getItemLayout={(_, index) => ({ length: 52, offset: 52, index })}
             renderItem={({ item }) => (
@@ -513,8 +515,8 @@ function OpenTabsList() {
                 >
                   Try opening a view or one of your collections
                 </Text>
+                {newTab}
               </View>
-              {/* {footer} */}
             </>
           ) : (
             <View style={{ flex: 1, gap: 25, marginTop: 10, marginLeft: 5 }}>
