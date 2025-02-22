@@ -136,7 +136,7 @@ export const LabelEditModal = memo(function LabelEditModal({
                     flex: 1,
                     maxWidth: 270,
                   }}
-                  onKeyPress={(e) => {
+                  onKeyPress={(e: any) => {
                     if (e.key === "Escape") menuRef.current?.close?.();
                   }}
                   placeholder="Label name"

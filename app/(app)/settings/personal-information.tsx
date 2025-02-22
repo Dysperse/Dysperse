@@ -3,21 +3,15 @@ import { settingStyles } from "@/components/settings/settingsStyles";
 import { useUser } from "@/context/useUser";
 import Text from "@/ui/Text";
 import TextField from "@/ui/TextArea";
-import { useColorTheme } from "@/ui/color/theme-provider";
 import capitalizeFirstLetter from "@/utils/capitalizeFirstLetter";
 import dayjs from "dayjs";
 import { Controller, useForm } from "react-hook-form";
 import { ScrollView } from "react-native-gesture-handler";
 
 export default function Page() {
-  const theme = useColorTheme();
   const { session } = useUser();
 
-  const {
-    control,
-    handleSubmit,
-    formState: { errors },
-  } = useForm({
+  const { control } = useForm({
     defaultValues: {
       name: session?.user?.profile?.name,
       email: session?.user?.email,
@@ -64,3 +58,4 @@ export default function Page() {
     </ContentWrapper>
   );
 }
+

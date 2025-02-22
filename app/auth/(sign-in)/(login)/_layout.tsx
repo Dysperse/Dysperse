@@ -10,6 +10,7 @@ export default function Layout() {
 
   return (
     <JsStack
+      id={undefined}
       screenOptions={{
         header: () => null,
         gestureResponseDistance: 10000,

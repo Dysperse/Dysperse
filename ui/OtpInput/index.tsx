@@ -7,7 +7,14 @@ import {
 import { useColorTheme } from "../color/theme-provider";
 
 const OtpInput = forwardRef(
-  (props: Partial<OtpInputProps> & { containerGap?: number }, ref: any) => {
+  (
+    props: Partial<OtpInputProps> & {
+      containerGap?: number;
+      fontSize: any;
+      inputHeight: any;
+    },
+    ref: any
+  ) => {
     const theme = useColorTheme();
 
     return (

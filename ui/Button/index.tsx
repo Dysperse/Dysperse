@@ -29,7 +29,7 @@ export interface DButtonProps extends PressableProps {
   iconStyle?: StyleProp<TextStyle>;
   textProps?: DTextProps;
   text?: string;
-  icon?: string;
+  icon?: string | JSX.Element;
   iconSize?: number;
   height?: number;
   iconPosition?: "start" | "end";

@@ -22,3 +22,4 @@ export const useHotkeys: (
     ? // eslint-disable-next-line @typescript-eslint/no-var-requires
       require("react-hotkeys-hook").useHotkeys
     : () => {};
+

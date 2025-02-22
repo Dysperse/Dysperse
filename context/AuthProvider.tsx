@@ -2,7 +2,7 @@ import { createContext, useContext, type PropsWithChildren } from "react";
 import { useStorageState } from "./useStorageState";
 
 const AuthContext = createContext<{
-  signIn: () => void;
+  signIn: (t: string) => void;
   signOut: () => void;
   session?: string | null;
   isLoading: boolean;

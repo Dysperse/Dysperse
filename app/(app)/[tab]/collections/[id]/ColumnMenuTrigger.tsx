@@ -20,7 +20,7 @@ export const ColumnMenuTrigger = memo(function ColumnMenuTrigger({
   const menuRef = useRef(null);
   const pathname = usePathname();
   const { session } = useSession();
-  const { mutate, openLabelPicker } = useCollectionContext();
+  const { mutate } = useCollectionContext();
 
   const editButton = (
     <LabelEditModal

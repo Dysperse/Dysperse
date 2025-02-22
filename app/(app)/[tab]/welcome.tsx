@@ -19,9 +19,8 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import Toast from "react-native-toast-message";
 import { MenuButton } from "../release";
 
-function Card({ children }) {
+function Card({ children }: { children: React.ReactNode }) {
   const theme = useColorTheme();
-  const breakpoints = useResponsiveBreakpoints();
 
   return (
     <View

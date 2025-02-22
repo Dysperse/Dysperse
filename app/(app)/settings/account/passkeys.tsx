@@ -12,7 +12,7 @@ import SettingsScrollView from "@/ui/SettingsScrollView";
 import Spinner from "@/ui/Spinner";
 import Text from "@/ui/Text";
 import TextField from "@/ui/TextArea";
-import base64 from "@hexagon/base64";
+import { base64 } from "@hexagon/base64";
 import { Base64URLString } from "@simplewebauthn/typescript-types";
 import dayjs from "dayjs";
 import * as Application from "expo-application";

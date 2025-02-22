@@ -220,7 +220,7 @@ const CanvasCalendarCourseLabelPicker = ({
         </View>
         <LabelPicker
           disableIntegratedItems
-          disabledLabels={Object.values(value).map((i) => i.id)}
+          disabledLabels={Object.values(value).map((i: any) => i.id)}
           setLabel={(newLabel: any) => {
             onChange({
               ...value,

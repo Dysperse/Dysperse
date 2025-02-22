@@ -34,7 +34,7 @@ const styles = StyleSheet.create({
 const isIUSDChromebook =
   Platform.OS === "web" &&
   navigator.userAgent.includes("CrOS") &&
-  typeof navigator?.managed?.getHostname === "function" &&
+  typeof (navigator as any)?.managed?.getHostname === "function" &&
   dayjs.tz.guess() === "America/Los_Angeles" &&
   navigator.language === "en-US";
 
@@ -232,15 +232,7 @@ export function PasskeyModal({ children }: { children: any }) {
   return trigger;
 }
 
-function Email({
-  control,
-  setStep,
-  handleSubmit,
-}: {
-  control: any;
-  setStep: any;
-  handleSubmit;
-}) {
+function Email({ control, handleSubmit }: { control: any; handleSubmit }) {
   const theme = useColorTheme();
   const inputRef = useRef(null);
   const passwordRef = useRef(null);
@@ -309,7 +301,7 @@ function Email({
           rules={{
             required: true,
           }}
-          render={({ field: { onChange, onBlur, value } }) => (
+          render={({ field: { onChange, onBlur } }) => (
             <TextField
               style={{
                 height: 60,
@@ -372,7 +364,7 @@ function Email({
 
 export default function SignIn() {
   const { signIn, session } = useSession();
-  const [step, setStep] = useState(0);
+  const [step, setStep] = useState<any>(0);
   const breakpoints = useResponsiveBreakpoints();
   const [token, setToken] = useState("");
 
@@ -383,11 +375,7 @@ export default function SignIn() {
     cleanup: theme[2],
   });
 
-  const {
-    control,
-    handleSubmit,
-    formState: { errors },
-  } = useForm({
+  const { control, handleSubmit } = useForm({
     defaultValues: {
       email: "",
       password: "",
@@ -494,11 +482,7 @@ export default function SignIn() {
             <Spinner />
           </View>
         ) : step === 0 ? (
-          <Email
-            setStep={setStep}
-            control={control}
-            handleSubmit={handleSubmit(onSubmit)}
-          />
+          <Email control={control} handleSubmit={handleSubmit(onSubmit)} />
         ) : step === 1 ? (
           <View style={authStyles.container}>
             <View

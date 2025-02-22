@@ -146,7 +146,6 @@ export default function Page() {
           marginTop: 20,
         }}
       >
-        <ProfileBanner />
         <View style={{ paddingHorizontal: 40 }}>
           <Text weight={800} style={{ fontSize: 30, marginTop: 20 }}>
             {session.user.profile.name}

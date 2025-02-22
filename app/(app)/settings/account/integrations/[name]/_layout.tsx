@@ -56,8 +56,8 @@ export default function Layout() {
       ]}
     >
       <JsStack
+        id={undefined}
         screenOptions={{
-          animationEnabled: true,
           ...TransitionPresets.SlideFromRightIOS,
           cardStyleInterpolator: forHorizontalIOS,
           header: () => <Navbar />,
@@ -71,3 +71,4 @@ export default function Layout() {
     </View>
   );
 }
+

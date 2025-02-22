@@ -103,7 +103,7 @@ export default function Layout() {
     <>
       <PlanContextProvider>
         {!breakpoints.md && <SystemBars style="light" />}
-        <JsStack
+        <JsStack id={undefined}
           screenOptions={{
             ...TransitionPresets.SlideFromRightIOS,
             header: ({ navigation, route }) => (

@@ -25,13 +25,12 @@ export default function Layout() {
     methods: [],
     tasks: ["", "", ""],
     bio: "",
-    // picture:
-    // birthday:
   });
 
   return (
     <SignupContext.Provider value={signupData.current}>
       <JsStack
+        id={undefined}
         screenOptions={{
           header: () => null,
           gestureResponseDistance: 10000,
@@ -46,3 +45,4 @@ export default function Layout() {
     </SignupContext.Provider>
   );
 }
+

@@ -5,7 +5,7 @@ import { toastConfig } from "@/ui/toast.config";
 import { BottomSheetModalProvider } from "@gorhom/bottom-sheet";
 import { PortalProvider } from "@gorhom/portal";
 import { Redirect } from "expo-router";
-import { View, useWindowDimensions } from "react-native";
+import { useWindowDimensions } from "react-native";
 import { MenuProvider } from "react-native-popup-menu";
 import Toast from "react-native-toast-message";
 
@@ -22,15 +22,13 @@ export default function Layout() {
         <ColorThemeProvider theme={theme} setHTMLAttributes>
           <PortalProvider>
             <JsStack
+              id={undefined}
               screenOptions={{
-                header: () => <View />,
+                header: () => null,
                 headerTransparent: true,
                 gestureResponseDistance: width,
                 gestureEnabled: true,
-                cardStyle: {
-                  backgroundColor: theme[1],
-                },
-                // change opacity of the previous screen when swipe
+                cardStyle: { backgroundColor: theme[1] },
                 cardOverlayEnabled: true,
                 gestureVelocityImpact: 0.7,
               }}
