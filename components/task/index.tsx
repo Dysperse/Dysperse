@@ -353,7 +353,7 @@ const Task = memo(function Task({
                 >
                   {task.name}
                 </Text>
-                {task.note ? (
+                {task.note && getPreviewText(task.note).length > 0 ? (
                   <Text numberOfLines={1} weight={300} style={{ opacity: 0.7 }}>
                     {getPreviewText(task.note).substring(0, 100)}
                   </Text>

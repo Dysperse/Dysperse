@@ -87,11 +87,7 @@ export default function WeatherWidget({
     }
   );
 
-  const {
-    data: airQualityData,
-    isLoading: isAirQualityLoading,
-    mutate: mutateAirQuality,
-  } = useSWR(
+  const { data: airQualityData, isLoading: isAirQualityLoading } = useSWR(
     location
       ? [
           ``,
@@ -180,7 +176,7 @@ export default function WeatherWidget({
       )}
     </View>
   ) : (
-    <Pressable style={!data && weatherCardStyles} onPress={onPressHandler}>
+    <Pressable onPress={onPressHandler}>
       <MenuPopover
         menuProps={{
           rendererProps: { placement: "bottom" },
@@ -423,7 +419,15 @@ export default function WeatherWidget({
           </View>
         </Button>
       ) : (
-        <>
+        <View
+          style={{
+            backgroundColor: theme[2],
+            padding: 20,
+            borderColor: theme[5],
+            borderRadius: 20,
+            borderWidth: 1,
+          }}
+        >
           <Icon size={40} style={{ marginLeft: -2 }}>
             near_me
           </Icon>
@@ -431,8 +435,9 @@ export default function WeatherWidget({
             Weather
           </Text>
           <Text>Tap to enable</Text>
-        </>
+        </View>
       )}
     </Pressable>
   );
 }
+

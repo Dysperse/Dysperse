@@ -1,6 +1,5 @@
 import { COLLECTION_VIEWS } from "@/components/layout/command-palette/list";
 import { createTab } from "@/components/layout/openTab";
-import { useStorageContext } from "@/context/storageContext";
 import { useUser } from "@/context/useUser";
 import { sendApiRequest } from "@/helpers/api";
 import { useResponsiveBreakpoints } from "@/helpers/useResponsiveBreakpoints";
@@ -578,7 +577,6 @@ function AiSlide({ aiPrompt, setSlide }) {
 
 export const CreateCollectionModal = forwardRef(
   ({ children }: { children?: any }, ref: any) => {
-    const { isReached } = useStorageContext();
     const { session } = useUser();
 
     const aiPrompt = useRef(null);
@@ -591,33 +589,31 @@ export const CreateCollectionModal = forwardRef(
     return (
       <>
         {trigger}
-        {!isReached && (
-          <Modal sheetRef={ref} animation="SCALE" maxWidth={600}>
-            <BottomSheetScrollView
-              showsVerticalScrollIndicator={false}
-              showsHorizontalScrollIndicator={false}
-            >
-              <View style={{ padding: 30, paddingBottom: 0 }}>
-                <Header
-                  title={
-                    slide === "HOME" ? "Create a collection" : "AI collection"
-                  }
-                />
+        <Modal sheetRef={ref} animation="SCALE" maxWidth={600}>
+          <BottomSheetScrollView
+            showsVerticalScrollIndicator={false}
+            showsHorizontalScrollIndicator={false}
+          >
+            <View style={{ padding: 30, paddingBottom: 0 }}>
+              <Header
+                title={
+                  slide === "HOME" ? "Create a collection" : "AI collection"
+                }
+              />
+            </View>
+            {slide === "AI" ? (
+              <AiSlide aiPrompt={aiPrompt} setSlide={setSlide} />
+            ) : (
+              <View style={{ padding: 30, gap: 40, paddingTop: 0 }}>
+                {session?.user?.betaTester && (
+                  <AiCollection aiPrompt={aiPrompt} setSlide={setSlide} />
+                )}
+                <StartFromScratch />
+                <Templates />
               </View>
-              {slide === "AI" ? (
-                <AiSlide aiPrompt={aiPrompt} setSlide={setSlide} />
-              ) : (
-                <View style={{ padding: 30, gap: 40, paddingTop: 0 }}>
-                  {session?.user?.betaTester && (
-                    <AiCollection aiPrompt={aiPrompt} setSlide={setSlide} />
-                  )}
-                  <StartFromScratch />
-                  <Templates />
-                </View>
-              )}
-            </BottomSheetScrollView>
-          </Modal>
-        )}
+            )}
+          </BottomSheetScrollView>
+        </Modal>
       </>
     );
   }

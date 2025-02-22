@@ -1,4 +1,4 @@
-import { Button, ButtonText } from "@/ui/Button";
+import { Button } from "@/ui/Button";
 import ErrorAlert from "@/ui/Error";
 import Icon from "@/ui/Icon";
 import MenuPopover from "@/ui/MenuPopover";
@@ -9,10 +9,9 @@ import { useState } from "react";
 import { View } from "react-native";
 import Toast from "react-native-toast-message";
 import useSWR from "swr";
-import { widgetMenuStyles } from "../../widgetMenuStyles";
 import { widgetStyles } from "../../widgetStyles";
 
-export default function Quotes({ widget, menuActions }) {
+export default function Quotes({ widget }) {
   const { data, mutate, error } = useSWR(
     [``, {}, "https://quotes-api-self.vercel.app/quote"],
     null,
@@ -42,26 +41,34 @@ export default function Quotes({ widget, menuActions }) {
             icon: "refresh",
             callback: handleRefresh,
           },
-          { divider: true },
-          ...menuActions,
         ]}
         containerStyle={{ marginTop: -15 }}
         trigger={
-          <Button style={widgetMenuStyles.button} dense>
-            <ButtonText weight={800} style={widgetMenuStyles.text}>
-              Quotes
-            </ButtonText>
-            <Icon style={{ color: theme[11] }}>expand_more</Icon>
+          <Button
+            dense
+            containerStyle={{
+              marginRight: "auto",
+              marginBottom: 6,
+              marginLeft: -10,
+            }}
+          >
+            <Text variant="eyebrow">Quotes</Text>
+            <Icon style={{ color: theme[11], opacity: 0.6 }}>expand_more</Icon>
           </Button>
         }
       />
       {error && <ErrorAlert />}
-      <View style={[widgetStyles.card, { backgroundColor: theme[3] }]}>
+      <View
+        style={[
+          widgetStyles.card,
+          { backgroundColor: theme[2], borderColor: theme[5], borderWidth: 1 },
+        ]}
+      >
         {data ? (
           <>
             <Text
               style={{
-                fontSize: data.quote?.length > 100 ? 23 : 28,
+                fontSize: 23,
                 fontFamily: getFontName("crimsonPro", 800),
               }}
             >

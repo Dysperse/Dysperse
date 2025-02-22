@@ -20,19 +20,31 @@ export default function BatteryWidget({ navigation, widget, menuActions }) {
     getBatteryStateAsync().then((state) => {
       setIsCharging(state === 2);
     });
+    // const t = addBatteryStateListener((state) => {
+    //   setIsCharging(state.batteryState === 2);
+    // });
+
+    // return () => {
+    //   t.remove();
+    // };
   });
 
   return (
     batteryLevel !== -1 && (
       <View>
+        <Text variant="eyebrow" style={{ marginBottom: 10 }}>
+          Battery
+        </Text>
         <MenuPopover
           options={menuActions}
           trigger={
             <Pressable
               style={{
-                backgroundColor: theme[3],
-                borderRadius: 16,
+                backgroundColor: theme[2],
+                borderRadius: 20,
                 padding: 16,
+                borderWidth: 1,
+                borderColor: theme[5],
               }}
             >
               <View

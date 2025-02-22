@@ -12,19 +12,16 @@ import Animated, {
   withSequence,
   withSpring,
 } from "react-native-reanimated";
-import { useFocusPanelContext } from "../../context";
-import { widgetMenuStyles } from "../../widgetMenuStyles";
 
 const CoinFlip = () => {
   const theme = useColorTheme();
   const [result, setResult] = useState("");
-  const { panelState } = useFocusPanelContext();
 
   const animation = useSharedValue(1);
 
   const flipCoin = () => {
     animation.value = withSequence(
-      withSpring(isCollapsed ? 0 : 0.9, {
+      withSpring(0.9, {
         overshootClamping: true,
       }),
       withSpring(1, {})
@@ -44,8 +41,6 @@ const CoinFlip = () => {
     opacity: animation.value,
   }));
 
-  const isCollapsed = panelState === "COLLAPSED";
-
   return (
     <View>
       <Animated.View
@@ -54,11 +49,11 @@ const CoinFlip = () => {
           {
             alignItems: "center",
             justifyContent: "center",
-            padding: isCollapsed ? 0 : 20,
+            padding: 0,
             flexDirection: "row",
             gap: 20,
             marginBottom: 10,
-            backgroundColor: isCollapsed ? undefined : theme[2],
+            backgroundColor: theme[2],
             borderRadius: 30,
           },
         ]}
@@ -66,35 +61,33 @@ const CoinFlip = () => {
         <Avatar
           icon={result === "Tails" ? "account_balance" : "person"}
           size={60}
-          style={{ backgroundColor: theme[isCollapsed ? 5 : 3] }}
+          style={{ backgroundColor: theme[4] }}
           iconProps={{ size: 35 }}
         />
-        {!isCollapsed && (
-          <Text
-            style={{
-              color: theme[11],
-              opacity: 0.5,
-              fontSize: 40,
-              marginLeft: "auto",
-            }}
-            weight={300}
-          >
-            {result}
-          </Text>
-        )}
+        <Text
+          style={{
+            color: theme[11],
+            opacity: 0.5,
+            fontSize: 40,
+            marginLeft: "auto",
+          }}
+          weight={300}
+        >
+          {result}
+        </Text>
       </Animated.View>
       <Button
-        height={isCollapsed ? 40 : 60}
+        height={60}
         dense
         onPress={flipCoin}
-        variant={isCollapsed ? "text" : "outlined"}
+        variant={"outlined"}
         containerStyle={{
-          borderWidth: isCollapsed ? 0 : 1,
-          marginBottom: isCollapsed ? -10 : 0,
+          borderWidth: 1,
+          marginBottom: 0,
         }}
       >
-        <Icon size={isCollapsed ? 20 : 24}>casino</Icon>
-        <ButtonText>Flip{!isCollapsed && " coin"}</ButtonText>
+        <Icon size={24}>casino</Icon>
+        <ButtonText>Flip</ButtonText>
       </Button>
     </View>
   );
@@ -103,13 +96,12 @@ const CoinFlip = () => {
 const Dice = () => {
   const theme = useColorTheme();
   const [result, setResult] = useState(1);
-  const { panelState } = useFocusPanelContext();
 
   const animation = useSharedValue(0);
 
   const rollDice = () => {
     animation.value = withSequence(
-      withSpring(isCollapsed ? 0 : 0.9, {
+      withSpring(0.9, {
         overshootClamping: true,
       }),
       withSpring(1, {})
@@ -129,10 +121,8 @@ const Dice = () => {
     opacity: animation.value === 0.9 ? 0 : animation.value,
   }));
 
-  const isCollapsed = panelState === "COLLAPSED";
-
   return (
-    <View style={{ flexDirection: isCollapsed ? "column" : "row", gap: 10 }}>
+    <View style={{ flexDirection: "row", gap: 10 }}>
       <Animated.View
         style={[
           animatedStyle,
@@ -147,37 +137,30 @@ const Dice = () => {
         <Avatar
           icon={`counter_${result}`}
           size={60}
-          style={{ backgroundColor: theme[isCollapsed ? 5 : 2] }}
+          style={{ backgroundColor: theme[5] }}
           iconProps={{ size: 35 }}
         />
       </Animated.View>
       <Button
-        height={isCollapsed ? 40 : 60}
+        height={60}
         dense
         onPress={rollDice}
-        variant={isCollapsed ? "text" : "outlined"}
+        variant={"outlined"}
         containerStyle={{
-          borderWidth: isCollapsed ? 0 : 1,
-          marginBottom: isCollapsed ? -10 : 0,
-          flex: isCollapsed ? undefined : 1,
+          borderWidth: 1,
+          marginBottom: 0,
+          flex: 1,
         }}
       >
-        <Icon size={isCollapsed ? 20 : 24}>casino</Icon>
-        <ButtonText>Roll{!isCollapsed && " dice"}</ButtonText>
+        <Icon size={24}>casino</Icon>
+        <ButtonText>Roll dice</ButtonText>
       </Button>
     </View>
   );
 };
 
-export default function Randomizer({
-  navigation,
-  widget,
-  setParam,
-  menuActions,
-}) {
+export default function Randomizer({ widget, setParam }) {
   const theme = useColorTheme();
-  const { panelState } = useFocusPanelContext();
-  const isCollapsed = panelState === "COLLAPSED";
 
   const [mode, setMode] = useState<"coin" | "dice">(
     widget?.params?.mode || "coin"
@@ -185,37 +168,39 @@ export default function Randomizer({
 
   return (
     <View>
-      {!isCollapsed && (
-        <MenuPopover
-          options={[
-            {
-              text: "Switch to " + (mode === "coin" ? "Dice" : "Coin"),
-              icon: "casino",
-              callback: () => {
-                setParam("mode", mode === "coin" ? "dice" : "coin");
-                setMode(mode === "coin" ? "dice" : "coin");
-              },
+      <MenuPopover
+        options={[
+          {
+            text: "Switch to " + (mode === "coin" ? "Dice" : "Coin"),
+            icon: "casino",
+            callback: () => {
+              setParam("mode", mode === "coin" ? "dice" : "coin");
+              setMode(mode === "coin" ? "dice" : "coin");
             },
-            { divider: true },
-            ...menuActions,
-          ]}
-          containerStyle={{ marginTop: -15 }}
-          trigger={
-            <Button style={widgetMenuStyles.button} dense>
-              <ButtonText weight={800} style={widgetMenuStyles.text}>
-                Randomizer
-              </ButtonText>
-              <Icon style={{ color: theme[11] }}>expand_more</Icon>
-            </Button>
-          }
-        />
-      )}
+          },
+        ]}
+        containerStyle={{ marginTop: -15 }}
+        trigger={
+          <Button
+            dense
+            containerStyle={{
+              marginRight: "auto",
+              marginBottom: 6,
+              marginLeft: -10,
+            }}
+          >
+            <Text variant="eyebrow">Randomizer</Text>
+            <Icon style={{ color: theme[11], opacity: 0.6 }}>expand_more</Icon>
+          </Button>
+        }
+      />
       <View
         style={{
-          padding: isCollapsed ? 0 : 15,
-          paddingVertical: isCollapsed ? 10 : 15,
-          backgroundColor: theme[3],
+          padding: 20,
           borderRadius: 20,
+          backgroundColor: theme[2],
+          borderColor: theme[5],
+          borderWidth: 1,
         }}
       >
         {mode === "coin" ? <CoinFlip /> : <Dice />}
@@ -223,3 +208,4 @@ export default function Randomizer({
     </View>
   );
 }
+
