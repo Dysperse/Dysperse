@@ -1,9 +1,7 @@
 import CommandPaletteContent from "@/components/command-palette/content";
 import { useWebStatusBar } from "@/helpers/useWebStatusBar";
 import { useColorTheme } from "@/ui/color/theme-provider";
-import Spinner from "@/ui/Spinner";
 import { router } from "expo-router";
-import { Suspense } from "react";
 import { View } from "react-native";
 import { SystemBars } from "react-native-edge-to-edge";
 
@@ -27,12 +25,7 @@ export default function Page() {
           flex: 1,
         }}
       >
-        <Suspense fallback={<Spinner />}>
-          <CommandPaletteContent
-            defaultFilter={null}
-            handleClose={handleClose}
-          />
-        </Suspense>
+        <CommandPaletteContent defaultFilter={null} handleClose={handleClose} />
       </View>
     </>
   );

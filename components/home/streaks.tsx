@@ -53,7 +53,6 @@ const GoalIndicator = ({ completed, goal, name }) => {
             width={2}
             fill={(completed / goal) * 100}
             tintColor={theme[10]}
-            onAnimationComplete={() => console.log("onAnimationComplete")}
             backgroundColor={theme[6]}
           />
         )}

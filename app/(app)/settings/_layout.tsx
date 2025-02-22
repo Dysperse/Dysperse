@@ -249,7 +249,6 @@ export default function Layout() {
                   "index",
                   "tasks",
                   "sidekick",
-                  "storage",
                   "shortcuts",
                   "personal-information",
                   "account/index",

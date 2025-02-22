@@ -113,6 +113,7 @@ const SyncButton = memo(function SyncButton({ syncRef }: any) {
   const checkOpacity = useSharedValue(0);
 
   const { mutate } = useSWRConfig();
+
   const handleSync = useCallback(async () => {
     setIsLoading(true);
     try {
@@ -209,7 +210,7 @@ export const LogoButton = memo(function LogoButton({
 }) {
   const theme = useColorTheme();
   const menuRef = useRef(null);
-  const { session, sessionToken } = useUser();
+  const { session } = useUser();
   const breakpoints = useResponsiveBreakpoints();
   const { sidebarRef, desktopCollapsed } = useSidebarContext();
 
@@ -223,10 +224,6 @@ export const LogoButton = memo(function LogoButton({
   const openBug = useCallback(() => {
     Linking.openURL("https://tally.so/r/mVZjvE?email=" + session?.user?.email);
   }, [session]);
-
-  useEffect(() => {
-    sendApiRequest(sessionToken, "POST", "space/integrations/sync", {});
-  }, [sessionToken]);
 
   useHotkeys("F1", openSupport);
 
@@ -278,7 +275,9 @@ export const LogoButton = memo(function LogoButton({
               }}
             >
               <Logo size={40} />
-              <SyncButton syncRef={syncRef} />
+              {session?.space?.space?._count?.integrations > 0 && (
+                <SyncButton syncRef={syncRef} />
+              )}
               <Icon style={{ color: theme[11] }}>expand_more</Icon>
             </Button>
           </View>
@@ -1025,3 +1024,4 @@ const Sidebar = ({
 };
 
 export default memo(Sidebar);
+

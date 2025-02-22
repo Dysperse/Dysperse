@@ -29,64 +29,7 @@
   "launch_handler": {
     "client_mode": "navigate-existing"
   },
-  "screenshots": [
-    {
-      "src": "/screenshots/1.png",
-      "sizes": "1485x2640",
-      "type": "image/png",
-      "platform": "narrow",
-      "form_factor": "wide",
-      "label": "Dysperse is a radically different, unified productivity platform"
-    },
-    {
-      "src": "/screenshots/2.png",
-      "sizes": "1485x2640",
-      "type": "image/png",
-      "platform": "narrow",
-      "form_factor": "wide",
-      "label": "Planner"
-    },
-    {
-      "src": "/screenshots/3.png",
-      "sizes": "1485x2640",
-      "type": "image/png",
-      "platform": "narrow",
-      "form_factor": "wide",
-      "label": "Boards"
-    },
-    {
-      "src": "/screenshots/5.png",
-      "sizes": "1485x2640",
-      "type": "image/png",
-      "platform": "narrow",
-      "form_factor": "wide",
-      "label": "Inventory"
-    },
-    {
-      "src": "/screenshots/6.png",
-      "sizes": "1485x2640",
-      "type": "image/png",
-      "platform": "narrow",
-      "form_factor": "wide",
-      "label": "Profiles"
-    },
-    {
-      "src": "/screenshots/7.png",
-      "sizes": "1485x2640",
-      "type": "image/png",
-      "platform": "narrow",
-      "form_factor": "wide",
-      "label": "More features you'll love"
-    },
-    {
-      "src": "/screenshots/8.png",
-      "sizes": "1485x2640",
-      "type": "image/png",
-      "platform": "narrow",
-      "form_factor": "wide",
-      "label": "Join now!"
-    }
-  ],
+  "screenshots": [],
   "icons": [
     {
       "src": "https://assets.dysperse.com/v12-rounded/android/android-launchericon-512-512.png",
@@ -249,3 +192,4 @@
     }
   ]
 }
+
