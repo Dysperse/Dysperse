@@ -230,7 +230,7 @@ function FocusPanel() {
           onClose={() => sheetRef.current.close()}
           sheetRef={sheetRef}
           snapPoints={["80%"]}
-          maxWidth={400}
+          maxWidth={breakpoints.md ? 400 : undefined}
         >
           <BottomSheetScrollView
             contentContainerStyle={{ padding: 20, gap: 20 }}
@@ -551,3 +551,4 @@ function OpenTabsList() {
 }
 
 export default memo(OpenTabsList);
+
