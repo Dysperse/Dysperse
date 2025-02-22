@@ -211,6 +211,7 @@ export default function AppLayout() {
         pathname.includes("/customize") ||
         pathname.includes("friends") ||
         pathname.includes("insights") ||
+        pathname.includes("add-widget") ||
         pathname.includes("everything/labels/") ||
         (pathname.includes("/map") && Platform.OS !== "ios") ||
         (pathname.includes("/grid") && Platform.OS !== "ios") ||
