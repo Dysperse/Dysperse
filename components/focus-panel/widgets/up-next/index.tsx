@@ -70,7 +70,14 @@ const UpNext = ({ widget, setParam, params, handlePin, small }) => {
           <Text weight={700} style={{ color: theme[11] }} numberOfLines={1}>
             {incomplete[0].name}
           </Text>
-          <Text style={{ fontSize: 12, color: theme[11], opacity: 0.6 }}>
+          <Text
+            style={{
+              fontSize: 12,
+              color: theme[11],
+              opacity: 0.6,
+              marginTop: -3,
+            }}
+          >
             {dayjs(incomplete[0].start).fromNow()}
           </Text>
         </>
@@ -161,3 +168,4 @@ const UpNext = ({ widget, setParam, params, handlePin, small }) => {
 };
 
 export default UpNext;
+
