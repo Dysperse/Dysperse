@@ -1,4 +1,3 @@
-import { useCommandPaletteContext } from "@/components/command-palette/context";
 import { useStorageContext } from "@/context/storageContext";
 import { useUser } from "@/context/useUser";
 import Icon from "@/ui/Icon";
@@ -72,14 +71,13 @@ export function PlanDayPrompt() {
 
 export function Actions() {
   const theme = useColorTheme();
-  const createRef = useCommandPaletteContext();
 
   return (
     <View>
       <Text variant="eyebrow" style={actionStyles.title}>
         Start
       </Text>
-      <CreateCollectionModal ref={createRef}>
+      <CreateCollectionModal>
         <TouchableOpacity style={actionStyles.item}>
           <Icon>note_stack_add</Icon>
           <Text style={{ color: theme[11] }} numberOfLines={1}>
