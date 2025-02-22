@@ -191,7 +191,8 @@ export default function AppLayout() {
   }
 
   InteractionManager.runAfterInteractions(() => SplashScreen.hide());
-  if (!session || !sessionData?.user) return <Redirect href="/auth" />;
+  if (!session) return <Redirect href="/auth" />;
+
   const renderNavigationView = (v: Animated.Value) => {
     progressValue.current = v;
 

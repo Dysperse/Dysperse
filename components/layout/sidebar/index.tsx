@@ -1,9 +1,5 @@
-import { CreateCollectionModal } from "@/components/collections/create";
-import { CreateLabelModal } from "@/components/labels/createModal";
 import { useSidebarContext } from "@/components/layout/sidebar/context";
-import CreateTask from "@/components/task/create";
 import { useSession } from "@/context/AuthProvider";
-import { useStorageContext } from "@/context/storageContext";
 import { useUser } from "@/context/useUser";
 import { sendApiRequest } from "@/helpers/api";
 import { useHotkeys } from "@/helpers/useHotKeys";
@@ -12,13 +8,12 @@ import { Button } from "@/ui/Button";
 import Emoji from "@/ui/Emoji";
 import Icon from "@/ui/Icon";
 import IconButton from "@/ui/IconButton";
-import MenuPopover, { MenuItem } from "@/ui/MenuPopover";
+import MenuPopover from "@/ui/MenuPopover";
 import Modal from "@/ui/Modal";
 import Spinner from "@/ui/Spinner";
 import Text from "@/ui/Text";
 import { useColorTheme } from "@/ui/color/theme-provider";
 import Logo from "@/ui/logo";
-import { BottomSheetModal } from "@gorhom/bottom-sheet";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import dayjs from "dayjs";
 import { router, useGlobalSearchParams, usePathname } from "expo-router";
@@ -344,139 +339,6 @@ export const LogoButton = memo(function LogoButton({
   );
 });
 
-const QuickCreateButton = memo(function QuickCreateButton() {
-  const { mutate } = useSWRConfig();
-  const { session } = useUser();
-  const itemRef = useRef<BottomSheetModal>(null);
-  const labelRef = useRef<BottomSheetModal>(null);
-
-  const [defaultValues, setDefaultValues] = useState<any>({});
-  const { id, fullscreen } = useGlobalSearchParams();
-  const pathname = usePathname();
-
-  useHotkeys(["ctrl+n", "shift+n", "space"], (e) => {
-    e.preventDefault();
-    itemRef.current?.present();
-  });
-
-  useEffect(() => {
-    if (pathname.includes("/collections/") && id !== "all") {
-      setDefaultValues({ collectionId: id });
-    }
-  }, [id, pathname]);
-
-  useEffect(() => {
-    if (
-      pathname !== "/" &&
-      !pathname.includes("/reorder") &&
-      !pathname.includes("/everything") &&
-      !pathname.includes("/chrome-extension") &&
-      !pathname.includes("/settings") &&
-      !fullscreen
-    )
-      AsyncStorage.setItem("lastViewedRoute", pathname);
-  }, [pathname, fullscreen]);
-
-  useHotkeys(["ctrl+shift+n"], (e) => {
-    e.preventDefault();
-    createCollectionRef.current.present();
-  });
-
-  useHotkeys(["ctrl+shift+l"], (e) => {
-    e.preventDefault();
-    labelRef.current?.present();
-  });
-
-  const menuRef = useRef(null);
-  const createCollectionRef = useRef(null);
-  const { isReached } = useStorageContext();
-  const theme = useColorTheme();
-
-  return (
-    <>
-      <View style={{ display: "none" }}>
-        <CreateTask
-          mutate={() => mutate(() => true)}
-          ref={itemRef}
-          defaultValues={defaultValues}
-          onPress={() => {
-            menuRef.current.close();
-          }}
-        />
-        <CreateCollectionModal ref={createCollectionRef} />
-      </View>
-
-      <MenuPopover
-        menuRef={menuRef}
-        trigger={
-          <IconButton
-            style={{ borderRadius: 15, width: "100%" }}
-            disabled={isReached}
-            variant="filled"
-            size={45}
-            onPress={() => menuRef.current.open()}
-            pressableStyle={{ flexDirection: "row", gap: 5 }}
-          >
-            <Icon>add</Icon>
-            {/* <Text style={{ color: theme[11] }}>New</Text> */}
-          </IconButton>
-        }
-        closeOnSelect
-        options={[
-          {
-            renderer: () => (
-              <View style={{ flexDirection: "row" }}>
-                <MenuItem
-                  onPress={() => {
-                    itemRef.current?.present();
-                    menuRef.current.close();
-                  }}
-                  containerStyle={{ flex: 1 }}
-                >
-                  <Icon>note_stack_add</Icon>
-                  <Text variant="menuItem">Task</Text>
-                </MenuItem>
-                {session?.user?.betaTester && (
-                  <MenuItem
-                    onPress={() => {
-                      menuRef.current.close();
-                      router.push("/upload");
-                    }}
-                    containerStyle={{ minWidth: 0 }}
-                  >
-                    <Icon>upload</Icon>
-                  </MenuItem>
-                )}
-              </View>
-            ),
-          },
-          {
-            renderer: () => (
-              <CreateLabelModal
-                sheetRef={labelRef}
-                mutate={() => mutate(() => true)}
-              >
-                <MenuItem>
-                  <Icon>label</Icon>
-                  <Text variant="menuItem">Label</Text>
-                </MenuItem>
-              </CreateLabelModal>
-            ),
-          },
-          {
-            text: "Collection",
-            icon: "folder",
-            callback: () => createCollectionRef.current.present(),
-          },
-        ]}
-        menuProps={{
-          style: { flex: 1 },
-          rendererProps: { containerStyle: { marginLeft: 10, width: 200 } },
-        }}
-      />
-    </>
-  );
-});
 export const TimeZoneModal = () => {
   const { session, sessionToken, mutate } = useUser();
 
@@ -869,10 +731,8 @@ function SecondarySidebar() {
 
 const Sidebar = ({
   progressValue,
-  focusPanelRef,
 }: {
   progressValue?: NativeAnimated.Value;
-  focusPanelRef?: NativeAnimated.Value;
 }) => {
   const breakpoints = useResponsiveBreakpoints();
   const pathname = usePathname();
@@ -919,6 +779,7 @@ const Sidebar = ({
       },
     ],
   }));
+
   useHotkeys("ctrl+comma", () => {
     if (pathname.includes("settings")) return;
     router.push("/settings");
@@ -951,11 +812,6 @@ const Sidebar = ({
 
   const insets = useSafeAreaInsets();
 
-  const opacity = focusPanelRef?.current?.interpolate?.({
-    inputRange: [0, 1],
-    outputRange: [1, 0],
-  });
-
   const [freezePrimary, setFreezePrimary] = useState(
     !pathname.includes("everything")
   );
@@ -977,7 +833,6 @@ const Sidebar = ({
         )}
         <NativeAnimated.View
           style={[
-            !breakpoints.md && { opacity },
             { flex: breakpoints.md ? undefined : 1 },
             {
               height: height - insets.top - insets.bottom,
