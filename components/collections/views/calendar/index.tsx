@@ -62,11 +62,15 @@ const CalendarTaskDrawer = forwardRef(
 const CalendarCreateTaskDrawer = forwardRef(
   (props: CreateTaskDrawerProps, ref) => {
     const drawerRef = useRef(null);
+    const { id } = useLocalSearchParams();
     const [defaultValues, setDefaultValues] = useState({});
 
     useImperativeHandle(ref, () => ({
       present: (defaultValues) => {
-        setDefaultValues(defaultValues);
+        setDefaultValues({
+          collectionId: id,
+          ...defaultValues,
+        });
         drawerRef.current?.present();
       },
     }));
