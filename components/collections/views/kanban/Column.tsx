@@ -237,6 +237,14 @@ export function Column(props: ColumnProps) {
             {hasNoCompleteTasks && !showCompleted && (
               <ColumnEmptyComponent row={props.grid} />
             )}
+            {Object.values(props.label?.entities || props.entities).length ===
+              0 && (
+              <ColumnEmptyComponent
+                row={props.grid}
+                labelId={props.label?.id}
+                showInspireMe
+              />
+            )}
           </View>
         )}
         estimatedItemSize={300}
@@ -256,23 +264,23 @@ export function Column(props: ColumnProps) {
               collectionData.showCompleted ||
               Object.values(props.label?.entities || props.entities).length ===
                 0 ? null : (
-              <Button
-                onPress={() => setShowCompleted(!showCompleted)}
-                height={50}
-              >
-                <ButtonText style={{ opacity: 0.7 }} weight={600}>
-                  {showCompleted ? "Hide completed" : "See completed"}
-                </ButtonText>
-                <Icon>{showCompleted ? "expand_less" : "expand_more"}</Icon>
-              </Button>
-            )}
-            {Object.values(props.label?.entities || props.entities).length ===
-              0 && (
-              <ColumnEmptyComponent
-                row={props.grid}
-                labelId={props.label?.id}
-                showInspireMe
-              />
+              <View style={{ flexDirection: "row" }}>
+                <Button
+                  onPress={() => setShowCompleted(!showCompleted)}
+                  dense
+                  containerStyle={{
+                    marginRight: "auto",
+                    marginTop: 10,
+                    marginLeft: 80,
+                  }}
+                  variant="filled"
+                >
+                  <ButtonText weight={600}>
+                    {showCompleted ? "Hide completed" : "See completed"}
+                  </ButtonText>
+                  <Icon>{showCompleted ? "expand_less" : "expand_more"}</Icon>
+                </Button>
+              </View>
             )}
           </>
         )}

@@ -6,11 +6,12 @@ import { useColorTheme } from "../color/theme-provider";
 
 export default function RefreshControl(props: RefreshControlProps) {
   const theme = useColorTheme();
+
   return (
     <RefreshControlComponent
       progressBackgroundColor={theme[5]}
-      colors={[theme[9]]}
-      tintColor={theme[9]}
+      colors={[theme[10]]}
+      tintColor={theme[10]}
       {...props}
       onRefresh={() => {
         Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Rigid);

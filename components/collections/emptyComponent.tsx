@@ -1,6 +1,6 @@
 import { useUser } from "@/context/useUser";
 import { Button } from "@/ui/Button";
-import Emoji from "@/ui/Emoji";
+import { useColorTheme } from "@/ui/color/theme-provider";
 import ErrorAlert from "@/ui/Error";
 import Icon from "@/ui/Icon";
 import { ListItemButton } from "@/ui/ListItemButton";
@@ -11,15 +11,13 @@ import ModalHeader from "@/ui/ModalHeader";
 import SkeletonContainer from "@/ui/Skeleton/container";
 import { LinearSkeletonArray } from "@/ui/Skeleton/linear";
 import Text from "@/ui/Text";
-import { useColorTheme } from "@/ui/color/theme-provider";
-import * as shapes from "@/ui/shapes";
 import React, { useMemo, useRef } from "react";
-import { Platform, StyleSheet, View } from "react-native";
+import { Platform, View } from "react-native";
 import { ScrollView } from "react-native-gesture-handler";
 import useSWR from "swr";
 import { useCollectionContext } from "./context";
 
-function InspireMe({ labelId }) {
+function InspireMe({ row, labelId }) {
   const { data: collection } = useCollectionContext();
   const ref = useRef(null);
   const [opened, setOpened] = React.useState(false);
@@ -44,11 +42,12 @@ function InspireMe({ labelId }) {
   return (
     <>
       <Button
+        variant="filled"
+        dense
         containerStyle={{
-          opacity: 0.6,
+          marginRight: "auto",
           marginTop: 10,
-          marginBottom: -80,
-          zIndex: 9999,
+          marginLeft: row ? 80 : "auto",
         }}
         iconPosition="end"
         text="Inspire me"
@@ -105,32 +104,15 @@ function InspireMe({ labelId }) {
   );
 }
 
-const styles = StyleSheet.create({
-  empty: {
-    alignItems: "center",
-    justifyContent: "center",
-    flex: 1,
-    width: "100%",
-  },
-  emptyIcon: { transform: [{ rotate: "-45deg" }] },
-  emptyIconContainer: {
-    borderRadius: 30,
-    marginBottom: 20,
-    transform: [{ rotate: "45deg" }],
-  },
-});
-
-const shapesLength = Array.from({ length: 7 }, (_, i) => `shape${i + 1}`);
-
 const messages = [
-  ["1f92b", "Shhh!", "It's quiet here!"],
-  ["1f60a", "Enjoy the calm!", "Take a breather"],
-  ["1f60c", "Pause and relax!", "No plans, no worries"],
-  ["1f4ab", "Energize yourself", "Maybe get some sleep?"],
-  ["1fae0", "Peaceful moment!", "Savor the tranquility"],
-  ["1f44a", "It's quiet here", "Quick stretch or snack?"],
-  ["1f5ff", "Crushing it!", "No task is too big"],
-  ["1f985", "Look at yourself", "You're beautiful."],
+  ["bedtime", "Shhh!", "It's quiet here!"],
+  ["celebration", "Enjoy the calm!", "Take a breather"],
+  ["psychiatry", "Pause and relax!", "No plans, no worries"],
+  ["electric_bolt", "Energize yourself", "Maybe get some sleep?"],
+  ["cheer", "Peaceful moment!", "Savor the tranquility"],
+  ["bedtime", "It's quiet here", "Quick stretch or snack?"],
+  ["cheer", "Crushing it!", "No task is too big"],
+  ["celebration", "Look at yourself", "You're beautiful."],
 ];
 
 export const ColumnEmptyComponent = function ColumnEmptyComponent({
@@ -146,73 +128,64 @@ export const ColumnEmptyComponent = function ColumnEmptyComponent({
   showInspireMe?: boolean;
   labelId?: string;
 }) {
-  const theme = useColorTheme();
   const { session } = useUser();
+  const theme = useColorTheme();
 
   const message = useMemo(
     () => messages[Math.floor(Math.random() * messages.length)],
     []
   );
-
-  const Shape = useMemo(
-    () => shapes[shapesLength[Math.floor(Math.random() * shapesLength.length)]],
-    []
-  );
+  // row = true;
 
   return (
     <View
-      style={[
-        styles.empty,
-        {
-          // pointerEvents: "none",
-          paddingTop: Platform.OS === "android" ? 70 : undefined,
-        },
-        // row && { flexDirection: "row", alignItems: "center", gap: 20 },
-        list && { paddingVertical: 70 },
-        row && { marginTop: -40 },
-      ]}
+      style={
+        session?.user?.betaTester &&
+        showInspireMe &&
+        labelId && {
+          marginBottom: -110,
+        }
+      }
     >
       <View
-        style={{
-          paddingHorizontal: 20,
-          position: "relative",
-        }}
+        style={[
+          {
+            gap: list || row ? 20 : 10,
+            paddingHorizontal: 20,
+            paddingTop: Platform.OS === "android" ? 70 : undefined,
+          },
+          row && { flexDirection: "row", alignItems: "center" },
+          list && { paddingVertical: 70 },
+          !list && { marginTop: -40 },
+        ]}
       >
-        <Shape color={theme[5]} size={80} />
-        <View
-          style={{
-            position: "absolute",
-            top: 0,
-            left: 0,
-            right: 0,
-            bottom: 0,
-            justifyContent: "center",
-            alignItems: "center",
-            marginLeft: "auto",
-          }}
-        >
-          <Emoji emoji={message[0]} size={40} />
+        <Icon size={40} style={!row && { marginHorizontal: "auto" }}>
+          {message[0]}
+        </Icon>
+        <View style={[{ alignItems: row ? "flex-start" : "center" }]}>
+          <Text
+            style={{
+              fontSize: 20,
+              fontFamily: "serifText700",
+              color: theme[11],
+              marginBottom: 5,
+            }}
+            numberOfLines={1}
+          >
+            {message[1]}
+          </Text>
+          <Text
+            style={{ opacity: 0.6, zIndex: 99, color: theme[11] }}
+            numberOfLines={1}
+          >
+            {message[2]}
+          </Text>
         </View>
       </View>
-      <View style={[{ alignItems: "center" }]}>
-        <Text
-          style={{
-            fontSize: dense ? 20 : 25,
-            fontFamily: "serifText800",
-            lineHeight: 50,
-          }}
-          numberOfLines={1}
-        >
-          {message[1]}
-        </Text>
-        <Text style={{ opacity: 0.6, zIndex: 99 }} numberOfLines={1}>
-          {message[2]}
-        </Text>
-
-        {session?.user?.betaTester && showInspireMe && labelId && (
-          <InspireMe labelId={labelId} />
-        )}
-      </View>
+      {session?.user?.betaTester && showInspireMe && labelId && (
+        <InspireMe row={row} labelId={labelId} />
+      )}
     </View>
   );
 };
+

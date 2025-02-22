@@ -156,18 +156,27 @@ export default function WeatherWidget({
     >
       {data && (
         <>
-          <Icon bold>
+          <Icon bold size={18}>
             {
               weatherCodes[data.current_weather.weathercode][
                 isNight() ? "night" : "day"
               ].icon
             }
           </Icon>
-          <Text style={{ color: theme[11], lineHeight: 15 }} weight={700}>
+          <Text
+            style={{ color: theme[11], flex: 1, fontSize: 14, height: "100%" }}
+            weight={700}
+            numberOfLines={2}
+          >
             {weatherDescription?.description}
           </Text>
           <Text
-            style={{ marginLeft: "auto", color: theme[11], opacity: 0.7 }}
+            style={{
+              marginLeft: "auto",
+              color: theme[11],
+              opacity: 0.7,
+              fontSize: 14,
+            }}
             weight={700}
           >
             {Math.round(data.current_weather.temperature)}&deg;

@@ -3,6 +3,12 @@ import { useCommandPaletteContext } from "@/components/command-palette/context";
 import { useFocusPanelContext } from "@/components/focus-panel/context";
 import { useBadgingService } from "@/context/BadgingProvider";
 import { useStorageContext } from "@/context/storageContext";
+import { useUser } from "@/context/useUser";
+import { sendApiRequest } from "@/helpers/api";
+import {
+  createSortablePayloadByIndex,
+  getBetweenRankAsc,
+} from "@/helpers/lexorank";
 import { useHotkeys } from "@/helpers/useHotKeys";
 import { useResponsiveBreakpoints } from "@/helpers/useResponsiveBreakpoints";
 import BottomSheet from "@/ui/BottomSheet";
@@ -19,7 +25,13 @@ import { useColorTheme } from "@/ui/color/theme-provider";
 import { BottomSheetScrollView } from "@gorhom/bottom-sheet";
 import { LinearGradient } from "expo-linear-gradient";
 import { router, useGlobalSearchParams } from "expo-router";
-import { memo, useEffect, useImperativeHandle, useRef, useState } from "react";
+import React, {
+  memo,
+  useEffect,
+  useImperativeHandle,
+  useRef,
+  useState,
+} from "react";
 import { Freeze } from "react-freeze";
 import {
   InteractionManager,
@@ -28,8 +40,11 @@ import {
   StyleSheet,
   View,
 } from "react-native";
-import { FlatList } from "react-native-gesture-handler";
 import Animated, { FlipInXUp, FlipOutXDown } from "react-native-reanimated";
+import ReorderableList, {
+  ReorderableListReorderEvent,
+  reorderItems,
+} from "react-native-reorderable-list";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import Toast from "react-native-toast-message";
 import useSWR from "swr";
@@ -312,6 +327,8 @@ function OpenTabsList() {
   const { tab } = useGlobalSearchParams();
   const { data, error, mutate } = useSWR(["user/tabs"]);
 
+  // const data = raw.sort((a, b) => a.order.localeCompare(b.order));
+
   const handleSnapToIndex = (index: number) => {
     if (error)
       Toast.show({
@@ -386,6 +403,46 @@ function OpenTabsList() {
   });
 
   const { widgets } = useFocusPanelContext();
+  const { sessionToken } = useUser();
+
+  const handleReorder = ({ from, to }: ReorderableListReorderEvent) => {
+    mutate(
+      (oldItems) => {
+        // 1. find prev, current, next items
+        const sortablePayload = createSortablePayloadByIndex(oldItems, {
+          fromIndex: from,
+          toIndex: to,
+        });
+        // 2. calculate new rank
+        const newRank = getBetweenRankAsc(sortablePayload);
+        const newItems = [...oldItems];
+        const currIndex = oldItems.findIndex(
+          (x) => x.id === sortablePayload.entity.id
+        );
+        // 3. replace current rank
+        newItems[currIndex] = {
+          ...newItems[currIndex],
+          order: newRank.toString(),
+        };
+        // 4. update server with tab's new rank
+        sendApiRequest(
+          sessionToken,
+          "PUT",
+          "user/tabs",
+          {},
+          {
+            body: JSON.stringify({
+              id: sortablePayload.entity.id,
+              order: newRank.toString(),
+            }),
+          }
+        ).then((t) => console.log(t));
+        // 5. sort by rank
+        return reorderItems(oldItems, from, to);
+      },
+      { revalidate: false }
+    );
+  };
 
   const newTab = (
     <Button
@@ -428,7 +485,8 @@ function OpenTabsList() {
               pointerEvents: "none",
             }}
           />
-          <FlatList
+          <ReorderableList
+            onReorder={handleReorder}
             showsVerticalScrollIndicator={false}
             aria-label="Sidebar"
             refreshControl={
@@ -440,9 +498,7 @@ function OpenTabsList() {
                 }}
               />
             }
-            ListFooterComponentStyle={{
-              marginTop: "auto",
-            }}
+            ListFooterComponentStyle={{ marginTop: "auto" }}
             ListFooterComponent={() => newTab}
             data={data}
             getItemLayout={(_, index) => ({ length: 52, offset: 52, index })}

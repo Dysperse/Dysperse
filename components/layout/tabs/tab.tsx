@@ -14,8 +14,9 @@ import { useColorTheme } from "@/ui/color/theme-provider";
 import capitalizeFirstLetter from "@/utils/capitalizeFirstLetter";
 import * as Haptics from "expo-haptics";
 import { router } from "expo-router";
-import { memo, useCallback, useMemo, useState } from "react";
+import React, { memo, useCallback, useMemo, useState } from "react";
 import { InteractionManager, Platform, StyleSheet, View } from "react-native";
+import { useReorderableDrag } from "react-native-reorderable-list";
 import Toast from "react-native-toast-message";
 import { useTabMetadata } from "./useTabMetadata";
 
@@ -40,7 +41,6 @@ function Tab({
   disabled = false,
   isList = false,
   selected = false,
-  onLongPress = () => {},
   tabs,
   mutate,
   badgeData,
@@ -49,7 +49,6 @@ function Tab({
   disabled?: boolean;
   isList?: boolean;
   selected?: boolean;
-  onLongPress?: () => void;
   tabs: any;
   mutate: any;
   badgeData: any;
@@ -58,6 +57,7 @@ function Tab({
   const tabData = useTabMetadata(tab.slug, tab);
   const { sessionToken } = useUser();
   const { sidebarRef, desktopCollapsed } = useSidebarContext();
+  const drag = useReorderableDrag();
 
   const handleDelete = useCallback(
     async (id: string) => {
@@ -279,7 +279,7 @@ function Tab({
             }
           },
         })}
-        onLongPress={onLongPress}
+        onLongPress={Platform.OS === "web" ? undefined : drag}
         disabled={disabled}
         variant={selected ? "filled" : "text"}
         onPress={handlePress}
