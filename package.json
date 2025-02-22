@@ -149,7 +149,9 @@
     "eslint": "^8.56.0",
     "eslint-plugin-react": "^7.33.2",
     "eslint-plugin-react-hooks": "^4.6.2",
-    "eslint-plugin-react-native": "^4.1.0"
+    "eslint-plugin-react-native": "^4.1.0",
+    "eslint-plugin-unused-imports": "^4.1.4",
+    "ts-unused-exports": "^11.0.1"
   },
   "private": true
 }

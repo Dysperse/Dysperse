@@ -87,7 +87,7 @@ const Every = ({
   );
 };
 
-function On({ value, setValue, handleEdit }) {
+function On({ value, handleEdit }) {
   const theme = useColorTheme();
   const isMonthly = value.freq === 1;
 
@@ -197,7 +197,7 @@ const SetValue = ({ value, setValue }: { value: any; setValue: any }) => {
   return null;
 };
 
-function Ends({ value, setValue, handleEdit }) {
+function Ends({ value, setValue }) {
   const endsInputDateRef = useRef(null);
   const endsInputCountRef = useRef(null);
 
@@ -333,7 +333,7 @@ function Ends({ value, setValue, handleEdit }) {
 
 function Preview({ value }) {
   const theme = useColorTheme();
-  const [previewRange, setPreviewRange] = useState<Date>(new Date());
+  const [previewRange] = useState<Date>(new Date());
 
   return !value ? null : (
     <View style={{ marginTop: 30 }}>
@@ -370,7 +370,7 @@ function Preview({ value }) {
   );
 }
 
-function AtTime({ value, setValue, handleEdit }) {
+function AtTime({ value, setValue }) {
   const atTimeRef = useRef(null);
   const atTime = value?.byhour ? value?.byhour[0] : 9;
 

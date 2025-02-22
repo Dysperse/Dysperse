@@ -29,7 +29,7 @@ import CreateTask from "../create";
 import { TaskNote } from "./TaskNote";
 import { useTaskDrawerContext } from "./context";
 
-function TaskRescheduleButton({ task, updateTask, menuRef }) {
+function TaskRescheduleButton({ task, updateTask }) {
   const sheetRef = useRef(null);
   const handleSelect = (t, n) =>
     updateTask({ start: dayjs(task.start).add(n, t).toISOString() });
@@ -461,7 +461,6 @@ function TaskDateMenu() {
 }
 
 function TaskLocationMenu() {
-  const theme = useColorTheme();
   const { task, updateTask, isReadOnly } = useTaskDrawerContext();
   const { session } = useUser();
 

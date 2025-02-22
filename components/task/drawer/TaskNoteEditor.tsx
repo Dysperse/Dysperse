@@ -79,7 +79,7 @@ function CharacterCounter({ theme }) {
   );
 }
 
-function Focuser({ setFocused, showEditorWhenEmpty, containerRef, openLink }) {
+function Focuser({ showEditorWhenEmpty, containerRef, openLink }) {
   const { editor } = useCurrentEditor();
 
   useEffect(() => {

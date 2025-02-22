@@ -588,12 +588,13 @@ export default function Page() {
     error,
     access: data?.access,
     openLabelPicker: () => {},
-    swrKey: "space/collections/collection",
+    swrKey: "space/collections/collection" as any,
   };
 
   return (
     <CollectionContext.Provider value={contextValue}>
-      {data && <Share handleClose={handleClose} data={data} />}
+      {data && <Share handleClose={handleClose} />}
     </CollectionContext.Provider>
   );
 }
+

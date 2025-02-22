@@ -39,11 +39,6 @@ export function AttachmentGrid({
   const breakpoints = useResponsiveBreakpoints();
   const { forceClose } = useBottomSheet();
 
-  const taskMenuCardStyle = ({ pressed, hovered }) => [
-    styles.attachmentCard,
-    { backgroundColor: theme[pressed ? 5 : hovered ? 4 : 3] },
-  ];
-
   const menuRows = [
     [
       { index: 1, icon: "location_on", text: "Location" },
@@ -172,3 +167,4 @@ export function AttachmentGrid({
     </View>
   ));
 }
+

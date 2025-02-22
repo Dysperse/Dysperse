@@ -217,22 +217,12 @@ function AISubtask({ task, updateTask }) {
   );
 }
 
-function AiExplanation({ task, updateTask }) {
+function AiExplanation({ task }) {
   const modalRef = useRef(null);
   const { sessionToken } = useUser();
   const [isLoading, setIsLoading] = useState(false);
   const [generation, setGeneration] = useState([]);
-  const [isCreationLoading, setIsCreationLoading] = useState(false);
 
-  const handleSubmit = async () => {
-    setIsCreationLoading(true);
-    try {
-    } catch (e) {
-      Toast.show({ type: "error" });
-    } finally {
-      setIsCreationLoading(false);
-    }
-  };
   return (
     <>
       <MenuItem
@@ -467,7 +457,7 @@ function WorkloadChip() {
 function TaskMoreMenu({ handleDelete }) {
   const theme = useColorTheme();
   const { session } = useUser();
-  const { task, updateTask } = useTaskDrawerContext();
+  const { task } = useTaskDrawerContext();
 
   return (
     <>

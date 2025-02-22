@@ -130,7 +130,7 @@ const ReorderColumn = ({
           gap: list && breakpoints.md ? 20 : 10,
           flex: 1,
           alignItems: "center",
-          flexDirection: list && breakpoints.md ? "row" : "col",
+          flexDirection: list && breakpoints.md ? "row" : "column",
         }}
       >
         <Emoji emoji={label.emoji} size={list && breakpoints.md ? 24 : 40} />
@@ -301,7 +301,7 @@ export default function Page() {
     error,
     access: data?.access,
     openLabelPicker: () => {},
-    swrKey: "space/collections/collection",
+    swrKey: "space/collections/collection" as any,
   };
 
   return (

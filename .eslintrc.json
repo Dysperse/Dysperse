@@ -17,11 +17,21 @@
   },
   "plugins": ["@typescript-eslint", "react"],
   "rules": {
+    "unused-imports/no-unused-imports": "error",
     "@typescript-eslint/no-explicit-any": "off",
     "react/display-name": "off",
     "react/react-in-jsx-scope": "off",
     "react/prop-types": "warn",
     "react/no-unescaped-entities": "off",
-    "@typescript-eslint/no-unused-vars": "warn"
+    "unused-imports/no-unused-vars": [
+      "warn",
+      {
+        "vars": "all",
+        "varsIgnorePattern": "^_",
+        "args": "after-used",
+        "argsIgnorePattern": "^_"
+      }
+    ]
   }
 }
+

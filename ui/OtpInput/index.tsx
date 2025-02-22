@@ -10,8 +10,8 @@ const OtpInput = forwardRef(
   (
     props: Partial<OtpInputProps> & {
       containerGap?: number;
-      fontSize: any;
-      inputHeight: any;
+      fontSize?: any;
+      inputHeight?: any;
     },
     ref: any
   ) => {
