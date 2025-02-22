@@ -7,7 +7,7 @@ import { useColorTheme } from "@/ui/color/theme-provider";
 import { router } from "expo-router";
 import { SystemBars } from "react-native-edge-to-edge";
 
-export function Header({ scrollRef }) {
+export function Header() {
   const theme = useColorTheme();
   const breakpoints = useResponsiveBreakpoints();
   const { sidebarRef } = useSidebarContext();

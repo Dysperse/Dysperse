@@ -2,7 +2,6 @@ import { mutations } from "@/app/(app)/[tab]/collections/mutations";
 import { IndeterminateProgressBar } from "@/components/IndeterminateProgressBar";
 import CreateTask from "@/components/task/create";
 import { TaskDrawer } from "@/components/task/drawer";
-import { useUser } from "@/context/useUser";
 import { useResponsiveBreakpoints } from "@/helpers/useResponsiveBreakpoints";
 import { Avatar } from "@/ui/Avatar";
 import { Button } from "@/ui/Button";
@@ -386,7 +385,6 @@ const MapTaskDrawer = forwardRef((props: { mutate: any }, ref) => {
 
 export default function MapView() {
   const theme = useColorTheme();
-  const { session } = useUser();
   const breakpoints = useResponsiveBreakpoints();
   const { data, mutate } = useCollectionContext();
 
