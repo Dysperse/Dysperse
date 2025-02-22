@@ -160,22 +160,22 @@ function Root() {
   StatusBar.setBackgroundColor("transparent");
 
   return (
-    <ThemeProvider
-      value={{
-        colors: {
-          background: "transparent",
-          card: theme[2],
-          primary: theme[2],
-          border: theme[6],
-          text: theme[11],
-          notification: theme[9],
-        },
-        dark: true,
-      }}
-    >
-      <ErrorBoundary showDialog fallback={<ErrorBoundaryComponent />}>
-        <KeyboardProvider navigationBarTranslucent statusBarTranslucent>
-          <SessionProvider>
+    <SessionProvider>
+      <ThemeProvider
+        value={{
+          colors: {
+            background: "transparent",
+            card: theme[2],
+            primary: theme[2],
+            border: theme[6],
+            text: theme[11],
+            notification: theme[9],
+          },
+          dark: true,
+        }}
+      >
+        <ErrorBoundary showDialog fallback={<ErrorBoundaryComponent />}>
+          <KeyboardProvider navigationBarTranslucent statusBarTranslucent>
             <ModalStackProvider>
               <ColorThemeProvider theme={theme}>
                 <SidebarContext.Provider value={sidebarContextValue}>
@@ -194,13 +194,14 @@ function Root() {
                 </SidebarContext.Provider>
               </ColorThemeProvider>
             </ModalStackProvider>
-          </SessionProvider>
-        </KeyboardProvider>
-      </ErrorBoundary>
-    </ThemeProvider>
+          </KeyboardProvider>
+        </ErrorBoundary>
+      </ThemeProvider>
+    </SessionProvider>
   );
 }
 
 export default process.env.NODE_ENV === "development"
   ? Root
   : Sentry.wrap(Root);
+

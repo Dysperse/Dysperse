@@ -13,6 +13,7 @@ export function useSession() {
   const value = React.useContext(AuthContext);
   if (process.env.NODE_ENV !== "production") {
     if (!value) {
+      console.warn("useSession must be wrapped in a <SessionProvider />");
       // throw new Error("useSession must be wrapped in a <SessionProvider />");
     }
   }

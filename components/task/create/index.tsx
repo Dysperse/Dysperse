@@ -538,17 +538,20 @@ function LabelNlpProcessor({
 }
 
 const TimeSuggestion = forwardRef(
-  ({
-    value,
-    hintRef,
-    watch,
-    isDirty,
-  }: {
-    value: any;
-    hintRef: any;
-    watch;
-    isDirty;
-  }) => {
+  (
+    {
+      value,
+      hintRef,
+      watch,
+      isDirty,
+    }: {
+      value: any;
+      hintRef: any;
+      watch;
+      isDirty;
+    },
+    ref
+  ) => {
     const hasTypedRef = useRef(false);
     const date = watch("date");
     const label = watch("label");

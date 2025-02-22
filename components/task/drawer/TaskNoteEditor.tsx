@@ -113,7 +113,7 @@ function Focuser({ setFocused, showEditorWhenEmpty, containerRef, openLink }) {
   return null;
 }
 
-const EditorRef = forwardRef((props, ref) => {
+const EditorRef = forwardRef((_, ref) => {
   const { editor } = useCurrentEditor();
 
   useImperativeHandle(ref, () => ({

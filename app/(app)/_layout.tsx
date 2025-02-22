@@ -203,103 +203,6 @@ export default function AppLayout() {
     ) : null;
   };
 
-  const content = (
-    <ThemeProvider
-      value={{
-        colors: {
-          background: theme[2],
-          card: theme[2],
-          primary: theme[2],
-          border: theme[6],
-          text: theme[11],
-          notification: theme[9],
-        },
-        dark: true,
-      }}
-    >
-      <AppContainer progressValue={progressValue}>
-        <LastStateRestore />
-        <SystemBars style={!isDark ? "dark" : "light"} />
-        <JsStack
-          screenOptions={{
-            header: () => null,
-            headerTransparent: true,
-            gestureResponseDistance: width,
-            gestureEnabled: false,
-            freezeOnBlur: true,
-            presentation: "transparentModal",
-            cardStyle: {
-              height,
-              width: breakpoints.md ? "100%" : width,
-              backgroundColor: globalThis.IN_DESKTOP_ENV
-                ? "transparent"
-                : theme[breakpoints.sm ? 2 : 1],
-              padding: breakpoints.md ? 10 : 0,
-              paddingBottom: Platform.OS === "ios" ? 0 : undefined,
-              ...(Platform.OS === "web" &&
-                ({ marginTop: "env(titlebar-area-height,0)" } as any)),
-            },
-            animation: "none",
-            cardOverlayEnabled: true,
-            gestureVelocityImpact: 0.5,
-          }}
-        >
-          <JsStack.Screen name="index" />
-          {["everything/labels/[id]", "everything/collections/[id]"].map(
-            (d) => (
-              <JsStack.Screen
-                key={d}
-                name={d}
-                options={{
-                  detachPreviousScreen: breakpoints.md,
-                  presentation: "modal",
-                  animation: "default",
-                  ...TransitionPresets.ModalPresentationIOS,
-                }}
-              />
-            )
-          )}
-          <JsStack.Screen
-            name="open"
-            options={{
-              presentation: "modal",
-              animation: "default",
-              gestureEnabled: false,
-              ...TransitionPresets.ModalPresentationIOS,
-            }}
-          />
-          <JsStack.Screen
-            name="friends"
-            options={arcCard({ theme, breakpoints, maxWidth: 500 })}
-          />
-          <JsStack.Screen
-            name="insights"
-            options={arcCard({ theme, breakpoints, maxWidth: 500 })}
-          />
-          <JsStack.Screen
-            name="home/customize"
-            options={arcCard({ theme, breakpoints, maxWidth: 500 })}
-          />
-          <JsStack.Screen
-            name="home/add-widget"
-            options={arcCard({ theme, breakpoints, maxWidth: 500 })}
-          />
-          <JsStack.Screen
-            name="plan"
-            options={arcCard({ theme, breakpoints, maxWidth: 500 })}
-          />
-          <JsStack.Screen
-            name="settings"
-            options={{
-              detachPreviousScreen: !breakpoints.md,
-              cardStyle: { padding: 0 },
-            }}
-          />
-        </JsStack>
-      </AppContainer>
-    </ThemeProvider>
-  );
-
   const drawerLocked =
     !desktopCollapsed && breakpoints.md
       ? "locked-open"
@@ -423,7 +326,135 @@ export default function AppLayout() {
                                   }
                                   renderNavigationView={renderNavigationView}
                                 >
-                                  {content}
+                                  <ThemeProvider
+                                    value={{
+                                      colors: {
+                                        background: theme[2],
+                                        card: theme[2],
+                                        primary: theme[2],
+                                        border: theme[6],
+                                        text: theme[11],
+                                        notification: theme[9],
+                                      },
+                                      dark: true,
+                                    }}
+                                  >
+                                    <AppContainer progressValue={progressValue}>
+                                      <LastStateRestore />
+                                      <SystemBars
+                                        style={!isDark ? "dark" : "light"}
+                                      />
+                                      <JsStack
+                                        id={undefined}
+                                        screenOptions={{
+                                          header: () => null,
+                                          headerTransparent: true,
+                                          gestureResponseDistance: width,
+                                          gestureEnabled: false,
+                                          freezeOnBlur: true,
+                                          presentation: "transparentModal",
+                                          cardStyle: {
+                                            height,
+                                            width: breakpoints.md
+                                              ? "100%"
+                                              : width,
+                                            backgroundColor:
+                                              globalThis.IN_DESKTOP_ENV
+                                                ? "transparent"
+                                                : theme[breakpoints.sm ? 2 : 1],
+                                            padding: breakpoints.md ? 10 : 0,
+                                            paddingBottom:
+                                              Platform.OS === "ios"
+                                                ? 0
+                                                : undefined,
+                                            ...(Platform.OS === "web" &&
+                                              ({
+                                                marginTop:
+                                                  "env(titlebar-area-height,0)",
+                                              } as any)),
+                                          },
+                                          animation: "none",
+                                          cardOverlayEnabled: true,
+                                          gestureVelocityImpact: 0.5,
+                                        }}
+                                      >
+                                        <JsStack.Screen name="index" />
+                                        {[
+                                          "everything/labels/[id]",
+                                          "everything/collections/[id]",
+                                        ].map((d) => (
+                                          <JsStack.Screen
+                                            key={d}
+                                            name={d}
+                                            options={{
+                                              detachPreviousScreen:
+                                                breakpoints.md,
+                                              presentation: "modal",
+                                              animation: "default",
+                                              ...TransitionPresets.ModalPresentationIOS,
+                                            }}
+                                          />
+                                        ))}
+                                        <JsStack.Screen
+                                          name="open"
+                                          options={{
+                                            presentation: "modal",
+                                            animation: "default",
+                                            gestureEnabled: false,
+                                            ...TransitionPresets.ModalPresentationIOS,
+                                          }}
+                                        />
+                                        <JsStack.Screen
+                                          name="friends"
+                                          options={arcCard({
+                                            theme,
+                                            breakpoints,
+                                            maxWidth: 500,
+                                          })}
+                                        />
+                                        <JsStack.Screen
+                                          name="insights"
+                                          options={arcCard({
+                                            theme,
+                                            breakpoints,
+                                            maxWidth: 500,
+                                          })}
+                                        />
+                                        <JsStack.Screen
+                                          name="home/customize"
+                                          options={arcCard({
+                                            theme,
+                                            breakpoints,
+                                            maxWidth: 500,
+                                          })}
+                                        />
+                                        <JsStack.Screen
+                                          name="home/add-widget"
+                                          options={arcCard({
+                                            theme,
+                                            breakpoints,
+                                            maxWidth: 500,
+                                          })}
+                                        />
+                                        <JsStack.Screen
+                                          name="plan"
+                                          options={arcCard({
+                                            theme,
+                                            breakpoints,
+                                            maxWidth: 500,
+                                          })}
+                                        />
+                                        <JsStack.Screen
+                                          name="settings"
+                                          options={{
+                                            detachPreviousScreen:
+                                              !breakpoints.md,
+                                            cardStyle: { padding: 0 },
+                                          }}
+                                        />
+                                      </JsStack>
+                                    </AppContainer>
+                                  </ThemeProvider>
                                 </DrawerLayout>
                               </View>
                             </BadgingProvider>
