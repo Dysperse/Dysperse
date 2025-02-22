@@ -160,7 +160,9 @@ const UpNext = ({ widget, setParam, params, handlePin, small }) => {
             )}
           </>
         ) : (
-          <Text>No upcoming tasks!</Text>
+          <Text style={{ padding: 20, color: theme[11] }}>
+            No upcoming tasks!
+          </Text>
         )}
       </View>
     </View>

@@ -163,7 +163,7 @@ export default function WeatherWidget({
               ].icon
             }
           </Icon>
-          <Text style={{ color: theme[11] }} weight={700}>
+          <Text style={{ color: theme[11], lineHeight: 15 }} weight={700}>
             {weatherDescription?.description}
           </Text>
           <Text
