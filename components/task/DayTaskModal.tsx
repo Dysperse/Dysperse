@@ -20,7 +20,7 @@ export default function DayTaskModal({ children, date, taskId }) {
     },
   });
 
-  const { data, mutate, error } = useSWR(
+  const { data, mutate } = useSWR(
     !hasOpened
       ? null
       : [

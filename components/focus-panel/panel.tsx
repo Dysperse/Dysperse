@@ -12,7 +12,6 @@ import { useColorTheme } from "@/ui/color/theme-provider";
 import { useNavigation } from "@react-navigation/native";
 import { createStackNavigator } from "@react-navigation/stack";
 import { ErrorBoundary } from "@sentry/react-native";
-import { useKeepAwake } from "expo-keep-awake";
 import { usePathname } from "expo-router";
 import { memo, useEffect, useImperativeHandle, useState } from "react";
 import { Freeze } from "react-freeze";
@@ -36,11 +35,6 @@ export type Widget =
   | "music"
   | "quotes"
   | "word of the day";
-
-export const WakeLock = () => {
-  useKeepAwake();
-  return null;
-};
 
 export const ImportantChip = () => {
   const orange = useColor("orange");
@@ -272,7 +266,6 @@ function PanelContent({ focusPanelFreezerRef }) {
           },
         ]}
       >
-        {process.env.NODE_ENV !== "development" && <WakeLock />}
         <ErrorBoundary
           showDialog
           fallback={

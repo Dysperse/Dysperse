@@ -1,14 +1,12 @@
 import IconButton from "@/ui/IconButton";
 import MenuPopover from "@/ui/MenuPopover";
-import { BottomSheetModal } from "@gorhom/bottom-sheet";
 import { setStringAsync } from "expo-clipboard";
-import React, { useCallback, useRef } from "react";
+import React, { useCallback } from "react";
 import Toast from "react-native-toast-message";
 import { useTaskDrawerContext } from "./context";
 
 export function TaskShareButton() {
   const { isReadOnly, task, updateTask } = useTaskDrawerContext();
-  const menuRef = useRef<BottomSheetModal>(null);
 
   const link = `https://dys.us.to/${task.shortId || task.id}`;
 

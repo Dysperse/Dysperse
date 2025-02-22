@@ -7,11 +7,9 @@ import { getBatteryLevelAsync, getBatteryStateAsync } from "expo-battery";
 import { useEffect, useState } from "react";
 import { Pressable, View } from "react-native";
 import Svg, { Path } from "react-native-svg";
-import { useFocusPanelContext } from "../../context";
 
 export default function BatteryWidget({ navigation, widget, menuActions }) {
   const theme = useColorTheme();
-  const { panelState } = useFocusPanelContext();
   const isDark = useDarkMode();
   const [batteryLevel, setBatteryLevel] = useState(-1);
 
@@ -22,13 +20,6 @@ export default function BatteryWidget({ navigation, widget, menuActions }) {
     getBatteryStateAsync().then((state) => {
       setIsCharging(state === 2);
     });
-    // const t = addBatteryStateListener((state) => {
-    //   setIsCharging(state.batteryState === 2);
-    // });
-
-    // return () => {
-    //   t.remove();
-    // };
   });
 
   return (
@@ -119,3 +110,4 @@ export default function BatteryWidget({ navigation, widget, menuActions }) {
     )
   );
 }
+
