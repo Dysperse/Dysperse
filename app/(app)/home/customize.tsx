@@ -1,6 +1,10 @@
 import { useUser } from "@/context/useUser";
 import { sendApiRequest } from "@/helpers/api";
 import { hslToHex } from "@/helpers/hslToHex";
+import {
+  createSortablePayloadByIndex,
+  getBetweenRankAsc,
+} from "@/helpers/lexorank";
 import { useResponsiveBreakpoints } from "@/helpers/useResponsiveBreakpoints";
 import { useWebStatusBar } from "@/helpers/useWebStatusBar";
 import { Avatar } from "@/ui/Avatar";
@@ -12,11 +16,15 @@ import ListItemText from "@/ui/ListItemText";
 import Text from "@/ui/Text";
 import { Image } from "expo-image";
 import { router } from "expo-router";
-import { LexoRank } from "lexorank";
-import React, { useCallback } from "react";
+import { default as React, useCallback } from "react";
 import { Platform, StyleSheet, View } from "react-native";
 import { SystemBars } from "react-native-edge-to-edge";
 import { Pressable, ScrollView } from "react-native-gesture-handler";
+import ReorderableList, {
+  ReorderableListReorderEvent,
+  reorderItems,
+  useReorderableDrag,
+} from "react-native-reorderable-list";
 import useSWR from "swr";
 import { HOME_PATTERNS, MenuButton } from ".";
 import { WIDGET_LIST } from "./add-widget";
@@ -33,6 +41,46 @@ const styles = StyleSheet.create({
   },
 });
 
+function Widget({ section, handleDelete, iconStyles }) {
+  const drag = useReorderableDrag();
+  const theme = useColorTheme();
+
+  return (
+    <ListItemButton
+      key={section.name}
+      onLongPress={Platform.OS !== "web" && !section.disabled && drag}
+      pressableStyle={{
+        paddingVertical: 5,
+        opacity: section.disabled ? 0.5 : 1,
+      }}
+    >
+      <Avatar
+        image={section.icon.startsWith("https") ? section.icon : undefined}
+        icon={
+          section.icon.startsWith("https") ? undefined : (section.icon as any)
+        }
+        style={iconStyles}
+        disabled
+      />
+      <ListItemText
+        primaryProps={{ style: { color: theme[11] } }}
+        primary={section.name}
+      />
+      {section.order && (
+        <View style={{ flexDirection: "row" }}>
+          <IconButton
+            icon="remove_circle"
+            onPress={() => handleDelete(section.id)}
+          />
+          {Platform.OS !== "web" && (
+            <IconButton onLongPress={drag} icon="drag_indicator" />
+          )}
+        </View>
+      )}
+    </ListItemButton>
+  );
+}
+
 function Widgets() {
   const theme = useColorTheme();
   const { sessionToken } = useUser();
@@ -45,8 +93,6 @@ function Widgets() {
   };
 
   const sections = [
-    { id: "", name: "Start", icon: "change_history", disabled: true },
-    { id: "", name: "Goals", icon: "flag", disabled: true },
     ...(Array.isArray(data)
       ? data
           .map((t) => {
@@ -63,50 +109,92 @@ function Widgets() {
             };
           })
           .filter(Boolean)
-          .sort((a, b) => {
-            if (!a.order || !b.order) return 0;
-            return LexoRank.parse(a.order).compareTo(LexoRank.parse(b.order));
-          })
-      : []),
+      : // .sort((a, b) => {
+        //   if (!a.order || !b.order) return 0;
+        //   return LexoRank.parse(a.order).compareTo(LexoRank.parse(b.order));
+        // })
+        []),
   ];
+
+  const handleReorder = ({ from, to }: ReorderableListReorderEvent) => {
+    mutate(
+      (oldItems) => {
+        // 1. find prev, current, next items
+        const sortablePayload = createSortablePayloadByIndex(oldItems, {
+          fromIndex: from,
+          toIndex: to,
+        });
+        // 2. calculate new rank
+        const newRank = getBetweenRankAsc(sortablePayload);
+        const newItems = [...oldItems];
+        const currIndex = oldItems.findIndex(
+          (x) => x.id === sortablePayload.entity.id
+        );
+        // 3. replace current rank
+        newItems[currIndex] = {
+          ...newItems[currIndex],
+          order: newRank.toString(),
+        };
+        // 4. update server with tab's new rank
+        sendApiRequest(
+          sessionToken,
+          "PUT",
+          "user/focus-panel",
+          {},
+          {
+            body: JSON.stringify({
+              id: sortablePayload.entity.id,
+              order: newRank.toString(),
+            }),
+          }
+        ).then((t) => console.log(t));
+        // 5. sort by rank
+        return reorderItems(oldItems, from, to);
+      },
+      { revalidate: false }
+    );
+  };
 
   return (
     <View style={{ marginHorizontal: -15 }}>
-      {sections.map((section) => (
-        <ListItemButton
-          disabled
-          key={section.name}
-          pressableStyle={{
-            paddingVertical: 5,
-            opacity: section.disabled ? 0.5 : 1,
-          }}
-        >
-          <Avatar
-            image={section.icon.startsWith("https") ? section.icon : undefined}
-            icon={
-              section.icon.startsWith("https")
-                ? undefined
-                : (section.icon as any)
-            }
-            style={iconStyles}
-            disabled
+      <ListItemButton
+        pressableStyle={{
+          paddingVertical: 5,
+          opacity: 0.5,
+        }}
+      >
+        <Avatar icon="change_history" style={iconStyles} disabled />
+        <ListItemText
+          primaryProps={{ style: { color: theme[11] } }}
+          primary="Start"
+        />
+      </ListItemButton>
+      <ListItemButton
+        pressableStyle={{
+          paddingVertical: 5,
+          opacity: 0.5,
+        }}
+      >
+        <Avatar icon="flag" style={iconStyles} disabled />
+        <ListItemText
+          primaryProps={{ style: { color: theme[11] } }}
+          primary="Goals"
+        />
+      </ListItemButton>
+      <ReorderableList
+        bounces={false}
+        scrollEnabled={false}
+        onReorder={handleReorder}
+        data={sections}
+        renderItem={({ item }) => (
+          <Widget
+            handleDelete={handleWidgetDelete}
+            iconStyles={iconStyles}
+            section={item}
           />
-          <ListItemText
-            primaryProps={{ style: { color: theme[11] } }}
-            primary={section.name}
-          />
-          {section.order && (
-            <View style={{ flexDirection: "row" }}>
-              <IconButton icon="south" />
-              <IconButton icon="north" />
-              <IconButton
-                icon="close"
-                onPress={() => handleWidgetDelete(section.id)}
-              />
-            </View>
-          )}
-        </ListItemButton>
-      ))}
+        )}
+        keyExtractor={(item, index) => item.id + index}
+      />
       <ListItemButton
         pressableStyle={{ paddingVertical: 5 }}
         onPress={() => router.push("/home/add-widget")}
@@ -290,3 +378,4 @@ export default function Page() {
     </>
   );
 }
+
