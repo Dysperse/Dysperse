@@ -223,7 +223,17 @@ export default function WeatherWidget({
           <Text>Tap to retry</Text>
         </>
       ) : (!location || isLoading) && permissionStatus !== "undetermined" ? (
-        <View style={{ alignItems: "center", paddingVertical: 80 }}>
+        <View
+          style={{
+            alignItems: "center",
+            paddingVertical: 80,
+            backgroundColor: theme[2],
+            padding: 20,
+            borderColor: theme[5],
+            borderRadius: 20,
+            borderWidth: 1,
+          }}
+        >
           <Spinner />
         </View>
       ) : data && airQualityData ? (
