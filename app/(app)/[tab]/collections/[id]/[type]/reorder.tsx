@@ -128,13 +128,14 @@ const ReorderColumn = ({
       }}
       key={label.id}
     >
-      {Platform.OS === "web" && (
-        <IconButton
-          icon={list ? "arrow_upward" : "arrow_back_ios_new"}
-          disabled={index === 0}
-          onPress={handleNext}
-        />
-      )}
+      {Platform.OS === "web" ||
+        (!list && (
+          <IconButton
+            icon={list ? "arrow_upward" : "arrow_back_ios_new"}
+            disabled={index === 0}
+            onPress={handleNext}
+          />
+        ))}
       <View
         style={{
           gap: list && breakpoints.md ? 20 : 10,
@@ -165,13 +166,14 @@ const ReorderColumn = ({
           {Object.keys(label.entities)?.length !== 1 && "s"}
         </Text>
       </View>
-      {Platform.OS === "web" && (
-        <IconButton
-          icon={list ? "arrow_downward" : "arrow_forward_ios"}
-          disabled={index === data.labels.length - 1}
-          onPress={handlePrev}
-        />
-      )}
+      {Platform.OS === "web" ||
+        (!list && (
+          <IconButton
+            icon={list ? "arrow_downward" : "arrow_forward_ios"}
+            disabled={index === data.labels.length - 1}
+            onPress={handlePrev}
+          />
+        ))}
     </Pressable>
   );
 };
