@@ -6,6 +6,7 @@ import {
   useWindowDimensions,
   ViewStyle,
 } from "react-native";
+import { KeyboardAvoidingView } from "react-native-keyboard-controller";
 import Animated, {
   useAnimatedStyle,
   useSharedValue,
@@ -92,6 +93,9 @@ const Modal = (
     []
   );
 
+  const AnimatedComponent =
+    Animated.createAnimatedComponent(KeyboardAvoidingView);
+
   return (
     <BottomSheet
       {...props}
@@ -139,11 +143,14 @@ const Modal = (
             maxWidth: props.maxWidth || 500,
           }}
         >
-          <Animated.View
+          <AnimatedComponent
+            behavior="height"
             style={[
               (props.animation === "SCALE" || props.animation === "BOTH") &&
                 innerStyles,
               {
+                marginVertical: 10,
+                marginTop: insets.top,
                 transformOrigin:
                   Platform.OS === "web"
                     ? props.transformCenter
@@ -164,7 +171,7 @@ const Modal = (
             ]}
           >
             {props.children}
-          </Animated.View>
+          </AnimatedComponent>
           {props.outerContent}
         </Pressable>
       </Pressable>
