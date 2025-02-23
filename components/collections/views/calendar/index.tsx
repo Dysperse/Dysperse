@@ -20,6 +20,7 @@ import {
   Calendar as BigCalendar,
   ICalendarEventBase,
 } from "react-native-big-calendar";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 import useSWR from "swr";
 import { useCollectionContext } from "../../context";
 import { AgendaButtons } from "../../navbar/AgendaButtons";
@@ -85,6 +86,7 @@ export function Content() {
   const theme = useColorTheme();
   const params = useLocalSearchParams();
   const colors = useLabelColors();
+  const insets = useSafeAreaInsets();
   const { type, start, end } = useCalendarContext();
   const { isPublic } = useCollectionContext();
   const { mode: originalMode, start: originalStart } = useLocalSearchParams();
@@ -208,7 +210,7 @@ export function Content() {
           });
         }}
         key={`${start.toISOString()}-${end.toISOString()}`}
-        height={height - 20 - 65}
+        height={height - 20 - 65 - 70 - insets.bottom}
         showAdjacentMonths={false}
         mode={originalMode as any}
         hourStyle={{ fontFamily: getFontName("jost", 700), color: theme[7] }}
@@ -226,9 +228,7 @@ export function Content() {
         })}
         headerContainerStyle={{ paddingTop: 20 }}
         ampm
-        calendarCellTextStyle={{
-          color: theme[11],
-        }}
+        calendarCellTextStyle={{ color: theme[11] }}
         theme={{
           typography: {
             fontFamily: getFontName("jost", 700),
@@ -255,6 +255,7 @@ export function Content() {
         events={filteredEvents}
         date={dayjs(originalStart as any).toDate()}
       />
+      <View style={{ height: insets.bottom }} />
     </>
   ) : (
     <View
