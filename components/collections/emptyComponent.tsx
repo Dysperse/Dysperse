@@ -59,7 +59,7 @@ function InspireMe({ row, labelId }) {
         }}
       />
 
-      <Modal sheetRef={ref} animation="SCALE">
+      <Modal sheetRef={ref} animation="SCALE" height={500}>
         <ModalHeader title="AI inspiration" />
         <ModalContent style={{ flex: 1 }}>
           {data ? (
