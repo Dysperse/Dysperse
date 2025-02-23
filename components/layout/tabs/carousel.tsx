@@ -23,6 +23,7 @@ import Text from "@/ui/Text";
 import { addHslAlpha, useColor } from "@/ui/color";
 import { useColorTheme } from "@/ui/color/theme-provider";
 import { BottomSheetScrollView } from "@gorhom/bottom-sheet";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import { LinearGradient } from "expo-linear-gradient";
 import { router, useGlobalSearchParams } from "expo-router";
 import React, {
@@ -214,10 +215,22 @@ function FocusPanel() {
   const breakpoints = useResponsiveBreakpoints();
   const pinnedWidget = pinnedWidgets[activeWidget];
 
-  const changeActiveWidget = () => {
+  useEffect(() => {
+    const loadActiveWidget = async () => {
+      const savedActiveWidget = await AsyncStorage.getItem("activeWidget");
+      if (savedActiveWidget !== null) {
+        activeStateRef.current = parseInt(savedActiveWidget, 10);
+        setActiveWidget(parseInt(savedActiveWidget, 10));
+      }
+    };
+    loadActiveWidget();
+  }, []);
+
+  const changeActiveWidget = async () => {
     setActiveWidget((prev) => {
       const t = (prev + 1) % pinnedWidgets.length;
       activeStateRef.current = t;
+      AsyncStorage.setItem("activeWidget", t.toString());
       return t;
     });
   };
@@ -501,9 +514,10 @@ function OpenTabsList() {
             ListFooterComponentStyle={{ marginTop: "auto" }}
             ListFooterComponent={() => newTab}
             data={data}
+            style={{ marginHorizontal: -10 }}
             getItemLayout={(_, index) => ({ length: 52, offset: 52, index })}
             renderItem={({ item }) => (
-              <View style={{ padding: 1 }}>
+              <View style={{ padding: 1, paddingHorizontal: 10 }}>
                 <Tab
                   tab={item}
                   tabs={data}
