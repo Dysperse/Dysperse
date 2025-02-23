@@ -121,12 +121,14 @@ export const ColumnEmptyComponent = function ColumnEmptyComponent({
   list,
   showInspireMe,
   labelId,
+  finished,
 }: {
   row?: boolean;
   dense?: boolean;
   list?: boolean;
   showInspireMe?: boolean;
   labelId?: string;
+  finished?: boolean;
 }) {
   const { session } = useUser();
   const theme = useColorTheme();
@@ -139,13 +141,21 @@ export const ColumnEmptyComponent = function ColumnEmptyComponent({
 
   return (
     <View
-      style={
+      style={[
         session?.user?.betaTester &&
-        showInspireMe &&
-        labelId && {
-          marginBottom: -110,
-        }
-      }
+          showInspireMe &&
+          labelId && {
+            marginBottom: -110,
+          },
+        finished && {
+          marginTop: 5,
+          paddingTop: 60,
+          marginBottom: 10,
+          paddingBottom: 20,
+          borderRadius: 20,
+          backgroundColor: theme[3],
+        },
+      ]}
     >
       <View
         style={[

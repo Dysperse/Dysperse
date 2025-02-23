@@ -16,7 +16,6 @@ import { Platform, Pressable, View, useWindowDimensions } from "react-native";
 import { KeyedMutator } from "swr";
 import { useCollectionContext } from "../../context";
 import { ColumnEmptyComponent } from "../../emptyComponent";
-import { ColumnFinishedComponent } from "../kanban/Column";
 import { taskSortAlgorithm } from "../skyline";
 import { usePlannerContext } from "./context";
 
@@ -153,7 +152,7 @@ export function Column({
                       )
                     )
                   : task.completionInstances.length === 0
-              ) && <ColumnFinishedComponent />}
+              ) && <ColumnEmptyComponent row finished />}
           </View>
         )}
         renderItem={({ item }: any) => (

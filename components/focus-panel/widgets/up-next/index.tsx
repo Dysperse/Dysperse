@@ -61,7 +61,7 @@ const UpNext = ({ widget, setParam, params, handlePin, small }) => {
       return dayjs(a.start).diff(dayjs(b.start));
     });
 
-  if (params.hideWhenEmpty && incomplete.length === 0) return null;
+  if (params.hideWhenEmpty && incomplete.length === 0 && !small) return null;
 
   return small ? (
     <View style={{ flex: 1 }}>
@@ -82,7 +82,9 @@ const UpNext = ({ widget, setParam, params, handlePin, small }) => {
           </Text>
         </>
       ) : (
-        <Text>No upcoming tasks!</Text>
+        <Text style={{ color: theme[11], textAlign: "center" }} weight={700}>
+          No upcoming tasks!
+        </Text>
       )}
     </View>
   ) : (

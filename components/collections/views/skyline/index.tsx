@@ -292,7 +292,11 @@ function Content({ data, mutate }) {
     <View
       style={[
         columnStyles,
-        { borderTopWidth: 1, borderTopColor: theme[5], flex: 1 },
+        {
+          borderTopWidth: 1,
+          borderTopColor: theme[5],
+          flex: 1,
+        },
       ]}
     >
       <AgendaButtons />

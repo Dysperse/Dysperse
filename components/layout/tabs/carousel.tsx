@@ -24,6 +24,7 @@ import { addHslAlpha, useColor } from "@/ui/color";
 import { useColorTheme } from "@/ui/color/theme-provider";
 import { BottomSheetScrollView } from "@gorhom/bottom-sheet";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { impactAsync, ImpactFeedbackStyle } from "expo-haptics";
 import { LinearGradient } from "expo-linear-gradient";
 import { router, useGlobalSearchParams } from "expo-router";
 import React, {
@@ -296,8 +297,10 @@ function FocusPanel() {
             paddingHorizontal: 10,
           }}
           height={60}
-          onLongPress={() => sheetRef.current?.present()}
-          // @ts-ignore
+          onLongPress={() => {
+            sheetRef.current?.present();
+            impactAsync(ImpactFeedbackStyle.Medium);
+          }}
           onContextMenu={() => sheetRef.current?.present()}
           onPress={changeActiveWidget}
         >

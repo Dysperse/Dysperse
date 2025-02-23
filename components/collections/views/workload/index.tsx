@@ -18,7 +18,6 @@ import { ScrollView } from "react-native-gesture-handler";
 import { useCollectionContext } from "../../context";
 import { ColumnEmptyComponent } from "../../emptyComponent";
 import { Entity } from "../../entity";
-import { ColumnFinishedComponent } from "../kanban/Column";
 
 const styles = StyleSheet.create({
   header: {
@@ -228,7 +227,7 @@ const StoryPoint = ({
               (task) =>
                 task.recurrenceRule ||
                 (!task.recurrenceRule && task.completionInstances.length === 0)
-            ) && <ColumnFinishedComponent />}
+            ) && <ColumnEmptyComponent />}
         </>
       )}
       <FlashList
