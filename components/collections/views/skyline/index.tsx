@@ -114,7 +114,7 @@ function Header({
         <View
           style={{
             padding: 20,
-            paddingBottom: 0,
+            paddingBottom: 10,
             paddingTop: breakpoints.md ? 5 : undefined,
           }}
         >
