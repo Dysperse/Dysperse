@@ -15,7 +15,11 @@ import Text from "@/ui/Text";
 import { addHslAlpha } from "@/ui/color";
 import { useColorTheme } from "@/ui/color/theme-provider";
 import { router, useLocalSearchParams } from "expo-router";
-import { Platform, ScrollView, View } from "react-native";
+import { Platform, Pressable, ScrollView, View } from "react-native";
+import ReorderableList, {
+  ReorderableListReorderEvent,
+  useReorderableDrag,
+} from "react-native-reorderable-list";
 import useSWR from "swr";
 
 function EditKanbanOrder() {
@@ -85,11 +89,13 @@ function EditKanbanOrder() {
 const ReorderColumn = ({
   list,
   label,
+  drag,
   index,
   handleColumnReorder,
 }: {
   list?: boolean;
   label: any;
+  drag;
   index: number;
   handleColumnReorder: (id: any, newIndex: any) => void;
 }) => {
@@ -101,7 +107,8 @@ const ReorderColumn = ({
   const handlePrev = () => handleColumnReorder(label.id, index + 1);
 
   return (
-    <View
+    <Pressable
+      onLongPress={Platform.OS !== "web" && drag}
       style={{
         width: list ? undefined : 320,
         height: list ? undefined : "100%",
@@ -116,15 +123,18 @@ const ReorderColumn = ({
         justifyContent: "space-between",
         gap: 30,
         padding: 20,
+        marginBottom: 20,
         flexDirection: "row",
       }}
       key={label.id}
     >
-      <IconButton
-        icon={list ? "arrow_upward" : "arrow_back_ios_new"}
-        disabled={index === 0}
-        onPress={handleNext}
-      />
+      {Platform.OS === "web" && (
+        <IconButton
+          icon={list ? "arrow_upward" : "arrow_back_ios_new"}
+          disabled={index === 0}
+          onPress={handleNext}
+        />
+      )}
       <View
         style={{
           gap: list && breakpoints.md ? 20 : 10,
@@ -155,29 +165,21 @@ const ReorderColumn = ({
           {Object.keys(label.entities)?.length !== 1 && "s"}
         </Text>
       </View>
-      <IconButton
-        icon={list ? "arrow_downward" : "arrow_forward_ios"}
-        disabled={index === data.labels.length - 1}
-        onPress={handlePrev}
-      />
-    </View>
+      {Platform.OS === "web" && (
+        <IconButton
+          icon={list ? "arrow_downward" : "arrow_forward_ios"}
+          disabled={index === data.labels.length - 1}
+          onPress={handlePrev}
+        />
+      )}
+    </Pressable>
   );
 };
 
-function EditListView() {
+const RenderEditItem = ({ item, index, updatedListOrder }) => {
   const { session } = useSession();
   const { data, mutate } = useCollectionContext();
-
-  const updatedListOrder = data
-    ? [
-        ...(data.listOrder || []).filter((id) =>
-          data.labels.some((label) => label.id === id)
-        ),
-        ...data.labels
-          .filter((label) => !(data.listOrder || []).includes(label.id))
-          .map((label) => label.id),
-      ]
-    : [];
+  const drag = useReorderableDrag();
 
   const handleColumnReorder = (id, newIndex) => {
     const currentIndex = updatedListOrder.indexOf(id);
@@ -204,22 +206,73 @@ function EditListView() {
     );
   };
 
+  const t = data.labels.find((i) => i.id === item);
+  if (t)
+    return (
+      <ReorderColumn
+        list
+        drag={drag}
+        index={index}
+        label={t}
+        key={item}
+        handleColumnReorder={handleColumnReorder}
+      />
+    );
+};
+
+function EditListView() {
+  const { session } = useSession();
+  const { data, mutate } = useCollectionContext();
+
+  const updatedListOrder = data
+    ? [
+        ...(data.listOrder || []).filter((id) =>
+          data.labels.some((label) => label.id === id)
+        ),
+        ...data.labels
+          .filter((label) => !(data.listOrder || []).includes(label.id))
+          .map((label) => label.id),
+      ]
+    : [];
+
+  const handleReorder = ({ from, to }: ReorderableListReorderEvent) => {
+    const newOrder = [...updatedListOrder];
+    newOrder.splice(from, 1);
+    newOrder.splice(to, 0, updatedListOrder[from]);
+
+    sendApiRequest(
+      session,
+      "PUT",
+      "space/collections",
+      {},
+      { body: JSON.stringify({ id: data.id, listOrder: newOrder }) }
+    );
+
+    mutate(
+      (data) => ({
+        ...data,
+        listOrder: newOrder,
+      }),
+      {
+        revalidate: false,
+      }
+    );
+  };
+
   return data ? (
-    <ScrollView contentContainerStyle={{ gap: 20, padding: 20, paddingTop: 0 }}>
-      {updatedListOrder.map((label, index) => {
-        const t = data.labels.find((i) => i.id === label);
-        if (t)
-          return (
-            <ReorderColumn
-              list
-              index={index}
-              label={t}
-              key={label}
-              handleColumnReorder={handleColumnReorder}
-            />
-          );
-      })}
-    </ScrollView>
+    <ReorderableList
+      onReorder={handleReorder}
+      data={updatedListOrder}
+      keyExtractor={(item) => item}
+      renderItem={({ item, index }) => (
+        <RenderEditItem
+          updatedListOrder={updatedListOrder}
+          item={item}
+          index={index}
+        />
+      )}
+      contentContainerStyle={{ padding: 20, paddingTop: 0 }}
+    />
   ) : (
     <View style={{ flex: 1, alignItems: "center", justifyContent: "center" }}>
       <Spinner />
