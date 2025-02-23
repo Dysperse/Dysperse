@@ -16,7 +16,7 @@ import dayjs from "dayjs";
 import { router, useLocalSearchParams } from "expo-router";
 import fuzzysort from "fuzzysort";
 import { useEffect, useRef, useState } from "react";
-import { Platform, StyleSheet, View } from "react-native";
+import { Keyboard, Platform, StyleSheet, View } from "react-native";
 import { ScrollView } from "react-native-gesture-handler";
 import useSWR from "swr";
 import { mutations } from "../../mutations";
@@ -251,6 +251,7 @@ function SearchList({ collection, inputRef, listRef, handleClose }) {
           <View style={{ marginHorizontal: -20, flex: 1 }}>
             <FadeOnRender>
               <FlashList
+                onScrollBeginDrag={Keyboard.dismiss}
                 ref={listRef}
                 keyboardShouldPersistTaps="handled"
                 data={filtered}
