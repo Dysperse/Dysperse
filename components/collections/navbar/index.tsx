@@ -77,6 +77,7 @@ const CollectionNavbar = memo(function CollectionNavbar({
   isLoading,
 }: CollectionNavbarProps) {
   const { session } = useSession();
+  const { session: userSession } = useUser();
   const { data, access, type, swrKey, openLabelPicker, ...ctx } =
     useCollectionContext();
   const isReadOnly = access?.access === "READ_ONLY" || (!access && !session);
@@ -200,6 +201,13 @@ const CollectionNavbar = memo(function CollectionNavbar({
         icon: "tag",
         text: "Manage labels",
         callback: openLabelPicker,
+      },
+    session &&
+      userSession.user.betaTester &&
+      !isReadOnly && {
+        icon: "upload",
+        text: "Import tasks",
+        callback: () => router.push(pathname + "/upload"),
       },
     Platform.OS === "web" &&
       !fullscreen &&

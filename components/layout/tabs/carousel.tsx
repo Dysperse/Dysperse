@@ -326,16 +326,7 @@ function OpenTabsList() {
   );
 
   return (
-    <View
-      style={{
-        flex: 1,
-        paddingHorizontal: 15,
-        width: "100%",
-        marginBottom:
-          (!breakpoints.md || Platform.OS === "web") && insets.bottom + 10,
-        height: "100%",
-      }}
-    >
+    <View style={{ flex: 1 }}>
       {data && Array.isArray(data) && data.length > 0 ? (
         <View style={{ flex: 1, marginTop: -10 }}>
           <LinearGradient

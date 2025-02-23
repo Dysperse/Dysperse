@@ -1,4 +1,4 @@
-import ContentWrapper from "@/components/layout/content";
+import { MenuButton } from "@/app/(app)/home";
 import { useResponsiveBreakpoints } from "@/helpers/useResponsiveBreakpoints";
 import { Avatar } from "@/ui/Avatar";
 import { Button } from "@/ui/Button";
@@ -17,12 +17,8 @@ import { useState } from "react";
 import { View } from "react-native";
 import { ScrollView } from "react-native-gesture-handler";
 import { KeyboardAvoidingView } from "react-native-keyboard-controller";
-import {
-  SafeAreaView,
-  useSafeAreaInsets,
-} from "react-native-safe-area-context";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 import useSWR from "swr";
-import { MenuButton } from "@/app/(app)/home";
 
 const PasteInput = ({ input, setInput, handleContinue }) => {
   return (
@@ -139,56 +135,54 @@ export default function Page() {
   const [slide, setSlide] = useState(0);
 
   return (
-    <SafeAreaView style={{ flex: 1 }}>
-      <ContentWrapper noPaddingTop>
-        <MenuButton />
-        <KeyboardAvoidingView
-          behavior="height"
+    <View style={{ flex: 1 }}>
+      <MenuButton back gradient />
+      <KeyboardAvoidingView
+        behavior="height"
+        style={{
+          flex: 1,
+          maxWidth: 500,
+          marginHorizontal: "auto",
+          width: "100%",
+          padding: 20,
+          paddingBottom: insets.bottom + 20,
+          paddingTop: breakpoints.md ? 0 : 40,
+        }}
+      >
+        <View
           style={{
-            flex: 1,
-            maxWidth: 500,
-            marginHorizontal: "auto",
-            width: "100%",
-            padding: 20,
-            paddingBottom: insets.bottom + 20,
-            paddingTop: breakpoints.md ? 0 : 40,
+            paddingVertical: 35,
+            justifyContent: "center",
+            alignItems: "center",
+            gap: 5,
           }}
         >
-          <View
+          <Avatar icon="upload" size={60} iconProps={{ size: 40 }} />
+          <Text
             style={{
-              paddingVertical: 35,
-              justifyContent: "center",
-              alignItems: "center",
-              gap: 5,
+              marginTop: 8,
+              fontFamily: "serifText800",
+              fontSize: 30,
             }}
           >
-            <Avatar icon="upload" size={60} iconProps={{ size: 40 }} />
-            <Text
-              style={{
-                marginTop: 8,
-                fontFamily: "serifText800",
-                fontSize: 30,
-              }}
-            >
-              Import tasks
-            </Text>
-            <Text style={{ opacity: 0.6 }}>
-              Paste any text here and we'll to convert it into tasks!
-            </Text>
-          </View>
+            Import tasks
+          </Text>
+          <Text style={{ opacity: 0.6 }}>
+            Paste any text here and we'll to convert it into tasks!
+          </Text>
+        </View>
 
-          {slide === 0 ? (
-            <PasteInput
-              handleContinue={() => setSlide(1)}
-              input={input}
-              setInput={setInput}
-            />
-          ) : (
-            <AITasks input={input} setSlide={setSlide} />
-          )}
-        </KeyboardAvoidingView>
-      </ContentWrapper>
-    </SafeAreaView>
+        {slide === 0 ? (
+          <PasteInput
+            handleContinue={() => setSlide(1)}
+            input={input}
+            setInput={setInput}
+          />
+        ) : (
+          <AITasks input={input} setSlide={setSlide} />
+        )}
+      </KeyboardAvoidingView>
+    </View>
   );
 }
 

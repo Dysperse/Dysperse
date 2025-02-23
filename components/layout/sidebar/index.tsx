@@ -604,7 +604,7 @@ const FocusPanel = memo(() => {
               borderRadius: 20,
               padding: 10,
               flexDirection: "row",
-              marginBottom: 8,
+              marginBottom: 6,
             }}
           />
         }
@@ -635,7 +635,7 @@ const FocusPanel = memo(() => {
         </BottomSheet>
         <Button
           containerStyle={{
-            marginBottom: 8,
+            marginBottom: 6,
             paddingVertical: 0,
             borderRadius: 0,
             flex: 1,
@@ -666,8 +666,7 @@ const FocusPanel = memo(() => {
               marginBottom: -45,
               zIndex: -9,
               marginHorizontal: 13,
-              borderTopLeftRadius: 15,
-              borderTopRightRadius: 15,
+              borderRadius: 15,
             }}
           />
           <Animated.View
@@ -771,8 +770,19 @@ function PrimarySidebar({ progressValue }) {
         <LogoButton toggleHidden={toggleHidden} />
         <Header />
       </View>
-      <OpenTabsList />
-      <FocusPanel />
+      <View
+        style={{
+          flex: 1,
+          paddingHorizontal: 15,
+          width: "100%",
+          marginBottom:
+            !breakpoints.md || Platform.OS === "web" ? insets.bottom + 10 : -8,
+          height: "100%",
+        }}
+      >
+        <OpenTabsList />
+        <FocusPanel />
+      </View>
     </NativeAnimated.View>
   );
 }
