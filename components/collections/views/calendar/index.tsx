@@ -20,9 +20,9 @@ import {
   Calendar as BigCalendar,
   ICalendarEventBase,
 } from "react-native-big-calendar";
-import { ScrollView } from "react-native-gesture-handler";
 import useSWR from "swr";
 import { useCollectionContext } from "../../context";
+import { AgendaButtons } from "../../navbar/AgendaButtons";
 import { CalendarContext, useCalendarContext } from "./context";
 
 export interface MyCustomEventType {
@@ -141,12 +141,17 @@ export function Content() {
   const { height } = useWindowDimensions();
 
   return data ? (
-    <ScrollView
-      style={{
-        height: "100%",
-      }}
-      scrollEnabled={false}
-    >
+    <>
+      <View
+        style={{
+          borderTopColor: theme[5],
+          borderTopWidth: 1,
+          borderBottomColor: theme[5],
+          borderBottomWidth: 1,
+        }}
+      >
+        <AgendaButtons weekMode />
+      </View>
       <CalendarTaskDrawer
         mutateList={mutations.timeBased.update(mutate)}
         tasks={tasks}
@@ -250,7 +255,7 @@ export function Content() {
         events={filteredEvents}
         date={dayjs(originalStart as any).toDate()}
       />
-    </ScrollView>
+    </>
   ) : (
     <View
       style={{
