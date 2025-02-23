@@ -3,6 +3,7 @@ import { useLabelColors } from "@/components/labels/useLabelColors";
 import CreateTask, { CreateTaskDrawerProps } from "@/components/task/create";
 import { TaskDrawer, TaskDrawerProps } from "@/components/task/drawer";
 import { getTaskCompletionStatus } from "@/helpers/getTaskCompletionStatus";
+import { useResponsiveBreakpoints } from "@/helpers/useResponsiveBreakpoints";
 import Spinner from "@/ui/Spinner";
 import { getFontName } from "@/ui/Text";
 import { useColorTheme } from "@/ui/color/theme-provider";
@@ -141,19 +142,22 @@ export function Content() {
   );
 
   const { height } = useWindowDimensions();
+  const breakpoints = useResponsiveBreakpoints();
 
   return data ? (
     <>
-      <View
-        style={{
-          borderTopColor: theme[5],
-          borderTopWidth: 1,
-          borderBottomColor: theme[5],
-          borderBottomWidth: 1,
-        }}
-      >
-        <AgendaButtons weekMode />
-      </View>
+      {!breakpoints.md && (
+        <View
+          style={{
+            borderTopColor: theme[5],
+            borderTopWidth: 1,
+            borderBottomColor: theme[5],
+            borderBottomWidth: 1,
+          }}
+        >
+          <AgendaButtons weekMode />
+        </View>
+      )}
       <CalendarTaskDrawer
         mutateList={mutations.timeBased.update(mutate)}
         tasks={tasks}

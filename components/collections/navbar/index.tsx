@@ -9,14 +9,8 @@ import { useUser } from "@/context/useUser";
 import { sendApiRequest } from "@/helpers/api";
 import { useHotkeys } from "@/helpers/useHotKeys";
 import { useResponsiveBreakpoints } from "@/helpers/useResponsiveBreakpoints";
-import { Button } from "@/ui/Button";
 import IconButton from "@/ui/IconButton";
-import MenuPopover, { MenuItem } from "@/ui/MenuPopover";
-import Modal from "@/ui/Modal";
-import ModalContent from "@/ui/Modal/content";
-import ModalHeader from "@/ui/ModalHeader";
-import Text from "@/ui/Text";
-import TextField from "@/ui/TextArea";
+import MenuPopover from "@/ui/MenuPopover";
 import dayjs from "dayjs";
 import { router, useGlobalSearchParams, usePathname } from "expo-router";
 import { openBrowserAsync } from "expo-web-browser";
@@ -61,67 +55,6 @@ export const groupedViews = Object.entries(COLLECTION_VIEWS).reduce(
   },
   {}
 );
-
-function DivideAndConquerModal() {
-  const ref = useRef(null);
-  return (
-    <>
-      <Modal animation="SCALE" sheetRef={ref}>
-        <ModalHeader title="Divide & conquer" />
-
-        <ModalContent style={{ gap: 20 }}>
-          <View style={{ gap: 5 }}>
-            <Text variant="eyebrow">What's your task?</Text>
-            <TextField
-              placeholder="e.g. Study for my History final"
-              variant="filled+outlined"
-            />
-          </View>
-          <View style={{ gap: 5 }}>
-            <Text variant="eyebrow">Deadline?</Text>
-            <TextField
-              placeholder="e.g. next Friday"
-              variant="filled+outlined"
-            />
-          </View>
-          <View style={{ gap: 5 }}>
-            <Text variant="eyebrow">Limitations?</Text>
-            <TextField
-              placeholder="e.g. I only want to study this weekend"
-              variant="filled+outlined"
-            />
-          </View>
-          <View style={{ gap: 5 }}>
-            <Text variant="eyebrow">How can this be broken down?</Text>
-            <TextField
-              multiline
-              numberOfLines={4}
-              placeholder={
-                "e.g. I have 5 units with 3 chapters each, & unit 2 is the hardest\nYou can provide as much detail as you want!"
-              }
-              variant="filled+outlined"
-            />
-          </View>
-
-          <Button
-            text="Divide!"
-            variant="filled"
-            large
-            bold
-            icon="east"
-            iconPosition="end"
-            onPress={() => ref.current?.close()}
-          />
-        </ModalContent>
-      </Modal>
-      <MenuItem
-        onPress={() => ref.current?.present()}
-        text="Divide & conquer"
-        icon="sports_martial_arts"
-      />
-    </>
-  );
-}
 
 function CollectionSidekick() {
   const { session } = useUser();

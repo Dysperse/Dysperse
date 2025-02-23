@@ -1,4 +1,3 @@
-import { RenderWidget } from "@/app/(app)/home";
 import { useCommandPaletteContext } from "@/components/command-palette/context";
 import { useFocusPanelContext } from "@/components/focus-panel/context";
 import { useBadgingService } from "@/context/BadgingProvider";
@@ -11,7 +10,6 @@ import {
 } from "@/helpers/lexorank";
 import { useHotkeys } from "@/helpers/useHotKeys";
 import { useResponsiveBreakpoints } from "@/helpers/useResponsiveBreakpoints";
-import BottomSheet from "@/ui/BottomSheet";
 import { Button } from "@/ui/Button";
 import ErrorAlert from "@/ui/Error";
 import Icon from "@/ui/Icon";
@@ -22,19 +20,9 @@ import Spinner from "@/ui/Spinner";
 import Text from "@/ui/Text";
 import { addHslAlpha, useColor } from "@/ui/color";
 import { useColorTheme } from "@/ui/color/theme-provider";
-import { BottomSheetScrollView } from "@gorhom/bottom-sheet";
-import AsyncStorage from "@react-native-async-storage/async-storage";
-import { impactAsync, ImpactFeedbackStyle } from "expo-haptics";
 import { LinearGradient } from "expo-linear-gradient";
 import { router, useGlobalSearchParams } from "expo-router";
-import React, {
-  memo,
-  useEffect,
-  useImperativeHandle,
-  useRef,
-  useState,
-} from "react";
-import { Freeze } from "react-freeze";
+import React, { memo, useEffect, useState } from "react";
 import {
   InteractionManager,
   Platform,
@@ -42,7 +30,6 @@ import {
   StyleSheet,
   View,
 } from "react-native";
-import Animated, { FlipInXUp, FlipOutXDown } from "react-native-reanimated";
 import ReorderableList, {
   ReorderableListReorderEvent,
   reorderItems,
@@ -197,147 +184,6 @@ const WebPWAInstallButton = () => {
     </View>
   );
 };
-
-function FocusPanel() {
-  const theme = useColorTheme();
-  const { widgets, focusPanelFreezerRef, activeStateRef } =
-    useFocusPanelContext();
-  const sheetRef = useRef(null);
-
-  const [frozen, setFrozen] = useState(Platform.OS === "web");
-
-  useImperativeHandle(focusPanelFreezerRef, () => ({
-    freeze: () => setFrozen(true),
-    thaw: () => setFrozen(false),
-  }));
-
-  const pinnedWidgets = widgets.filter((i) => i.pinned);
-  const [activeWidget, setActiveWidget] = useState(activeStateRef.current);
-  const breakpoints = useResponsiveBreakpoints();
-  const pinnedWidget = pinnedWidgets[activeWidget];
-
-  useEffect(() => {
-    const loadActiveWidget = async () => {
-      const savedActiveWidget = await AsyncStorage.getItem("activeWidget");
-      if (savedActiveWidget !== null) {
-        activeStateRef.current = parseInt(savedActiveWidget, 10);
-        setActiveWidget(parseInt(savedActiveWidget, 10));
-      }
-    };
-    loadActiveWidget();
-  }, []);
-
-  const changeActiveWidget = async () => {
-    setActiveWidget((prev) => {
-      const t = (prev + 1) % pinnedWidgets.length;
-      activeStateRef.current = t;
-      AsyncStorage.setItem("activeWidget", t.toString());
-      return t;
-    });
-  };
-
-  return (
-    pinnedWidget && (
-      <Freeze
-        freeze={frozen && !breakpoints.md}
-        placeholder={
-          <View
-            style={{
-              height: 50,
-              justifyContent: "center",
-              alignItems: "center",
-              backgroundColor: theme[3],
-              borderRadius: 20,
-              padding: 10,
-              flexDirection: "row",
-              marginBottom: 8,
-            }}
-          />
-        }
-      >
-        <BottomSheet
-          onClose={() => sheetRef.current.close()}
-          sheetRef={sheetRef}
-          snapPoints={["80%"]}
-          maxWidth={breakpoints.md ? 400 : undefined}
-        >
-          <BottomSheetScrollView
-            contentContainerStyle={{ padding: 20, gap: 20 }}
-          >
-            <Text
-              style={{
-                fontFamily: "serifText700",
-                fontSize: 25,
-                marginBottom: -10,
-                color: theme[11],
-              }}
-            >
-              Pinned
-            </Text>
-            {pinnedWidgets.map((w) => (
-              <RenderWidget widget={w} key={w.id} />
-            ))}
-          </BottomSheetScrollView>
-        </BottomSheet>
-        <Button
-          containerStyle={{
-            marginBottom: 8,
-            paddingVertical: 0,
-            borderRadius: 0,
-            flex: 1,
-          }}
-          style={{
-            flex: 1,
-            borderRadius: 0,
-            width: "100%",
-            flexDirection: "column",
-            alignItems: "stretch",
-            gap: 0,
-            paddingVertical: 0,
-            paddingHorizontal: 10,
-          }}
-          height={60}
-          onLongPress={() => {
-            sheetRef.current?.present();
-            impactAsync(ImpactFeedbackStyle.Medium);
-          }}
-          onContextMenu={() => sheetRef.current?.present()}
-          onPress={changeActiveWidget}
-        >
-          <View
-            style={{
-              backgroundColor:
-                pinnedWidgets.length > 1 ? theme[4] : "transparent",
-              height: 50,
-              marginBottom: -45,
-              zIndex: -9,
-              marginHorizontal: 13,
-              borderTopLeftRadius: 15,
-              borderTopRightRadius: 15,
-            }}
-          />
-          <Animated.View
-            key={activeWidget}
-            entering={FlipInXUp}
-            exiting={FlipOutXDown}
-            style={{
-              borderRadius: 20,
-              padding: 10,
-              paddingHorizontal: 20,
-              backgroundColor: theme[3],
-              alignItems: "center",
-              height: 50,
-              flexDirection: "row",
-              justifyContent: "space-between",
-            }}
-          >
-            <RenderWidget small widget={pinnedWidget} />
-          </Animated.View>
-        </Button>
-      </Freeze>
-    )
-  );
-}
 
 function OpenTabsList() {
   const { tab } = useGlobalSearchParams();
@@ -545,7 +391,6 @@ function OpenTabsList() {
               pointerEvents: "none",
             }}
           />
-          <FocusPanel />
           {Platform.OS === "web" && <WebPWAInstallButton />}
           <SpaceStorageAlert />
           {/* {footer} */}

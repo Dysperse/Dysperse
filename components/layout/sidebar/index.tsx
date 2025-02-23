@@ -1,9 +1,12 @@
+import { RenderWidget } from "@/app/(app)/home";
+import { useFocusPanelContext } from "@/components/focus-panel/context";
 import { useSidebarContext } from "@/components/layout/sidebar/context";
 import { useSession } from "@/context/AuthProvider";
 import { useUser } from "@/context/useUser";
 import { sendApiRequest } from "@/helpers/api";
 import { useHotkeys } from "@/helpers/useHotKeys";
 import { useResponsiveBreakpoints } from "@/helpers/useResponsiveBreakpoints";
+import BottomSheet from "@/ui/BottomSheet";
 import { Button } from "@/ui/Button";
 import Emoji from "@/ui/Emoji";
 import Icon from "@/ui/Icon";
@@ -14,10 +17,13 @@ import Spinner from "@/ui/Spinner";
 import Text from "@/ui/Text";
 import { useColorTheme } from "@/ui/color/theme-provider";
 import Logo from "@/ui/logo";
+import { BottomSheetScrollView } from "@gorhom/bottom-sheet";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import dayjs from "dayjs";
+import { ImpactFeedbackStyle, impactAsync } from "expo-haptics";
 import { router, useGlobalSearchParams, usePathname } from "expo-router";
-import React, {
+import {
+  default as React,
   memo,
   useCallback,
   useEffect,
@@ -37,6 +43,8 @@ import {
   useWindowDimensions,
 } from "react-native";
 import Animated, {
+  FlipInXUp,
+  FlipOutXDown,
   useAnimatedStyle,
   useSharedValue,
   withSpring,
@@ -544,6 +552,147 @@ export const MiniLogo = ({ desktopSlide, onHoverIn }) => {
   );
 };
 
+const FocusPanel = memo(() => {
+  const theme = useColorTheme();
+  const { widgets, focusPanelFreezerRef, activeStateRef } =
+    useFocusPanelContext();
+  const sheetRef = useRef(null);
+  const [activeWidget, setActiveWidget] = useState(activeStateRef.current);
+  const breakpoints = useResponsiveBreakpoints();
+
+  const pinnedWidgets = widgets.filter((i) => i.pinned);
+  const pinnedWidget = pinnedWidgets[activeWidget];
+
+  const [frozen, setFrozen] = useState(Platform.OS === "web");
+
+  useImperativeHandle(focusPanelFreezerRef, () => ({
+    freeze: () => setFrozen(true),
+    thaw: () => setFrozen(false),
+  }));
+
+  useEffect(() => {
+    const loadActiveWidget = async () => {
+      const savedActiveWidget = await AsyncStorage.getItem("activeWidget");
+      if (savedActiveWidget !== null) {
+        activeStateRef.current = parseInt(savedActiveWidget, 10);
+        setActiveWidget(parseInt(savedActiveWidget, 10));
+      }
+    };
+    loadActiveWidget();
+  }, []);
+
+  const changeActiveWidget = async () => {
+    setActiveWidget((prev) => {
+      const t = (prev + 1) % pinnedWidgets.length;
+      activeStateRef.current = t;
+      AsyncStorage.setItem("activeWidget", t.toString());
+      return t;
+    });
+  };
+
+  return (
+    pinnedWidget && (
+      <Freeze
+        freeze={frozen && !breakpoints.md}
+        placeholder={
+          <View
+            style={{
+              height: 50,
+              justifyContent: "center",
+              alignItems: "center",
+              backgroundColor: theme[3],
+              borderRadius: 20,
+              padding: 10,
+              flexDirection: "row",
+              marginBottom: 8,
+            }}
+          />
+        }
+      >
+        <BottomSheet
+          onClose={() => sheetRef.current.close()}
+          sheetRef={sheetRef}
+          snapPoints={["80%"]}
+          maxWidth={breakpoints.md ? 400 : undefined}
+        >
+          <BottomSheetScrollView
+            contentContainerStyle={{ padding: 20, gap: 20 }}
+          >
+            <Text
+              style={{
+                fontFamily: "serifText700",
+                fontSize: 25,
+                marginBottom: -10,
+                color: theme[11],
+              }}
+            >
+              Pinned
+            </Text>
+            {pinnedWidgets.map((w) => (
+              <RenderWidget widget={w} key={w.id} />
+            ))}
+          </BottomSheetScrollView>
+        </BottomSheet>
+        <Button
+          containerStyle={{
+            marginBottom: 8,
+            paddingVertical: 0,
+            borderRadius: 0,
+            flex: 1,
+          }}
+          style={{
+            flex: 1,
+            borderRadius: 0,
+            width: "100%",
+            flexDirection: "column",
+            alignItems: "stretch",
+            gap: 0,
+            paddingVertical: 0,
+            paddingHorizontal: 10,
+          }}
+          height={60}
+          onLongPress={() => {
+            sheetRef.current?.present();
+            impactAsync(ImpactFeedbackStyle.Medium);
+          }}
+          onContextMenu={() => sheetRef.current?.present()}
+          onPress={changeActiveWidget}
+        >
+          <View
+            style={{
+              backgroundColor:
+                pinnedWidgets.length > 1 ? theme[4] : "transparent",
+              height: 50,
+              marginBottom: -45,
+              zIndex: -9,
+              marginHorizontal: 13,
+              borderTopLeftRadius: 15,
+              borderTopRightRadius: 15,
+            }}
+          />
+          <Animated.View
+            key={activeWidget}
+            entering={FlipInXUp}
+            exiting={FlipOutXDown}
+            style={{
+              borderRadius: 20,
+              padding: 10,
+              paddingHorizontal: 20,
+              backgroundColor: theme[3],
+              alignItems: "center",
+              height: 50,
+              flexDirection: "row",
+              justifyContent: "space-between",
+            }}
+          >
+            <RenderWidget small widget={pinnedWidget} />
+          </Animated.View>
+        </Button>
+      </Freeze>
+    )
+  );
+});
+
 function PrimarySidebar({ progressValue }) {
   const insets = useSafeAreaInsets();
   const theme = useColorTheme();
@@ -580,12 +729,14 @@ function PrimarySidebar({ progressValue }) {
   const toggleHidden = useCallback(() => {
     if (breakpoints.md) {
       setDesktopCollapsed(!desktopCollapsed);
-      sidebarRef.current.closeDrawer();
-      if (desktopCollapsed) {
-        sidebarRef.current.openDrawer();
-      } else {
+      InteractionManager.runAfterInteractions(() => {
         sidebarRef.current.closeDrawer();
-      }
+        if (desktopCollapsed) {
+          sidebarRef.current.openDrawer();
+        } else {
+          sidebarRef.current.closeDrawer();
+        }
+      });
       AsyncStorage.setItem("desktopCollapsed", (!desktopCollapsed).toString());
     } else {
       sidebarRef.current.closeDrawer();
@@ -621,6 +772,7 @@ function PrimarySidebar({ progressValue }) {
         <Header />
       </View>
       <OpenTabsList />
+      <FocusPanel />
     </NativeAnimated.View>
   );
 }

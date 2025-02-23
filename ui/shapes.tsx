@@ -81,28 +81,6 @@ export const shape4 = (props: shapeProps) => (
   </Svg>
 );
 
-export const shape7 = (props: shapeProps) => (
-  <Svg
-    width={props.size}
-    height={props.size}
-    viewBox="0 0 200 200"
-    fill="none"
-    {...props}
-  >
-    <G clipPath="url(#a)">
-      <Path
-        fill={props.color}
-        d="M100 0c.014 36.893 44.613 55.367 70.711 29.29C144.633 55.386 163.107 99.985 200 100c-36.893.014-55.367 44.613-29.289 70.711C144.613 144.633 100.014 163.107 100 200c-.014-36.893-44.613-55.367-70.71-29.289C55.366 144.613 36.892 100.014 0 100c36.893-.014 55.367-44.613 29.29-70.71C55.386 55.366 99.985 36.892 100 0Z"
-      />
-    </G>
-    <Defs>
-      <ClipPath id="a">
-        <Path fill="#fff" d="M0 0h200v200H0z" />
-      </ClipPath>
-    </Defs>
-  </Svg>
-);
-
 export const shape5 = (props: shapeProps) => (
   <Svg
     width={props.size}
@@ -122,21 +100,6 @@ export const shape5 = (props: shapeProps) => (
         <Path fill="#fff" d="M0 0h200v200H0z" />
       </ClipPath>
     </Defs>
-  </Svg>
-);
-
-export const shape6 = (props: shapeProps) => (
-  <Svg
-    width={props.size}
-    height={props.size}
-    viewBox="0 0 200 200"
-    fill="none"
-    {...props}
-  >
-    <Path
-      fill={props.color}
-      d="M100.106 0 115 54.16l43.884-35.062-19.784 52.57 56.111-2.57L148.306 100l46.905 30.902-56.111-2.571 19.784 52.571L115 145.841 100.106 200l-14.895-54.159-43.884 35.061 19.784-52.571L5 130.902 51.906 100 5 69.098l56.111 2.57-19.784-52.57L85.211 54.16 100.106 0Z"
-    />
   </Svg>
 );
 

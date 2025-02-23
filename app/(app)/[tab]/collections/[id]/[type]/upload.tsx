@@ -1,5 +1,4 @@
 import ContentWrapper from "@/components/layout/content";
-import { useSidebarContext } from "@/components/layout/sidebar/context";
 import { useResponsiveBreakpoints } from "@/helpers/useResponsiveBreakpoints";
 import { Avatar } from "@/ui/Avatar";
 import { Button } from "@/ui/Button";
@@ -23,7 +22,7 @@ import {
   useSafeAreaInsets,
 } from "react-native-safe-area-context";
 import useSWR from "swr";
-import { MenuButton } from "./home";
+import { MenuButton } from "@/app/(app)/home";
 
 const PasteInput = ({ input, setInput, handleContinue }) => {
   return (
@@ -135,7 +134,6 @@ const AITasks = ({ input, setSlide }) => {
 export default function Page() {
   const breakpoints = useResponsiveBreakpoints();
   const insets = useSafeAreaInsets();
-  const { desktopCollapsed } = useSidebarContext();
 
   const [input, setInput] = useState("");
   const [slide, setSlide] = useState(0);
@@ -143,7 +141,7 @@ export default function Page() {
   return (
     <SafeAreaView style={{ flex: 1 }}>
       <ContentWrapper noPaddingTop>
-        {(!breakpoints.md || desktopCollapsed) && <MenuButton />}
+        <MenuButton />
         <KeyboardAvoidingView
           behavior="height"
           style={{

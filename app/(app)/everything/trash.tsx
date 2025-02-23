@@ -1,6 +1,5 @@
 import { Entity } from "@/components/collections/entity";
 import ContentWrapper from "@/components/layout/content";
-import { useSidebarContext } from "@/components/layout/sidebar/context";
 import { useSession } from "@/context/AuthProvider";
 import { sendApiRequest } from "@/helpers/api";
 import { useResponsiveBreakpoints } from "@/helpers/useResponsiveBreakpoints";
@@ -101,16 +100,13 @@ export default function Trash() {
   const insets = useSafeAreaInsets();
   const theme = useColorTheme();
   const breakpoints = useResponsiveBreakpoints();
-  const { desktopCollapsed } = useSidebarContext();
 
   return (
     <ContentWrapper
       noPaddingTop
       style={!breakpoints.md && { paddingTop: insets.top + 70 }}
     >
-      {(!breakpoints.md || desktopCollapsed) && (
-        <MenuButton gradient addInsets />
-      )}
+      <MenuButton gradient addInsets />
       <View style={breakpoints.md ? containerStyles.root : { flex: 1 }}>
         <View
           style={[

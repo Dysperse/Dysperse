@@ -19,7 +19,6 @@ import Stream from "@/components/collections/views/stream";
 import Workload from "@/components/collections/views/workload";
 import ContentWrapper from "@/components/layout/content";
 import { FadeOnRender } from "@/components/layout/FadeOnRender";
-import { useSidebarContext } from "@/components/layout/sidebar/context";
 import { useSession } from "@/context/AuthProvider";
 import { SelectionContextProvider } from "@/context/SelectionContext";
 import { sendApiRequest } from "@/helpers/api";
@@ -431,8 +430,6 @@ function PasswordPrompt({ mutate }) {
     );
   };
 
-  const { desktopCollapsed } = useSidebarContext();
-
   const errorAnimationStyle = useAnimatedStyle(() => ({
     transform: [{ translateX: errorAnimation.value }],
   }));
@@ -444,9 +441,7 @@ function PasswordPrompt({ mutate }) {
         position: "relative",
       }}
     >
-      {(!breakpoints.md || desktopCollapsed) && (
-        <MenuButton addInsets gradient />
-      )}
+      <MenuButton addInsets gradient />
       <KeyboardAvoidingView
         behavior={"padding"}
         style={{

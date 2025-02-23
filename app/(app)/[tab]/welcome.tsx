@@ -17,7 +17,7 @@ import { Linking, Platform, Pressable, View } from "react-native";
 import { ScrollView } from "react-native-gesture-handler";
 import { SafeAreaView } from "react-native-safe-area-context";
 import Toast from "react-native-toast-message";
-import { MenuButton } from "../release";
+import { MenuButton } from "../home";
 
 function Card({ children }: { children: React.ReactNode }) {
   const theme = useColorTheme();
@@ -110,6 +110,7 @@ export default function Page() {
 
   return (
     <Content noPaddingTop>
+      <MenuButton addInsets gradient />
       <SafeAreaView style={{ flex: 1 }}>
         <ScrollView
           contentContainerStyle={{
@@ -124,7 +125,6 @@ export default function Page() {
           }}
           style={{ flex: 1 }}
         >
-          {(!breakpoints.md || desktopCollapsed) && <MenuButton />}
           <View style={{ flexShrink: 0 }}>
             <View
               style={{ alignItems: "center", marginBottom: 15 }}

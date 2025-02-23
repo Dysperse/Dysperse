@@ -64,6 +64,7 @@ export default function Layout() {
             "share/index",
             "share/link",
             "reorder",
+            "upload",
             "pin-code",
           ].map((t) => (
             <JsStack.Screen

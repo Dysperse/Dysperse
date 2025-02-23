@@ -1,46 +1,25 @@
 import Content from "@/components/layout/content";
-import { useSidebarContext } from "@/components/layout/sidebar/context";
 import MarkdownRenderer from "@/components/MarkdownRenderer";
-import MenuIcon from "@/components/menuIcon";
 import { useUser } from "@/context/useUser";
 import { sendApiRequest } from "@/helpers/api";
 import { useResponsiveBreakpoints } from "@/helpers/useResponsiveBreakpoints";
 import { Button } from "@/ui/Button";
 import { useColorTheme } from "@/ui/color/theme-provider";
-import IconButton from "@/ui/IconButton";
 import Logo from "@/ui/logo";
 import Text from "@/ui/Text";
 import dayjs from "dayjs";
 import { useCallback } from "react";
 import { View } from "react-native";
 import { ScrollView } from "react-native-gesture-handler";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 import useSWR from "swr";
-
-export const MenuButton = () => {
-  const { sidebarRef } = useSidebarContext();
-
-  return (
-    <IconButton
-      icon={<MenuIcon />}
-      size={55}
-      variant="outlined"
-      style={{
-        position: "absolute",
-        top: 0,
-        left: 0,
-        zIndex: 100,
-        margin: 20,
-      }}
-      onPress={() => sidebarRef.current.openDrawer()}
-    />
-  );
-};
+import { MenuButton } from "./home";
 
 export default function Page() {
   const theme = useColorTheme();
   const breakpoints = useResponsiveBreakpoints();
   const { session, mutate, sessionToken } = useUser();
-  const { desktopCollapsed } = useSidebarContext();
+  const insets = useSafeAreaInsets();
 
   const { data, error } = useSWR("releases", {
     fetcher: () =>
@@ -85,13 +64,14 @@ export default function Page() {
 
   return (
     <Content noPaddingTop>
-      {!(breakpoints.md || desktopCollapsed) && <MenuButton />}
+      <MenuButton gradient addInsets />
       <ScrollView
         contentContainerStyle={{
           width: "100%",
           maxWidth: 400,
           paddingHorizontal: 20,
           paddingTop: breakpoints.md ? 20 : 100,
+          paddingBottom: insets.bottom + 20,
           marginHorizontal: "auto",
         }}
       >

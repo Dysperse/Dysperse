@@ -1,5 +1,4 @@
 import ContentWrapper from "@/components/layout/content";
-import { useSidebarContext } from "@/components/layout/sidebar/context";
 import { useUser } from "@/context/useUser";
 import { sendApiRequest } from "@/helpers/api";
 import { useResponsiveBreakpoints } from "@/helpers/useResponsiveBreakpoints";
@@ -140,7 +139,6 @@ function SpaceStorage({ data }: { data: any }) {
 export default function Page() {
   const { session, sessionToken } = useUser();
   const breakpoints = useResponsiveBreakpoints();
-  const { desktopCollapsed } = useSidebarContext();
   const insets = useSafeAreaInsets();
 
   const theme = useColorTheme();
@@ -175,9 +173,7 @@ export default function Page() {
       noPaddingTop
       style={!breakpoints.md && { paddingTop: insets.top + 70 }}
     >
-      {(!breakpoints.md || desktopCollapsed) && (
-        <MenuButton gradient addInsets />
-      )}
+      <MenuButton gradient addInsets />
       <ScrollView contentContainerStyle={{ padding: breakpoints.md ? 50 : 20 }}>
         <Text style={{ fontFamily: "serifText700", fontSize: 27 }}>Usage</Text>
         <Text

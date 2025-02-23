@@ -128,6 +128,8 @@ export const MenuButton = ({
   const theme = useColorTheme();
   const { sidebarRef } = useSidebarContext();
   const insets = useSafeAreaInsets();
+  const breakpoints = useResponsiveBreakpoints();
+  const { desktopCollapsed } = useSidebarContext();
 
   const Wrapper = gradient
     ? ({ children }) => (
@@ -149,22 +151,24 @@ export const MenuButton = ({
     : Fragment;
 
   return (
-    <Wrapper>
-      <IconButton
-        style={[styles.menuButton, addInsets && { marginTop: insets.top }]}
-        icon={icon || (back ? "close" : <MenuIcon />)}
-        size={45}
-        pressableStyle={{ pointerEvents: "auto" }}
-        onPress={() => {
-          if (back) {
-            if (router.canGoBack()) router.back();
-            else router.push("/home");
-          } else {
-            sidebarRef.current.openDrawer();
-          }
-        }}
-      />
-    </Wrapper>
+    (desktopCollapsed || !breakpoints.md || back) && (
+      <Wrapper>
+        <IconButton
+          style={[styles.menuButton, addInsets && { marginTop: insets.top }]}
+          icon={icon || (back ? "close" : <MenuIcon />)}
+          size={45}
+          pressableStyle={{ pointerEvents: "auto" }}
+          onPress={() => {
+            if (back) {
+              if (router.canGoBack()) router.back();
+              else router.push("/home");
+            } else {
+              sidebarRef.current.openDrawer();
+            }
+          }}
+        />
+      </Wrapper>
+    )
   );
 };
 
@@ -483,14 +487,11 @@ export function Widgets() {
 function Page() {
   const insets = useSafeAreaInsets();
   const breakpoints = useResponsiveBreakpoints();
-  const { desktopCollapsed } = useSidebarContext();
 
   return (
     <ContentWrapper noPaddingTop>
       <Wrapper>
-        {(!breakpoints.md || desktopCollapsed) && (
-          <MenuButton gradient addInsets={!breakpoints.md} />
-        )}
+        <MenuButton gradient addInsets={!breakpoints.md} />
         <KeyboardAwareScrollView
           // refreshControl={<RefreshControl refreshing={false} />}
           onScrollBeginDrag={Keyboard.dismiss}
