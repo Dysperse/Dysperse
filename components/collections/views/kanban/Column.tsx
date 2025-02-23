@@ -9,7 +9,6 @@ import { useResponsiveBreakpoints } from "@/helpers/useResponsiveBreakpoints";
 import { Button, ButtonText } from "@/ui/Button";
 import Icon from "@/ui/Icon";
 import RefreshControl from "@/ui/RefreshControl";
-import Text from "@/ui/Text";
 import { addHslAlpha } from "@/ui/color";
 import { useColorTheme } from "@/ui/color/theme-provider";
 import { FlashList } from "@shopify/flash-list";
@@ -31,41 +30,6 @@ export type ColumnProps =
       entities?: any[];
       grid?: boolean;
     };
-
-export const ColumnFinishedComponent = () => {
-  const theme = useColorTheme();
-
-  return (
-    <View
-      style={{
-        marginVertical: 20,
-        marginTop: 10,
-        backgroundColor: theme[3],
-        alignItems: "center",
-        padding: 20,
-        gap: 15,
-        borderRadius: 20,
-        paddingVertical: 30,
-      }}
-    >
-      <Icon size={40}>{Math.random() > 0.5 ? "cheer" : "celebration"}</Icon>
-      <View>
-        <Text
-          style={{
-            fontSize: 17,
-            color: theme[11],
-            textAlign: "center",
-          }}
-          weight={500}
-        >
-          {Math.random() > 0.5
-            ? "That's all for now!"
-            : "You finished everything!"}
-        </Text>
-      </View>
-    </View>
-  );
-};
 
 export function Column(props: ColumnProps) {
   const theme = useColorTheme();

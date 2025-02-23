@@ -82,7 +82,7 @@ const UpNext = ({ widget, setParam, params, handlePin, small }) => {
           </Text>
         </>
       ) : (
-        <Text style={{ color: theme[11], textAlign: "center" }} weight={700}>
+        <Text style={{ color: theme[11], fontSize: 13 }} weight={700}>
           No upcoming tasks!
         </Text>
       )}
