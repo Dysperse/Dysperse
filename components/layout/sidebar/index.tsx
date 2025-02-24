@@ -556,6 +556,7 @@ const FocusPanel = memo(() => {
   const theme = useColorTheme();
   const { widgets, focusPanelFreezerRef, activeStateRef } =
     useFocusPanelContext();
+  const insets = useSafeAreaInsets();
   const sheetRef = useRef(null);
   const [activeWidget, setActiveWidget] = useState(activeStateRef.current);
   const breakpoints = useResponsiveBreakpoints();
@@ -611,13 +612,17 @@ const FocusPanel = memo(() => {
         }
       >
         <BottomSheet
-          onClose={() => sheetRef.current.close()}
+          onClose={() => sheetRef.current?.close?.()}
           sheetRef={sheetRef}
           snapPoints={["80%"]}
           maxWidth={breakpoints.md ? 400 : undefined}
         >
           <BottomSheetScrollView
-            contentContainerStyle={{ padding: 20, gap: 20 }}
+            contentContainerStyle={{
+              padding: 20,
+              gap: 20,
+              paddingBottom: insets.bottom + 10,
+            }}
           >
             <Text
               style={{

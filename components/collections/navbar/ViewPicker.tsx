@@ -12,6 +12,7 @@ import Text from "@/ui/Text";
 import capitalizeFirstLetter from "@/utils/capitalizeFirstLetter";
 import { BottomSheetScrollView } from "@gorhom/bottom-sheet";
 import { BlurView } from "expo-blur";
+import { impactAsync, ImpactFeedbackStyle } from "expo-haptics";
 import { router, useGlobalSearchParams } from "expo-router";
 import { memo, useEffect, useRef } from "react";
 import { Platform, View } from "react-native";
@@ -80,6 +81,7 @@ export const ViewPicker = memo(({ isLoading }: { isLoading: any }) => {
     <>
       <Button
         onPress={() => {
+          impactAsync(ImpactFeedbackStyle.Light);
           ref.current?.present();
           if (Platform.OS === "web" && breakpoints.md) {
             const t = localStorage.getItem("shiftShiftTip");
@@ -203,6 +205,7 @@ export const ViewPicker = memo(({ isLoading }: { isLoading: any }) => {
                     key={i}
                     onPress={() => {
                       r.callback();
+                      impactAsync(ImpactFeedbackStyle.Light);
                       ref.current?.forceClose();
                     }}
                     backgroundColors={{
@@ -230,3 +233,4 @@ export const ViewPicker = memo(({ isLoading }: { isLoading: any }) => {
     </>
   );
 });
+
