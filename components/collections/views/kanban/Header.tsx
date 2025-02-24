@@ -9,6 +9,7 @@ import { useResponsiveBreakpoints } from "@/helpers/useResponsiveBreakpoints";
 import Emoji from "@/ui/Emoji";
 import IconButton from "@/ui/IconButton";
 import Text from "@/ui/Text";
+import { addHslAlpha } from "@/ui/color";
 import { useColorTheme } from "@/ui/color/theme-provider";
 import { memo } from "react";
 import { Platform, StyleProp, View, ViewStyle } from "react-native";
@@ -66,14 +67,16 @@ export const KanbanHeader = memo(function KanbanHeader({
         style,
       ]}
     >
-      {label.emoji && (
-        <Emoji emoji={label.emoji} size={list ? 35 : grid ? 25 : 35} />
-      )}
+      <IconButton
+        size={40}
+        icon="arrow_back_ios_new"
+        onPress={() => setCurrentColumn_grid("HOME")}
+        style={{ marginLeft: -15 }}
+      />
+      {label.emoji && <Emoji emoji={label.emoji} size={35} />}
       <View
         style={{
           flex: 1,
-          ...(grid &&
-            !list && { flexDirection: "row", gap: 20, alignItems: "center" }),
         }}
       >
         <Text
@@ -107,20 +110,13 @@ export const KanbanHeader = memo(function KanbanHeader({
           <ColumnMenuTrigger label={label}>
             <IconButton
               size={40}
-              icon="more_horiz"
+              icon={grid && !breakpoints.md ? "more_vert" : "more_horiz"}
               iconProps={{ bold: true }}
               iconStyle={{ opacity: 0.7 }}
             />
           </ColumnMenuTrigger>
         )}
-        {grid && !breakpoints.md && !hideNavigation ? (
-          <IconButton
-            size={40}
-            icon="expand_all"
-            onPress={() => setCurrentColumn_grid("HOME")}
-            style={{ marginRight: -5 }}
-          />
-        ) : (
+        {!(grid && !breakpoints.md && !hideNavigation) && (
           <>
             {!breakpoints.md && !hideNavigation && (
               <IconButton
@@ -158,14 +154,15 @@ export const KanbanHeader = memo(function KanbanHeader({
             mutate={mutations.categoryBased.add(mutate)}
           >
             <IconButton
-              size={40}
-              style={{
-                marginRight: -10,
-                backgroundColor: theme[4],
-                marginLeft: 5,
+              iconProps={{ bold: true }}
+              size={50}
+              style={{ marginRight: -10, borderRadius: 20 }}
+              backgroundColors={{
+                default: addHslAlpha(theme[9], 0.1),
+                hovered: addHslAlpha(theme[9], 0.2),
+                pressed: addHslAlpha(theme[9], 0.3),
               }}
-              icon="add"
-              variant="filled"
+              icon="stylus_note"
             />
           </CreateTask>
         </>
@@ -173,3 +170,4 @@ export const KanbanHeader = memo(function KanbanHeader({
     </View>
   );
 });
+

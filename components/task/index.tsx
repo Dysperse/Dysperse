@@ -12,6 +12,7 @@ import { useColor } from "@/ui/color";
 import { useColorTheme } from "@/ui/color/theme-provider";
 import capitalizeFirstLetter from "@/utils/capitalizeFirstLetter";
 import dayjs from "dayjs";
+import { impactAsync, ImpactFeedbackStyle } from "expo-haptics";
 import React, { memo, useMemo } from "react";
 import { Linking, Platform, View } from "react-native";
 import Animated, {
@@ -238,6 +239,7 @@ const Task = memo(function Task({
   const { globalTaskCreateRef, wrapperRef } = useGlobalTaskContext() || {};
 
   const handleSelect = () => {
+    impactAsync(ImpactFeedbackStyle.Light);
     if (isReadOnly || !setSelection) return;
     setSelection((prev) =>
       prev.includes(task.id)
@@ -353,9 +355,9 @@ const Task = memo(function Task({
                 >
                   {task.name}
                 </Text>
-                {task.note && getPreviewText(task.note).length > 0 ? (
+                {task.note && getPreviewText(task.note).trim().length > 0 ? (
                   <Text numberOfLines={1} weight={300} style={{ opacity: 0.7 }}>
-                    {getPreviewText(task.note).substring(0, 100)}
+                    {getPreviewText(task.note).trim().substring(0, 100)}
                   </Text>
                 ) : null}
               </View>

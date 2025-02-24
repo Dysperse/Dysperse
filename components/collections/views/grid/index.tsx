@@ -6,7 +6,13 @@ import Text from "@/ui/Text";
 import { addHslAlpha } from "@/ui/color";
 import { useColorTheme } from "@/ui/color/theme-provider";
 import { useRef, useState } from "react";
-import { Pressable, ScrollView, View, useWindowDimensions } from "react-native";
+import {
+  Platform,
+  Pressable,
+  ScrollView,
+  View,
+  useWindowDimensions,
+} from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { CollectionEmpty } from "../CollectionEmpty";
 import { Column } from "../kanban/Column";
@@ -84,9 +90,9 @@ export default function Grid({ editOrderMode }: any) {
                       }}
                       style={({ pressed }: any) => ({
                         flex: 1,
-                        width: 300,
-                        minWidth: 300,
-                        maxWidth: 300,
+                        width: 230,
+                        minWidth: 230,
+                        maxWidth: 230,
                         minHeight: 5,
                         borderWidth: 2,
                         borderColor: theme[pressed ? 7 : 6],
@@ -103,8 +109,11 @@ export default function Grid({ editOrderMode }: any) {
                       />
                       <Text
                         numberOfLines={1}
-                        style={{ fontSize: 20, marginTop: 5 }}
-                        weight={900}
+                        style={{
+                          fontSize: 20,
+                          marginTop: 5,
+                          fontFamily: "serifText700",
+                        }}
                       >
                         {label.name || "Other"}
                       </Text>
@@ -197,6 +206,7 @@ export default function Grid({ editOrderMode }: any) {
         <CollectionEmpty />
       ) : (
         <ScrollView
+          showsHorizontalScrollIndicator={Platform.OS === "web"}
           bounces={currentColumn === "HOME"}
           horizontal
           ref={scrollRef}

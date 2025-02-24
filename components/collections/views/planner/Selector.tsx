@@ -114,7 +114,7 @@ const SelectionButton = memo(function SelectionButton({
           ]}
         >
           <Text
-            style={[styles.innerText, { color: theme[isSelected ? 1 : 12] }]}
+            style={[styles.innerText, { color: theme[isSelected ? 1 : 11] }]}
           >
             {dayjs(itemStart).format(buttonTextFormats(type).big)}
           </Text>
@@ -134,7 +134,7 @@ const SelectionButton = memo(function SelectionButton({
               style={{
                 width: 4,
                 height: 4,
-                backgroundColor: theme[11],
+                backgroundColor: theme[7],
                 borderRadius: 99,
               }}
             />

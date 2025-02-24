@@ -55,6 +55,9 @@ export const ColumnMenuTrigger = memo(function ColumnMenuTrigger({
       <MenuPopover
         trigger={children}
         menuRef={menuRef}
+        menuProps={{
+          rendererProps: { placement: "bottom" },
+        }}
         options={[
           { renderer: () => editButton },
           {

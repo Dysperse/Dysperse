@@ -1,49 +1,50 @@
-import LabelPicker from "@/components/labels/picker";
 import { useSession } from "@/context/AuthProvider";
 import { useBadgingService } from "@/context/BadgingProvider";
 import { useSelectionContext } from "@/context/SelectionContext";
 import { sendApiRequest } from "@/helpers/api";
 import { useResponsiveBreakpoints } from "@/helpers/useResponsiveBreakpoints";
-import ConfirmationModal from "@/ui/ConfirmationModal";
+import { Button } from "@/ui/Button";
 import Icon from "@/ui/Icon";
 import IconButton from "@/ui/IconButton";
+import MenuPopover from "@/ui/MenuPopover";
+import Spinner from "@/ui/Spinner";
 import Text, { getFontName } from "@/ui/Text";
 import { useColor } from "@/ui/color";
-import { ColorThemeProvider, useColorTheme } from "@/ui/color/theme-provider";
 import { LinearGradient } from "expo-linear-gradient";
 import { memo, useCallback, useMemo, useState } from "react";
 import { TextStyle, View, ViewStyle } from "react-native";
-import { ScrollView } from "react-native-gesture-handler";
 import Animated, {
   useAnimatedStyle,
   withSpring,
 } from "react-native-reanimated";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 import Toast from "react-native-toast-message";
 import { useSWRConfig } from "swr";
-import TaskDatePicker from "../task/create/TaskDatePicker";
 
-function NavbarHeader({ isLoading }) {
-  const theme = useColorTheme();
+function NavbarHeader({ isLoading, setIsLoading }) {
   const { selection, setSelection } = useSelectionContext();
+  const blue = useColor("blue");
   const clearSelection = useCallback(() => setSelection([]), [setSelection]);
 
   return (
-    <View
-      style={{
-        flexDirection: "row",
-        alignItems: "center",
-        paddingHorizontal: 10,
-        gap: 10,
-      }}
-    >
-      <IconButton icon="close" onPress={clearSelection} />
-      <Text weight={900} style={{ fontSize: 20, color: theme[11] }}>
-        {selection.length} selected
-      </Text>
-      {isLoading && (
-        <Text style={{ opacity: 0.6, fontSize: 12 }}>Processing...</Text>
+    <>
+      <Button
+        text="Cancel"
+        containerStyle={{ width: 80, opacity: isLoading ? 0 : 1 }}
+        onPress={clearSelection}
+        textStyle={{ textAlign: "left", marginRight: "auto", color: blue[11] }}
+      />
+      {isLoading ? (
+        <Spinner color={blue[11]} />
+      ) : (
+        <Text
+          style={{ color: blue[11], fontFamily: "serifText700", fontSize: 25 }}
+        >
+          {selection.length} selected
+        </Text>
       )}
-    </View>
+      <Actions isLoading={isLoading} setIsLoading={setIsLoading} />
+    </>
   );
 }
 
@@ -71,12 +72,11 @@ const PinButton = ({ textStyle, itemStyle, handleSelect }) => {
   );
 };
 
-function Actions({ setIsLoading }) {
+function Actions({ isLoading, setIsLoading }) {
   const { session } = useSession();
   const { selection } = useSelectionContext();
   const breakpoints = useResponsiveBreakpoints();
   const { setSelection } = useSelectionContext();
-  const { isLoading } = useSelectionContext();
   const blue = useColor("blue");
   const { mutate } = useSWRConfig();
 
@@ -129,81 +129,47 @@ function Actions({ setIsLoading }) {
     [selection, setSelection, session, setIsLoading, mutate]
   );
 
+  const trigger = (
+    <Button
+      text={selection.length > 1 ? "Edit" : "Reorder"}
+      containerStyle={{ width: 80, opacity: isLoading ? 0 : 1 }}
+      textStyle={{
+        textAlign: "right",
+        marginLeft: "auto",
+        color: blue[11],
+      }}
+      onPress={() => {
+        if (selection.length === 1) {
+          Toast.show({ type: "info", text1: "Coming soon" });
+        }
+      }}
+    />
+  );
+
   return (
-    <ScrollView
-      style={{
-        flexDirection: "row",
-        width: "100%",
-      }}
-      contentContainerStyle={{
-        justifyContent: "flex-end",
-        flex: 1,
-      }}
-      showsHorizontalScrollIndicator={false}
-      horizontal
-    >
-      <PinButton
-        handleSelect={handleSelect}
-        itemStyle={itemStyle}
-        textStyle={textStyle}
-      />
-      <View style={itemStyle}>
-        <LabelPicker
-          setLabel={(e: any) => handleSelect({ labelId: e.id })}
-          autoFocus
-        >
-          <IconButton
-            variant={breakpoints.md ? "text" : "outlined"}
-            disabled={isLoading}
-            icon="new_label"
-            size={45}
-          />
-        </LabelPicker>
-        {!breakpoints.md && <Text style={textStyle}>Label</Text>}
-      </View>
-      <View style={itemStyle}>
-        <TaskDatePicker
-          title="Select a date"
-          setValue={(_, value) => handleSelect({ due: value })}
-          dueDateOnly
-          watch={(inputName) => {
-            return {
-              date: null,
-              dateOnly: true,
-              recurrenceRule: null,
-              end: null,
-            }[inputName];
-          }}
-        >
-          <IconButton
-            variant={breakpoints.md ? "text" : "outlined"}
-            disabled={isLoading}
-            icon="today"
-            size={45}
-          />
-        </TaskDatePicker>
-        {!breakpoints.md && <Text style={textStyle}>Schedule</Text>}
-      </View>
-      <View style={itemStyle}>
-        <ConfirmationModal
-          onSuccess={() => handleSelect({ trash: true }, true)}
-          title={`Trash ${selection.length} item${
-            selection.length === 1 ? "" : "s"
-          }?`}
-          height={400}
-          skipLoading
-          secondary="You can undo this later"
-        >
-          <IconButton
-            variant={breakpoints.md ? "text" : "outlined"}
-            disabled={isLoading}
-            icon="delete"
-            size={45}
-          />
-        </ConfirmationModal>
-        {!breakpoints.md && <Text style={textStyle}>Delete</Text>}
-      </View>
-    </ScrollView>
+    <View style={{ flexDirection: "row" }}>
+      {selection.length === 1 ? (
+        trigger
+      ) : (
+        <MenuPopover
+          closeOnSelect
+          trigger={trigger}
+          menuProps={{ rendererProps: { placement: "bottom" } }}
+          options={[
+            {
+              text: "Pin",
+              icon: "push_pin",
+              callback: () => handleSelect({ pinned: true }),
+            },
+            {
+              text: "Unpin",
+              icon: "push_pin",
+              callback: () => handleSelect({ pinned: false }),
+            },
+          ]}
+        />
+      )}
+    </View>
   );
 }
 
@@ -211,74 +177,59 @@ const SelectionNavbar = memo(function SelectionNavbar() {
   const blue = useColor("blue");
   const { selection } = useSelectionContext();
   const breakpoints = useResponsiveBreakpoints();
+  const insets = useSafeAreaInsets();
 
   const [isLoading, setIsLoading] = useState(false);
+
+  const height = 71 + insets.top;
 
   const marginStyle = useAnimatedStyle(() => ({
     transform: [
       {
-        translateY: withSpring(
-          selection.length > 0 ? 0 : breakpoints.md ? -84 : 140,
-          {
-            damping: 100,
-            stiffness: 400,
-          }
-        ),
+        translateY: withSpring(selection.length > 0 ? 0 : -(84 + insets.top), {
+          damping: 100,
+          stiffness: 400,
+        }),
       },
     ],
   }));
 
   return (
-    <ColorThemeProvider theme={blue}>
-      <Animated.View
+    <Animated.View
+      style={[
+        marginStyle,
+        {
+          zIndex: 999999,
+          height: breakpoints.md ? 64 : height,
+          overflow: "hidden",
+          width: "100%",
+          position: "absolute",
+          top: 0,
+          left: 0,
+        },
+        !breakpoints.md && {
+          paddingBottom: 10,
+        },
+      ]}
+    >
+      <LinearGradient
+        colors={[blue[3], blue[5]]}
         style={[
-          marginStyle,
           {
-            zIndex: 999999,
-            height: breakpoints.md ? 64 : 140,
-            overflow: "hidden",
-            width: "100%",
-            position: "absolute",
-            top: 0,
-            left: 0,
-          },
-          !breakpoints.md && {
-            bottom: 0,
-            left: 0,
-            top: "auto",
-            borderBottomLeftRadius: 0,
-            borderBottomRightRadius: 0,
+            flexDirection: "row",
+            gap: 10,
+            paddingHorizontal: 10,
+            paddingRight: 15,
+            height: "100%",
+            alignItems: "center",
+            paddingTop: insets.top,
+            justifyContent: "space-between",
           },
         ]}
       >
-        <LinearGradient
-          colors={[blue[3], blue[5]]}
-          style={[
-            {
-              flexDirection: "row",
-              gap: 10,
-              paddingHorizontal: 10,
-              paddingRight: 15,
-              height: "100%",
-              alignItems: "center",
-            },
-            !breakpoints.md && {
-              height: 140,
-              paddingTop: 10,
-              gap: 0,
-              flexDirection: "column",
-              paddingHorizontal: 0,
-              paddingRight: 0,
-              alignItems: "flex-start",
-              justifyContent: "center",
-            },
-          ]}
-        >
-          <NavbarHeader isLoading={isLoading} />
-          <Actions setIsLoading={setIsLoading} />
-        </LinearGradient>
-      </Animated.View>
-    </ColorThemeProvider>
+        <NavbarHeader isLoading={isLoading} setIsLoading={setIsLoading} />
+      </LinearGradient>
+    </Animated.View>
   );
 });
 

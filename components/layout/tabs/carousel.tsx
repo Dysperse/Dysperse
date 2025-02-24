@@ -23,13 +23,7 @@ import { useColorTheme } from "@/ui/color/theme-provider";
 import { LinearGradient } from "expo-linear-gradient";
 import { router, useGlobalSearchParams } from "expo-router";
 import React, { memo, useEffect, useState } from "react";
-import {
-  InteractionManager,
-  Platform,
-  Pressable,
-  StyleSheet,
-  View,
-} from "react-native";
+import { Platform, Pressable, StyleSheet, View } from "react-native";
 import ReorderableList, {
   ReorderableListReorderEvent,
   reorderItems,
@@ -249,8 +243,7 @@ function OpenTabsList() {
 
   const onOpen = () => {
     if (!breakpoints.md || desktopCollapsed) sidebarRef.current?.closeDrawer();
-    if (Platform.OS !== "web")
-      InteractionManager.runAfterInteractions(handleOpen);
+    if (Platform.OS !== "web") setTimeout(handleOpen, 600);
     else handleOpen();
   };
 
@@ -352,7 +345,11 @@ function OpenTabsList() {
               />
             }
             ListFooterComponentStyle={{ marginTop: "auto" }}
-            ListFooterComponent={() => newTab}
+            ListFooterComponent={() => (
+              <View style={{ padding: 1, paddingHorizontal: 10 }}>
+                {newTab}
+              </View>
+            )}
             data={data}
             style={{ marginHorizontal: -10 }}
             getItemLayout={(_, index) => ({ length: 52, offset: 52, index })}
@@ -369,6 +366,7 @@ function OpenTabsList() {
             )}
             contentContainerStyle={{
               paddingVertical: 10,
+              paddingHorizontal: Platform.OS === "web" && 10,
               minHeight: widgets.find((i) => i.pinned) ? undefined : "100%",
             }}
             keyExtractor={(item) => item.id}
