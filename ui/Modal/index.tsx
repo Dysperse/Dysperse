@@ -128,8 +128,8 @@ const Modal = (
           width: "100%",
           height: "100%",
           padding: 15,
-          paddingTop: insets.top + 15,
-          paddingBottom: insets.bottom + 15,
+          paddingTop: insets.top,
+          paddingBottom: insets.bottom,
           alignItems: "center",
           justifyContent: "center",
           ...props.closeContainerStyles,
@@ -149,8 +149,6 @@ const Modal = (
               (props.animation === "SCALE" || props.animation === "BOTH") &&
                 innerStyles,
               {
-                marginVertical: 10,
-                marginTop: insets.top,
                 transformOrigin:
                   Platform.OS === "web"
                     ? props.transformCenter

@@ -765,7 +765,11 @@ export function TaskDrawerContent({
           onScrollBeginDrag={Keyboard.dismiss}
         >
           <View
-            style={{ paddingBottom: 30, paddingTop: 30, paddingHorizontal: 30 }}
+            style={{
+              paddingBottom: breakpoints.md ? 30 : 20,
+              paddingTop: 30,
+              paddingHorizontal: breakpoints.md ? 30 : 20,
+            }}
           >
             <ScrollView
               horizontal

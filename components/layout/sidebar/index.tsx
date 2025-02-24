@@ -604,7 +604,8 @@ const FocusPanel = memo(() => {
               borderRadius: 20,
               padding: 10,
               flexDirection: "row",
-              marginBottom: 6,
+              marginBottom: 8,
+              marginHorizontal: 10,
             }}
           />
         }

@@ -117,6 +117,7 @@ export function TaskCompleteButton() {
             style={{
               color: isCompleted ? green[1] : theme[11],
             }}
+            bold
           >
             check
           </Icon>

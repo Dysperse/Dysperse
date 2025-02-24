@@ -1362,6 +1362,7 @@ const BottomSheetContent = forwardRef(
 
     const descriptionRef = useRef(null);
     const theme = useColorTheme();
+    const addedTasks = useRef([]);
     const { control, handleSubmit, reset, watch, setValue } = useForm({
       defaultValues: {
         dateOnly:
@@ -1410,7 +1411,7 @@ const BottomSheetContent = forwardRef(
             }),
           }
         )
-          .then((e) => mutateList(e))
+          .then((e) => addedTasks.current.push(e))
           .then(() => badgingService.current.mutate());
 
         reset(defaultValues);
@@ -1443,6 +1444,16 @@ const BottomSheetContent = forwardRef(
       hovered: addHslAlpha(theme[9], 0.25),
       pressed: addHslAlpha(theme[9], 0.35),
     };
+
+    useEffect(() => {
+      return () => {
+        if (addedTasks.current.length > 0) {
+          for (let i = 0; i < addedTasks.current.length; i++) {
+            mutateList(addedTasks.current[i]);
+          }
+        }
+      };
+    }, []);
 
     return (
       <Pressable

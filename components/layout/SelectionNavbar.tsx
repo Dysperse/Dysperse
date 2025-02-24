@@ -166,6 +166,11 @@ function Actions({ isLoading, setIsLoading }) {
               icon: "push_pin",
               callback: () => handleSelect({ pinned: false }),
             },
+            {
+              text: "Delete",
+              icon: "delete",
+              callback: () => handleSelect({ trash: true }),
+            },
           ]}
         />
       )}
