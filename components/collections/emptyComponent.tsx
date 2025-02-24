@@ -48,6 +48,7 @@ function InspireMe({ row, labelId }) {
           marginRight: "auto",
           marginTop: 10,
           marginLeft: row ? 80 : "auto",
+          zIndex: 99,
         }}
         iconPosition="end"
         text="Inspire me"
@@ -137,16 +138,10 @@ export const ColumnEmptyComponent = function ColumnEmptyComponent({
     () => messages[Math.floor(Math.random() * messages.length)],
     []
   );
-  // row = true;
 
   return (
     <View
       style={[
-        session?.user?.betaTester &&
-          showInspireMe &&
-          labelId && {
-            marginBottom: -110,
-          },
         finished && {
           marginTop: 5,
           paddingTop: 60,

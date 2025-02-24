@@ -60,24 +60,17 @@ export function Column(props: ColumnProps) {
       return a.agendaOrder?.toString()?.localeCompare(b.agendaOrder);
     });
 
-  const hasItems =
-    Object.keys(props.label?.entities || props.entities).length > 0;
+  const hasItems = data.length > 0;
+  const hasNoTasks =
+    Object.keys(props.label?.entities || props?.entities || {}).length === 0;
 
   const hasNoCompleteTasks =
-    hasItems &&
-    Object.values(props.label?.entities || props.entities).filter(
-      (e) => e.completionInstances.length === 0
-    ).length === 0;
+    data.filter((e) => e.completionInstances.length === 0).length === 0;
 
   const hasNoIncompleteTasks =
-    hasItems &&
-    Object.values(props.label?.entities || props.entities).filter(
-      (e) => e.completionInstances.length > 0
-    ).length === 0;
+    data.filter((e) => e.completionInstances.length > 0).length === 0;
 
-  const centerContent =
-    (hasNoCompleteTasks && !showCompleted) ||
-    Object.keys(props.label?.entities || props.entities).length === 0;
+  const centerContent = data.length === 0;
 
   useDidUpdate(() => {
     setShowCompleted(collectionData.showCompleted);
@@ -197,16 +190,12 @@ export function Column(props: ColumnProps) {
         centerContent={centerContent}
         data={data}
         ListHeaderComponent={() => (
-          <View>
-            {hasNoCompleteTasks && !showCompleted && (
-              <ColumnEmptyComponent row={props.grid} />
-            )}
-            {Object.values(props.label?.entities || props.entities).length ===
-              0 && (
+          <View style={{}}>
+            {!(!hasNoTasks && hasItems) && (
               <ColumnEmptyComponent
-                row={props.grid}
+                showInspireMe={hasNoTasks}
                 labelId={props.label?.id}
-                showInspireMe
+                row={props.grid}
               />
             )}
           </View>
@@ -224,10 +213,7 @@ export function Column(props: ColumnProps) {
         ]}
         ListFooterComponent={() => (
           <>
-            {hasNoIncompleteTasks ? null : showCompleted ||
-              collectionData.showCompleted ||
-              Object.values(props.label?.entities || props.entities).length ===
-                0 ? null : (
+            {hasNoTasks ? null : (
               <View style={{ flexDirection: "row" }}>
                 <Button
                   onPress={() => setShowCompleted(!showCompleted)}

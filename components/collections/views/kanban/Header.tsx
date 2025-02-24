@@ -67,12 +67,14 @@ export const KanbanHeader = memo(function KanbanHeader({
         style,
       ]}
     >
-      <IconButton
-        size={40}
-        icon="arrow_back_ios_new"
-        onPress={() => setCurrentColumn_grid("HOME")}
-        style={{ marginLeft: -15 }}
-      />
+      {grid && !list && !breakpoints.md && (
+        <IconButton
+          size={40}
+          icon="arrow_back_ios_new"
+          onPress={() => setCurrentColumn_grid("HOME")}
+          style={{ marginLeft: -15 }}
+        />
+      )}
       {label.emoji && <Emoji emoji={label.emoji} size={35} />}
       <View
         style={{
@@ -110,9 +112,14 @@ export const KanbanHeader = memo(function KanbanHeader({
           <ColumnMenuTrigger label={label}>
             <IconButton
               size={40}
-              icon={grid && !breakpoints.md ? "more_vert" : "more_horiz"}
+              icon={
+                grid && !breakpoints.md && !list ? "more_vert" : "more_horiz"
+              }
               iconProps={{ bold: true }}
               iconStyle={{ opacity: 0.7 }}
+              style={{
+                marginTop: breakpoints.md && !list && grid ? -10 : 0,
+              }}
             />
           </ColumnMenuTrigger>
         )}
@@ -156,7 +163,11 @@ export const KanbanHeader = memo(function KanbanHeader({
             <IconButton
               iconProps={{ bold: true }}
               size={50}
-              style={{ marginRight: -10, borderRadius: 20 }}
+              style={{
+                marginRight: -10,
+                borderRadius: 20,
+                marginTop: breakpoints.md && !list && grid ? -10 : 0,
+              }}
               backgroundColors={{
                 default: addHslAlpha(theme[9], 0.1),
                 hovered: addHslAlpha(theme[9], 0.2),

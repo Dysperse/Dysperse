@@ -66,8 +66,8 @@ function ListItem({ d, data, item, listRef, mutate, onTaskUpdate, index }) {
                 theme[3],
                 Platform.OS === "android" ? 1 : 0.5
               ),
-              borderRadius: 99,
-              borderColor: addHslAlpha(theme[7], 0.3),
+              borderRadius: 30,
+              borderWidth: 0,
             }}
           >
             <BlurView
@@ -82,13 +82,22 @@ function ListItem({ d, data, item, listRef, mutate, onTaskUpdate, index }) {
                   : "systemMaterialDark"
               }
               style={{
-                borderRadius: 99,
+                borderRadius: 30,
                 height: 80,
                 width: "100%",
                 overflow: "hidden",
               }}
             >
               <KanbanHeader
+                style={{
+                  borderTopWidth: 0,
+                  height: "100%",
+                  paddingBottom: 20,
+                  backgroundColor: addHslAlpha(
+                    theme[3],
+                    Platform.OS === "android" ? 1 : 0.5
+                  ),
+                }}
                 hideNavigation
                 label={{
                   ...item,
