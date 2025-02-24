@@ -63,7 +63,7 @@ export const TaskImportantChip = ({
           priority_high
         </Icon>
       }
-      style={{ backgroundColor: orange[published ? 4 : 6] }}
+      style={{ backgroundColor: orange[published ? 4 : 6], marginTop: 5 }}
       color={orange[11]}
     />
   );
@@ -95,6 +95,7 @@ export const TaskLabelChip = ({
       style={[
         {
           paddingHorizontal: 10,
+          marginTop: 5,
         },
         published && {
           backgroundColor: theme[4],
@@ -194,6 +195,7 @@ function TaskNoteChips({ note }) {
               label={link.text}
               textStyle={{ maxWidth: 100 }}
               textProps={{ numberOfLines: 1 }}
+              style={{ marginTop: 5 }}
               onPress={() => Linking.openURL(link.image || link.href)}
               icon={
                 link.image ? (
@@ -253,19 +255,6 @@ const Task = memo(function Task({
     [selection, task?.id]
   );
 
-  const chipExists = useMemo(
-    () =>
-      task.note ||
-      (showRelativeTime && task.start) ||
-      (showDate && task.start) ||
-      task.recurrenceRule ||
-      (showLabel && task.label) ||
-      task.pinned ||
-      !task.dateOnly ||
-      task.attachments?.length > 0,
-    [task, showDate, showLabel, showRelativeTime]
-  );
-
   const taskStyle = useAnimatedStyle(() => ({
     transform: [
       {
@@ -276,6 +265,13 @@ const Task = memo(function Task({
       },
     ],
   }));
+
+  const hasNote = useMemo(
+    () => task.note && getPreviewText(task.note).trim().length > 0,
+    [task.note]
+  );
+
+  const hasChip = useMemo(() => (showLabel && task.label) || hasNote, []);
 
   return (
     <>
@@ -312,11 +308,12 @@ const Task = memo(function Task({
               onPress: handleSelect,
             })}
             pressableStyle={{
-              paddingTop: breakpoints.md ? (dense ? 8 : 13) : 10,
-              paddingLeft: 13,
-              alignItems: Platform.OS !== "web" ? "center" : "flex-start",
+              paddingLeft: 15,
               paddingRight: 13,
-              paddingBottom: breakpoints.md ? (dense ? 3 : 8) : 10,
+              flexDirection: "column",
+              alignItems: "flex-start",
+              gap: 0,
+              paddingVertical: breakpoints.md ? (dense ? 3 : 8) : 10,
               ...(isSelected && { backgroundColor: blue[4] }),
             }}
             style={[
@@ -336,36 +333,58 @@ const Task = memo(function Task({
               },
             ]}
           >
-            <TaskCheckbox
-              isReadOnly={isReadOnly}
-              task={task}
-              mutateList={onTaskUpdate}
-            />
             <View
-              style={[{ gap: 5, flex: 1 }, isCompleted && { opacity: 0.4 }]}
+              style={{ flexDirection: "row", alignItems: "center", gap: 20 }}
             >
-              <View style={{ flex: 1 }}>
-                <Text
-                  style={{
-                    marginTop: chipExists ? -5 : 0,
+              <TaskCheckbox
+                isReadOnly={isReadOnly}
+                task={task}
+                mutateList={onTaskUpdate}
+              />
+              <Text
+                style={[
+                  {
+                    flex: 1,
                     ...(isCompleted && {
                       textDecorationLine: "line-through",
                     }),
-                  }}
-                >
-                  {task.name}
-                </Text>
-                {task.note && getPreviewText(task.note).trim().length > 0 ? (
+                    marginTop: hasChip ? -11 : 0,
+                  },
+                  isCompleted && { opacity: 0.4 },
+                ]}
+              >
+                {task.name}
+              </Text>
+            </View>
+            <View
+              style={[
+                {
+                  flex: 1,
+                  paddingLeft: 45,
+                  marginTop: hasChip ? -8 : 0,
+                },
+                isCompleted && { opacity: 0.4 },
+              ]}
+            >
+              <View style={{ flex: 1 }}>
+                {hasNote ? (
                   <Text numberOfLines={1} weight={300} style={{ opacity: 0.7 }}>
                     {getPreviewText(task.note).trim().substring(0, 100)}
                   </Text>
                 ) : null}
               </View>
-              <View style={{ flexDirection: "row", flexWrap: "wrap", gap: 5 }}>
+              <View
+                style={{
+                  flexDirection: "row",
+                  flexWrap: "wrap",
+                  columnGap: 5,
+                }}
+              >
                 {showRelativeTime && task.start && (
                   <Chip
                     disabled
                     dense
+                    style={{ marginTop: 5 }}
                     label={dayjs(task.start).fromNow()}
                     icon={<Icon>access_time</Icon>}
                   />
@@ -374,6 +393,7 @@ const Task = memo(function Task({
                   <DayTaskModal date={task.start} taskId={task.id}>
                     <Chip
                       dense
+                      style={{ marginTop: 5 }}
                       label={dayjs(task.start).format(
                         task.dateOnly
                           ? "MMM Do"
@@ -390,6 +410,7 @@ const Task = memo(function Task({
                     dense
                     label="Repeats"
                     icon="loop"
+                    style={{ marginTop: 5 }}
                     onPress={() => {
                       Toast.show({
                         type: "info",

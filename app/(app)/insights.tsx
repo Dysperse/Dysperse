@@ -214,6 +214,7 @@ function Insights({ year }) {
                 <View
                   style={{
                     height: `${(day / Math.max(...data.byDay)) * 100}%`,
+                    minHeight: 50,
                   }}
                 >
                   <View
@@ -366,3 +367,4 @@ export default function Page() {
     </View>
   );
 }
+

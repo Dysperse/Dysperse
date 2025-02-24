@@ -766,9 +766,9 @@ export function TaskDrawerContent({
         >
           <View
             style={{
-              paddingBottom: breakpoints.md ? 30 : 20,
-              paddingTop: 30,
-              paddingHorizontal: breakpoints.md ? 30 : 20,
+              paddingBottom: breakpoints.md ? 30 : 22,
+              paddingTop: breakpoints.md ? 30 : 10,
+              paddingHorizontal: breakpoints.md ? 30 : 17,
             }}
           >
             <ScrollView
