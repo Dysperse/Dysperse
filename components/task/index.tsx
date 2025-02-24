@@ -63,7 +63,7 @@ export const TaskImportantChip = ({
           priority_high
         </Icon>
       }
-      style={{ backgroundColor: orange[published ? 4 : 6], marginTop: 5 }}
+      style={{ backgroundColor: orange[published ? 4 : 6] }}
       color={orange[11]}
     />
   );
@@ -95,7 +95,6 @@ export const TaskLabelChip = ({
       style={[
         {
           paddingHorizontal: 10,
-          marginTop: 5,
         },
         published && {
           backgroundColor: theme[4],
@@ -195,7 +194,6 @@ function TaskNoteChips({ note }) {
               label={link.text}
               textStyle={{ maxWidth: 100 }}
               textProps={{ numberOfLines: 1 }}
-              style={{ marginTop: 5 }}
               onPress={() => Linking.openURL(link.image || link.href)}
               icon={
                 link.image ? (
@@ -271,7 +269,10 @@ const Task = memo(function Task({
     [task.note]
   );
 
-  const hasChip = useMemo(() => (showLabel && task.label) || hasNote, []);
+  const hasChip = useMemo(
+    () => (showLabel && task.label) || hasNote || task.pinned,
+    [task, showLabel, hasNote]
+  );
 
   return (
     <>
@@ -310,9 +311,7 @@ const Task = memo(function Task({
             pressableStyle={{
               paddingLeft: 15,
               paddingRight: 13,
-              flexDirection: "column",
               alignItems: "flex-start",
-              gap: 0,
               paddingVertical: breakpoints.md ? (dense ? 3 : 8) : 10,
               ...(isSelected && { backgroundColor: blue[4] }),
             }}
@@ -333,14 +332,14 @@ const Task = memo(function Task({
               },
             ]}
           >
-            <View
-              style={{ flexDirection: "row", alignItems: "center", gap: 20 }}
-            >
+            <View style={{ marginTop: hasChip ? 5 : 0 }}>
               <TaskCheckbox
                 isReadOnly={isReadOnly}
                 task={task}
                 mutateList={onTaskUpdate}
               />
+            </View>
+            <View style={{ flex: 1, alignItems: "flex-start" }}>
               <Text
                 style={[
                   {
@@ -348,84 +347,84 @@ const Task = memo(function Task({
                     ...(isCompleted && {
                       textDecorationLine: "line-through",
                     }),
-                    marginTop: hasChip ? -11 : 0,
                   },
                   isCompleted && { opacity: 0.4 },
                 ]}
               >
                 {task.name}
               </Text>
-            </View>
-            <View
-              style={[
-                {
-                  flex: 1,
-                  paddingLeft: 45,
-                  marginTop: hasChip ? -8 : 0,
-                },
-                isCompleted && { opacity: 0.4 },
-              ]}
-            >
-              <View style={{ flex: 1 }}>
-                {hasNote ? (
-                  <Text numberOfLines={1} weight={300} style={{ opacity: 0.7 }}>
-                    {getPreviewText(task.note).trim().substring(0, 100)}
-                  </Text>
-                ) : null}
-              </View>
               <View
-                style={{
-                  flexDirection: "row",
-                  flexWrap: "wrap",
-                  columnGap: 5,
-                }}
+                style={[
+                  {
+                    flex: 1,
+                    gap: 5,
+                  },
+                  isCompleted && { opacity: 0.4 },
+                ]}
               >
-                {showRelativeTime && task.start && (
-                  <Chip
-                    disabled
-                    dense
-                    style={{ marginTop: 5 }}
-                    label={dayjs(task.start).fromNow()}
-                    icon={<Icon>access_time</Icon>}
-                  />
-                )}
-                {showDate && task.start && (
-                  <DayTaskModal date={task.start} taskId={task.id}>
+                <View style={{ flex: 1 }}>
+                  {hasNote ? (
+                    <Text
+                      numberOfLines={1}
+                      weight={300}
+                      style={{ opacity: 0.7 }}
+                    >
+                      {getPreviewText(task.note).trim().substring(0, 100)}
+                    </Text>
+                  ) : null}
+                </View>
+                <View
+                  style={{
+                    flexDirection: "row",
+                    flexWrap: "wrap",
+                    gap: 5,
+                    display: hasChip ? "flex" : "none",
+                  }}
+                >
+                  {showRelativeTime && task.start && (
+                    <Chip
+                      disabled
+                      dense
+                      label={dayjs(task.start).fromNow()}
+                      icon={<Icon>access_time</Icon>}
+                    />
+                  )}
+                  {showDate && task.start && (
+                    <DayTaskModal date={task.start} taskId={task.id}>
+                      <Chip
+                        dense
+                        label={dayjs(task.start).format(
+                          task.dateOnly
+                            ? "MMM Do"
+                            : dayjs(task.start).minute() === 0
+                            ? "MMM Do [@] h a"
+                            : "MMM Do [@] h:mm a"
+                        )}
+                        icon={<Icon>calendar_today</Icon>}
+                      />
+                    </DayTaskModal>
+                  )}
+                  {task.recurrenceRule && (
                     <Chip
                       dense
-                      style={{ marginTop: 5 }}
-                      label={dayjs(task.start).format(
-                        task.dateOnly
-                          ? "MMM Do"
-                          : dayjs(task.start).minute() === 0
-                          ? "MMM Do [@] h a"
-                          : "MMM Do [@] h:mm a"
-                      )}
-                      icon={<Icon>calendar_today</Icon>}
+                      label="Repeats"
+                      icon="loop"
+                      onPress={() => {
+                        Toast.show({
+                          type: "info",
+                          text1: capitalizeFirstLetter(
+                            normalizeRecurrenceRuleObject(
+                              task.recurrenceRule
+                            ).toText()
+                          ),
+                        });
+                      }}
                     />
-                  </DayTaskModal>
-                )}
-                {task.recurrenceRule && (
-                  <Chip
-                    dense
-                    label="Repeats"
-                    icon="loop"
-                    style={{ marginTop: 5 }}
-                    onPress={() => {
-                      Toast.show({
-                        type: "info",
-                        text1: capitalizeFirstLetter(
-                          normalizeRecurrenceRuleObject(
-                            task.recurrenceRule
-                          ).toText()
-                        ),
-                      });
-                    }}
-                  />
-                )}
-                {showLabel && task.label && <TaskLabelChip task={task} />}
-                <TaskNoteChips note={task.note} />
-                {task.pinned && <TaskImportantChip />}
+                  )}
+                  {showLabel && task.label && <TaskLabelChip task={task} />}
+                  <TaskNoteChips note={task.note} />
+                  {task.pinned && <TaskImportantChip />}
+                </View>
               </View>
             </View>
           </ListItemButton>

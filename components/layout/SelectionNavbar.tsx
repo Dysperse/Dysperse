@@ -8,11 +8,11 @@ import Icon from "@/ui/Icon";
 import IconButton from "@/ui/IconButton";
 import MenuPopover from "@/ui/MenuPopover";
 import Spinner from "@/ui/Spinner";
-import Text, { getFontName } from "@/ui/Text";
+import Text from "@/ui/Text";
 import { useColor } from "@/ui/color";
 import { LinearGradient } from "expo-linear-gradient";
 import { memo, useCallback, useMemo, useState } from "react";
-import { TextStyle, View, ViewStyle } from "react-native";
+import { View, ViewStyle } from "react-native";
 import Animated, {
   useAnimatedStyle,
   withSpring,
@@ -92,15 +92,6 @@ function Actions({ isLoading, setIsLoading }) {
     [breakpoints]
   );
 
-  const textStyle: TextStyle = useMemo(
-    () => ({
-      color: blue[11],
-      fontSize: 12,
-      textAlign: "center",
-      fontFamily: getFontName("jost", 800),
-    }),
-    [blue]
-  );
   const badgingService = useBadgingService();
 
   const handleSelect = useCallback(
@@ -227,7 +218,7 @@ const SelectionNavbar = memo(function SelectionNavbar() {
             paddingRight: 15,
             height: "100%",
             alignItems: "center",
-            paddingTop: insets.top,
+            paddingTop: breakpoints.md ? undefined : insets.top,
             justifyContent: "space-between",
           },
         ]}
