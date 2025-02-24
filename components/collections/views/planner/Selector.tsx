@@ -99,7 +99,7 @@ const SelectionButton = memo(function SelectionButton({
         onPress={handlePress}
       >
         {buttonTextFormats(type).small !== "-" && (
-          <Text weight={400} style={[styles.label, { color: theme[12] }]}>
+          <Text weight={400} style={[styles.label, { color: theme[11] }]}>
             {dayjs(itemStart)
               .format(buttonTextFormats(type).small)
               .substring(0, type === "week" ? 1 : 999)}
