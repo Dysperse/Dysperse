@@ -11,6 +11,7 @@ import Spinner from "@/ui/Spinner";
 import Text from "@/ui/Text";
 import { useColor } from "@/ui/color";
 import { LinearGradient } from "expo-linear-gradient";
+import { useLocalSearchParams } from "expo-router";
 import { memo, useCallback, useMemo, useState } from "react";
 import { View, ViewStyle } from "react-native";
 import Animated, {
@@ -20,11 +21,16 @@ import Animated, {
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import Toast from "react-native-toast-message";
 import { useSWRConfig } from "swr";
+import { COLLECTION_VIEWS } from "./command-palette/list";
 
 function NavbarHeader({ isLoading, setIsLoading }) {
-  const { selection, setSelection } = useSelectionContext();
+  const { selection, setSelection, setReorderMode, reorderMode } =
+    useSelectionContext();
   const blue = useColor("blue");
-  const clearSelection = useCallback(() => setSelection([]), [setSelection]);
+  const clearSelection = useCallback(() => {
+    setSelection([]);
+    setReorderMode(false);
+  }, [setSelection, setReorderMode]);
 
   return (
     <>
@@ -40,7 +46,7 @@ function NavbarHeader({ isLoading, setIsLoading }) {
         <Text
           style={{ color: blue[11], fontFamily: "serifText700", fontSize: 25 }}
         >
-          {selection.length} selected
+          {reorderMode ? "Reorder" : `${selection.length} selected`}
         </Text>
       )}
       <Actions isLoading={isLoading} setIsLoading={setIsLoading} />
@@ -93,6 +99,8 @@ function Actions({ isLoading, setIsLoading }) {
   );
 
   const badgingService = useBadgingService();
+  const { reorderMode, setReorderMode } = useSelectionContext();
+  const { type } = useLocalSearchParams();
 
   const handleSelect = useCallback(
     async (t, shouldClear = false) => {
@@ -104,7 +112,7 @@ function Actions({ isLoading, setIsLoading }) {
           "space/entity",
           {},
           {
-            body: JSON.stringify({ id: selection, ...t }),
+            body: JSON.stringify({ id: selection.map((x) => x.id), ...t }),
           }
         );
         badgingService.current.mutate();
@@ -117,22 +125,28 @@ function Actions({ isLoading, setIsLoading }) {
         setIsLoading(false);
       }
     },
-    [selection, setSelection, session, setIsLoading, mutate]
+    [selection, setSelection, session, setIsLoading, mutate, badgingService]
   );
 
   const trigger = (
     <Button
       text={selection.length > 1 ? "Edit" : "Reorder"}
-      containerStyle={{ width: 80, opacity: isLoading ? 0 : 1 }}
+      containerStyle={{ width: 80, opacity: isLoading || reorderMode ? 0 : 1 }}
       textStyle={{
         textAlign: "right",
         marginLeft: "auto",
         color: blue[11],
       }}
       onPress={() => {
-        if (selection.length === 1) {
-          Toast.show({ type: "info", text1: "Coming soon" });
+        if (COLLECTION_VIEWS[type as string].type !== "Category Based") {
+          Toast.show({
+            type: "info",
+            text1:
+              "For now, you can only reorder tasks in category-based views",
+          });
         }
+
+        setReorderMode((t) => !t);
       }}
     />
   );

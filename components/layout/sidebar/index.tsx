@@ -583,6 +583,7 @@ const FocusPanel = memo(() => {
   }, []);
 
   const changeActiveWidget = async () => {
+    impactAsync(ImpactFeedbackStyle.Light);
     setActiveWidget((prev) => {
       const t = (prev + 1) % pinnedWidgets.length;
       activeStateRef.current = t;

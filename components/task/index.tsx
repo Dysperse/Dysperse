@@ -219,6 +219,7 @@ const Task = memo(function Task({
   dateRange,
   planMode,
   dense,
+  reorderFunction,
 }: {
   task: any;
   onTaskUpdate: (newData) => void;
@@ -229,34 +230,35 @@ const Task = memo(function Task({
   dateRange?: string;
   planMode?: boolean;
   dense?: boolean;
+  reorderFunction?: any;
 }) {
   const theme = useColorTheme();
   const blue = useColor("blue");
 
   const breakpoints = useResponsiveBreakpoints();
   const isCompleted = getTaskCompletionStatus(task, task.recurrenceDay);
-  const { selection, setSelection } = useSelectionContext() || {};
+  const { reorderMode, selection, setSelection } = useSelectionContext() || {};
   const { globalTaskCreateRef, wrapperRef } = useGlobalTaskContext() || {};
 
   const handleSelect = () => {
     impactAsync(ImpactFeedbackStyle.Light);
     if (isReadOnly || !setSelection) return;
     setSelection((prev) =>
-      prev.includes(task.id)
-        ? prev.filter((e) => e !== task.id)
-        : [...prev, task.id]
+      prev.some((e) => e.id === task.id)
+        ? prev.filter((e) => e.id !== task.id)
+        : [...prev, task]
     );
   };
 
   const isSelected = useMemo(
-    () => selection?.includes(task.id),
+    () => selection?.some((e) => e.id === task.id),
     [selection, task?.id]
   );
 
   const taskStyle = useAnimatedStyle(() => ({
     transform: [
       {
-        scale: withSpring(isSelected ? 0.95 : 1, {
+        scale: withSpring(isSelected && !reorderMode ? 0.95 : 1, {
           damping: 50,
           stiffness: 600,
         }),
@@ -302,7 +304,7 @@ const Task = memo(function Task({
           disabled={selection?.length > 0}
         >
           <ListItemButton
-            onLongPress={handleSelect}
+            onLongPress={reorderMode ? reorderFunction : handleSelect}
             {...(Platform.OS === "web" &&
               breakpoints.md && { onContextMenu: handleSelect })}
             {...(selection?.length > 0 && {
@@ -313,7 +315,7 @@ const Task = memo(function Task({
               paddingRight: 13,
               alignItems: "flex-start",
               paddingVertical: breakpoints.md ? (dense ? 3 : 8) : 10,
-              ...(isSelected && { backgroundColor: blue[4] }),
+              ...(isSelected && !reorderMode && { backgroundColor: blue[4] }),
             }}
             style={[
               {
@@ -333,11 +335,22 @@ const Task = memo(function Task({
             ]}
           >
             <View style={{ marginTop: hasChip ? 5 : 0 }}>
-              <TaskCheckbox
-                isReadOnly={isReadOnly}
-                task={task}
-                mutateList={onTaskUpdate}
-              />
+              {reorderMode ? (
+                <View
+                  style={{
+                    padding: 10,
+                    margin: -10,
+                  }}
+                >
+                  <Icon size={25}>drag_indicator</Icon>
+                </View>
+              ) : (
+                <TaskCheckbox
+                  isReadOnly={isReadOnly}
+                  task={task}
+                  mutateList={onTaskUpdate}
+                />
+              )}
             </View>
             <View style={{ flex: 1, alignItems: "flex-start" }}>
               <Text
@@ -357,6 +370,7 @@ const Task = memo(function Task({
                 style={[
                   {
                     flex: 1,
+                    maxWidth: "100%",
                     gap: 5,
                   },
                   isCompleted && { opacity: 0.4 },

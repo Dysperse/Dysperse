@@ -11,10 +11,10 @@ import Icon from "@/ui/Icon";
 import RefreshControl from "@/ui/RefreshControl";
 import { addHslAlpha } from "@/ui/color";
 import { useColorTheme } from "@/ui/color/theme-provider";
-import { FlashList } from "@shopify/flash-list";
 import { LinearGradient } from "expo-linear-gradient";
 import { useRef, useState } from "react";
 import { Platform, Pressable, View } from "react-native";
+import ReorderableList from "react-native-reorderable-list";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { useDidUpdate } from "../../../../utils/useDidUpdate";
 import { ColumnEmptyComponent } from "../../emptyComponent";
@@ -177,7 +177,8 @@ export function Column(props: ColumnProps) {
           addHslAlpha(theme[breakpoints.md ? 2 : 1], 0),
         ]}
       />
-      <FlashList
+      <ReorderableList
+        onReorder={() => mutate()}
         ref={columnRef}
         refreshControl={
           !centerContent && (
@@ -200,7 +201,7 @@ export function Column(props: ColumnProps) {
             )}
           </View>
         )}
-        estimatedItemSize={300}
+        // estimatedItemSize={300}
         contentContainerStyle={{
           padding: 15,
           paddingTop: 15,
@@ -236,6 +237,7 @@ export function Column(props: ColumnProps) {
         )}
         renderItem={({ item }) => (
           <Entity
+            reorderable
             isReadOnly={isReadOnly || !session}
             item={item}
             showDate
