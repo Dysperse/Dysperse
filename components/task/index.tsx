@@ -396,6 +396,7 @@ const Task = memo(function Task({
                     display: hasChip ? "flex" : "none",
                   }}
                 >
+                  {task.pinned && <TaskImportantChip />}
                   {showRelativeTime && task.start && (
                     <Chip
                       disabled
@@ -438,7 +439,6 @@ const Task = memo(function Task({
                   )}
                   {showLabel && task.label && <TaskLabelChip task={task} />}
                   <TaskNoteChips note={task.note} />
-                  {task.pinned && <TaskImportantChip />}
                 </View>
               </View>
             </View>

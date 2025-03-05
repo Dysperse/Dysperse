@@ -142,6 +142,7 @@ function Actions({ isLoading, setIsLoading }) {
         color: blue[11],
       }}
       onPress={() => {
+        if (!reorderMode) return;
         if (process.env.NODE_ENV === "development") {
           if (COLLECTION_VIEWS[type as string].type !== "Category Based") {
             Toast.show({
@@ -170,14 +171,14 @@ function Actions({ isLoading, setIsLoading }) {
           menuProps={{ rendererProps: { placement: "bottom" } }}
           options={[
             {
-              text: "Pin",
-              icon: "push_pin",
-              callback: () => handleSelect({ pinned: true }),
-            },
-            {
               text: "Unpin",
               icon: "push_pin",
               callback: () => handleSelect({ pinned: false }),
+            },
+            {
+              text: "Reschedule",
+              icon: "calendar_today",
+              // callback: () => handleSelect({  }),
             },
             {
               text: "Delete",
@@ -252,4 +253,3 @@ const SelectionNavbar = memo(function SelectionNavbar() {
 });
 
 export default SelectionNavbar;
-
