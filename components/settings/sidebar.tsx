@@ -150,7 +150,7 @@ export function SettingsSidebar({ forceShow }: { forceShow?: boolean }) {
       name: "Security",
       settings: [
         {
-          name: "Scan QR code",
+          name: "Scan to login",
           icon: "qr_code_2",
           href: "/settings/login/scan",
           keywords: ["login", "scan", "qr", "mobile"],
