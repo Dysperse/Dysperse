@@ -14,10 +14,12 @@ import { useColorTheme } from "@/ui/color/theme-provider";
 import { LinearGradient } from "expo-linear-gradient";
 import { useRef, useState } from "react";
 import { Platform, Pressable, View } from "react-native";
-import ReorderableList from "react-native-reorderable-list";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { useDidUpdate } from "../../../../utils/useDidUpdate";
 import { ColumnEmptyComponent } from "../../emptyComponent";
+
+import { FlashList } from "@shopify/flash-list";
+import React from "react";
 
 export type ColumnProps =
   | {
@@ -46,19 +48,18 @@ export function Column(props: ColumnProps) {
 
   const isReadOnly = access?.access === "READ_ONLY";
 
-  const data = Object.values(props.label?.entities || props.entities)
-    .filter(
-      (e) =>
-        (showCompleted
-          ? true
-          : e.completionInstances.length === 0 || e.recurrenceRule) && !e.trash
-    )
-    .sort((a, b) => {
-      if (a.pinned !== b.pinned) return a.pinned ? -1 : 1;
-      if (a.completionInstances.length !== b.completionInstances.length)
-        return a.completionInstances.length === 0 ? -1 : 1;
-      return a.agendaOrder?.toString()?.localeCompare(b.agendaOrder);
-    });
+  const data = Object.values(props.label?.entities || props.entities).filter(
+    (e) =>
+      (showCompleted
+        ? true
+        : e.completionInstances.length === 0 || e.recurrenceRule) && !e.trash
+  );
+  // .sort((a, b) => {
+  //   if (a.pinned !== b.pinned) return a.pinned ? -1 : 1;
+  //   if (a.completionInstances.length !== b.completionInstances.length)
+  //     return a.completionInstances.length === 0 ? -1 : 1;
+  //   return a.agendaOrder?.toString()?.localeCompare(b.agendaOrder);
+  // });
 
   const hasItems = data.length > 0;
   const hasNoTasks =
@@ -177,8 +178,38 @@ export function Column(props: ColumnProps) {
           addHslAlpha(theme[breakpoints.md ? 2 : 1], 0),
         ]}
       />
-      <ReorderableList
-        onReorder={() => mutate()}
+      <FlashList
+        // onReorder={({ from, to }) => {
+        //   mutate(
+        //     (oldData) => {
+        //       const label = oldData.labels.find((e) => e.id === props.label.id);
+        //       if (!label || !label.entities) return oldData;
+
+        //       // Extract keys and reorder them
+        //       const entityKeys = Object.keys(label.entities);
+        //       const reorderedKeys = reorderItems(entityKeys, from, to);
+
+        //       // Rebuild the object with the new key order
+        //       const reorderedEntities = Object.fromEntries(
+        //         reorderedKeys.map((key, index) => [
+        //           key,
+        //           { ...label.entities[key], agendaOrder: index },
+        //         ])
+        //       );
+
+        //       // Return the updated state
+        //       return {
+        //         ...oldData,
+        //         labels: oldData.labels.map((l) =>
+        //           l.id === props.label.id
+        //             ? { ...l, entities: reorderedEntities }
+        //             : l
+        //         ),
+        //       };
+        //     },
+        //     { revalidate: false }
+        //   );
+        // }}
         ref={columnRef}
         refreshControl={
           !centerContent && (
@@ -191,7 +222,7 @@ export function Column(props: ColumnProps) {
         centerContent={centerContent}
         data={data}
         ListHeaderComponent={() => (
-          <View style={{}}>
+          <View>
             {!(!hasNoTasks && hasItems) && (
               <ColumnEmptyComponent
                 showInspireMe={hasNoTasks}
@@ -221,7 +252,7 @@ export function Column(props: ColumnProps) {
                   dense
                   containerStyle={{
                     marginRight: "auto",
-                    marginTop: 10,
+                    marginTop: 25,
                     marginLeft: 80,
                   }}
                   variant="filled"
@@ -237,7 +268,7 @@ export function Column(props: ColumnProps) {
         )}
         renderItem={({ item }) => (
           <Entity
-            reorderable
+            // reorderable
             isReadOnly={isReadOnly || !session}
             item={item}
             showDate

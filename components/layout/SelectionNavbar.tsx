@@ -44,9 +44,13 @@ function NavbarHeader({ isLoading, setIsLoading }) {
         <Spinner color={blue[11]} />
       ) : (
         <Text
-          style={{ color: blue[11], fontFamily: "serifText700", fontSize: 25 }}
+          style={{
+            color: blue[11],
+            fontFamily: "serifText700",
+            fontSize: reorderMode ? 18 : 25,
+          }}
         >
-          {reorderMode ? "Reorder" : `${selection.length} selected`}
+          {reorderMode ? "Drag to reorder" : `${selection.length} selected`}
         </Text>
       )}
       <Actions isLoading={isLoading} setIsLoading={setIsLoading} />
@@ -138,15 +142,19 @@ function Actions({ isLoading, setIsLoading }) {
         color: blue[11],
       }}
       onPress={() => {
-        if (COLLECTION_VIEWS[type as string].type !== "Category Based") {
-          Toast.show({
-            type: "info",
-            text1:
-              "For now, you can only reorder tasks in category-based views",
-          });
-        }
+        if (process.env.NODE_ENV === "development") {
+          if (COLLECTION_VIEWS[type as string].type !== "Category Based") {
+            Toast.show({
+              type: "info",
+              text1:
+                "For now, you can only reorder tasks in category-based views",
+            });
+          }
 
-        setReorderMode((t) => !t);
+          setReorderMode((t) => !t);
+        } else {
+          Toast.show({ type: "info", text1: "Coming soon!" });
+        }
       }}
     />
   );

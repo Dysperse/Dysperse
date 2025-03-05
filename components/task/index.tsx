@@ -340,6 +340,7 @@ const Task = memo(function Task({
                   style={{
                     padding: 10,
                     margin: -10,
+                    transform: [{ translateX: -5 }],
                   }}
                 >
                   <Icon size={25}>drag_indicator</Icon>

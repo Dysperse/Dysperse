@@ -229,14 +229,14 @@ export default function Page() {
     <SettingsScrollView contentContainerStyle={{ gap: 20 }}>
       <Text style={settingStyles.title}>Sidekick</Text>
       <Text style={{ fontSize: 20, opacity: 0.6 }}>
-        Let AI do the heavy lifting for you
+        Laziness is the key to productivity
       </Text>
 
       {error && <ErrorAlert />}
       <Text style={settingStyles.heading}>How does it work?</Text>
       <Text style={{ marginBottom: 20 }}>
         Bring your own AI provider for no extra surcharge, or use our free AI
-        service. Uptime isn't guaranteed for the free service.
+        service.
       </Text>
       <Text style={settingStyles.heading}>AI Provider</Text>
       <Accordion
@@ -303,8 +303,8 @@ export default function Page() {
 
       <Text style={settingStyles.heading}>About you</Text>
       <Text>
-        Tell us about yourself to experience a more personalized Dysperse
-        Sidekick
+        Our robots crave for this information. We'll use it to make your
+        experience better.
       </Text>
 
       <ListItemButton variant="filled" style={{ marginTop: 10 }}>
