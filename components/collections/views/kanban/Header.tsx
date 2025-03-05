@@ -43,6 +43,7 @@ export const KanbanHeader = memo(function KanbanHeader({
   const { setCurrentColumn, currentColumn, columnsLength, hasOther } =
     useKanbanContext() || {};
 
+  const isGridView = grid && !list;
   const { setCurrentColumn: setCurrentColumn_grid } = useGridContext() || {};
 
   return (
@@ -52,6 +53,7 @@ export const KanbanHeader = memo(function KanbanHeader({
         grid && {
           height: 60,
         },
+        isGridView && { height: 50 },
         breakpoints.md
           ? {
               borderTopLeftRadius: 20,
@@ -75,7 +77,7 @@ export const KanbanHeader = memo(function KanbanHeader({
           style={{ marginLeft: -15 }}
         />
       )}
-      {label.emoji && <Emoji emoji={label.emoji} size={35} />}
+      {label.emoji && <Emoji emoji={label.emoji} size={isGridView ? 24 : 35} />}
       <View
         style={{
           flex: 1,
@@ -83,7 +85,7 @@ export const KanbanHeader = memo(function KanbanHeader({
       >
         <Text
           style={[
-            { fontSize: 20, fontFamily: "serifText700" },
+            { fontSize: isGridView ? 17 : 20, fontFamily: "serifText700" },
             label.entitiesLength === 0 && {
               marginVertical: Platform.OS === "web" ? 11 : 7,
             },
@@ -93,7 +95,10 @@ export const KanbanHeader = memo(function KanbanHeader({
           {label.name || "Unlabeled"}
         </Text>
         {label.entitiesLength !== 0 && (
-          <Text style={{ opacity: 0.6 }} numberOfLines={1}>
+          <Text
+            style={{ opacity: 0.6, fontSize: isGridView ? 13 : undefined }}
+            numberOfLines={1}
+          >
             {grid
               ? label.entitiesLength === 0
                 ? ""
@@ -117,9 +122,6 @@ export const KanbanHeader = memo(function KanbanHeader({
               }
               iconProps={{ bold: true }}
               iconStyle={{ opacity: 0.7 }}
-              style={{
-                marginTop: breakpoints.md && !list && grid ? -10 : 0,
-              }}
             />
           </ColumnMenuTrigger>
         )}
@@ -162,11 +164,10 @@ export const KanbanHeader = memo(function KanbanHeader({
           >
             <IconButton
               iconProps={{ bold: true }}
-              size={50}
+              size={isGridView ? 40 : 50}
               style={{
                 marginRight: -10,
-                borderRadius: 20,
-                marginTop: breakpoints.md && !list && grid ? -10 : 0,
+                borderRadius: isGridView ? 15 : 20,
               }}
               backgroundColors={{
                 default: addHslAlpha(theme[9], 0.1),

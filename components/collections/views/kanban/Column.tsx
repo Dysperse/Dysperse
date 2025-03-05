@@ -170,6 +170,7 @@ export function Column(props: ColumnProps) {
           width: "100%",
           height: 30,
           zIndex: 1,
+          marginTop: props.grid ? 5 : undefined,
           marginBottom: centerContent && !props.grid ? -90 : -30,
           pointerEvents: "none",
         }}
@@ -234,8 +235,8 @@ export function Column(props: ColumnProps) {
         )}
         // estimatedItemSize={300}
         contentContainerStyle={{
-          padding: 15,
-          paddingTop: 15,
+          padding: props.grid ? 10 : 15,
+          paddingTop: props.grid ? 5 : 15,
           paddingBottom: insets.bottom + 15,
         }}
         ListFooterComponentStyle={[
