@@ -24,6 +24,7 @@ import Text from "@/ui/Text";
 import { addHslAlpha } from "@/ui/color";
 import { useColorTheme } from "@/ui/color/theme-provider";
 import { BottomSheetScrollView } from "@gorhom/bottom-sheet";
+import { impactAsync, ImpactFeedbackStyle } from "expo-haptics";
 import { LinearGradient } from "expo-linear-gradient";
 import { useGlobalSearchParams } from "expo-router";
 import React, { useCallback, useEffect, useRef, useState } from "react";
@@ -636,6 +637,7 @@ export function TaskDrawerContent({
   const SafeScrollView = forceClose ? BottomSheetScrollView : ScrollView;
 
   const handlePriorityChange = useCallback(() => {
+    impactAsync(ImpactFeedbackStyle.Light);
     rotate.value = withSpring(!task.pinned ? -35 : 0, {
       mass: 1,
       damping: 10,
@@ -878,4 +880,3 @@ export function TaskDrawerContent({
     </>
   );
 }
-

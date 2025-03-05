@@ -1,6 +1,11 @@
 import { useCollectionContext } from "@/components/collections/context";
 import { useResponsiveBreakpoints } from "@/helpers/useResponsiveBreakpoints";
+import Emoji from "@/ui/Emoji";
+import Icon from "@/ui/Icon";
 import IconButton from "@/ui/IconButton";
+import { ListItemButton } from "@/ui/ListItemButton";
+import ListItemText from "@/ui/ListItemText";
+import Text from "@/ui/Text";
 import { useColorTheme } from "@/ui/color/theme-provider";
 import { useLocalSearchParams } from "expo-router";
 import { useState } from "react";
@@ -10,12 +15,76 @@ import { CollectionEmpty } from "../CollectionEmpty";
 import { Column } from "./Column";
 import { KanbanContext } from "./context";
 
+function ColumnHome({ columns, setCurrentColumn }) {
+  const theme = useColorTheme();
+
+  return (
+    <ScrollView
+      style={{
+        backgroundColor: theme[3],
+        borderTopWidth: 1,
+        borderTopColor: theme[5],
+        flex: 1,
+      }}
+      contentContainerStyle={{ padding: 20, gap: 20 }}
+    >
+      <Text
+        style={{
+          textAlign: "center",
+          marginTop: 10,
+          color: theme[11],
+          fontFamily: "serifText700",
+          fontSize: 20,
+          opacity: 0.6,
+        }}
+      >
+        {columns.length} column{columns.length !== 1 && "s"}
+      </Text>
+      <View
+        style={{ padding: 10, borderRadius: 20, backgroundColor: theme[4] }}
+      >
+        {columns.map((column, i) => (
+          <ListItemButton
+            key={column.id}
+            onPress={() => setCurrentColumn(i)}
+            backgroundColors={{
+              default: theme[4],
+              hover: theme[5],
+              active: theme[6],
+            }}
+          >
+            <Emoji size={30} emoji={column.emoji} />
+            <ListItemText
+              primary={column.name}
+              secondary={`${Object.keys(column.entities).length} item${
+                Object.keys(column.entities).length !== 1 ? "s" : ""
+              }`}
+            />
+            <Icon>arrow_forward_ios</Icon>
+          </ListItemButton>
+        ))}
+
+        <ListItemButton
+          backgroundColors={{
+            default: theme[4],
+            hover: theme[5],
+            active: theme[6],
+          }}
+        >
+          <Icon size={30}>add</Icon>
+          <ListItemText primary="Add column..." />
+          <Icon>arrow_forward_ios</Icon>
+        </ListItemButton>
+      </View>
+    </ScrollView>
+  );
+}
+
 export default function Kanban() {
   const breakpoints = useResponsiveBreakpoints();
   const { data, openLabelPicker, access, isPublic } = useCollectionContext();
-  const theme = useColorTheme();
 
-  const [currentColumn, setCurrentColumn] = useState(0);
+  const [currentColumn, setCurrentColumn] = useState(-1);
 
   const { hiddenLabels: rawHiddenLabels } = useLocalSearchParams();
   const hiddenLabels = rawHiddenLabels?.split(",") || [];
@@ -48,13 +117,15 @@ export default function Kanban() {
           ]}
           scrollEnabled={breakpoints.md}
         >
-          {breakpoints.md
-            ? columns.map(
-                (label) => label && <Column key={label.id} label={label} />
-              )
-            : columns[currentColumn] && (
-                <Column label={columns[currentColumn]} />
-              )}
+          {breakpoints.md ? (
+            columns.map(
+              (label) => label && <Column key={label.id} label={label} />
+            )
+          ) : currentColumn == -1 ? (
+            <ColumnHome columns={columns} setCurrentColumn={setCurrentColumn} />
+          ) : (
+            columns[currentColumn] && <Column label={columns[currentColumn]} />
+          )}
           {data &&
             Object.keys(data.entities)?.length > 0 &&
             (breakpoints.md || currentColumn === -1) && (
@@ -86,4 +157,3 @@ export default function Kanban() {
     </KanbanContext.Provider>
   );
 }
-

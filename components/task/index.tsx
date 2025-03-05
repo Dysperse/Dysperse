@@ -192,7 +192,6 @@ function TaskNoteChips({ note }) {
               dense
               key={index}
               label={link.text}
-              textStyle={{ maxWidth: 100 }}
               textProps={{ numberOfLines: 1 }}
               onPress={() => Linking.openURL(link.image || link.href)}
               icon={
