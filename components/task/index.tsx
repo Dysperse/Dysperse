@@ -272,8 +272,8 @@ const Task = memo(function Task({
   );
 
   const hasChip = useMemo(
-    () => (showLabel && task.label) || hasNote || task.pinned,
-    [task, showLabel, hasNote]
+    () => (showLabel && task.label) || task.note || task.pinned,
+    [task, showLabel]
   );
 
   return (
@@ -456,4 +456,3 @@ const Task = memo(function Task({
 });
 
 export default React.memo(Task);
-
