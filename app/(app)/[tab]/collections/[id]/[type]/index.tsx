@@ -626,11 +626,13 @@ export default function Page({ isPublic }: { isPublic: boolean }) {
                 ) : !data?.error ? (
                   <>
                     <CollectionNavbar />
-                    <FadeOnRender
-                      key={breakpoints.md ? JSON.stringify(t) : "none"}
-                    >
-                      {content}
-                    </FadeOnRender>
+                    {breakpoints.md ? (
+                      <FadeOnRender key={JSON.stringify(t)}>
+                        {content}
+                      </FadeOnRender>
+                    ) : (
+                      content
+                    )}
                   </>
                 ) : (
                   false
@@ -648,3 +650,4 @@ export default function Page({ isPublic }: { isPublic: boolean }) {
     </SelectionContextProvider>
   );
 }
+

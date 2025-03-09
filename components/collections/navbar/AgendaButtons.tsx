@@ -121,16 +121,12 @@ export function AgendaButtons({
       >
         {dayjs(start).format(titleFormat).split("•")?.[0]}
       </Text>
-      <Text
-        numberOfLines={1}
-        style={{ opacity: 0.6, fontSize: 15, paddingTop: 5, color: theme[11] }}
-      >
-        {dayjs(start).format(titleFormat).split("• ")?.[1]}
-      </Text>
 
-      <Icon size={30} style={{ marginLeft: -15 }}>
-        expand_more
-      </Icon>
+      {!breakpoints.md && (
+        <Icon size={30} style={{ marginLeft: -5 }}>
+          expand_more
+        </Icon>
+      )}
     </Button>
   );
 
@@ -144,7 +140,7 @@ export function AgendaButtons({
       style={[
         breakpoints.md && {
           borderRadius: 20,
-          marginLeft: -45,
+          marginLeft: -100,
           marginRight: -10,
           zIndex: 9,
         },
@@ -189,6 +185,14 @@ export function AgendaButtons({
         ]}
       >
         {breakpoints.md && todayButton}
+        {weekMode && breakpoints.md && (
+          <IconButton
+            style={{ marginLeft: 10 }}
+            onPress={handlePrev}
+            icon="west"
+            size={45}
+          />
+        )}
         <View
           style={[
             {
@@ -224,7 +228,14 @@ export function AgendaButtons({
               }}
             >
               {!breakpoints.md && todayButton}
-              <IconButton onPress={handlePrev} icon="west" size={45} />
+              {!breakpoints.md && (
+                <IconButton
+                  style={{ marginLeft: 10 }}
+                  onPress={handlePrev}
+                  icon="west"
+                  size={45}
+                />
+              )}
               <IconButton onPress={handleNext} icon="east" size={45} />
             </View>
           )}
