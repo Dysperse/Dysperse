@@ -1,4 +1,3 @@
-import MarkdownRenderer from "@/components/MarkdownRenderer";
 import { Entity } from "@/components/collections/entity";
 import { taskInputStyles } from "@/components/signup/TaskCreator";
 import { TaskImportantChip, TaskLabelChip } from "@/components/task";
@@ -12,18 +11,18 @@ import { useBadgingService } from "@/context/BadgingProvider";
 import { useUser } from "@/context/useUser";
 import { sendApiRequest } from "@/helpers/api";
 import { useResponsiveBreakpoints } from "@/helpers/useResponsiveBreakpoints";
-import { Avatar } from "@/ui/Avatar";
-import { Button, ButtonText } from "@/ui/Button";
+import { Button } from "@/ui/Button";
 import Chip from "@/ui/Chip";
 import Emoji from "@/ui/Emoji";
 import ErrorAlert from "@/ui/Error";
 import Icon from "@/ui/Icon";
 import Spinner from "@/ui/Spinner";
-import Text, { getFontName } from "@/ui/Text";
+import Text from "@/ui/Text";
 import { addHslAlpha } from "@/ui/color";
 import { useColorTheme } from "@/ui/color/theme-provider";
 import capitalizeFirstLetter from "@/utils/capitalizeFirstLetter";
 import dayjs from "dayjs";
+import { impactAsync, ImpactFeedbackStyle } from "expo-haptics";
 import { LinearGradient } from "expo-linear-gradient";
 import { router } from "expo-router";
 import { useEffect, useMemo, useState } from "react";
@@ -34,45 +33,11 @@ import Animated, {
   useSharedValue,
   withSpring,
 } from "react-native-reanimated";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 import Toast from "react-native-toast-message";
 import useSWR from "swr";
-import { styles } from ".";
 import { getTaskCompletionStatus } from "../../../helpers/getTaskCompletionStatus";
-
-const SubmitButton = ({ text = "Done", icon = "check", onPress, disabled }) => {
-  const theme = useColorTheme();
-
-  const handleNext = () => {
-    if (onPress) onPress();
-    else router.push("/plan/4");
-  };
-
-  return (
-    <Button
-      onPress={handleNext}
-      disabled={disabled}
-      style={({ pressed, hovered }) => [
-        styles.button,
-        {
-          backgroundColor: !disabled
-            ? theme[pressed ? 11 : hovered ? 10 : 9]
-            : theme[7],
-        },
-      ]}
-      containerStyle={{ width: "100%", marginTop: "auto" }}
-      height={70}
-    >
-      <ButtonText
-        style={[styles.buttonText, { color: theme[!disabled ? 1 : 10] }]}
-      >
-        {text}
-      </ButtonText>
-      <Icon style={{ color: theme[!disabled ? 1 : 10] }} bold>
-        {icon}
-      </Icon>
-    </Button>
-  );
-};
+import { SubmitButton } from "./2";
 
 const taskStyles = StyleSheet.create({
   chip: { backgroundColor: "transparent", paddingHorizontal: 0 },
@@ -80,7 +45,6 @@ const taskStyles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     width: "100%",
-    marginTop: "auto",
   },
   footerButton: {
     flex: 1,
@@ -137,164 +101,147 @@ function CurrentTaskFooter({
   };
 
   const isCompleted = getTaskCompletionStatus(task, task.recurrenceDay);
-
-  const handleBack = () => {
-    taskAnimationState.value = "PREVIOUS";
-    setTimeout(() => {
-      setSlide((s) => s - 1);
-      taskAnimationState.value = "IDLE";
-    }, 100);
-  };
+  const insets = useSafeAreaInsets();
 
   return (
-    <View style={[taskStyles.footer]}>
-      <Pressable
-        style={({ pressed, hovered }) => [
-          taskStyles.footerButton,
-          {
-            backgroundColor: pressed
-              ? theme[5]
-              : hovered
-              ? theme[4]
-              : undefined,
-            opacity: slide === 0 ? 0.5 : 1,
-          },
-        ]}
-        disabled={slide === 0}
-        onPress={handleBack}
-      >
-        <Avatar disabled icon="undo" size={40} />
-        <Text style={{ color: theme[11] }} weight={500} numberOfLines={1}>
-          Back
-        </Text>
-      </Pressable>
-      <TaskDatePicker
-        setValue={(date) => handleEdit("start", date)}
-        watch={() => task.start}
-        defaultView="date"
-        dueDateOnly
-      >
-        <Pressable
-          style={({ pressed, hovered }) => [
-            taskStyles.footerButton,
-            {
-              backgroundColor: pressed
-                ? theme[5]
-                : hovered
-                ? theme[4]
-                : undefined,
-              opacity: task.recurrenceRule ? 0.5 : 1,
-            },
-          ]}
-          disabled={!!task.recurrenceRule}
+    <View style={{ marginTop: "auto", marginBottom: insets.bottom, gap: 5 }}>
+      <View style={[taskStyles.footer, { gap: 5 }]}>
+        <TaskDatePicker
+          setValue={(date) => handleEdit("start", date)}
+          watch={() => task.start}
+          defaultView="date"
+          dueDateOnly
         >
-          <Avatar disabled icon="pan_tool" size={40} />
-          <Text style={{ color: theme[11] }} weight={500} numberOfLines={1}>
-            Reschedule
-          </Text>
-        </Pressable>
-      </TaskDatePicker>
-      <Pressable
-        style={({ pressed, hovered }) => [
-          taskStyles.footerButton,
-          {
-            backgroundColor: pressed
-              ? theme[5]
-              : hovered
-              ? theme[4]
-              : undefined,
-          },
-        ]}
-        onPress={() => handleNext()}
-      >
-        <Avatar
-          disabled
-          icon="north"
-          style={{ backgroundColor: theme[11] }}
-          iconProps={{ style: { color: theme[1] } }}
-          size={40}
-        />
-        <Text style={{ color: theme[11] }} weight={800} numberOfLines={1}>
-          Add
-        </Text>
-      </Pressable>
-      <Pressable
-        style={({ pressed, hovered }) => [
-          taskStyles.footerButton,
-          {
-            backgroundColor: pressed
-              ? theme[5]
-              : hovered
-              ? theme[4]
-              : undefined,
-          },
-        ]}
-        onPress={() => {
-          handleEdit("pinned", !task.pinned);
-          taskAnimationState.value = task.pinned ? "IDLE" : "PINNED";
-          setTimeout(
-            () => {
+          <Button
+            style={[taskStyles.footerButton, { flexDirection: "column" }]}
+            backgroundColors={{
+              default: theme[4],
+              pressed: theme[5],
+              hovered: theme[6],
+            }}
+            containerStyle={{ flex: 1, borderRadius: 30 }}
+            height={100}
+            onPress={() => {
+              handleEdit("pinned", !task.pinned);
+              impactAsync(ImpactFeedbackStyle.Light);
+              taskAnimationState.value = task.pinned ? "IDLE" : "PINNED";
+              setTimeout(
+                () => {
+                  handleNext();
+                },
+                !task.pinned ? 450 : 100
+              );
+            }}
+            disabled={!!task.recurrenceRule}
+          >
+            <Icon bold>calendar_today</Icon>
+            <Text style={{ color: theme[11] }} weight={700} numberOfLines={1}>
+              Snooze
+            </Text>
+          </Button>
+        </TaskDatePicker>
+        <Button
+          style={[taskStyles.footerButton, { flexDirection: "column" }]}
+          backgroundColors={{
+            default: theme[4],
+            pressed: theme[5],
+            hovered: theme[6],
+          }}
+          containerStyle={{ flex: 1, borderRadius: 30 }}
+          height={100}
+          onPress={() => {
+            impactAsync(ImpactFeedbackStyle.Heavy);
+            handleEdit("trash", !task.trash);
+            setTimeout(() => {
               handleNext();
-            },
-            !task.pinned ? 450 : 100
-          );
-        }}
-      >
-        <Avatar disabled icon="priority_high" size={40} />
-        <Text style={{ color: theme[11] }} weight={500} numberOfLines={1}>
-          {task.pinned ? "Deprioritize" : "Prioritize"}
-        </Text>
-      </Pressable>
-      <Checkbox
-        dateRange={dateRange}
-        task={task}
-        isReadOnly={false}
-        mutateList={(...t) => {
-          onTaskUpdate(...t);
-          setTimeout(() => {
-            handleNext();
-          }, 100);
-        }}
-      >
-        <Pressable
-          style={({ pressed, hovered }) => [
-            taskStyles.footerButton,
-            {
-              backgroundColor: pressed
-                ? theme[5]
-                : hovered
-                ? theme[4]
-                : undefined,
-            },
-          ]}
+            }, 100);
+          }}
         >
-          <Avatar
-            disabled
-            iconProps={{ filled: isCompleted }}
-            icon="verified"
-            size={40}
-          />
-          <Text style={{ color: theme[11] }} weight={500} numberOfLines={1}>
-            {isCompleted ? "Marked done" : "Mark done"}
+          <Icon bold>delete</Icon>
+          <Text style={{ color: theme[11] }} weight={700} numberOfLines={1}>
+            {task.trash ? "Restore" : "Trash"}
           </Text>
-        </Pressable>
-      </Checkbox>
+        </Button>
+        <Button
+          style={[taskStyles.footerButton, { flexDirection: "column" }]}
+          backgroundColors={{
+            default: theme[4],
+            pressed: theme[5],
+            hovered: theme[6],
+          }}
+          containerStyle={{ flex: 1, borderRadius: 30 }}
+          height={100}
+          onPress={() => {
+            handleEdit("pinned", !task.pinned);
+            impactAsync(ImpactFeedbackStyle.Light);
+            taskAnimationState.value = task.pinned ? "IDLE" : "PINNED";
+            setTimeout(
+              () => {
+                handleNext();
+              },
+              !task.pinned ? 450 : 100
+            );
+          }}
+        >
+          <Icon bold>priority_high</Icon>
+          <Text style={{ color: theme[11] }} weight={700} numberOfLines={1}>
+            {task.pinned ? "Unpin" : "Pin"}
+          </Text>
+        </Button>
+        <Checkbox
+          dateRange={dateRange}
+          task={task}
+          isReadOnly={false}
+          mutateList={(...t) => {
+            onTaskUpdate(...t);
+            setTimeout(() => {
+              handleNext();
+            }, 100);
+          }}
+        >
+          <Button
+            style={[taskStyles.footerButton, { flexDirection: "column" }]}
+            backgroundColors={{
+              default: theme[4],
+              pressed: theme[5],
+              hovered: theme[6],
+            }}
+            containerStyle={{ flex: 1, borderRadius: 30 }}
+            height={100}
+          >
+            <Icon bold>done_outline</Icon>
+            <Text style={{ color: theme[11] }} weight={700} numberOfLines={1}>
+              {isCompleted ? "Completed" : "Finish"}
+            </Text>
+          </Button>
+        </Checkbox>
+      </View>
+      <Button
+        onPress={() => {
+          impactAsync(ImpactFeedbackStyle.Medium);
+          handleNext();
+        }}
+        icon="north"
+        backgroundColors={{
+          default: theme[5],
+          pressed: theme[6],
+          hovered: theme[7],
+        }}
+        bold
+        large
+        iconPosition="end"
+        containerStyle={{ marginBottom: 10 }}
+        height={100}
+        text="Add"
+        textStyle={{ fontSize: 25 }}
+        iconStyle={{ fontSize: 30, width: 30, height: 30, lineHeight: 30 }}
+      />
     </View>
   );
 }
 
 const CurrentSlideIndicator = ({ slide, slidesLength }) => (
-  <Text
-    variant="eyebrow"
-    style={{
-      marginBottom: 10,
-      marginTop: "auto",
-      fontFamily: getFontName("jetBrainsMono", 500),
-    }}
-  >
-    {(slide + 1).toString().padStart(2, "0")}/
-    {slidesLength.toString().padStart(2, "0")}
-  </Text>
+  <Text variant="eyebrow">{slidesLength - slide} left</Text>
 );
 
 const CurrentTaskCard = ({
@@ -360,7 +307,7 @@ const CurrentTaskCard = ({
             ? withSpring(700, {
                 overshootClamping: true,
               })
-            : "-300%",
+            : "-400%",
       },
     ],
   }));
@@ -378,11 +325,11 @@ const CurrentTaskCard = ({
             backgroundColor: theme[pressed ? 5 : hovered ? 4 : 3],
             shadowColor: theme[pressed ? 9 : hovered ? 8 : 7],
             shadowOpacity: pressed ? 0.2 : 0.3,
-            borderColor: theme[pressed ? 8 : hovered ? 7 : 6],
+            borderColor: theme[pressed ? 8 : hovered ? 7 : 5],
             shadowOffset: { width: 5, height: 5 },
             padding: 20,
             shadowRadius: 20,
-            borderWidth: 1,
+            borderWidth: 2,
             borderRadius: 20,
             marginBottom: 20,
             width: "100%",
@@ -390,20 +337,6 @@ const CurrentTaskCard = ({
             position: "relative",
           })}
         >
-          {getTaskCompletionStatus(currentTask, currentTask.recurrenceDay) && (
-            <Icon
-              filled
-              style={{
-                position: "absolute",
-                top: 25,
-                right: 25,
-                zIndex: 999,
-              }}
-              size={40}
-            >
-              done_outline
-            </Icon>
-          )}
           {currentTask.pinned && (
             <Animated.View style={taskPinnedAnimation}>
               <LinearGradient
@@ -437,13 +370,21 @@ const CurrentTaskCard = ({
               <TaskLabelChip large published task={currentTask} />
             )}
           </View>
-          <Text style={{ fontSize: 40 }} weight={700}>
+          <Text
+            style={{
+              fontSize: 37,
+              lineHeight: 45,
+              marginBottom: 5,
+              fontFamily: "serifText700",
+            }}
+          >
             {currentTask.name}
           </Text>
           <Chip
             disabled
             style={taskStyles.chip}
             icon="calendar_today"
+            textStyle={{ flex: 1 }}
             label={capitalizeFirstLetter(
               currentTask.recurrenceRule
                 ? normalizeRecurrenceRuleObject(
@@ -452,16 +393,27 @@ const CurrentTaskCard = ({
                 : dayjs(currentTask.start).fromNow()
             )}
           />
-          <Chip
-            disabled
-            style={taskStyles.chip}
-            icon="exercise"
-            label={`${
-              STORY_POINT_SCALE[
-                [2, 4, 8, 16, 32].indexOf(currentTask.storyPoints)
-              ]
-            }`}
-          />
+          {getTaskCompletionStatus(currentTask, currentTask.recurrenceDay) && (
+            <Chip
+              disabled
+              style={taskStyles.chip}
+              icon="done_outline"
+              textStyle={{ flex: 1 }}
+              label={"Completed!"}
+            />
+          )}
+          {currentTask.storyPoints && (
+            <Chip
+              disabled
+              style={taskStyles.chip}
+              icon="exercise"
+              label={`${
+                STORY_POINT_SCALE[
+                  [2, 4, 8, 16, 32].indexOf(currentTask.storyPoints)
+                ]
+              }`}
+            />
+          )}
           {currentTask.attachments?.length > 0 && (
             <Chip
               disabled
@@ -471,12 +423,6 @@ const CurrentTaskCard = ({
                 currentTask.attachments?.length > 1 ? "s" : ""
               }`}
             />
-          )}
-          {currentTask.note && (
-            <View style={{ marginTop: 10, gap: 5, pointerEvents: "none" }}>
-              <Text variant="eyebrow">Note</Text>
-              <MarkdownRenderer>{currentTask.note}</MarkdownRenderer>
-            </View>
           )}
         </Pressable>
       </TaskDrawer>
@@ -489,13 +435,14 @@ function TodaysTasks({ data, mutate, setStage, dateRange }) {
   const t = useMemo(
     () =>
       Array.isArray(data)
-        ? data
-            .find((d) => dayjs().isBetween(dayjs(d.start), dayjs(d.end)))
-            ?.tasks?.filter(
-              (i) =>
-                (i.start && i.start && dayjs(i.start).isSame(dayjs(), "day")) ||
-                i.recurrenceRule
-            )
+        ? Object.values(
+            data.find((d) => dayjs().isBetween(dayjs(d.start), dayjs(d.end)))
+              ?.entities
+          )?.filter(
+            (i) =>
+              (i.start && i.start && dayjs(i.start).isSame(dayjs(), "day")) ||
+              i.recurrenceRule
+          )
         : [],
     [data]
   );
@@ -523,6 +470,8 @@ function TodaysTasks({ data, mutate, setStage, dateRange }) {
   const [slide, setSlide] = useState(0);
   const slidesLength = t?.length || 0;
 
+  const theme = useColorTheme();
+
   const currentTask = t?.[slide];
   const taskAnimationState = useSharedValue<
     "INTRO" | "IDLE" | "PINNED" | "NEXT" | "PREVIOUS"
@@ -532,9 +481,37 @@ function TodaysTasks({ data, mutate, setStage, dateRange }) {
     if (t?.length === 0 || slide + 1 > slidesLength) setStage(2);
   }, [t, setStage, slide, slidesLength]);
 
+  const handleBack = () => {
+    taskAnimationState.value = "PREVIOUS";
+    setTimeout(() => {
+      setSlide((s) => s - 1);
+      taskAnimationState.value = "IDLE";
+    }, 100);
+  };
+
   return data ? (
-    <View style={{ alignItems: "center", flex: 1 }}>
-      <CurrentSlideIndicator slide={slide} slidesLength={slidesLength} />
+    <View
+      style={{
+        alignItems: "center",
+        flex: 1,
+        paddingHorizontal: 20,
+      }}
+    >
+      <View
+        style={{
+          flexDirection: "row",
+          width: "100%",
+          alignItems: "center",
+        }}
+      >
+        <CurrentSlideIndicator slide={slide} slidesLength={slidesLength} />
+        <Button
+          containerStyle={{ marginLeft: "auto" }}
+          disabled={slide === 0}
+          text="Back"
+          onPress={handleBack}
+        />
+      </View>
       {currentTask && (
         <>
           <CurrentTaskCard
@@ -593,7 +570,6 @@ export default function Page() {
       <ScrollView
         centerContent
         contentContainerStyle={{
-          padding: breakpoints.md ? 50 : 20,
           maxWidth: 700,
           width: "100%",
           marginHorizontal: "auto",
@@ -603,37 +579,48 @@ export default function Page() {
         {error && <ErrorAlert />}
         {stage === 0 && (
           <>
-            <Emoji
-              emoji="1f680"
-              size={50}
-              style={{ marginTop: "auto", marginBottom: 10 }}
-            />
-            <Text
+            <View
               style={{
-                fontSize: 35,
-                color: theme[11],
-                fontFamily: "serifText800",
+                padding: breakpoints.md ? 50 : 20,
+                flex: 1,
+                justifyContent: "center",
+                alignItems: "center",
               }}
             >
-              What's your plan?
-            </Text>
-            <Text
-              style={{
-                fontSize: 20,
-                opacity: 0.6,
-                color: theme[11],
-                marginBottom: 10,
-              }}
-              weight={300}
-            >
-              We'll show tasks you already have scheduled for today, and also
-              help you create new ones.
-            </Text>
+              <Emoji emoji="1f680" size={50} style={{ marginBottom: 10 }} />
+              <Text
+                style={{
+                  textAlign: "center",
+                  fontSize: 30,
+                  color: theme[11],
+                  fontFamily: "serifText700",
+                }}
+              >
+                What's your plan?
+              </Text>
+              <Text
+                style={{
+                  opacity: 0.6,
+                  textAlign: "center",
+                  color: theme[11],
+                  marginBottom: 10,
+                  marginTop: 5,
+                }}
+              >
+                We'll show tasks you already have scheduled for today, and also
+                help you create new ones.
+              </Text>
+            </View>
             <SubmitButton
               disabled={!Array.isArray(data)}
-              text="Next"
+              handleNext={() => {
+                setStage(1);
+              }}
+              text="Continue"
               icon="arrow_forward_ios"
-              onPress={() => setStage(1)}
+              onPress={() => {
+                setStage(1);
+              }}
             />
           </>
         )}
@@ -658,26 +645,40 @@ export default function Page() {
         )}
         {stage === 2 && (
           <>
-            <Emoji
-              emoji="1f4a1"
-              size={50}
-              style={{ marginTop: "auto", marginBottom: 10 }}
-            />
-            <Text style={{ fontSize: 35, color: theme[11] }} weight={900}>
-              {todaysTasks.length === 0
-                ? "Let's create some tasks!"
-                : "Anything else?"}
-            </Text>
-            <Text
+            <View
               style={{
-                fontSize: 20,
-                opacity: 0.6,
-                color: theme[11],
-                marginBottom: 10,
+                justifyContent: "center",
+                alignItems: "center",
+                flex: 1,
+                padding: 20,
               }}
             >
-              List out any other tasks you'd like to complete today.
-            </Text>
+              <Emoji emoji="1f4a1" size={50} style={{ marginBottom: 10 }} />
+              <Text
+                style={{
+                  fontSize: 35,
+                  color: theme[11],
+                  fontFamily: "serifText700",
+                  marginBottom: 5,
+                  marginTop: 10,
+                }}
+              >
+                {todaysTasks.length === 0
+                  ? "Let's create some tasks!"
+                  : "Anything else?"}
+              </Text>
+              <Text
+                style={{
+                  fontSize: 20,
+                  opacity: 0.6,
+                  color: theme[11],
+                  marginBottom: 10,
+                  textAlign: "center",
+                }}
+              >
+                List out any other tasks you'd{"\n"}like to complete today.
+              </Text>
+            </View>
             <CreateTask
               mutate={(newTask) => setCreatedTasks((old) => [...old, newTask])}
               defaultValues={{ date: dayjs() }}
@@ -691,6 +692,7 @@ export default function Page() {
                     marginBottom: 20,
                     paddingLeft: 3,
                     alignItems: "center",
+                    marginHorizontal: 20,
                   },
                 ]}
               >
@@ -738,7 +740,7 @@ export default function Page() {
         )}
         {stage === 2 && (
           <SubmitButton
-            onPress={() => router.push("/plan/4")}
+            handleNext={() => router.push("/plan/4")}
             disabled={todaysTasks.length === 0 && createdTasks.length === 0}
           />
         )}

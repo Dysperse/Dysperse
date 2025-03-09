@@ -48,18 +48,19 @@ export function Column(props: ColumnProps) {
 
   const isReadOnly = access?.access === "READ_ONLY";
 
-  const data = Object.values(props.label?.entities || props.entities).filter(
-    (e) =>
-      (showCompleted
-        ? true
-        : e.completionInstances.length === 0 || e.recurrenceRule) && !e.trash
-  );
-  // .sort((a, b) => {
-  //   if (a.pinned !== b.pinned) return a.pinned ? -1 : 1;
-  //   if (a.completionInstances.length !== b.completionInstances.length)
-  //     return a.completionInstances.length === 0 ? -1 : 1;
-  //   return a.agendaOrder?.toString()?.localeCompare(b.agendaOrder);
-  // });
+  const data = Object.values(props.label?.entities || props.entities)
+    .filter(
+      (e) =>
+        (showCompleted
+          ? true
+          : e.completionInstances.length === 0 || e.recurrenceRule) && !e.trash
+    )
+    .sort((a, b) => {
+      if (a.pinned !== b.pinned) return a.pinned ? -1 : 1;
+      if (a.completionInstances.length !== b.completionInstances.length)
+        return a.completionInstances.length === 0 ? -1 : 1;
+      return a.agendaOrder?.toString()?.localeCompare(b.agendaOrder);
+    });
 
   const hasItems = data.length > 0;
   const hasNoTasks =
@@ -246,9 +247,9 @@ export function Column(props: ColumnProps) {
                   containerStyle={{
                     marginRight: "auto",
                     marginTop: 25,
-                    marginLeft: 80,
+                    marginLeft: breakpoints.md ? 80 : "auto",
                   }}
-                  variant="filled"
+                  variant={breakpoints.md ? "filled" : "text"}
                 >
                   <ButtonText weight={600}>
                     {showCompleted ? "Hide completed" : "See completed"}

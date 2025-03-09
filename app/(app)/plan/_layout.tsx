@@ -80,9 +80,9 @@ function PlanNavbar({
         >
           <IconButton
             onPress={handleClose}
-            variant="outlined"
             icon={currentSlide !== 0 ? "arrow_back_ios_new" : "close"}
             size={55}
+            style={{ marginLeft: -15 }}
           />
         </ConfirmationModal>
       </View>
@@ -103,7 +103,8 @@ export default function Layout() {
     <>
       <PlanContextProvider>
         {!breakpoints.md && <SystemBars style="light" />}
-        <JsStack id={undefined}
+        <JsStack
+          id={undefined}
           screenOptions={{
             ...TransitionPresets.SlideFromRightIOS,
             header: ({ navigation, route }) => (

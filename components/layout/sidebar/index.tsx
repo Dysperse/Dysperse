@@ -304,11 +304,12 @@ export const LogoButton = memo(function LogoButton({
             icon: "settings",
             text: "Settings",
             callback: () => {
-              router.push("/settings");
-              setTimeout(() => {
-                if (!breakpoints.md || desktopCollapsed)
-                  sidebarRef.current.closeDrawer();
-              }, 300);
+              menuRef.current.close();
+              if (!breakpoints.md || desktopCollapsed)
+                sidebarRef.current.closeDrawer();
+              InteractionManager.runAfterInteractions(() => {
+                router.push("/settings");
+              });
             },
           },
           {
@@ -718,9 +719,9 @@ function PrimarySidebar({ progressValue }) {
 
   const breakpoints = useResponsiveBreakpoints();
 
-  // const opacityStyle = useAnimatedStyle(() => ({
-  //   opacity: interpolate(progressValue.value, [0, 1], [0.5, 1]),
-  // }));
+  const opacityStyle = useAnimatedStyle(() => ({
+    opacity: interpolate(progressValue.value, [0, 1], [0.8, 1]),
+  }));
 
   const transformStyle = useAnimatedStyle(() => ({
     transform: [
@@ -759,7 +760,7 @@ function PrimarySidebar({ progressValue }) {
   return (
     <Animated.View
       style={[
-        // opacityStyle,
+        opacityStyle,
         transformStyle,
         {
           width: ORIGINAL_SIDEBAR_WIDTH + 10,

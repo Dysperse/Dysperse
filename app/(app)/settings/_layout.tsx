@@ -20,6 +20,7 @@ import {
   useWindowDimensions,
   View,
 } from "react-native";
+import { SystemBars } from "react-native-edge-to-edge";
 import { MenuButton } from "../home";
 
 function conditional(condition, main, fallback) {
@@ -225,13 +226,14 @@ export default function Layout() {
                 dark: true,
               }}
             >
+              <SystemBars style="light" />
               <JsStack
                 initialRouteName={breakpoints.md ? "account/index" : "index"}
                 id={undefined}
                 screenOptions={{
                   header: () =>
                     breakpoints.md ? null : (
-                      <MenuButton addInsets icon="west" back gradient />
+                      <MenuButton back gradient left icon="west" />
                     ),
                   headerMode: "screen",
                   freezeOnBlur: true,

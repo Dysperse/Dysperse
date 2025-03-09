@@ -206,6 +206,7 @@ export default function AppLayout() {
     pathname.includes("/customize") ||
     pathname.includes("friends") ||
     pathname.includes("insights") ||
+    pathname.includes("settings") ||
     pathname.includes("add-widget") ||
     pathname.includes("upload") ||
     pathname.includes("everything/labels/") ||
@@ -453,9 +454,10 @@ export default function AppLayout() {
                                         <JsStack.Screen
                                           name="settings"
                                           options={{
-                                            detachPreviousScreen:
-                                              !breakpoints.md,
                                             cardStyle: { padding: 0 },
+                                            presentation: "modal",
+                                            animation: "default",
+                                            ...TransitionPresets.ModalPresentationIOS,
                                           }}
                                         />
                                       </JsStack>

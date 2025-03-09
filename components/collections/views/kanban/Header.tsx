@@ -83,7 +83,10 @@ export const KanbanHeader = memo(function KanbanHeader({
       )}
       {label.emoji && (
         <Emoji
-          style={{ marginLeft: isGridView && !breakpoints.md ? -10 : 0 }}
+          style={{
+            marginLeft: isGridView && !breakpoints.md ? -10 : 0,
+            marginRight: breakpoints.md || isGridView ? undefined : 10,
+          }}
           emoji={label.emoji}
           size={isGridView && breakpoints.md ? 24 : 35}
         />
@@ -176,10 +179,10 @@ export const KanbanHeader = memo(function KanbanHeader({
           >
             <IconButton
               iconProps={{ bold: true }}
-              size={isGridView ? 40 : 50}
+              size={isGridView && breakpoints.md ? 40 : 50}
               style={{
                 marginRight: -10,
-                borderRadius: isGridView ? 15 : 20,
+                borderRadius: isGridView && breakpoints.md ? 15 : 20,
               }}
               backgroundColors={{
                 default: addHslAlpha(theme[9], 0.1),

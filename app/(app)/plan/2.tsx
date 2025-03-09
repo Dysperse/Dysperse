@@ -11,15 +11,13 @@ import { LinearGradient } from "expo-linear-gradient";
 import { router } from "expo-router";
 import { useCallback, useEffect } from "react";
 import { View } from "react-native";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 import useSWR from "swr";
 import { styles } from ".";
 
-const SubmitButton = () => {
+export const SubmitButton = ({ handleNext, disabled }) => {
   const theme = useColorTheme();
-
-  const handleNext = () => {
-    router.push("/plan/3");
-  };
+  const insets = useSafeAreaInsets();
 
   return (
     <View
@@ -31,19 +29,27 @@ const SubmitButton = () => {
       }}
     >
       <Button
+        disabled={disabled}
         onPress={handleNext}
         backgroundColors={{
-          default: theme[9],
+          default: theme[disabled ? 5 : 9],
           hovered: theme[10],
           pressed: theme[11],
         }}
-        containerStyle={{ width: "100%", marginTop: "auto", marginBottom: 20 }}
+        containerStyle={{
+          width: "100%",
+          marginTop: "auto",
+          marginBottom: insets.bottom,
+        }}
         height={70}
       >
-        <ButtonText style={[styles.buttonText, { color: theme[1] }]}>
-          Next
+        <ButtonText
+          style={[styles.buttonText, { color: theme[disabled ? 8 : 1] }]}
+          weight={900}
+        >
+          Continue
         </ButtonText>
-        <Icon style={{ color: theme[1] }} bold>
+        <Icon style={{ color: theme[disabled ? 8 : 1] }} bold>
           arrow_forward_ios
         </Icon>
       </Button>
@@ -64,25 +70,24 @@ const Header = () => {
     >
       <Text
         style={{
-          fontSize: 35,
+          fontSize: 30,
           color: theme[11],
           marginTop: "auto",
-          fontFamily: "serifText800",
+          fontFamily: "serifText700",
         }}
       >
         Overdue tasks
       </Text>
       <Text
         style={{
-          fontSize: 20,
           opacity: 0.6,
           color: theme[11],
           marginBottom: 10,
+          marginTop: 5,
         }}
-        weight={300}
+        weight={400}
       >
-        Here are some tasks that you have missed the deadline for. Reschedule or
-        mark them as complete to hide them from this list.
+        Reschedule or complete them to clear this list.
       </Text>
     </View>
   );
@@ -98,10 +103,16 @@ export default function Page() {
   ]);
 
   const filteredTasks = (
-    Array.isArray(data?.entities) && Array.isArray(data?.labels)
+    data?.entities && data?.labels
       ? [
-          ...data.entities,
-          ...data.labels.reduce((acc, curr) => [...acc, ...curr.entities], []),
+          ...Object.values(data.entities),
+          ...Object.values(data.labels).reduce(
+            (acc: any[], curr: { entities: any[] }) => [
+              ...acc,
+              ...Object.values(curr.entities),
+            ],
+            []
+          ),
         ].filter((t) => {
           return (
             !t.completionInstances.length &&
@@ -157,6 +168,7 @@ export default function Page() {
         ListHeaderComponent={<Header />}
         contentContainerStyle={{
           padding: breakpoints.md ? 50 : 20,
+          paddingTop: 0.1,
         }}
         centerContent
         data={filteredTasks}
@@ -177,7 +189,7 @@ export default function Page() {
           </View>
         )}
       />
-      <SubmitButton />
+      <SubmitButton handleNext={() => router.push("/plan/3")} />
     </LinearGradient>
   );
 }

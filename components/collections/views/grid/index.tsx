@@ -13,6 +13,7 @@ import {
   View,
   useWindowDimensions,
 } from "react-native";
+import Animated, { FadeInDown } from "react-native-reanimated";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { CollectionEmpty } from "../CollectionEmpty";
 import { Column } from "../kanban/Column";
@@ -251,7 +252,9 @@ export default function Grid({ editOrderMode }: any) {
           ) : currentColumn === "OTHER" ? (
             <Column grid entities={data.entities} />
           ) : (
-            <Column grid label={displayLabels[currentColumn]} />
+            <Animated.View entering={FadeInDown}>
+              <Column grid label={displayLabels[currentColumn]} />
+            </Animated.View>
           )}
         </ScrollView>
       )}

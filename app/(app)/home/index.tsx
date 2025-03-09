@@ -119,11 +119,13 @@ export const MenuButton = ({
   back,
   icon,
   addInsets,
+  left = false,
 }: {
   gradient?: boolean;
   back?: boolean;
   icon?: string;
   addInsets?: boolean;
+  left?: boolean;
 }) => {
   const theme = useColorTheme();
   const { sidebarRef } = useSidebarContext();
@@ -157,7 +159,7 @@ export const MenuButton = ({
         <IconButton
           style={[
             styles.menuButton,
-            !back && {
+            (!back || left) && {
               right: undefined,
               left: 20,
             },
@@ -166,7 +168,7 @@ export const MenuButton = ({
           ]}
           icon={icon || (back ? "close" : <MenuIcon />)}
           size={45}
-          variant={back ? "filled" : undefined}
+          variant={back && !left ? "filled" : undefined}
           pressableStyle={{ pointerEvents: "auto" }}
           onPress={() => {
             if (back) {
