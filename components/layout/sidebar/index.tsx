@@ -785,7 +785,7 @@ function PrimarySidebar({ progressValue }) {
           paddingHorizontal: 15,
           width: "100%",
           marginBottom:
-            !breakpoints.md || Platform.OS === "web" ? insets.bottom : -8,
+            !breakpoints.md || Platform.OS === "web" ? insets.bottom + 2 : -8,
           height: "100%",
         }}
       >
