@@ -44,17 +44,23 @@ function StreamViewPicker() {
         onPress={() => ref.current.present()}
         style={{
           padding: 10,
-          backgroundColor: theme[3],
+          paddingBottom: 0,
           flexDirection: "row",
+          paddingHorizontal: 20,
           alignItems: "center",
-          justifyContent: "center",
-          borderTopWidth: 1,
-          gap: 5,
-          borderTopColor: theme[5],
         }}
       >
-        <Text weight={600}>{currentView.label}</Text>
-        <Icon bold>expand_more</Icon>
+        <Text
+          weight={600}
+          style={{
+            fontSize: 23,
+            fontFamily: "serifText700",
+            color: theme[11],
+          }}
+        >
+          {currentView.label}
+        </Text>
+        <Icon size={30}>expand_more</Icon>
       </Pressable>
 
       <Modal sheetRef={ref} animation="SLIDE" height="auto">
@@ -194,7 +200,6 @@ export default function Stream() {
         },
       ]}
     >
-      {!breakpoints.md && <StreamViewPicker />}
       <View
         style={{
           width: breakpoints.md ? 350 : "100%",
@@ -202,18 +207,20 @@ export default function Stream() {
           paddingBottom: 0,
         }}
       >
-        <TextField
-          variant="filled+outlined"
-          placeholder="Search items…"
-          onChangeText={setQuery}
-          style={{
-            height: 50,
-            fontSize: 18,
-            width: "100%",
-            maxWidth: 400,
-            marginHorizontal: "auto",
-          }}
-        />
+        {breakpoints.md && (
+          <TextField
+            variant="filled+outlined"
+            placeholder="Search items…"
+            onChangeText={setQuery}
+            style={{
+              height: 50,
+              fontSize: 18,
+              width: "100%",
+              maxWidth: 400,
+              marginHorizontal: "auto",
+            }}
+          />
+        )}
         <View
           style={{
             flexDirection: "row",
@@ -224,6 +231,7 @@ export default function Stream() {
             marginHorizontal: "auto",
             borderColor: theme[5],
             marginVertical: 10,
+            marginTop: breakpoints.md ? 10 : -15,
             borderWidth: 1,
             paddingHorizontal: 20,
             paddingVertical: 10,
@@ -283,26 +291,24 @@ export default function Stream() {
             </CreateTask>
           )}
         </View>
-        {breakpoints.md && (
-          <ScrollView>
-            {streamViews.map((e) => (
-              <Button
-                key={e.value}
-                icon={e.icon}
-                backgroundColors={{
-                  default: theme[e.value === view ? 5 : 1],
-                  hovered: theme[e.value === view ? 6 : 3],
-                  pressed: theme[e.value === view ? 7 : 4],
-                }}
-                onPress={() => selectTab(e.value)}
-                text={e.label}
-                style={{
-                  justifyContent: "flex-start",
-                }}
-              />
-            ))}
-          </ScrollView>
-        )}
+        <ScrollView>
+          {streamViews.map((e) => (
+            <Button
+              key={e.value}
+              icon={e.icon}
+              backgroundColors={{
+                default: theme[e.value === view ? 4 : 1],
+                hovered: theme[e.value === view ? 5 : 3],
+                pressed: theme[e.value === view ? 6 : 4],
+              }}
+              onPress={() => selectTab(e.value)}
+              text={e.label}
+              style={{
+                justifyContent: "flex-start",
+              }}
+            />
+          ))}
+        </ScrollView>
       </View>
       <FadeOnRender key={view} animateUp>
         <FlashList

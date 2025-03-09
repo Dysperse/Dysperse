@@ -10,16 +10,13 @@ export const NavbarGradient = ({ children }) => {
 
   return (
     <LinearGradient
-      colors={[theme[2], theme[breakpoints.md ? 1 : 3]]}
+      colors={[theme[breakpoints.md ? 2 : 3], theme[1]]}
       style={{
-        backgroundColor: theme[3],
         height: breakpoints.md ? 60 : 60 + insets.top,
         paddingTop: breakpoints.md ? undefined : insets.top,
         paddingHorizontal: 10,
         zIndex: 9,
         flexDirection: "row",
-        // borderBottomWidth: breakpoints.md ? 2 : 0,
-        // borderBottomColor: theme[5],
         alignItems: "center",
         gap: 5,
       }}

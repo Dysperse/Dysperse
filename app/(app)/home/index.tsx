@@ -140,7 +140,7 @@ export const MenuButton = ({
             top: 0,
             left: 0,
             zIndex: 10,
-            height: 130,
+            height: 100,
             width: "100%",
             pointerEvents: "box-none",
           }}
@@ -154,9 +154,17 @@ export const MenuButton = ({
     (desktopCollapsed || !breakpoints.md || back) && (
       <Wrapper>
         <IconButton
-          style={[styles.menuButton, addInsets && { marginTop: insets.top }]}
+          style={[
+            styles.menuButton,
+            !back && {
+              right: undefined,
+              left: 20,
+            },
+            addInsets && { marginTop: insets.top },
+          ]}
           icon={icon || (back ? "close" : <MenuIcon />)}
           size={45}
+          variant={back ? "filled" : undefined}
           pressableStyle={{ pointerEvents: "auto" }}
           onPress={() => {
             if (back) {

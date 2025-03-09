@@ -185,7 +185,7 @@ function Insights({ year }) {
                   bold
                   style={{ color: theme[11], marginLeft: 7, marginTop: 5 }}
                 >
-                  {COLLECTION_VIEWS[key].icon}
+                  {COLLECTION_VIEWS[key]?.icon}
                 </Icon>
               </View>
             ))}
@@ -339,8 +339,9 @@ export default function Page() {
           style={{
             fontFamily: "serifText700",
             fontSize: 30,
-            textAlign: "center",
-            marginTop: 50,
+            marginTop: 30,
+            marginBottom: -20,
+            paddingHorizontal: 20,
           }}
         >
           Insights

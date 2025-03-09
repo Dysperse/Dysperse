@@ -92,29 +92,29 @@ const Cell = ({
           ref.current.scrollToOffset({ animated: true, offset: 0 })
         }
       >
-        <LinearGradient
-          colors={[theme[3], theme[2]]}
+        <View
           style={[
             {
               padding: breakpoints.md ? 5 : 10,
-              paddingHorizontal: 20,
+              paddingHorizontal: 10,
               paddingRight: 10,
-              borderBottomWidth: 1,
-              borderBottomColor: theme[4],
+              backgroundColor: theme[3],
+              borderRadius: 25,
+              marginHorizontal: 20,
               flexDirection: "row",
               alignItems: "center",
             },
-            !breakpoints.md && { borderTopWidth: 1, borderTopColor: theme[5] },
           ]}
         >
           {handleHome && (
             <IconButton
               icon="arrow_back_ios_new"
               onPress={handleHome}
-              style={{ marginRight: 10 }}
+              size={50}
+              style={{ marginRight: 5 }}
             />
           )}
-          <Text weight={500} style={{ opacity: 0.5 }}>
+          <Text weight={500} style={{ color: theme[11] }}>
             {remainingTasks.length} task{remainingTasks.length !== 1 && "s"}
           </Text>
           <CreateTask
@@ -122,12 +122,21 @@ const Cell = ({
             defaultValues={defaultOptions}
           >
             <IconButton
-              icon="add"
-              variant={breakpoints.md ? "text" : "outlined"}
-              style={{ marginLeft: "auto" }}
+              iconProps={{ bold: true }}
+              size={50}
+              style={{
+                borderRadius: 20,
+                marginLeft: "auto",
+              }}
+              backgroundColors={{
+                default: addHslAlpha(theme[9], 0.1),
+                hovered: addHslAlpha(theme[9], 0.2),
+                pressed: addHslAlpha(theme[9], 0.3),
+              }}
+              icon="stylus_note"
             />
           </CreateTask>
-        </LinearGradient>
+        </View>
       </Pressable>
       <FlashList
         refreshControl={
@@ -272,13 +281,19 @@ function Preview({ tasks, onPress }) {
                   width: breakpoints.md ? 20 : 15,
                   height: breakpoints.md ? 20 : 15,
                   borderWidth: 1,
-                  borderColor: theme[7],
+                  borderColor: theme[11],
+                  opacity: 0.2,
                   borderRadius: 99,
                 }}
               />
               <Text
                 numberOfLines={1}
-                style={{ fontSize: breakpoints.md ? 13 : 12, opacity: 0.6 }}
+                style={{
+                  fontSize: breakpoints.md ? 13 : 12,
+                  opacity: 0.6,
+                  color: theme[11],
+                  flex: 1,
+                }}
               >
                 {i.name}
               </Text>
@@ -361,9 +376,7 @@ export default function Matrix() {
         { gap: breakpoints.md ? 20 : 10 },
         !currentColumn &&
           !breakpoints.md && {
-            backgroundColor: theme[3],
-            borderTopWidth: 1,
-            borderTopColor: theme[5],
+            backgroundColor: theme[1],
           },
       ]}
     >

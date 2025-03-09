@@ -60,11 +60,15 @@ export const KanbanHeader = memo(function KanbanHeader({
               borderTopRightRadius: 20,
             }
           : {
-              borderTopWidth: 1,
+              borderRadius: 20,
               borderTopColor: theme[5],
               backgroundColor: theme[3],
               height: 80,
-              paddingBottom: 20,
+              ...(!list && {
+                marginHorizontal: 15,
+                marginTop: 5,
+                paddingBottom: 20,
+              }),
             },
         style,
       ]}
@@ -77,15 +81,20 @@ export const KanbanHeader = memo(function KanbanHeader({
           style={{ marginLeft: -15 }}
         />
       )}
-      {label.emoji && <Emoji emoji={label.emoji} size={isGridView ? 24 : 35} />}
-      <View
-        style={{
-          flex: 1,
-        }}
-      >
+      {label.emoji && (
+        <Emoji
+          style={{ marginLeft: isGridView && !breakpoints.md ? -10 : 0 }}
+          emoji={label.emoji}
+          size={isGridView && breakpoints.md ? 24 : 35}
+        />
+      )}
+      <View style={{ flex: 1 }}>
         <Text
           style={[
-            { fontSize: isGridView ? 17 : 20, fontFamily: "serifText700" },
+            {
+              fontSize: isGridView && breakpoints.md ? 17 : 20,
+              fontFamily: "serifText700",
+            },
             label.entitiesLength === 0 && {
               marginVertical: Platform.OS === "web" ? 11 : 7,
             },
@@ -96,7 +105,10 @@ export const KanbanHeader = memo(function KanbanHeader({
         </Text>
         {label.entitiesLength !== 0 && (
           <Text
-            style={{ opacity: 0.6, fontSize: isGridView ? 13 : undefined }}
+            style={{
+              opacity: 0.6,
+              fontSize: isGridView && breakpoints.md ? 13 : undefined,
+            }}
             numberOfLines={1}
           >
             {grid

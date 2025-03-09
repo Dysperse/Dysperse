@@ -1,82 +1,103 @@
 import { useCollectionContext } from "@/components/collections/context";
 import { useResponsiveBreakpoints } from "@/helpers/useResponsiveBreakpoints";
+import { Button } from "@/ui/Button";
 import Emoji from "@/ui/Emoji";
 import Icon from "@/ui/Icon";
 import IconButton from "@/ui/IconButton";
-import { ListItemButton } from "@/ui/ListItemButton";
-import ListItemText from "@/ui/ListItemText";
 import Text from "@/ui/Text";
 import { useColorTheme } from "@/ui/color/theme-provider";
 import { useLocalSearchParams } from "expo-router";
-import { useState } from "react";
-import { View } from "react-native";
-import { ScrollView } from "react-native-gesture-handler";
+import { useRef, useState } from "react";
+import { ScrollView, View } from "react-native";
+import { FlatList } from "react-native-gesture-handler";
 import { CollectionEmpty } from "../CollectionEmpty";
 import { Column } from "./Column";
 import { KanbanContext } from "./context";
 
-function ColumnHome({ columns, setCurrentColumn }) {
+function ColumnSwitcher({ columns, setCurrentColumn, currentColumn }) {
   const theme = useColorTheme();
+  const { openLabelPicker } = useCollectionContext();
+
+  const itemCount = Object.keys(columns[currentColumn]?.entities || {}).length;
+  const flatListRef = useRef<FlatList>(null);
 
   return (
-    <ScrollView
-      style={{
-        backgroundColor: theme[3],
-        borderTopWidth: 1,
-        borderTopColor: theme[5],
-        flex: 1,
-      }}
-      contentContainerStyle={{ padding: 20, gap: 20 }}
-    >
+    <>
+      <FlatList
+        ref={flatListRef}
+        horizontal
+        data={[...columns, "create"]}
+        keyExtractor={(column) => column.id}
+        contentContainerStyle={{
+          justifyContent: "center",
+          paddingHorizontal: 23,
+          paddingVertical: 10,
+          gap: 10,
+        }}
+        style={{
+          maxHeight: 65,
+        }}
+        renderItem={({ item: column, index: i }) =>
+          column === "create" ? (
+            <IconButton icon="edit" size={40} onPress={openLabelPicker} />
+          ) : (
+            <Button
+              variant={currentColumn === i ? "filled" : "text"}
+              onPress={() => {
+                setCurrentColumn(i);
+                setTimeout(() => {
+                  flatListRef.current?.scrollToIndex({
+                    index: i,
+                    animated: true,
+                    viewOffset: 20,
+                  });
+                }, 100);
+              }}
+              style={{
+                opacity: i === currentColumn ? 1 : 0.6,
+                alignItems: "center",
+                overflow: "visible",
+              }}
+              containerStyle={{ overflow: "visible", borderRadius: 15 }}
+            >
+              <Emoji emoji={column.emoji} />
+              <Text
+                style={{
+                  marginLeft: 5,
+                  fontSize: 20,
+                  fontFamily: "serifText700",
+                  textAlign: "left",
+                  color: theme[11],
+                }}
+                numberOfLines={1}
+              >
+                {column?.name}
+              </Text>
+              <Icon
+                style={{
+                  opacity: currentColumn === i ? 1 : 0,
+                  marginRight: currentColumn === i ? 0 : -35,
+                }}
+              >
+                expand_more
+              </Icon>
+            </Button>
+          )
+        }
+      />
       <Text
         style={{
-          textAlign: "center",
-          marginTop: 10,
-          color: theme[11],
-          fontFamily: "serifText700",
-          fontSize: 20,
           opacity: 0.6,
+          color: theme[11],
+          marginTop: -30,
+          fontSize: 20,
+          marginBottom: 10,
+          paddingHorizontal: 30,
         }}
       >
-        {columns.length} column{columns.length !== 1 && "s"}
+        {itemCount} item{itemCount !== 1 ? "s" : ""}
       </Text>
-      <View
-        style={{ padding: 10, borderRadius: 20, backgroundColor: theme[4] }}
-      >
-        {columns.map((column, i) => (
-          <ListItemButton
-            key={column.id}
-            onPress={() => setCurrentColumn(i)}
-            backgroundColors={{
-              default: theme[4],
-              hover: theme[5],
-              active: theme[6],
-            }}
-          >
-            <Emoji size={30} emoji={column.emoji} />
-            <ListItemText
-              primary={column.name}
-              secondary={`${Object.keys(column.entities).length} item${
-                Object.keys(column.entities).length !== 1 ? "s" : ""
-              }`}
-            />
-            <Icon>arrow_forward_ios</Icon>
-          </ListItemButton>
-        ))}
-
-        <ListItemButton
-          backgroundColors={{
-            default: theme[4],
-            hover: theme[5],
-            active: theme[6],
-          }}
-        >
-          <Icon size={30}>add</Icon>
-          <ListItemText primary="Add column..." />
-          <Icon>arrow_forward_ios</Icon>
-        </ListItemButton>
-      </View>
-    </ScrollView>
+    </>
   );
 }
 
@@ -84,7 +105,7 @@ export default function Kanban() {
   const breakpoints = useResponsiveBreakpoints();
   const { data, openLabelPicker, access, isPublic } = useCollectionContext();
 
-  const [currentColumn, setCurrentColumn] = useState(-1);
+  const [currentColumn, setCurrentColumn] = useState(0);
 
   const { hiddenLabels: rawHiddenLabels } = useLocalSearchParams();
   const hiddenLabels = rawHiddenLabels?.split(",") || [];
@@ -113,24 +134,22 @@ export default function Kanban() {
           horizontal
           contentContainerStyle={[
             { flexDirection: "row", gap: 15 },
-            breakpoints.md ? { padding: 15 } : { width: "100%" },
+            breakpoints.md
+              ? { padding: 15 }
+              : { width: "100%", flexDirection: "column" },
           ]}
           scrollEnabled={breakpoints.md}
         >
-          {breakpoints.md ? (
-            columns.map(
-              (label) => label && <Column key={label.id} label={label} />
-            )
-          ) : currentColumn == -1 ? (
-            <ColumnHome columns={columns} setCurrentColumn={setCurrentColumn} />
-          ) : (
-            columns[currentColumn] && <Column label={columns[currentColumn]} />
+          {breakpoints.md
+            ? columns.map(
+                (label) => label && <Column key={label.id} label={label} />
+              )
+            : columns[currentColumn] && (
+                <Column label={columns[currentColumn]} />
+              )}
+          {data && Object.keys(data.entities)?.length > 0 && breakpoints.md && (
+            <Column entities={data.entities} />
           )}
-          {data &&
-            Object.keys(data.entities)?.length > 0 &&
-            (breakpoints.md || currentColumn === -1) && (
-              <Column entities={data.entities} />
-            )}
           {breakpoints.md && !isReadOnly && (
             <View
               style={{
@@ -157,3 +176,4 @@ export default function Kanban() {
     </KanbanContext.Provider>
   );
 }
+

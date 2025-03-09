@@ -60,7 +60,7 @@ const StoryPointHeader = ({
 
   return (
     <LinearGradient
-      colors={[theme[breakpoints.md ? 2 : 3], theme[breakpoints.md ? 2 : 3]]}
+      colors={[theme[breakpoints.md ? 2 : 1], theme[breakpoints.md ? 2 : 1]]}
       style={{
         borderRadius: breakpoints.md ? 20 : 0,
         flexDirection: "row",
@@ -70,14 +70,6 @@ const StoryPointHeader = ({
         borderTopColor: theme[5],
       }}
     >
-      {!breakpoints.md && (
-        <IconButton
-          onPress={handleBack}
-          size={55}
-          icon="arrow_back_ios_new"
-          disabled={index === 0}
-        />
-      )}
       <Pressable
         onPress={() =>
           columnRef.current.scrollToOffset({ index: 0, animated: true })
@@ -85,7 +77,7 @@ const StoryPointHeader = ({
         style={{
           flexDirection: "row",
           alignItems: "center",
-          marginHorizontal: "auto",
+          marginRight: "auto",
           gap: 15,
         }}
       >
@@ -119,15 +111,25 @@ const StoryPointHeader = ({
             {scale}
           </Text>
         </View>
-        <Text weight={900} style={{ color: theme[11] }}>
+        <Text
+          style={{ color: theme[11], fontSize: 23, fontFamily: "serifText700" }}
+        >
           {STORY_POINT_SCALE[index]}
         </Text>
       </Pressable>
       {!breakpoints.md && (
         <IconButton
+          onPress={handleBack}
+          size={40}
+          icon="west"
+          disabled={index === 0}
+        />
+      )}
+      {!breakpoints.md && (
+        <IconButton
           onPress={handleNext}
-          size={55}
-          icon="arrow_forward_ios"
+          size={40}
+          icon="east"
           disabled={index === 4}
         />
       )}

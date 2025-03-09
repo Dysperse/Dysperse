@@ -412,3 +412,4 @@ export function SettingsSidebar({ forceShow }: { forceShow?: boolean }) {
     </ScrollView>
   );
 }
+

@@ -85,7 +85,7 @@ export default function Grid({ editOrderMode }: any) {
                         setCurrentColumn(
                           label.other
                             ? "OTHER"
-                            : data.labels.findIndex((l) => l.id == label.id)
+                            : data.gridOrder.findIndex((l) => l == label.id)
                         );
                       }}
                       style={({ pressed }: any) => ({
@@ -95,7 +95,7 @@ export default function Grid({ editOrderMode }: any) {
                         maxWidth: 230,
                         minHeight: 5,
                         borderWidth: 2,
-                        borderColor: theme[pressed ? 7 : 6],
+                        borderColor: theme[pressed ? 6 : 4],
                         borderRadius: 25,
                         alignItems: "center",
                         justifyContent: "center",
@@ -215,7 +215,10 @@ export default function Grid({ editOrderMode }: any) {
               padding: 15,
               gap: 15,
               paddingRight: isMobileHome || breakpoints.md ? 30 : 0,
-              paddingBottom: currentColumn === "HOME" ? insets.bottom + 15 : 0,
+              paddingBottom:
+                currentColumn === "HOME"
+                  ? (!breakpoints.md ? insets.bottom : 0) + 15
+                  : 0,
               flexDirection: "column",
             },
             !breakpoints.md &&
@@ -236,7 +239,7 @@ export default function Grid({ editOrderMode }: any) {
               width: "100%",
             },
             isMobileHome && {
-              backgroundColor: theme[3],
+              backgroundColor: theme[1],
               width,
             },
           ]}

@@ -1,5 +1,5 @@
+import { MenuButton } from "@/app/(app)/home";
 import { CollectionContext } from "@/components/collections/context";
-import IconButton from "@/ui/IconButton";
 import Spinner from "@/ui/Spinner";
 import Text from "@/ui/Text";
 import { addHslAlpha } from "@/ui/color";
@@ -38,25 +38,12 @@ export function CollectionMenuLayout({ title, children }) {
     <CollectionContext.Provider value={contextValue}>
       {data && !data?.error ? (
         <View style={{ flex: 1 }}>
-          <IconButton
-            size={55}
-            icon="close"
-            onPress={handleClose}
-            style={{
-              position: "absolute",
-              top: 30,
-              left: 30,
-              zIndex: 1,
-              borderWidth: 2,
-            }}
-            variant="outlined"
-          />
+          <MenuButton back gradient />
           <ScrollView
             showsVerticalScrollIndicator={false}
             style={{
               gap: 10,
               paddingHorizontal: 20,
-              paddingTop: 60,
               flex: 1,
               backgroundColor: addHslAlpha(
                 theme[1],
@@ -67,6 +54,7 @@ export function CollectionMenuLayout({ title, children }) {
             <View
               style={{
                 width: 500,
+                paddingTop: 60,
                 maxWidth: "100%",
                 marginHorizontal: "auto",
                 flex: 1,
@@ -75,11 +63,11 @@ export function CollectionMenuLayout({ title, children }) {
               <View>
                 <Text
                   style={{
-                    textAlign: "center",
-                    fontFamily: "serifText800",
-                    fontSize: 40,
+                    fontFamily: "serifText700",
+                    fontSize: 30,
                     marginTop: 40,
-                    marginBottom: 20,
+                    marginBottom: 10,
+                    paddingHorizontal: 20,
                   }}
                 >
                   {title}
@@ -103,3 +91,4 @@ export function CollectionMenuLayout({ title, children }) {
     </CollectionContext.Provider>
   );
 }
+

@@ -7,6 +7,7 @@ import Chip from "@/ui/Chip";
 import Emoji from "@/ui/Emoji";
 import Icon from "@/ui/Icon";
 import { ListItemButton } from "@/ui/ListItemButton";
+import MenuPopover from "@/ui/MenuPopover";
 import Text from "@/ui/Text";
 import { useColor } from "@/ui/color";
 import { useColorTheme } from "@/ui/color/theme-provider";
@@ -181,29 +182,54 @@ function TaskNoteChips({ note }) {
 
   return (
     <>
-      {chips
-        .filter((link) => link.text?.trim())
-        .map((link, index) => (
-          <ImageViewer
-            key={index + link.type}
-            image={link.type === "IMAGE" && link.image}
-          >
+      {chips.filter((link) => link.text?.trim()).length > 3 ? (
+        <MenuPopover
+          containerStyle={{ width: 250 }}
+          options={chips
+            .filter((link) => link.text?.trim())
+            .map((link) => ({
+              text: link.text,
+              icon: link.image ? (
+                <Avatar size={22} image={link.image} disabled />
+              ) : (
+                link.icon
+              ),
+              onPress: () => Linking.openURL(link.image || link.href),
+            }))}
+          trigger={
             <Chip
               dense
-              key={index}
-              label={link.text}
-              textProps={{ numberOfLines: 1 }}
-              onPress={() => Linking.openURL(link.image || link.href)}
-              icon={
-                link.image ? (
-                  <Avatar size={22} image={link.image} disabled />
-                ) : (
-                  link.icon
-                )
-              }
+              label={`${chips.length} links`}
+              icon="expand_more"
+              iconPosition="after"
             />
-          </ImageViewer>
-        ))}
+          }
+        />
+      ) : (
+        chips
+          .filter((link) => link.text?.trim())
+          .map((link, index) => (
+            <ImageViewer
+              key={index + link.type}
+              image={link.type === "IMAGE" && link.image}
+            >
+              <Chip
+                dense
+                key={index}
+                label={link.text}
+                textProps={{ numberOfLines: 1 }}
+                onPress={() => Linking.openURL(link.image || link.href)}
+                icon={
+                  link.image ? (
+                    <Avatar size={22} image={link.image} disabled />
+                  ) : (
+                    link.icon
+                  )
+                }
+              />
+            </ImageViewer>
+          ))
+      )}
     </>
   );
 }
@@ -381,7 +407,7 @@ const Task = memo(function Task({
                     <Text
                       numberOfLines={1}
                       weight={300}
-                      style={{ opacity: 0.7 }}
+                      style={{ opacity: 0.6, fontSize: 14, marginVertical: 2 }}
                     >
                       {getPreviewText(task.note).trim().substring(0, 100)}
                     </Text>
@@ -455,3 +481,4 @@ const Task = memo(function Task({
 });
 
 export default React.memo(Task);
+

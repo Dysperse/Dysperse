@@ -1,7 +1,6 @@
 import { mutations } from "@/app/(app)/[tab]/collections/mutations";
 import { useCollectionContext } from "@/components/collections/context";
 import { Entity } from "@/components/collections/entity";
-import { KanbanHeader } from "@/components/collections/views/kanban/Header";
 import CreateTask from "@/components/task/create";
 import { useUser } from "@/context/useUser";
 import { omit } from "@/helpers/omit";
@@ -13,13 +12,14 @@ import { addHslAlpha } from "@/ui/color";
 import { useColorTheme } from "@/ui/color/theme-provider";
 import { LinearGradient } from "expo-linear-gradient";
 import { useRef, useState } from "react";
-import { Platform, Pressable, View } from "react-native";
+import { Platform, View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { useDidUpdate } from "../../../../utils/useDidUpdate";
 import { ColumnEmptyComponent } from "../../emptyComponent";
 
 import { FlashList } from "@shopify/flash-list";
 import React from "react";
+import { KanbanHeader } from "./Header";
 
 export type ColumnProps =
   | {
@@ -110,33 +110,25 @@ export function Column(props: ColumnProps) {
             },
       ]}
     >
-      <Pressable
-        style={({ hovered, pressed }) => ({
-          opacity: pressed ? 0.6 : hovered ? 0.9 : 1,
-        })}
-        onPress={() =>
-          columnRef.current.scrollToOffset({ offset: 0, animated: true })
-        }
-      >
-        <KanbanHeader
-          showInspireMe={data.length === 0}
-          grid={props.grid}
-          label={{
-            ...props.label,
-            entitiesLength: Object.values(
-              props.label?.entities || props?.entities || {}
-            ).filter((e) => e.completionInstances.length === 0).length,
-          }}
-        />
-      </Pressable>
+      <KanbanHeader
+        showInspireMe={data.length === 0}
+        grid={props.grid}
+        label={{
+          ...props.label,
+          entitiesLength: Object.values(
+            props.label?.entities || props?.entities || {}
+          ).filter((e) => e.completionInstances.length === 0).length,
+        }}
+      />
       {props.grid ? undefined : (
         <>
           {!isReadOnly && session && (
             <View
               style={{
                 padding: 15,
+                paddingTop: 10,
                 paddingBottom: 0,
-                height: 65,
+                height: 55,
                 zIndex: 9999,
               }}
             >
@@ -269,7 +261,6 @@ export function Column(props: ColumnProps) {
         )}
         renderItem={({ item }) => (
           <Entity
-            // reorderable
             isReadOnly={isReadOnly || !session}
             item={item}
             showDate
@@ -281,3 +272,4 @@ export function Column(props: ColumnProps) {
     </View>
   );
 }
+

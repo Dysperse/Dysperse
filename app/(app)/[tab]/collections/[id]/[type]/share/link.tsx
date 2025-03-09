@@ -1,8 +1,8 @@
-import { MenuButton } from "@/app/(app)/home";
 import {
   CollectionContext,
   useCollectionContext,
 } from "@/components/collections/context";
+import { CollectionMenuLayout } from "@/components/collections/menus/layout";
 import { COLLECTION_VIEWS } from "@/components/layout/command-palette/list";
 import { useSession } from "@/context/AuthProvider";
 import { sendApiRequest } from "@/helpers/api";
@@ -18,13 +18,12 @@ import MenuPopover from "@/ui/MenuPopover";
 import Spinner from "@/ui/Spinner";
 import Text from "@/ui/Text";
 import TextField from "@/ui/TextArea";
-import { addHslAlpha } from "@/ui/color";
 import { useColorTheme } from "@/ui/color/theme-provider";
 import capitalizeFirstLetter from "@/utils/capitalizeFirstLetter";
 import { setStringAsync } from "expo-clipboard";
 import { router, useLocalSearchParams } from "expo-router";
 import { useState } from "react";
-import { Platform, ScrollView, View } from "react-native";
+import { ScrollView, View } from "react-native";
 import Toast from "react-native-toast-message";
 import useSWR from "swr";
 
@@ -109,7 +108,7 @@ const Link = ({ collection, navigation }) => {
             )}
           </View>
           <Text variant="eyebrow">Preferences</Text>
-          <ListItemButton disabled>
+          <ListItemButton disabled style={{ marginHorizontal: -13 }}>
             <ListItemText
               primary="Default view"
               secondary="People will see this when this link is opened. They can still toggle between other views as well."
@@ -133,65 +132,66 @@ const Link = ({ collection, navigation }) => {
           <Text variant="eyebrow" style={{ marginTop: 20 }}>
             Permissions
           </Text>
-          {[
-            {
-              key: "NO_ACCESS",
-              text: "No access",
-              description: "Nobody can see your collection",
-            },
-            {
-              key: "READ_ONLY",
-              text: "Read only",
-              description:
-                "Anyone with the link can view this collection, even those who don't have an account.",
-            },
-          ].map((access) => (
-            <ListItemButton
-              key={access.key}
-              onPress={async () => {
-                setIsLoading(true);
-                const res = await sendApiRequest(
-                  session,
-                  "PUT",
-                  "space/collections/collection/link",
-                  {},
-                  {
-                    body: JSON.stringify({
-                      id: collection.data.id,
-                      access:
-                        access.key === "NO_ACCESS" ? undefined : access.key,
+          <View style={{ marginHorizontal: -13 }}>
+            {[
+              {
+                key: "NO_ACCESS",
+                text: "No access",
+                description: "Nobody can see your collection",
+              },
+              {
+                key: "READ_ONLY",
+                text: "Read only",
+                description:
+                  "Anyone with the link can view this collection, even those who don't have an account.",
+              },
+            ].map((access) => (
+              <ListItemButton
+                key={access.key}
+                onPress={async () => {
+                  setIsLoading(true);
+                  const res = await sendApiRequest(
+                    session,
+                    "PUT",
+                    "space/collections/collection/link",
+                    {},
+                    {
+                      body: JSON.stringify({
+                        id: collection.data.id,
+                        access:
+                          access.key === "NO_ACCESS" ? undefined : access.key,
+                        disabled: access.key === "NO_ACCESS",
+                      }),
+                    }
+                  );
+                  if (res.error) return Toast.show({ type: "error" });
+                  mutate(
+                    {
+                      ...data,
+                      access: access.key,
                       disabled: access.key === "NO_ACCESS",
-                    }),
-                  }
-                );
-                if (res.error) return Toast.show({ type: "error" });
-                mutate(
-                  {
-                    ...data,
-                    access: access.key,
-                    disabled: access.key === "NO_ACCESS",
-                  },
-                  { revalidate: false }
-                );
-                setIsLoading(false);
-                Toast.show({ type: "success", text1: "Access updated!" });
-              }}
-            >
-              <ListItemText
-                primary={access.text}
-                secondary={access.description}
-              />
-              {(access.key === "NO_ACCESS"
-                ? data.disabled
-                : data.access === access.key && !data.disabled) && (
-                <Icon>check</Icon>
-              )}
-            </ListItemButton>
-          ))}
+                    },
+                    { revalidate: false }
+                  );
+                  setIsLoading(false);
+                  Toast.show({ type: "success", text1: "Access updated!" });
+                }}
+              >
+                <ListItemText
+                  primary={access.text}
+                  secondary={access.description}
+                />
+                {(access.key === "NO_ACCESS"
+                  ? data.disabled
+                  : data.access === access.key && !data.disabled) && (
+                  <Icon>check</Icon>
+                )}
+              </ListItemButton>
+            ))}
+          </View>
 
-          <Divider style={{ marginVertical: 20, marginTop: 5, height: 1 }} />
+          <Divider style={{ marginBottom: 10, marginTop: 15, height: 1 }} />
           <ListItemButton
-            variant="outlined"
             onPress={async () => {
               setIsLoading(true);
               await sendApiRequest(
@@ -209,6 +209,7 @@ const Link = ({ collection, navigation }) => {
               await mutate();
               setIsLoading(false);
             }}
+            style={{ marginHorizontal: -13 }}
           >
             <ListItemText
               primary="Refresh link"
@@ -237,46 +238,9 @@ function Share({ handleClose }) {
   useHotkeys("esc", () => router.back());
 
   return (
-    <View style={{ flex: 1 }}>
-      <MenuButton gradient back />
-      <ScrollView
-        showsVerticalScrollIndicator={false}
-        style={{
-          gap: 10,
-          paddingHorizontal: 20,
-          paddingTop: 60,
-          flex: 1,
-          backgroundColor: addHslAlpha(
-            theme[1],
-            Platform.OS === "android" ? 1 : 0.8
-          ),
-        }}
-      >
-        <View
-          style={{
-            width: 500,
-            maxWidth: "100%",
-            marginHorizontal: "auto",
-            flex: 1,
-          }}
-        >
-          <View>
-            <Text
-              style={{
-                textAlign: "center",
-                fontFamily: "serifText800",
-                fontSize: 40,
-                marginTop: 30,
-                marginBottom: 20,
-              }}
-            >
-              Link sharing
-            </Text>
-            <Link collection={collection} navigation={{}} />
-          </View>
-        </View>
-      </ScrollView>
-    </View>
+    <CollectionMenuLayout title="Link sharing">
+      <Link collection={collection} navigation={{}} />
+    </CollectionMenuLayout>
   );
 }
 

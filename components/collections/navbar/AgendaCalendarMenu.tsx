@@ -113,9 +113,21 @@ export function AgendaCalendarMenu({
             typeof handleMenuClose === "undefined"
               ? "column-reverse"
               : "column",
-          height: typeof handleMenuClose === "undefined" ? undefined : 400,
+          height: typeof handleMenuClose === "undefined" ? undefined : 450,
         }}
       >
+        {typeof handleMenuClose !== "undefined" && (
+          <LinearGradient
+            colors={[theme[1], addHslAlpha(theme[1], 0)]}
+            style={{
+              height: 50,
+              width: "100%",
+              zIndex: 9,
+              marginTop: -25,
+              marginBottom: -70,
+            }}
+          />
+        )}
         <SafeCalendar
           calendarActiveDateRanges={[
             typeof handleMenuClose === "undefined" && weekMode
@@ -149,7 +161,7 @@ export function AgendaCalendarMenu({
         />
         {typeof handleMenuClose !== "undefined" && (
           <LinearGradient
-            colors={[addHslAlpha(theme[3], 0), theme[3]]}
+            colors={[addHslAlpha(theme[1], 0), theme[1]]}
             style={{
               height: 50,
               width: "100%",
@@ -167,14 +179,14 @@ export function AgendaCalendarMenu({
           {typeof handleMenuClose !== "undefined" && (
             <Button
               backgroundColors={{
-                default: theme[3],
-                hovered: theme[4],
-                pressed: theme[5],
+                default: theme[2],
+                hovered: theme[3],
+                pressed: theme[4],
               }}
               borderColors={{
-                default: theme[5],
-                hovered: theme[6],
-                pressed: theme[7],
+                default: theme[4],
+                hovered: theme[5],
+                pressed: theme[6],
               }}
               variant="outlined"
               height={60}

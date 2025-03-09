@@ -180,7 +180,12 @@ export const ColumnEmptyComponent = function ColumnEmptyComponent({
             {message[1]}
           </Text>
           <Text
-            style={{ opacity: 0.6, zIndex: 99, color: theme[11] }}
+            style={{
+              opacity: 0.6,
+              zIndex: 99,
+              color: theme[11],
+              marginTop: -3,
+            }}
             numberOfLines={1}
           >
             {message[2]}

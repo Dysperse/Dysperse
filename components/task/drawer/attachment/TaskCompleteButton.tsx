@@ -117,7 +117,6 @@ export function TaskCompleteButton() {
             style={{
               color: isCompleted ? green[1] : theme[11],
             }}
-            bold={!breakpoints.md}
           >
             check
           </Icon>
@@ -135,3 +134,4 @@ export function TaskCompleteButton() {
     )
   );
 }
+

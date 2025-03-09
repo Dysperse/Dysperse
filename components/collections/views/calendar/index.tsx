@@ -146,18 +146,7 @@ export function Content() {
 
   return data ? (
     <>
-      {!breakpoints.md && (
-        <View
-          style={{
-            borderTopColor: theme[5],
-            borderTopWidth: 1,
-            borderBottomColor: theme[5],
-            borderBottomWidth: 1,
-          }}
-        >
-          <AgendaButtons weekMode />
-        </View>
-      )}
+      {!breakpoints.md && <AgendaButtons weekMode />}
       <CalendarTaskDrawer
         mutateList={mutations.timeBased.update(mutate)}
         tasks={tasks}

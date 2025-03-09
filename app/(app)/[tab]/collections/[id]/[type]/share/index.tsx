@@ -1,9 +1,9 @@
-import { MenuButton } from "@/app/(app)/home";
 import { ProfileModal } from "@/components/ProfileModal";
 import {
   CollectionContext,
   useCollectionContext,
 } from "@/components/collections/context";
+import { CollectionMenuLayout } from "@/components/collections/menus/layout";
 import { PublishCollection } from "@/components/collections/navbar/PublishCollection";
 import { useSession } from "@/context/AuthProvider";
 import { sendApiRequest } from "@/helpers/api";
@@ -21,19 +21,12 @@ import Modal from "@/ui/Modal";
 import Spinner from "@/ui/Spinner";
 import Text from "@/ui/Text";
 import TextField from "@/ui/TextArea";
-import { addHslAlpha } from "@/ui/color";
 import { useColorTheme } from "@/ui/color/theme-provider";
 import capitalizeFirstLetter from "@/utils/capitalizeFirstLetter";
 import { BottomSheetModal } from "@gorhom/bottom-sheet";
 import { router, useLocalSearchParams, usePathname } from "expo-router";
 import { cloneElement, useEffect, useRef, useState } from "react";
-import {
-  Platform,
-  Pressable,
-  ScrollView,
-  StyleSheet,
-  View,
-} from "react-native";
+import { Pressable, ScrollView, StyleSheet, View } from "react-native";
 import Toast from "react-native-toast-message";
 import useSWR from "swr";
 
@@ -518,52 +511,14 @@ const Home = ({ collection, navigation }) => {
   );
 };
 
-function Share({ handleClose }) {
-  const theme = useColorTheme();
+function Share() {
   const collection = useCollectionContext();
   useHotkeys("esc", () => router.back());
 
   return (
-    <View style={{ flex: 1 }}>
-      <MenuButton gradient back />
-      <ScrollView
-        showsVerticalScrollIndicator={false}
-        style={{
-          gap: 10,
-          paddingHorizontal: 20,
-          paddingTop: 60,
-          flex: 1,
-          backgroundColor: addHslAlpha(
-            theme[1],
-            Platform.OS === "android" ? 1 : 0.8
-          ),
-        }}
-      >
-        <View
-          style={{
-            width: 500,
-            maxWidth: "100%",
-            marginHorizontal: "auto",
-            flex: 1,
-          }}
-        >
-          <View>
-            <Text
-              style={{
-                textAlign: "center",
-                fontFamily: "serifText800",
-                fontSize: 40,
-                marginTop: 30,
-                marginBottom: 20,
-              }}
-            >
-              Share
-            </Text>
-            <Home collection={collection} navigation={{}} />
-          </View>
-        </View>
-      </ScrollView>
-    </View>
+    <CollectionMenuLayout title="Share">
+      <Home collection={collection} navigation={{}} />
+    </CollectionMenuLayout>
   );
 }
 

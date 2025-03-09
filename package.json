@@ -113,7 +113,7 @@
     "react-native-countdown-circle-timer": "^3.2.1",
     "react-native-draggable-grid": "^2.2.1",
     "react-native-edge-to-edge": "^1.4.3",
-    "react-native-gesture-handler": "~2.20.2",
+    "react-native-gesture-handler": "^2.24.0",
     "react-native-image-colors": "^2.4.0",
     "react-native-keyboard-controller": "^1.16.4",
     "react-native-leaflet-view": "^0.1.2",

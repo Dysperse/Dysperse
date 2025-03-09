@@ -3,12 +3,10 @@ import { sendApiRequest } from "@/helpers/api";
 import { Avatar } from "@/ui/Avatar";
 import { Button, ButtonText } from "@/ui/Button";
 import { useColorTheme } from "@/ui/color/theme-provider";
-import Divider from "@/ui/Divider";
-import Icon from "@/ui/Icon";
 import IconButton from "@/ui/IconButton";
 import { ListItemButton } from "@/ui/ListItemButton";
 import ListItemText from "@/ui/ListItemText";
-import { router, usePathname } from "expo-router";
+import { usePathname } from "expo-router";
 import { Linking, View } from "react-native";
 import Toast from "react-native-toast-message";
 
@@ -39,14 +37,13 @@ export const PublishCollection = ({ collection }: any) => {
 
   return (
     <View style={{ marginHorizontal: -10 }}>
-      {data?.public && <Divider style={{ width: "60%", marginVertical: 10 }} />}
       {data?.public ? (
         <>
           <ListItemButton disabled>
             <Avatar icon="celebration" size={40} disabled />
             <ListItemText
-              primary="Published to the Dysverse!"
-              secondary="Tap to view or unpublish"
+              primary="Published!"
+              secondary="Visible in the Dysverse"
             />
             <View style={{ flexDirection: "row", gap: 5 }}>
               <IconButton
@@ -88,17 +85,6 @@ export const PublishCollection = ({ collection }: any) => {
           </Button>
         </ListItemButton>
       )}
-      <ListItemButton
-        onPress={() => router.replace(pathname.replace("/share", "/customize"))}
-      >
-        <Avatar icon="format_paint" size={40} disabled />
-        <ListItemText
-          primary={
-            data?.public ? "Template customization" : "Customize collection"
-          }
-        />
-        <Icon>arrow_forward_ios</Icon>
-      </ListItemButton>
     </View>
   );
 };
