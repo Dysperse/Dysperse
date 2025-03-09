@@ -280,6 +280,7 @@ export default function AppLayout() {
                                 <NotificationsModal />
                                 <TabFriendModal />
                                 <DrawerLayout
+                                  minSwipeDistance={20}
                                   contentContainerStyle={{
                                     backgroundColor: "transparent",
                                     marginTop: -1,

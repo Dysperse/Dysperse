@@ -1,0 +1,117 @@
+diff --git a/node_modules/react-native-gesture-handler/lib/module/components/ReanimatedDrawerLayout.js b/node_modules/react-native-gesture-handler/lib/module/components/ReanimatedDrawerLayout.js
+index 31f7614..d475c9c 100644
+--- a/node_modules/react-native-gesture-handler/lib/module/components/ReanimatedDrawerLayout.js
++++ b/node_modules/react-native-gesture-handler/lib/module/components/ReanimatedDrawerLayout.js
+@@ -2,11 +2,11 @@
+ // It's cross-compatible with all platforms despite
+ // `DrawerLayoutAndroid` only being available on android
+ import React, { forwardRef, useCallback, useEffect, useImperativeHandle, useMemo, useState } from 'react';
+-import { StyleSheet, Keyboard, StatusBar, I18nManager, Platform } from 'react-native';
++import { I18nManager, Keyboard, Platform, StatusBar, StyleSheet } from 'react-native';
+ import Animated, { Extrapolation, interpolate, runOnJS, useAnimatedProps, useAnimatedStyle, useDerivedValue, useSharedValue, withSpring } from 'react-native-reanimated';
+-import { GestureObjects as Gesture } from '../handlers/gestures/gestureObjects';
+-import { GestureDetector } from '../handlers/gestures/GestureDetector';
+ import { MouseButton } from '../handlers/gestureHandlerCommon';
++import { GestureDetector } from '../handlers/gestures/GestureDetector';
++import { GestureObjects as Gesture } from '../handlers/gestures/gestureObjects';
+ const DRAG_TOSS = 0.05;
+ export let DrawerPosition;
+ 
+@@ -318,7 +318,7 @@ const DrawerLayout = /*#__PURE__*/forwardRef(function DrawerLayout(props, ref) {
+     importantForAccessibility: Platform.OS === 'android' ? isDrawerOpen.value ? 'no-hide-descendants' : 'yes' : undefined
+   }));
+   const children = typeof props.children === 'function' ? props.children(openValue) // renderer function
+-  : props.children;
++    : props.children;
+   useImperativeHandle(ref, () => ({
+     openDrawer,
+     closeDrawer
+@@ -348,21 +348,25 @@ const DrawerLayout = /*#__PURE__*/forwardRef(function DrawerLayout(props, ref) {
+ });
+ export default DrawerLayout;
+ const styles = StyleSheet.create({
+-  drawerContainer: { ...StyleSheet.absoluteFillObject,
++  drawerContainer: {
++    ...StyleSheet.absoluteFillObject,
+     zIndex: 1001,
+     flexDirection: 'row'
+   },
+-  containerInFront: { ...StyleSheet.absoluteFillObject,
++  containerInFront: {
++    ...StyleSheet.absoluteFillObject,
+     zIndex: 1002
+   },
+-  containerOnBack: { ...StyleSheet.absoluteFillObject
++  containerOnBack: {
++    ...StyleSheet.absoluteFillObject
+   },
+   main: {
+     flex: 1,
+     zIndex: 0,
+-    overflow: 'hidden'
++    overflow: 'hidden',
+   },
+-  overlay: { ...StyleSheet.absoluteFillObject,
++  overlay: {
++    ...StyleSheet.absoluteFillObject,
+     zIndex: 1000
+   }
+ });
+diff --git a/node_modules/react-native-gesture-handler/src/components/ReanimatedDrawerLayout.tsx b/node_modules/react-native-gesture-handler/src/components/ReanimatedDrawerLayout.tsx
+index 9cc1ed1..664eaea 100644
+--- a/node_modules/react-native-gesture-handler/src/components/ReanimatedDrawerLayout.tsx
++++ b/node_modules/react-native-gesture-handler/src/components/ReanimatedDrawerLayout.tsx
+@@ -13,15 +13,15 @@ import React, {
+ } from 'react';
+ 
+ import {
+-  StyleSheet,
++  I18nManager,
+   Keyboard,
++  LayoutChangeEvent,
++  Platform,
+   StatusBar,
+-  I18nManager,
+   StatusBarAnimation,
+   StyleProp,
++  StyleSheet,
+   ViewStyle,
+-  LayoutChangeEvent,
+-  Platform,
+ } from 'react-native';
+ 
+ import Animated, {
+@@ -36,16 +36,16 @@ import Animated, {
+   withSpring,
+ } from 'react-native-reanimated';
+ 
+-import { GestureObjects as Gesture } from '../handlers/gestures/gestureObjects';
+-import { GestureDetector } from '../handlers/gestures/GestureDetector';
+ import {
+-  UserSelect,
+   ActiveCursor,
+-  MouseButton,
+-  HitSlop,
+   GestureStateChangeEvent,
++  HitSlop,
++  MouseButton,
++  UserSelect,
+ } from '../handlers/gestureHandlerCommon';
+ import { PanGestureHandlerEventPayload } from '../handlers/GestureHandlerEventPayload';
++import { GestureDetector } from '../handlers/gestures/GestureDetector';
++import { GestureObjects as Gesture } from '../handlers/gestures/gestureObjects';
+ 
+ const DRAG_TOSS = 0.05;
+ 
+@@ -528,8 +528,9 @@ const DrawerLayout = forwardRef<DrawerLayoutMethods, DrawerLayoutProps>(
+         .mouseButton(mouseButton)
+         .hitSlop(drawerOpened ? fillHitSlop : edgeHitSlop)
+         .minDistance(drawerOpened ? 100 : 0)
+-        .activeOffsetX(gestureOrientation * minSwipeDistance)
+-        .failOffsetY([-15, 15])
++        .activeOffsetX([minSwipeDistance, drawerWidth]) // Make sure user intends a swipe
++        .failOffsetY([-5, 5]) // Less sensitive to vertical movement
++        .shouldCancelWhenOutside(true)
+         .simultaneousWithExternalGesture(overlayDismissGesture)
+         .enableTrackpadTwoFingerGesture(enableTrackpadTwoFingerGesture)
+         .enabled(

@@ -117,7 +117,17 @@ const AppContainer = memo(
               marginBottom: 0,
               zIndex: 9999,
             }
-        : {}
+        : {
+            transform: [
+              {
+                scale: interpolate(
+                  progressValue.current?.value || 0,
+                  [0, 1],
+                  [1, 0.98]
+                ),
+              },
+            ],
+          }
     );
 
     return (

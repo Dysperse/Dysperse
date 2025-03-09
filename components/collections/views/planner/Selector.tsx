@@ -3,6 +3,7 @@ import { Button } from "@/ui/Button";
 import Text from "@/ui/Text";
 import { useColorTheme } from "@/ui/color/theme-provider";
 import dayjs from "dayjs";
+import { impactAsync, ImpactFeedbackStyle } from "expo-haptics";
 import { router, useLocalSearchParams } from "expo-router";
 import React, { memo } from "react";
 import { Platform, StyleSheet, View } from "react-native";
@@ -85,6 +86,7 @@ const SelectionButton = memo(function SelectionButton({
     (!start && dayjs().startOf("day").isBetween(itemStart, itemEnd));
 
   const handlePress = () => {
+    impactAsync(ImpactFeedbackStyle.Light);
     if (isSelected) return;
     router.setParams({
       start: dayjs(itemStart).toISOString(),

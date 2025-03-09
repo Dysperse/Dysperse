@@ -141,6 +141,7 @@ export const MenuButton = ({
             left: 0,
             zIndex: 10,
             height: 100,
+            overflow: "visible",
             width: "100%",
             pointerEvents: "box-none",
           }}
@@ -160,6 +161,7 @@ export const MenuButton = ({
               right: undefined,
               left: 20,
             },
+            { zIndex: 1 },
             addInsets && { marginTop: insets.top },
           ]}
           icon={icon || (back ? "close" : <MenuIcon />)}

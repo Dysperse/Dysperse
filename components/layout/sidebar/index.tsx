@@ -80,6 +80,7 @@ const HomeButton = memo(function HomeButton({ isHome }: { isHome: boolean }) {
   const breakpoints = useResponsiveBreakpoints();
 
   const handleHome = useCallback(() => {
+    impactAsync(ImpactFeedbackStyle.Light);
     if (router.canDismiss()) router.dismissAll();
     router.replace("/home");
     InteractionManager.runAfterInteractions(() => {
@@ -472,7 +473,10 @@ const Header = memo(function Header() {
           style={{ borderRadius: 15, marginRight: -10, flex: 1 }}
           variant="filled"
           size={45}
-          onPress={() => router.push("/everything")}
+          onPress={() => {
+            impactAsync(ImpactFeedbackStyle.Light);
+            router.push("/everything");
+          }}
         >
           <Icon>home_storage</Icon>
           {Array.isArray(hasUnread) && hasUnread?.length > 0 && (
@@ -559,7 +563,6 @@ const FocusPanel = memo(() => {
   const theme = useColorTheme();
   const { widgets, focusPanelFreezerRef, activeStateRef } =
     useFocusPanelContext();
-  const insets = useSafeAreaInsets();
   const sheetRef = useRef(null);
   const [activeWidget, setActiveWidget] = useState(activeStateRef.current);
   const breakpoints = useResponsiveBreakpoints();
@@ -785,7 +788,7 @@ function PrimarySidebar({ progressValue }) {
           paddingHorizontal: 15,
           width: "100%",
           marginBottom:
-            !breakpoints.md || Platform.OS === "web" ? insets.bottom + 2 : -8,
+            !breakpoints.md || Platform.OS === "web" ? insets.bottom : -8,
           height: "100%",
         }}
       >
@@ -819,6 +822,7 @@ function SecondarySidebar() {
         icon="west"
         onPress={() => {
           router.replace("/home");
+          impactAsync(ImpactFeedbackStyle.Light);
           InteractionManager.runAfterInteractions(() => {
             sidebarRef?.current?.openDrawer?.();
           });
@@ -843,6 +847,7 @@ function SecondarySidebar() {
           icon="tag"
           onPress={() => {
             router.push("/everything");
+            impactAsync(ImpactFeedbackStyle.Light);
             if (!breakpoints.md) sidebarRef.current?.closeDrawer?.();
           }}
           variant={pathname === "/everything" ? "filled" : "text"}
@@ -859,6 +864,7 @@ function SecondarySidebar() {
           icon="stack"
           onPress={() => {
             router.push("/everything/collections");
+            impactAsync(ImpactFeedbackStyle.Light);
             if (!breakpoints.md) sidebarRef.current?.closeDrawer?.();
           }}
           variant={pathname === "/everything/collections" ? "filled" : "text"}
@@ -869,6 +875,7 @@ function SecondarySidebar() {
           text="Trash"
           onPress={() => {
             router.push("/everything/trash");
+            impactAsync(ImpactFeedbackStyle.Light);
             if (!breakpoints.md) sidebarRef.current?.closeDrawer?.();
           }}
           containerStyle={[
@@ -885,6 +892,7 @@ function SecondarySidebar() {
           text="Storage"
           onPress={() => {
             router.push("/everything/storage");
+            impactAsync(ImpactFeedbackStyle.Light);
             if (!breakpoints.md) sidebarRef.current?.closeDrawer?.();
           }}
           containerStyle={[

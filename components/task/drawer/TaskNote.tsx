@@ -365,6 +365,7 @@ function AISimplification({ id, updateTask }) {
         borderRadius: 50,
         marginBottom: 10,
         marginTop: 10,
+        gap: 10,
         flexDirection: "row",
         alignItems: "center",
       }}
@@ -373,6 +374,7 @@ function AISimplification({ id, updateTask }) {
         style={{
           color: theme[11],
           opacity: 0.8,
+          flex: 1,
         }}
         weight={700}
       >
@@ -423,6 +425,7 @@ export const TaskNote = forwardRef(
 
     const focusedStyles = useAnimatedStyle(() => ({
       borderRadius: 10,
+      marginBottom: Platform.OS === "web" ? 0 : 100,
       position: "relative",
       backgroundColor: interpolateColor(
         isFocused.value,
