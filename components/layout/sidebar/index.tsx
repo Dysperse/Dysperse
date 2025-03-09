@@ -722,11 +722,7 @@ function PrimarySidebar({ progressValue }) {
   const transformStyle = useAnimatedStyle(() => ({
     transform: [
       {
-        [breakpoints.md ? "scale" : "scale"]: interpolate(
-          progressValue.value,
-          [0, 1],
-          [0.9, 1]
-        ),
+        scale: interpolate(progressValue.value, [0, 1], [0.9, 1]),
       },
     ],
   }));
