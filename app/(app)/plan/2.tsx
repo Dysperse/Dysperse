@@ -9,11 +9,12 @@ import { FlashList } from "@shopify/flash-list";
 import dayjs from "dayjs";
 import { LinearGradient } from "expo-linear-gradient";
 import { router } from "expo-router";
-import { useCallback, useEffect } from "react";
+import { useEffect } from "react";
 import { View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import useSWR from "swr";
 import { styles } from ".";
+import { mutations } from "../[tab]/collections/mutations";
 
 export const SubmitButton = ({ handleNext, disabled }) => {
   const theme = useColorTheme();
@@ -126,41 +127,6 @@ export default function Page() {
     if (filteredTasks.length === 0) router.push("/plan/3");
   }, [filteredTasks]);
 
-  const updateTask = useCallback(
-    (newData) =>
-      mutate(
-        (oldData) => {
-          const labelIndex = oldData.labels.findIndex(
-            (l) => l.id === newData.label?.id
-          );
-          if (labelIndex === -1)
-            return {
-              ...oldData,
-              entities: oldData.entities
-                .map((e) => (e.id === newData.id ? newData : e))
-                .filter((t) => !t.trash),
-            };
-          return {
-            ...oldData,
-            labels: oldData.labels
-              .map((l) =>
-                l.id === newData.label.id
-                  ? {
-                      ...l,
-                      entities: l.entities.map((e) =>
-                        e.id === newData.id ? newData : e
-                      ),
-                    }
-                  : l
-              )
-              .filter((t) => !t.trash),
-          };
-        },
-        { revalidate: false }
-      ),
-    [mutate]
-  );
-
   return (
     <LinearGradient colors={[theme[2], theme[3]]} style={{ flex: 1 }}>
       {error && <ErrorAlert />}
@@ -184,7 +150,7 @@ export default function Page() {
               planMode
               isReadOnly={false}
               item={item}
-              onTaskUpdate={updateTask}
+              onTaskUpdate={mutations.timeBased.update(mutate)}
             />
           </View>
         )}
@@ -193,4 +159,3 @@ export default function Page() {
     </LinearGradient>
   );
 }
-
