@@ -150,7 +150,7 @@ export default function Page() {
               planMode
               isReadOnly={false}
               item={item}
-              onTaskUpdate={mutations.timeBased.update(mutate)}
+              onTaskUpdate={mutations.categoryBased.update(mutate)}
             />
           </View>
         )}
