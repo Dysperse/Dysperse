@@ -20,6 +20,7 @@ import Spinner from "@/ui/Spinner";
 import Text from "@/ui/Text";
 import { addHslAlpha, useColor } from "@/ui/color";
 import { useColorTheme } from "@/ui/color/theme-provider";
+import * as Haptics from "expo-haptics";
 import { LinearGradient } from "expo-linear-gradient";
 import { router, useGlobalSearchParams } from "expo-router";
 import React, { memo, useEffect, useState } from "react";
@@ -242,6 +243,7 @@ function OpenTabsList() {
   const { handleOpen } = useCommandPaletteContext();
 
   const onOpen = () => {
+    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Soft);
     if (!breakpoints.md || desktopCollapsed) sidebarRef.current?.closeDrawer();
     if (Platform.OS !== "web") setTimeout(handleOpen, 600);
     else handleOpen();
