@@ -29,7 +29,7 @@ function Agenda() {
   const state = useSharedValue(1);
 
   const animatedCalendarStyle = useAnimatedStyle(() => ({
-    marginTop: withSpring(state.value === 0 ? 0 : -400, {
+    marginTop: withSpring(state.value === 0 ? 0 : -450, {
       damping: 27,
       stiffness: 300,
     }),
@@ -37,16 +37,6 @@ function Agenda() {
 
   const animatedSelectorStyle = useAnimatedStyle(() => ({
     marginBottom: withSpring(state.value === 0 ? -130 : 0, {
-      damping: 27,
-      stiffness: 300,
-    }),
-  }));
-  const animatedBottomRadiusStyle = useAnimatedStyle(() => ({
-    borderBottomLeftRadius: withSpring(state.value === 1 ? 0 : 20, {
-      damping: 27,
-      stiffness: 300,
-    }),
-    borderBottomRightRadius: withSpring(state.value === 1 ? 0 : 20, {
       damping: 27,
       stiffness: 300,
     }),
@@ -138,25 +128,15 @@ function Agenda() {
             flex: 1,
           }}
         >
-          <Animated.View
+          <View
             style={[
-              animatedBottomRadiusStyle,
               {
-                backgroundColor: theme[3],
-                borderTopColor: theme[5],
-                borderTopWidth: 1,
+                backgroundColor: theme[1],
                 overflow: "hidden",
               },
             ]}
           >
-            <Animated.View
-              style={[
-                animatedCalendarStyle,
-                {
-                  height: 400,
-                },
-              ]}
-            >
+            <Animated.View style={[animatedCalendarStyle, { height: 450 }]}>
               <AgendaCalendarMenu handleMenuClose={() => (state.value = 1)} />
             </Animated.View>
             <Animated.View
@@ -164,6 +144,7 @@ function Agenda() {
                 animatedSelectorStyle,
                 {
                   height: 130,
+                  backgroundColor: theme[1],
                 },
               ]}
             >
@@ -173,7 +154,7 @@ function Agenda() {
               />
               <AgendaSelector data={data} />
             </Animated.View>
-          </Animated.View>
+          </View>
 
           {column && <Column mutate={mutate} column={column} />}
         </View>

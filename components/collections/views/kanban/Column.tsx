@@ -1,7 +1,6 @@
 import { mutations } from "@/app/(app)/[tab]/collections/mutations";
 import { useCollectionContext } from "@/components/collections/context";
 import { Entity } from "@/components/collections/entity";
-import { KanbanHeader } from "@/components/collections/views/kanban/Header";
 import CreateTask from "@/components/task/create";
 import { useUser } from "@/context/useUser";
 import { omit } from "@/helpers/omit";
@@ -11,13 +10,16 @@ import Icon from "@/ui/Icon";
 import RefreshControl from "@/ui/RefreshControl";
 import { addHslAlpha } from "@/ui/color";
 import { useColorTheme } from "@/ui/color/theme-provider";
-import { FlashList } from "@shopify/flash-list";
 import { LinearGradient } from "expo-linear-gradient";
 import { useRef, useState } from "react";
-import { Platform, Pressable, View } from "react-native";
+import { Platform, View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { useDidUpdate } from "../../../../utils/useDidUpdate";
 import { ColumnEmptyComponent } from "../../emptyComponent";
+
+import { FlashList } from "@shopify/flash-list";
+import React from "react";
+import { KanbanHeader } from "./Header";
 
 export type ColumnProps =
   | {
@@ -109,14 +111,7 @@ export function Column(props: ColumnProps) {
             },
       ]}
     >
-      <Pressable
-        style={({ hovered, pressed }) => ({
-          opacity: pressed ? 0.6 : hovered ? 0.9 : 1,
-        })}
-        onPress={() =>
-          columnRef.current.scrollToOffset({ offset: 0, animated: true })
-        }
-      >
+      {!(!breakpoints.md && !props.grid) && (
         <KanbanHeader
           showInspireMe={data.length === 0}
           grid={props.grid}
@@ -127,15 +122,16 @@ export function Column(props: ColumnProps) {
             ).filter((e) => e.completionInstances.length === 0).length,
           }}
         />
-      </Pressable>
+      )}
       {props.grid ? undefined : (
         <>
           {!isReadOnly && session && (
             <View
               style={{
                 padding: 15,
+                paddingTop: 10,
                 paddingBottom: 0,
-                height: 65,
+                height: 55,
                 zIndex: 9999,
               }}
             >
@@ -169,6 +165,7 @@ export function Column(props: ColumnProps) {
           width: "100%",
           height: 30,
           zIndex: 1,
+          marginTop: props.grid ? 5 : undefined,
           marginBottom: centerContent && !props.grid ? -90 : -30,
           pointerEvents: "none",
         }}
@@ -178,6 +175,37 @@ export function Column(props: ColumnProps) {
         ]}
       />
       <FlashList
+        // onReorder={({ from, to }) => {
+        //   mutate(
+        //     (oldData) => {
+        //       const label = oldData.labels.find((e) => e.id === props.label.id);
+        //       if (!label || !label.entities) return oldData;
+
+        //       // Extract keys and reorder them
+        //       const entityKeys = Object.keys(label.entities);
+        //       const reorderedKeys = reorderItems(entityKeys, from, to);
+
+        //       // Rebuild the object with the new key order
+        //       const reorderedEntities = Object.fromEntries(
+        //         reorderedKeys.map((key, index) => [
+        //           key,
+        //           { ...label.entities[key], agendaOrder: index },
+        //         ])
+        //       );
+
+        //       // Return the updated state
+        //       return {
+        //         ...oldData,
+        //         labels: oldData.labels.map((l) =>
+        //           l.id === props.label.id
+        //             ? { ...l, entities: reorderedEntities }
+        //             : l
+        //         ),
+        //       };
+        //     },
+        //     { revalidate: false }
+        //   );
+        // }}
         ref={columnRef}
         refreshControl={
           !centerContent && (
@@ -190,7 +218,7 @@ export function Column(props: ColumnProps) {
         centerContent={centerContent}
         data={data}
         ListHeaderComponent={() => (
-          <View style={{}}>
+          <View>
             {!(!hasNoTasks && hasItems) && (
               <ColumnEmptyComponent
                 showInspireMe={hasNoTasks}
@@ -200,10 +228,10 @@ export function Column(props: ColumnProps) {
             )}
           </View>
         )}
-        estimatedItemSize={300}
+        // estimatedItemSize={300}
         contentContainerStyle={{
-          padding: 15,
-          paddingTop: 15,
+          padding: props.grid ? 10 : 15,
+          paddingTop: props.grid ? 5 : 15,
           paddingBottom: insets.bottom + 15,
         }}
         ListFooterComponentStyle={[
@@ -220,10 +248,10 @@ export function Column(props: ColumnProps) {
                   dense
                   containerStyle={{
                     marginRight: "auto",
-                    marginTop: 10,
-                    marginLeft: 80,
+                    marginTop: 25,
+                    marginLeft: breakpoints.md ? 80 : "auto",
                   }}
-                  variant="filled"
+                  variant={breakpoints.md ? "filled" : "text"}
                 >
                   <ButtonText weight={600}>
                     {showCompleted ? "Hide completed" : "See completed"}

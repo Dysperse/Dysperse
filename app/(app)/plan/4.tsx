@@ -95,18 +95,18 @@ export default function Page() {
     >
       <Text
         style={{
-          fontSize: 40,
+          fontSize: 35,
           color: theme[11],
           marginTop: "auto",
           textAlign: "center",
           paddingTop: 40,
-          fontFamily: "serifText800",
+          marginBottom: 5,
+          fontFamily: "serifText700",
         }}
       >
         You're all set!
       </Text>
       <Text
-        weight={300}
         style={{
           textAlign: "center",
           fontSize: 20,
@@ -122,3 +122,4 @@ export default function Page() {
     </LinearGradient>
   );
 }
+

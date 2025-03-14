@@ -6,7 +6,6 @@ import { useUser } from "@/context/useUser";
 import { sendApiRequest } from "@/helpers/api";
 import { useHotkeys } from "@/helpers/useHotKeys";
 import { useResponsiveBreakpoints } from "@/helpers/useResponsiveBreakpoints";
-import BottomSheet from "@/ui/BottomSheet";
 import { Button } from "@/ui/Button";
 import Emoji from "@/ui/Emoji";
 import Icon from "@/ui/Icon";
@@ -35,7 +34,6 @@ import { Freeze } from "react-freeze";
 import {
   InteractionManager,
   Linking,
-  Animated as NativeAnimated,
   Platform,
   Pressable,
   StyleSheet,
@@ -45,6 +43,7 @@ import {
 import Animated, {
   FlipInXUp,
   FlipOutXDown,
+  interpolate,
   useAnimatedStyle,
   useSharedValue,
   withSpring,
@@ -81,12 +80,17 @@ const HomeButton = memo(function HomeButton({ isHome }: { isHome: boolean }) {
   const breakpoints = useResponsiveBreakpoints();
 
   const handleHome = useCallback(() => {
+    impactAsync(ImpactFeedbackStyle.Light);
     if (router.canDismiss()) router.dismissAll();
     router.replace("/home");
     InteractionManager.runAfterInteractions(() => {
       if (!breakpoints.md || desktopCollapsed) sidebarRef.current.closeDrawer();
     });
   }, [sidebarRef, breakpoints]);
+
+  useEffect(() => {
+    if (breakpoints.md) sidebarRef.current?.openDrawer?.();
+  }, [breakpoints.md]);
 
   const theme = useColorTheme();
   useHotkeys("ctrl+0", () => router.replace("/home"));
@@ -300,11 +304,12 @@ export const LogoButton = memo(function LogoButton({
             icon: "settings",
             text: "Settings",
             callback: () => {
-              router.push("/settings");
-              setTimeout(() => {
-                if (!breakpoints.md || desktopCollapsed)
-                  sidebarRef.current.closeDrawer();
-              }, 300);
+              menuRef.current.close();
+              if (!breakpoints.md || desktopCollapsed)
+                sidebarRef.current.closeDrawer();
+              InteractionManager.runAfterInteractions(() => {
+                router.push("/settings");
+              });
             },
           },
           {
@@ -469,7 +474,10 @@ const Header = memo(function Header() {
           style={{ borderRadius: 15, marginRight: -10, flex: 1 }}
           variant="filled"
           size={45}
-          onPress={() => router.push("/everything")}
+          onPress={() => {
+            impactAsync(ImpactFeedbackStyle.Light);
+            router.push("/everything");
+          }}
         >
           <Icon>home_storage</Icon>
           {Array.isArray(hasUnread) && hasUnread?.length > 0 && (
@@ -556,7 +564,6 @@ const FocusPanel = memo(() => {
   const theme = useColorTheme();
   const { widgets, focusPanelFreezerRef, activeStateRef } =
     useFocusPanelContext();
-  const insets = useSafeAreaInsets();
   const sheetRef = useRef(null);
   const [activeWidget, setActiveWidget] = useState(activeStateRef.current);
   const breakpoints = useResponsiveBreakpoints();
@@ -583,6 +590,7 @@ const FocusPanel = memo(() => {
   }, []);
 
   const changeActiveWidget = async () => {
+    impactAsync(ImpactFeedbackStyle.Light);
     setActiveWidget((prev) => {
       const t = (prev + 1) % pinnedWidgets.length;
       activeStateRef.current = t;
@@ -611,17 +619,16 @@ const FocusPanel = memo(() => {
           />
         }
       >
-        <BottomSheet
+        <Modal
+          animation="SLIDE"
           onClose={() => sheetRef.current?.close?.()}
           sheetRef={sheetRef}
           snapPoints={["80%"]}
-          maxWidth={breakpoints.md ? 400 : undefined}
         >
           <BottomSheetScrollView
             contentContainerStyle={{
               padding: 20,
               gap: 20,
-              paddingBottom: insets.bottom + 10,
             }}
           >
             <Text
@@ -638,7 +645,7 @@ const FocusPanel = memo(() => {
               <RenderWidget widget={w} key={w.id} />
             ))}
           </BottomSheetScrollView>
-        </BottomSheet>
+        </Modal>
         <Button
           containerStyle={{
             marginBottom: 6,
@@ -712,54 +719,54 @@ function PrimarySidebar({ progressValue }) {
 
   const breakpoints = useResponsiveBreakpoints();
 
-  const transform = progressValue?.interpolate?.({
-    inputRange: [0, 1],
-    outputRange: breakpoints.md ? [0.9, 1] : [-(width / 10), 0],
-  });
+  const opacityStyle = useAnimatedStyle(() => ({
+    opacity: interpolate(progressValue.value, [0, 1], [0.8, 1]),
+  }));
 
-  const opacity = progressValue?.interpolate?.({
-    inputRange: [0, 1],
-    outputRange: [0.5, 1],
-  });
+  const transformStyle = useAnimatedStyle(() => ({
+    transform: [
+      {
+        scale: interpolate(progressValue.value, [0, 1], [0.9, 1]),
+      },
+    ],
+  }));
 
-  const animatedStyles = [
-    breakpoints.md && { opacity },
-    {
-      transform: [
-        { [breakpoints.md ? "scale" : "translateX"]: transform || 0 },
-      ],
-    },
-  ];
-
-  const toggleHidden = useCallback(() => {
-    if (breakpoints.md) {
-      setDesktopCollapsed(!desktopCollapsed);
-      InteractionManager.runAfterInteractions(() => {
-        sidebarRef.current.closeDrawer();
-        if (desktopCollapsed) {
-          sidebarRef.current.openDrawer();
-        } else {
+  const toggleHidden = useCallback(
+    (e) => {
+      e.preventDefault();
+      if (breakpoints.md) {
+        setDesktopCollapsed(!desktopCollapsed);
+        InteractionManager.runAfterInteractions(() => {
           sidebarRef.current.closeDrawer();
-        }
-      });
-      AsyncStorage.setItem("desktopCollapsed", (!desktopCollapsed).toString());
-    } else {
-      sidebarRef.current.closeDrawer();
-    }
-  }, [desktopCollapsed, setDesktopCollapsed, sidebarRef, breakpoints]);
+          if (desktopCollapsed) {
+            sidebarRef.current.openDrawer();
+          } else {
+            sidebarRef.current.closeDrawer();
+          }
+        });
+        AsyncStorage.setItem(
+          "desktopCollapsed",
+          (!desktopCollapsed).toString()
+        );
+      } else {
+        sidebarRef.current.closeDrawer();
+      }
+    },
+    [desktopCollapsed, setDesktopCollapsed, sidebarRef, breakpoints]
+  );
 
   useHotkeys("`", toggleHidden, {});
 
   return (
-    <NativeAnimated.View
+    <Animated.View
       style={[
-        animatedStyles,
+        opacityStyle,
+        transformStyle,
         {
           width: ORIGINAL_SIDEBAR_WIDTH + 10,
           flex: 1,
           flexDirection: "column",
-          borderRightWidth: 2,
-          marginRight: -8,
+          borderRightWidth: breakpoints.md ? 2 : 5,
           borderRightColor: "transparent",
           backgroundColor: theme[2],
           ...(Platform.OS === "web" &&
@@ -782,14 +789,14 @@ function PrimarySidebar({ progressValue }) {
           paddingHorizontal: 15,
           width: "100%",
           marginBottom:
-            !breakpoints.md || Platform.OS === "web" ? insets.bottom + 10 : -8,
+            !breakpoints.md || Platform.OS === "web" ? insets.bottom : -8,
           height: "100%",
         }}
       >
         <OpenTabsList />
         <FocusPanel />
       </View>
-    </NativeAnimated.View>
+    </Animated.View>
   );
 }
 
@@ -816,6 +823,7 @@ function SecondarySidebar() {
         icon="west"
         onPress={() => {
           router.replace("/home");
+          impactAsync(ImpactFeedbackStyle.Light);
           InteractionManager.runAfterInteractions(() => {
             sidebarRef?.current?.openDrawer?.();
           });
@@ -840,6 +848,7 @@ function SecondarySidebar() {
           icon="tag"
           onPress={() => {
             router.push("/everything");
+            impactAsync(ImpactFeedbackStyle.Light);
             if (!breakpoints.md) sidebarRef.current?.closeDrawer?.();
           }}
           variant={pathname === "/everything" ? "filled" : "text"}
@@ -856,6 +865,7 @@ function SecondarySidebar() {
           icon="stack"
           onPress={() => {
             router.push("/everything/collections");
+            impactAsync(ImpactFeedbackStyle.Light);
             if (!breakpoints.md) sidebarRef.current?.closeDrawer?.();
           }}
           variant={pathname === "/everything/collections" ? "filled" : "text"}
@@ -866,6 +876,7 @@ function SecondarySidebar() {
           text="Trash"
           onPress={() => {
             router.push("/everything/trash");
+            impactAsync(ImpactFeedbackStyle.Light);
             if (!breakpoints.md) sidebarRef.current?.closeDrawer?.();
           }}
           containerStyle={[
@@ -882,6 +893,7 @@ function SecondarySidebar() {
           text="Storage"
           onPress={() => {
             router.push("/everything/storage");
+            impactAsync(ImpactFeedbackStyle.Light);
             if (!breakpoints.md) sidebarRef.current?.closeDrawer?.();
           }}
           containerStyle={[
@@ -897,11 +909,7 @@ function SecondarySidebar() {
   );
 }
 
-const Sidebar = ({
-  progressValue,
-}: {
-  progressValue?: NativeAnimated.Value;
-}) => {
+const Sidebar = ({ progressValue }: { progressValue?: any }) => {
   const breakpoints = useResponsiveBreakpoints();
   const pathname = usePathname();
   const { SIDEBAR_WIDTH, ORIGINAL_SIDEBAR_WIDTH, SECONDARY_SIDEBAR_WIDTH } =
@@ -999,7 +1007,7 @@ const Sidebar = ({
             onHoverIn={() => (desktopSlide.value = 0)}
           />
         )}
-        <NativeAnimated.View
+        <Animated.View
           style={[
             { flex: breakpoints.md ? undefined : 1 },
             {
@@ -1040,7 +1048,7 @@ const Sidebar = ({
               </Freeze>
             </Animated.View>
           </Animated.View>
-        </NativeAnimated.View>
+        </Animated.View>
       </SafeView>
     </>
   );

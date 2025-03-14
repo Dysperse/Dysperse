@@ -5,7 +5,11 @@ import { memo } from "react";
 export const NavbarTitle = memo(({ name }: { name: string }) => {
   const theme = useColorTheme();
   return (
-    <Text numberOfLines={1} style={{ color: theme[11] }} weight={900}>
+    <Text
+      numberOfLines={1}
+      style={{ color: theme[11], marginTop: -2 }}
+      weight={900}
+    >
       {name}
     </Text>
   );

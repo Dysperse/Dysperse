@@ -1,6 +1,7 @@
 import { useHotkeys } from "@/helpers/useHotKeys";
 import { useResponsiveBreakpoints } from "@/helpers/useResponsiveBreakpoints";
 import { Button } from "@/ui/Button";
+import Icon from "@/ui/Icon";
 import IconButton from "@/ui/IconButton";
 import MenuPopover from "@/ui/MenuPopover";
 import Text from "@/ui/Text";
@@ -88,14 +89,16 @@ export function AgendaButtons({
   );
   const breakpoints = useResponsiveBreakpoints();
 
-  const titleFormat = weekMode ? "[Week #]W • MMM YYYY" : "MMM Do [& after]";
+  const titleFormat = weekMode ? "MMMM YYYY" : "MMM Do [& after]";
 
   const trigger = (
     <Button
       onPress={handleMenuOpen}
       height={45}
       backgroundColors={{
-        default: breakpoints.md ? addHslAlpha(theme[8], 0) : theme[3],
+        default: breakpoints.md
+          ? addHslAlpha(theme[8], 0)
+          : addHslAlpha(theme[8], 0),
         hovered: breakpoints.md ? addHslAlpha(theme[8], 0.15) : theme[4],
         pressed: breakpoints.md ? addHslAlpha(theme[8], 0.2) : theme[5],
       }}
@@ -104,74 +107,92 @@ export function AgendaButtons({
         hovered: breakpoints.md ? "transparent" : theme[4],
         pressed: breakpoints.md ? "transparent" : theme[5],
       }}
-      // containerStyle={!breakpoints.md && { flex: 1 }}
+      style={{ justifyContent: "flex-start", paddingHorizontal: 15 }}
     >
       <Text
         numberOfLines={1}
-        weight={700}
-        style={{ fontSize: 15, paddingTop: 5, color: theme[11] }}
+        style={{
+          fontSize: breakpoints.md ? 20 : 23,
+          fontFamily: "serifText700",
+          paddingTop: 2,
+          textAlign: "left",
+          color: theme[11],
+        }}
       >
         {dayjs(start).format(titleFormat).split("•")?.[0]}
       </Text>
-      <Text
-        numberOfLines={1}
-        style={{ opacity: 0.6, fontSize: 15, paddingTop: 5, color: theme[11] }}
-      >
-        {dayjs(start).format(titleFormat).split("• ")?.[1]}
-      </Text>
+
+      {!breakpoints.md && (
+        <Icon size={30} style={{ marginLeft: -5 }}>
+          expand_more
+        </Icon>
+      )}
     </Button>
   );
 
   const SafeView = breakpoints.md ? React.Fragment : View;
+  const todayButton = (
+    <IconButton
+      variant="text"
+      onPress={handleToday}
+      size={45}
+      disabled={isTodaysView}
+      style={[
+        breakpoints.md && {
+          borderRadius: 20,
+          marginLeft: -100,
+          marginRight: -10,
+          zIndex: 9,
+        },
+        !breakpoints.md && isTodaysView && { display: "none" },
+        { opacity: isTodaysView ? 0 : 1 },
+      ]}
+    >
+      <View
+        style={{
+          borderWidth: 1,
+          borderTopWidth: 3,
+          borderColor: theme[11],
+          width: 20,
+          height: 20,
+          borderRadius: 2,
+          marginTop: 2,
+          justifyContent: "center",
+          alignItems: "center",
+        }}
+      >
+        <Text style={{ fontSize: 10, color: theme[11] }} weight={700}>
+          {dayjs().format("DD")}
+        </Text>
+      </View>
+    </IconButton>
+  );
+
   return (
     <SafeView>
       <View
         style={[
-          { flexDirection: "row", alignItems: "center" },
+          {
+            flexDirection: "row",
+            alignItems: "center",
+          },
           breakpoints.md
             ? { marginRight: "auto" }
             : {
-                backgroundColor: theme[3],
                 paddingHorizontal: 5,
                 paddingVertical: 5,
-                flexDirection: "row-reverse",
               },
         ]}
       >
-        <IconButton
-          variant="text"
-          onPress={handleToday}
-          size={45}
-          disabled={isTodaysView}
-          style={[
-            breakpoints.md && {
-              borderRadius: 20,
-              marginLeft: -45,
-              marginRight: -10,
-              zIndex: 9,
-            },
-            !breakpoints.md && isTodaysView && { display: "none" },
-            { opacity: isTodaysView ? 0 : 1 },
-          ]}
-        >
-          <View
-            style={{
-              borderWidth: 2,
-              borderTopWidth: 4,
-              borderColor: theme[11],
-              width: 20,
-              height: 20,
-              borderRadius: 2,
-              marginTop: 2,
-              justifyContent: "center",
-              alignItems: "center",
-            }}
-          >
-            <Text style={{ fontSize: 10, color: theme[11] }} weight={700}>
-              {dayjs().format("DD")}
-            </Text>
-          </View>
-        </IconButton>
+        {breakpoints.md && todayButton}
+        {weekMode && breakpoints.md && (
+          <IconButton
+            style={{ marginLeft: 10 }}
+            onPress={handlePrev}
+            icon="west"
+            size={45}
+          />
+        )}
         <View
           style={[
             {
@@ -187,11 +208,6 @@ export function AgendaButtons({
               : { flex: 1 },
           ]}
         >
-          <IconButton
-            onPress={handlePrev}
-            icon="arrow_back_ios_new"
-            size={45}
-          />
           {typeof handleMenuOpen === "undefined" ? (
             <MenuPopover
               trigger={trigger}
@@ -203,7 +219,26 @@ export function AgendaButtons({
           ) : (
             trigger
           )}
-          <IconButton onPress={handleNext} icon="arrow_forward_ios" size={45} />
+          {weekMode && (
+            <View
+              style={{
+                flexDirection: "row",
+                alignItems: "center",
+                marginRight: 5,
+              }}
+            >
+              {!breakpoints.md && todayButton}
+              {!breakpoints.md && (
+                <IconButton
+                  style={{ marginLeft: 10 }}
+                  onPress={handlePrev}
+                  icon="west"
+                  size={45}
+                />
+              )}
+              <IconButton onPress={handleNext} icon="east" size={45} />
+            </View>
+          )}
         </View>
       </View>
     </SafeView>

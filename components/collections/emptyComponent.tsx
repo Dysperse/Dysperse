@@ -1,4 +1,5 @@
 import { useUser } from "@/context/useUser";
+import { useResponsiveBreakpoints } from "@/helpers/useResponsiveBreakpoints";
 import { Button } from "@/ui/Button";
 import { useColorTheme } from "@/ui/color/theme-provider";
 import ErrorAlert from "@/ui/Error";
@@ -19,6 +20,7 @@ import { useCollectionContext } from "./context";
 
 function InspireMe({ row, labelId }) {
   const { data: collection } = useCollectionContext();
+  const breakpoints = useResponsiveBreakpoints();
   const ref = useRef(null);
   const [opened, setOpened] = React.useState(false);
 
@@ -42,7 +44,7 @@ function InspireMe({ row, labelId }) {
   return (
     <>
       <Button
-        variant="filled"
+        variant={breakpoints.md ? "filled" : "text"}
         dense
         containerStyle={{
           marginRight: "auto",
@@ -180,7 +182,12 @@ export const ColumnEmptyComponent = function ColumnEmptyComponent({
             {message[1]}
           </Text>
           <Text
-            style={{ opacity: 0.6, zIndex: 99, color: theme[11] }}
+            style={{
+              opacity: 0.6,
+              zIndex: 99,
+              color: theme[11],
+              marginTop: -3,
+            }}
             numberOfLines={1}
           >
             {message[2]}

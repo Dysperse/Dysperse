@@ -4,7 +4,6 @@ import { useUser } from "@/context/useUser";
 import { sendApiRequest } from "@/helpers/api";
 import { useResponsiveBreakpoints } from "@/helpers/useResponsiveBreakpoints";
 import { Button, ButtonText } from "@/ui/Button";
-import Emoji from "@/ui/Emoji";
 import Icon from "@/ui/Icon";
 import Text from "@/ui/Text";
 import TextField from "@/ui/TextArea";
@@ -13,7 +12,7 @@ import { LinearGradient } from "expo-linear-gradient";
 import { router } from "expo-router";
 import { Controller, useForm } from "react-hook-form";
 import { View } from "react-native";
-import { ScrollView } from "react-native-gesture-handler";
+import { KeyboardAwareScrollView } from "react-native-keyboard-controller";
 import Animated, {
   useAnimatedStyle,
   useSharedValue,
@@ -74,7 +73,6 @@ const TaskInput = ({ control }) => {
             },
           ]}
         >
-          <Emoji emoji="1F4A1" size={20} />
           <Text
             style={[
               {
@@ -140,8 +138,11 @@ const SubmitButton = ({ watch, handleSubmit }) => {
             }
       }
     >
-      <ButtonText style={[styles.buttonText, { color: theme[name ? 1 : 10] }]}>
-        Next
+      <ButtonText
+        style={[styles.buttonText, { color: theme[name ? 1 : 10] }]}
+        weight={900}
+      >
+        Continue
       </ButtonText>
       <Icon style={{ color: theme[name ? 1 : 10] }} bold>
         arrow_forward_ios
@@ -163,7 +164,7 @@ export default function Page() {
       colors={[theme[2], theme[3], theme[4], theme[5], theme[6]]}
       style={{ flex: 1 }}
     >
-      <ScrollView
+      <KeyboardAwareScrollView
         centerContent
         contentContainerStyle={{
           padding: breakpoints.md ? 50 : 20,
@@ -177,21 +178,18 @@ export default function Page() {
             fontSize: 35,
             color: theme[11],
             marginTop: "auto",
-            fontFamily: "serifText800",
+            fontFamily: "serifText700",
           }}
           weight={900}
         >
           Let's start simple.
         </Text>
-        <Text
-          style={{ fontSize: 20, opacity: 0.6, color: theme[11] }}
-          weight={300}
-        >
+        <Text style={{ opacity: 0.6, marginTop: 5, color: theme[11] }}>
           What's the easiest thing you can do today?
         </Text>
         <TaskInput control={control} />
         <SubmitButton handleSubmit={handleSubmit} watch={watch} />
-      </ScrollView>
+      </KeyboardAwareScrollView>
     </LinearGradient>
   );
 }

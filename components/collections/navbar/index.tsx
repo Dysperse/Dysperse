@@ -197,12 +197,6 @@ const CollectionNavbar = memo(function CollectionNavbar({
       callback: () => router.push(pathname + "/customize"),
     },
     session &&
-      !isReadOnly && {
-        icon: "tag",
-        text: "Manage labels",
-        callback: openLabelPicker,
-      },
-    session &&
       userSession.user.betaTester &&
       !isReadOnly && {
         icon: "upload",

@@ -22,6 +22,7 @@ export const KanbanHeader = memo(function KanbanHeader({
   list,
   hideNavigation,
   style,
+  carouselRef,
 }: {
   grid?: boolean;
   list?: boolean;
@@ -33,6 +34,7 @@ export const KanbanHeader = memo(function KanbanHeader({
     name: string;
     entitiesLength: number;
   };
+  carouselRef?: any;
   style?: StyleProp<ViewStyle>;
 }) {
   const breakpoints = useResponsiveBreakpoints();
@@ -43,6 +45,7 @@ export const KanbanHeader = memo(function KanbanHeader({
   const { setCurrentColumn, currentColumn, columnsLength, hasOther } =
     useKanbanContext() || {};
 
+  const isGridView = grid && !list;
   const { setCurrentColumn: setCurrentColumn_grid } = useGridContext() || {};
 
   return (
@@ -52,17 +55,22 @@ export const KanbanHeader = memo(function KanbanHeader({
         grid && {
           height: 60,
         },
+        isGridView && { height: 50 },
         breakpoints.md
           ? {
               borderTopLeftRadius: 20,
               borderTopRightRadius: 20,
             }
           : {
-              borderTopWidth: 1,
+              borderRadius: 20,
               borderTopColor: theme[5],
               backgroundColor: theme[3],
               height: 80,
-              paddingBottom: 20,
+              ...(!list && {
+                marginHorizontal: 15,
+                marginTop: 5,
+                paddingBottom: 20,
+              }),
             },
         style,
       ]}
@@ -75,15 +83,23 @@ export const KanbanHeader = memo(function KanbanHeader({
           style={{ marginLeft: -15 }}
         />
       )}
-      {label.emoji && <Emoji emoji={label.emoji} size={35} />}
-      <View
-        style={{
-          flex: 1,
-        }}
-      >
+      {label.emoji && (
+        <Emoji
+          style={{
+            marginLeft: isGridView && !breakpoints.md ? -10 : 0,
+            marginRight: breakpoints.md || isGridView ? undefined : 10,
+          }}
+          emoji={label.emoji}
+          size={isGridView && breakpoints.md ? 24 : 35}
+        />
+      )}
+      <View style={{ flex: 1 }}>
         <Text
           style={[
-            { fontSize: 20, fontFamily: "serifText700" },
+            {
+              fontSize: isGridView && breakpoints.md ? 17 : 20,
+              fontFamily: "serifText700",
+            },
             label.entitiesLength === 0 && {
               marginVertical: Platform.OS === "web" ? 11 : 7,
             },
@@ -93,7 +109,13 @@ export const KanbanHeader = memo(function KanbanHeader({
           {label.name || "Unlabeled"}
         </Text>
         {label.entitiesLength !== 0 && (
-          <Text style={{ opacity: 0.6 }} numberOfLines={1}>
+          <Text
+            style={{
+              opacity: 0.6,
+              fontSize: isGridView && breakpoints.md ? 13 : undefined,
+            }}
+            numberOfLines={1}
+          >
             {grid
               ? label.entitiesLength === 0
                 ? ""
@@ -117,9 +139,6 @@ export const KanbanHeader = memo(function KanbanHeader({
               }
               iconProps={{ bold: true }}
               iconStyle={{ opacity: 0.7 }}
-              style={{
-                marginTop: breakpoints.md && !list && grid ? -10 : 0,
-              }}
             />
           </ColumnMenuTrigger>
         )}
@@ -128,27 +147,23 @@ export const KanbanHeader = memo(function KanbanHeader({
             {!breakpoints.md && !hideNavigation && (
               <IconButton
                 size={40}
-                onPress={() =>
-                  setCurrentColumn((d) =>
-                    d === -1 ? columnsLength - 1 : d - 1
-                  )
-                }
+                onPress={() => {
+                  carouselRef.current?.prev?.();
+                  setCurrentColumn(
+                    (d) => (d - 1 + columnsLength) % columnsLength
+                  );
+                }}
                 icon="arrow_back_ios_new"
-                disabled={currentColumn === 0}
-                style={[currentColumn === 0 && { opacity: 0.5 }]}
               />
             )}
             {!breakpoints.md && !hideNavigation && (
               <IconButton
                 size={40}
-                onPress={() =>
-                  setCurrentColumn((d) =>
-                    d === -1 ? -1 : d === columnsLength - 1 ? -1 : d + 1
-                  )
-                }
+                onPress={() => {
+                  carouselRef.current?.next?.();
+                  setCurrentColumn((d) => (d + 1) % columnsLength);
+                }}
                 icon="arrow_forward_ios"
-                disabled={currentColumn === (hasOther ? -1 : columnsLength - 1)}
-                style={[currentColumn === -1 && { opacity: 0.5 }]}
               />
             )}
           </>
@@ -162,11 +177,10 @@ export const KanbanHeader = memo(function KanbanHeader({
           >
             <IconButton
               iconProps={{ bold: true }}
-              size={50}
+              size={isGridView && breakpoints.md ? 40 : 50}
               style={{
                 marginRight: -10,
-                borderRadius: 20,
-                marginTop: breakpoints.md && !list && grid ? -10 : 0,
+                borderRadius: isGridView && breakpoints.md ? 15 : 20,
               }}
               backgroundColors={{
                 default: addHslAlpha(theme[9], 0.1),

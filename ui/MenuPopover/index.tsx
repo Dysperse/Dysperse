@@ -265,7 +265,12 @@ function MenuPopover({
                                 )}
                                 <Text
                                   weight={300}
-                                  style={{ color: theme[11], fontSize: 16 }}
+                                  style={{
+                                    color: theme[11],
+                                    fontSize: 16,
+                                    flex: 1,
+                                  }}
+                                  numberOfLines={1}
                                 >
                                   {text}
                                 </Text>
@@ -289,3 +294,4 @@ function MenuPopover({
   );
 }
 export default memo(MenuPopover);
+

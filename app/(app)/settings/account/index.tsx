@@ -225,7 +225,7 @@ function TwoFactorAuthSection() {
     >
       <ListItemText
         primary="Two-factor auth"
-        secondary="Make your account more secure with an authenticator app"
+        secondary="Nobody likes doing this, but it increases your account's security"
       />
       <ConfirmationModal
         title="Disable 2FA?"
@@ -453,7 +453,7 @@ function PasskeysSection() {
     <ListItemButton onPress={handlePress}>
       <ListItemText
         primary="Passkeys"
-        secondary="Log in with your current device's lock screen method"
+        secondary="Lazy to remember your password? Use your device lock screen to login"
       />
       <Icon>arrow_forward_ios</Icon>
     </ListItemButton>
@@ -508,7 +508,7 @@ function BetaTesterSection() {
         primary="Beta features"
         secondary={
           isBetaTester
-            ? "You're in the beta! Some features might be unstable"
+            ? "So you like living on the edge, huh?"
             : "Try out unstable features before they're released to the public"
         }
       />

@@ -3,17 +3,58 @@ import { useResponsiveBreakpoints } from "@/helpers/useResponsiveBreakpoints";
 import IconButton from "@/ui/IconButton";
 import { useColorTheme } from "@/ui/color/theme-provider";
 import { useLocalSearchParams } from "expo-router";
-import { useState } from "react";
-import { View } from "react-native";
-import { ScrollView } from "react-native-gesture-handler";
+import React, { useState } from "react";
+import { Dimensions, ScrollView, View } from "react-native";
+import { useSharedValue } from "react-native-reanimated";
+import Carousel, { ICarouselInstance } from "react-native-reanimated-carousel";
 import { CollectionEmpty } from "../CollectionEmpty";
 import { Column } from "./Column";
+import { KanbanHeader } from "./Header";
 import { KanbanContext } from "./context";
+
+const width = Dimensions.get("window").width;
+
+function ColumnSwitcher({ columns, setCurrentColumn, currentColumn }) {
+  const theme = useColorTheme();
+  const { openLabelPicker } = useCollectionContext();
+
+  const ref = React.useRef<ICarouselInstance>(null);
+  const progress = useSharedValue<number>(0);
+
+  return (
+    <>
+      <Carousel
+        ref={ref}
+        width={width}
+        height={90}
+        data={columns}
+        onProgressChange={progress}
+        onSnapToItem={(index) => setCurrentColumn(index)}
+        mode="parallax"
+        modeConfig={{
+          parallaxScrollingScale: 1,
+          parallaxAdjacentItemScale: 0.8,
+          parallaxScrollingOffset: 80,
+        }}
+        renderItem={({ item }) => (
+          <KanbanHeader
+            carouselRef={ref}
+            label={{
+              ...item,
+              entitiesLength: Object.values(
+                item.label?.entities || item?.entities || {}
+              ).filter((e) => e.completionInstances.length === 0).length,
+            }}
+          />
+        )}
+      />
+    </>
+  );
+}
 
 export default function Kanban() {
   const breakpoints = useResponsiveBreakpoints();
   const { data, openLabelPicker, access, isPublic } = useCollectionContext();
-  const theme = useColorTheme();
 
   const [currentColumn, setCurrentColumn] = useState(0);
 
@@ -37,6 +78,13 @@ export default function Kanban() {
         hasOther: data.entities.length > 0,
       }}
     >
+      {!breakpoints.md && (
+        <ColumnSwitcher
+          columns={columns}
+          setCurrentColumn={setCurrentColumn}
+          currentColumn={currentColumn}
+        />
+      )}
       {data.labels.length === 0 ? (
         <CollectionEmpty />
       ) : (
@@ -44,7 +92,9 @@ export default function Kanban() {
           horizontal
           contentContainerStyle={[
             { flexDirection: "row", gap: 15 },
-            breakpoints.md ? { padding: 15 } : { width: "100%" },
+            breakpoints.md
+              ? { padding: 15 }
+              : { width: "100%", flexDirection: "column" },
           ]}
           scrollEnabled={breakpoints.md}
         >
@@ -55,11 +105,9 @@ export default function Kanban() {
             : columns[currentColumn] && (
                 <Column label={columns[currentColumn]} />
               )}
-          {data &&
-            Object.keys(data.entities)?.length > 0 &&
-            (breakpoints.md || currentColumn === -1) && (
-              <Column entities={data.entities} />
-            )}
+          {data && Object.keys(data.entities)?.length > 0 && breakpoints.md && (
+            <Column entities={data.entities} />
+          )}
           {breakpoints.md && !isReadOnly && (
             <View
               style={{

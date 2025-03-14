@@ -150,7 +150,7 @@ export function SettingsSidebar({ forceShow }: { forceShow?: boolean }) {
       name: "Security",
       settings: [
         {
-          name: "Scan QR code",
+          name: "Scan to login",
           icon: "qr_code_2",
           href: "/settings/login/scan",
           keywords: ["login", "scan", "qr", "mobile"],
@@ -294,7 +294,7 @@ export function SettingsSidebar({ forceShow }: { forceShow?: boolean }) {
         }}
       >
         {!breakpoints.md && (
-          <Text style={[settingStyles.title, { marginTop: 40 }]} weight={900}>
+          <Text style={[settingStyles.title, { marginTop: -30 }]}>
             Settings
           </Text>
         )}
@@ -412,3 +412,4 @@ export function SettingsSidebar({ forceShow }: { forceShow?: boolean }) {
     </ScrollView>
   );
 }
+

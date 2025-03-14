@@ -17,7 +17,9 @@ import { router, useLocalSearchParams } from "expo-router";
 import fuzzysort from "fuzzysort";
 import { useEffect, useRef, useState } from "react";
 import { Keyboard, Platform, StyleSheet, View } from "react-native";
+import { SystemBars } from "react-native-edge-to-edge";
 import { ScrollView } from "react-native-gesture-handler";
+import { KeyboardAvoidingView } from "react-native-keyboard-controller";
 import useSWR from "swr";
 import { mutations } from "../../mutations";
 
@@ -30,7 +32,12 @@ const styles = StyleSheet.create({
     paddingTop: 10,
   },
   title: { marginHorizontal: "auto", fontSize: 20 },
-  empty: { alignItems: "center", justifyContent: "center", padding: 20 },
+  empty: {
+    alignItems: "center",
+    justifyContent: "center",
+    padding: 20,
+    marginTop: -100,
+  },
   emptyHeading: {
     fontSize: 40,
     textAlign: "center",
@@ -152,10 +159,10 @@ function SearchList({ collection, inputRef, listRef, handleClose }) {
           <View>
             <Text
               style={{
-                textAlign: "center",
-                fontFamily: "serifText800",
+                fontFamily: "serifText700",
                 opacity: query.length > 2 ? 1 : 0,
-                fontSize: 40,
+                fontSize: 30,
+                marginLeft: 5,
                 marginTop: query.length > 2 ? 30 : 0,
                 marginBottom: query.length > 2 ? 20 : 0,
               }}
@@ -170,6 +177,7 @@ function SearchList({ collection, inputRef, listRef, handleClose }) {
               }}
             >
               <TextField
+                value={query}
                 inputRef={inputRef}
                 placeholder="Find tasks…"
                 onKeyPress={({ nativeEvent }) => {
@@ -188,6 +196,7 @@ function SearchList({ collection, inputRef, listRef, handleClose }) {
                   flex: 1,
                   height: 60,
                   paddingHorizontal: 20,
+                  textAlign: "center",
                   fontSize: 20,
                   borderRadius: 999,
                 }}
@@ -216,6 +225,7 @@ function SearchList({ collection, inputRef, listRef, handleClose }) {
               }}
               style={{ marginTop: 20, marginBottom: 5, marginHorizontal: -20 }}
               showsHorizontalScrollIndicator={false}
+              keyboardShouldPersistTaps="handled"
             >
               {filters.map((filter) => (
                 <Chip
@@ -235,20 +245,19 @@ function SearchList({ collection, inputRef, listRef, handleClose }) {
                     inputRef.current.focus();
                   }}
                   style={{
-                    borderColor: addHslAlpha(
-                      theme[11],
-                      activeFilters.includes(filter.label) ? 0.5 : 0.2
-                    ),
                     backgroundColor: addHslAlpha(
-                      theme[11],
-                      activeFilters.includes(filter.label) ? 0.1 : 0
+                      theme[9],
+                      activeFilters.includes(filter.label) ? 0.2 : 0.05
                     ),
                   }}
                 />
               ))}
             </ScrollView>
           </View>
-          <View style={{ marginHorizontal: -20, flex: 1 }}>
+          <KeyboardAvoidingView
+            behavior="height"
+            style={{ marginHorizontal: -20, flex: 1 }}
+          >
             <FadeOnRender>
               <FlashList
                 onScrollBeginDrag={Keyboard.dismiss}
@@ -302,7 +311,7 @@ function SearchList({ collection, inputRef, listRef, handleClose }) {
                           ? `Type ${3 - query.length} more character${
                               query.length == 2 ? "" : "s"
                             }`
-                          : "Type something to start seeing search results"}
+                          : "Type something to start\nseeing search results"}
                       </Text>
                     </View>
                   )
@@ -310,7 +319,7 @@ function SearchList({ collection, inputRef, listRef, handleClose }) {
                 centerContent={filtered.length === 0}
               />
             </FadeOnRender>
-          </View>
+          </KeyboardAvoidingView>
         </View>
       </View>
     </View>
@@ -347,6 +356,7 @@ export default function Page() {
   return (
     <>
       <CollectionContext.Provider value={contextValue}>
+        <SystemBars style="dark" />
         {data && (
           <SearchList
             handleClose={handleClose}

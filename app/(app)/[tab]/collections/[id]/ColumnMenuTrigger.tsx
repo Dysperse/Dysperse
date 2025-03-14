@@ -13,9 +13,11 @@ import { LabelEditModal } from "./LabelEditModal";
 export const ColumnMenuTrigger = memo(function ColumnMenuTrigger({
   label,
   children,
+  disabled,
 }: {
   label: any;
   children: ReactElement;
+  disabled?: boolean;
 }) {
   const menuRef = useRef(null);
   const pathname = usePathname();
@@ -50,7 +52,9 @@ export const ColumnMenuTrigger = memo(function ColumnMenuTrigger({
       }
     />
   );
-  return (
+  return disabled ? (
+    children
+  ) : (
     <>
       <MenuPopover
         trigger={children}

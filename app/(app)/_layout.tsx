@@ -43,7 +43,6 @@ import {
 import * as SystemUI from "expo-system-ui";
 import { useCallback, useEffect, useMemo, useRef } from "react";
 import {
-  Animated,
   InteractionManager,
   Keyboard,
   Platform,
@@ -52,10 +51,8 @@ import {
   View,
 } from "react-native";
 import { SystemBars } from "react-native-edge-to-edge";
-import {
-  DrawerLayout,
-  GestureHandlerRootView,
-} from "react-native-gesture-handler";
+import { GestureHandlerRootView } from "react-native-gesture-handler";
+import DrawerLayout from "react-native-gesture-handler/ReanimatedDrawerLayout";
 import { MenuProvider } from "react-native-popup-menu";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import Toast from "react-native-toast-message";
@@ -193,7 +190,7 @@ export default function AppLayout() {
   InteractionManager.runAfterInteractions(() => SplashScreen.hide());
   if (!session) return <Redirect href="/auth" />;
 
-  const renderNavigationView = (v: Animated.Value) => {
+  const renderNavigationView = (v: any) => {
     progressValue.current = v;
 
     return !breakpoints.md ||
@@ -205,23 +202,22 @@ export default function AppLayout() {
   };
 
   const drawerLocked =
-    !desktopCollapsed && breakpoints.md
-      ? "locked-open"
-      : pathname.includes("everything/collections/") ||
-        pathname.includes("/customize") ||
-        pathname.includes("friends") ||
-        pathname.includes("insights") ||
-        pathname.includes("add-widget") ||
-        pathname.includes("upload") ||
-        pathname.includes("everything/labels/") ||
-        (pathname.includes("/map") && Platform.OS !== "ios") ||
-        (pathname.includes("/grid") && Platform.OS !== "ios") ||
-        (pathname.includes("/plan") && !pathname.includes("/planner")) ||
-        pathname.includes("open") ||
-        (pathname.includes("collections") &&
-          (pathname.includes("/search") ||
-            pathname.includes("/reorder") ||
-            pathname.includes("/share")));
+    pathname.includes("everything/collections/") ||
+    pathname.includes("/customize") ||
+    pathname.includes("friends") ||
+    pathname.includes("insights") ||
+    pathname.includes("settings") ||
+    pathname.includes("add-widget") ||
+    pathname.includes("upload") ||
+    pathname.includes("everything/labels/") ||
+    (pathname.includes("/map") && Platform.OS !== "ios") ||
+    (pathname.includes("/grid") && Platform.OS !== "ios") ||
+    (pathname.includes("/plan") && !pathname.includes("/planner")) ||
+    pathname.includes("open") ||
+    (pathname.includes("collections") &&
+      (pathname.includes("/search") ||
+        pathname.includes("/reorder") ||
+        pathname.includes("/share")));
 
   return (
     <WebAnimationComponent>
@@ -285,11 +281,11 @@ export default function AppLayout() {
                                 <NotificationsModal />
                                 <TabFriendModal />
                                 <DrawerLayout
-                                  contentContainerStyle={{ marginTop: -1 }}
-                                  // @ts-expect-error this is patched with patch-package
-                                  defaultDrawerOpen={
-                                    !desktopCollapsed && breakpoints.md
-                                  }
+                                  // minSwipeDistance={20}
+                                  contentContainerStyle={{
+                                    backgroundColor: "transparent",
+                                    marginTop: -1,
+                                  }}
                                   ref={sidebarRef}
                                   onDrawerOpen={() => {
                                     Keyboard.dismiss();
@@ -298,18 +294,21 @@ export default function AppLayout() {
                                   onDrawerClose={() => {
                                     focusPanelFreezerRef.current?.freeze();
                                   }}
-                                  useNativeAnimations={false}
-                                  keyboardDismissMode="on-drag"
+                                  // keyboardDismissMode="on-drag"
                                   drawerLockMode={
-                                    drawerLocked ? "locked-closed" : "unlocked"
+                                    !desktopCollapsed && breakpoints.md
+                                      ? 2
+                                      : drawerLocked
+                                      ? 1
+                                      : 0
                                   }
-                                  drawerPosition="left"
+                                  // drawerPosition="LEFT"
                                   drawerType={
                                     breakpoints.md
                                       ? desktopCollapsed
-                                        ? "slide"
-                                        : "front"
-                                      : "back"
+                                        ? 2
+                                        : 0
+                                      : 1
                                   }
                                   overlayColor="transparent"
                                   drawerWidth={
@@ -325,6 +324,8 @@ export default function AppLayout() {
                                       ? pathname.startsWith("/settings")
                                         ? 0
                                         : ORIGINAL_SIDEBAR_WIDTH
+                                      : pathname.includes("grid")
+                                      ? 10000
                                       : sidebarWidth
                                   }
                                   renderNavigationView={renderNavigationView}
@@ -342,7 +343,10 @@ export default function AppLayout() {
                                       dark: true,
                                     }}
                                   >
-                                    <AppContainer progressValue={progressValue}>
+                                    <AppContainer
+                                      progressValue={progressValue}
+                                      key={desktopCollapsed.toString()}
+                                    >
                                       <LastStateRestore />
                                       <SystemBars
                                         style={!isDark ? "dark" : "light"}
@@ -450,9 +454,10 @@ export default function AppLayout() {
                                         <JsStack.Screen
                                           name="settings"
                                           options={{
-                                            detachPreviousScreen:
-                                              !breakpoints.md,
                                             cardStyle: { padding: 0 },
+                                            presentation: "modal",
+                                            animation: "default",
+                                            ...TransitionPresets.ModalPresentationIOS,
                                           }}
                                         />
                                       </JsStack>

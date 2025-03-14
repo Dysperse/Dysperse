@@ -50,7 +50,7 @@ const UpNext = ({ widget, setParam, params, handlePin, small }) => {
     { refreshInterval: 1000 * 60 * 1 }
   );
 
-  const today = data?.find((col) =>
+  const today = data?.find?.((col) =>
     dayjs().isBetween(dayjs(col.start), dayjs(col.end))
   );
 

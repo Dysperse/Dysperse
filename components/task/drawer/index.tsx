@@ -183,7 +183,7 @@ const TaskDrawerWrapper = forwardRef(function TaskDrawerWrapper(
               <View style={{ flex: 1 }} />
               <LinearSkeleton width={140} height={45} />
             </View>
-            <View style={{ paddingTop: 40, paddingHorizontal: 20 }}>
+            <View style={{ paddingTop: 40, paddingHorizontal: 5 }}>
               <View style={{ flexDirection: "row", gap: 10, marginBottom: 10 }}>
                 <LinearSkeleton
                   width={50}

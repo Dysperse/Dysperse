@@ -1,10 +1,12 @@
 import { getTaskCompletionStatus } from "@/helpers/getTaskCompletionStatus";
+import { Button } from "@/ui/Button";
 import Text from "@/ui/Text";
 import { useColorTheme } from "@/ui/color/theme-provider";
 import dayjs from "dayjs";
+import { impactAsync, ImpactFeedbackStyle } from "expo-haptics";
 import { router, useLocalSearchParams } from "expo-router";
 import React, { memo } from "react";
-import { Platform, Pressable, StyleSheet, View } from "react-native";
+import { Platform, StyleSheet, View } from "react-native";
 import { usePlannerContext } from "./context";
 
 const buttonTextFormats = (type: string) => ({
@@ -42,24 +44,26 @@ const styles = StyleSheet.create({
     height: 65,
     flex: 1,
     borderRadius: 25,
+    flexDirection: "column",
     alignItems: "center",
     justifyContent: "center",
     gap: 3,
+    marginTop: 3,
     padding: 3,
   },
   inner: {
     alignItems: "center",
     justifyContent: "center",
-    borderRadius: 99,
+    borderRadius: 15,
     aspectRatio: "1 / 1",
-    maxWidth: 45,
-    maxHeight: 45,
+    maxWidth: 40,
+    maxHeight: 40,
     width: "100%",
-    borderWidth: 1,
+    borderWidth: 2,
     borderColor: "transparent",
   },
   innerText: {
-    fontFamily: "serifText700",
+    // fontFamily: "serifText800",
     fontSize: 19,
   },
 });
@@ -82,6 +86,7 @@ const SelectionButton = memo(function SelectionButton({
     (!start && dayjs().startOf("day").isBetween(itemStart, itemEnd));
 
   const handlePress = () => {
+    impactAsync(ImpactFeedbackStyle.Light);
     if (isSelected) return;
     router.setParams({
       start: dayjs(itemStart).toISOString(),
@@ -93,11 +98,7 @@ const SelectionButton = memo(function SelectionButton({
 
   return (
     <View style={[styles.item]}>
-      <Pressable
-        android_ripple={{ color: theme[6] }}
-        style={styles.item}
-        onPress={handlePress}
-      >
+      <Button height={80} style={styles.item} onPress={handlePress}>
         {buttonTextFormats(type).small !== "-" && (
           <Text weight={400} style={[styles.label, { color: theme[11] }]}>
             {dayjs(itemStart)
@@ -109,13 +110,11 @@ const SelectionButton = memo(function SelectionButton({
           style={[
             styles.inner,
             Platform.OS === "web" && { minWidth: 35 },
-            isSelected && { backgroundColor: theme[10] },
-            isToday && { borderColor: theme[isSelected ? 10 : 6] },
+            isSelected && { backgroundColor: theme[5] },
+            isToday && { borderColor: theme[isSelected ? 5 : 4] },
           ]}
         >
-          <Text
-            style={[styles.innerText, { color: theme[isSelected ? 1 : 11] }]}
-          >
+          <Text style={[styles.innerText, { color: theme[11] }]} weight={700}>
             {dayjs(itemStart).format(buttonTextFormats(type).big)}
           </Text>
         </View>
@@ -124,29 +123,27 @@ const SelectionButton = memo(function SelectionButton({
             height: 4,
             flexDirection: "row",
             gap: 3,
-            marginBottom: -6,
-            marginTop: 1,
+            marginBottom: 10,
           }}
         >
           {[...new Array(Math.min(3, items?.length))].map((_, index) => (
             <View
               key={index}
               style={{
-                width: 4,
-                height: 4,
+                width: 2.5,
+                height: 2.5,
                 backgroundColor: theme[7],
                 borderRadius: 99,
               }}
             />
           ))}
         </View>
-      </Pressable>
+      </Button>
     </View>
   );
 });
 
 export function AgendaSelector({ data }) {
-  const theme = useColorTheme();
   const { type } = usePlannerContext();
 
   return (
@@ -154,7 +151,6 @@ export function AgendaSelector({ data }) {
       style={{
         flexDirection: "row",
         paddingHorizontal: 10,
-        backgroundColor: theme[3],
         paddingBottom: 10,
       }}
     >

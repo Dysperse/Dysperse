@@ -72,6 +72,7 @@ export function Column({
         <>
           <View
             style={{
+              marginTop: breakpoints.md ? 0 : -20,
               padding: 15,
               paddingBottom: 0,
             }}
@@ -108,9 +109,9 @@ export function Column({
       <LinearGradient
         style={{
           width: "100%",
-          height: 30,
+          height: 20,
           zIndex: 1,
-          marginBottom: -30,
+          marginBottom: -20,
           marginTop: Platform.OS !== "web" ? 55 : undefined,
           pointerEvents: "none",
         }}
@@ -127,9 +128,8 @@ export function Column({
         data={taskSortAlgorithm(Object.values(column.entities))}
         estimatedItemSize={100}
         contentContainerStyle={{
-          padding: width > 600 ? 15 : 0,
+          padding: breakpoints.md ? 5 : 10,
           paddingBottom: 50,
-          paddingTop: 15,
           paddingHorizontal: 15,
         }}
         centerContent={Object.keys(column.entities).length === 0}

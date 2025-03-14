@@ -15,38 +15,38 @@ function Content() {
   const { session } = useSession();
   const collection = useCollectionContext();
   const breakpoints = useResponsiveBreakpoints();
+
   useHotkeys("esc", () => router.back());
 
   return (
     <>
       <View style={{ flex: 1 }}>
-        <View>
-          <CollectionInfo collection={collection} navigation={{}} />
-          <ConfirmationModal
-            height={450}
-            onSuccess={async () => {
-              await sendApiRequest(session, "DELETE", "space/collections", {
-                id: collection.data.id,
-              });
-              router.replace("/home");
-              await mutate(() => true);
+        <CollectionInfo collection={collection} />
+        <ConfirmationModal
+          height={450}
+          onSuccess={async () => {
+            await sendApiRequest(session, "DELETE", "space/collections", {
+              id: collection.data.id,
+            });
+            router.replace("/home");
+            await mutate(() => true);
+          }}
+          title="Delete collection?"
+          secondary="This won't delete any labels or its contents. Any opened views with this collection will be closed"
+        >
+          <Button
+            variant="filled"
+            height={60}
+            bold
+            containerStyle={{
+              marginBottom: breakpoints.md ? 40 : 100,
+              marginTop: 20,
+              marginHorizontal: 15,
             }}
-            title="Delete collection?"
-            secondary="This won't delete any labels or its contents. Any opened views with this collection will be closed"
-          >
-            <Button
-              variant="filled"
-              height={60}
-              bold
-              containerStyle={{
-                marginBottom: breakpoints.md ? 40 : 100,
-                marginTop: 20,
-              }}
-              icon="delete"
-              text="Delete collection"
-            />
-          </ConfirmationModal>
-        </View>
+            icon="delete"
+            text="Delete collection"
+          />
+        </ConfirmationModal>
       </View>
     </>
   );
@@ -54,8 +54,9 @@ function Content() {
 
 export default function Page() {
   return (
-    <CollectionMenuLayout title="Customize">
+    <CollectionMenuLayout title="Collection">
       <Content />
     </CollectionMenuLayout>
   );
 }
+

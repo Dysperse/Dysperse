@@ -7,6 +7,7 @@ import Chip from "@/ui/Chip";
 import Emoji from "@/ui/Emoji";
 import Icon from "@/ui/Icon";
 import { ListItemButton } from "@/ui/ListItemButton";
+import MenuPopover from "@/ui/MenuPopover";
 import Text from "@/ui/Text";
 import { useColor } from "@/ui/color";
 import { useColorTheme } from "@/ui/color/theme-provider";
@@ -181,30 +182,54 @@ function TaskNoteChips({ note }) {
 
   return (
     <>
-      {chips
-        .filter((link) => link.text?.trim())
-        .map((link, index) => (
-          <ImageViewer
-            key={index + link.type}
-            image={link.type === "IMAGE" && link.image}
-          >
+      {chips.filter((link) => link.text?.trim()).length > 3 ? (
+        <MenuPopover
+          containerStyle={{ width: 250 }}
+          options={chips
+            .filter((link) => link.text?.trim())
+            .map((link) => ({
+              text: link.text,
+              icon: link.image ? (
+                <Avatar size={22} image={link.image} disabled />
+              ) : (
+                link.icon
+              ),
+              onPress: () => Linking.openURL(link.image || link.href),
+            }))}
+          trigger={
             <Chip
               dense
-              key={index}
-              label={link.text}
-              textStyle={{ maxWidth: 100 }}
-              textProps={{ numberOfLines: 1 }}
-              onPress={() => Linking.openURL(link.image || link.href)}
-              icon={
-                link.image ? (
-                  <Avatar size={22} image={link.image} disabled />
-                ) : (
-                  link.icon
-                )
-              }
+              label={`${chips.length} links`}
+              icon="expand_more"
+              iconPosition="after"
             />
-          </ImageViewer>
-        ))}
+          }
+        />
+      ) : (
+        chips
+          .filter((link) => link.text?.trim())
+          .map((link, index) => (
+            <ImageViewer
+              key={index + link.type}
+              image={link.type === "IMAGE" && link.image}
+            >
+              <Chip
+                dense
+                key={index}
+                label={link.text}
+                textProps={{ numberOfLines: 1 }}
+                onPress={() => Linking.openURL(link.image || link.href)}
+                icon={
+                  link.image ? (
+                    <Avatar size={22} image={link.image} disabled />
+                  ) : (
+                    link.icon
+                  )
+                }
+              />
+            </ImageViewer>
+          ))
+      )}
     </>
   );
 }
@@ -219,6 +244,7 @@ const Task = memo(function Task({
   dateRange,
   planMode,
   dense,
+  reorderFunction,
 }: {
   task: any;
   onTaskUpdate: (newData) => void;
@@ -229,34 +255,35 @@ const Task = memo(function Task({
   dateRange?: string;
   planMode?: boolean;
   dense?: boolean;
+  reorderFunction?: any;
 }) {
   const theme = useColorTheme();
   const blue = useColor("blue");
 
   const breakpoints = useResponsiveBreakpoints();
   const isCompleted = getTaskCompletionStatus(task, task.recurrenceDay);
-  const { selection, setSelection } = useSelectionContext() || {};
+  const { reorderMode, selection, setSelection } = useSelectionContext() || {};
   const { globalTaskCreateRef, wrapperRef } = useGlobalTaskContext() || {};
 
   const handleSelect = () => {
     impactAsync(ImpactFeedbackStyle.Light);
     if (isReadOnly || !setSelection) return;
     setSelection((prev) =>
-      prev.includes(task.id)
-        ? prev.filter((e) => e !== task.id)
-        : [...prev, task.id]
+      prev.some((e) => e.id === task.id)
+        ? prev.filter((e) => e.id !== task.id)
+        : [...prev, task]
     );
   };
 
   const isSelected = useMemo(
-    () => selection?.includes(task.id),
+    () => selection?.some((e) => e.id === task.id),
     [selection, task?.id]
   );
 
   const taskStyle = useAnimatedStyle(() => ({
     transform: [
       {
-        scale: withSpring(isSelected ? 0.95 : 1, {
+        scale: withSpring(isSelected && !reorderMode ? 0.95 : 1, {
           damping: 50,
           stiffness: 600,
         }),
@@ -270,8 +297,8 @@ const Task = memo(function Task({
   );
 
   const hasChip = useMemo(
-    () => (showLabel && task.label) || hasNote || task.pinned,
-    [task, showLabel, hasNote]
+    () => (showLabel && task.label) || task.note || task.pinned,
+    [task, showLabel]
   );
 
   return (
@@ -302,7 +329,7 @@ const Task = memo(function Task({
           disabled={selection?.length > 0}
         >
           <ListItemButton
-            onLongPress={handleSelect}
+            onLongPress={reorderMode ? reorderFunction : handleSelect}
             {...(Platform.OS === "web" &&
               breakpoints.md && { onContextMenu: handleSelect })}
             {...(selection?.length > 0 && {
@@ -313,7 +340,7 @@ const Task = memo(function Task({
               paddingRight: 13,
               alignItems: "flex-start",
               paddingVertical: breakpoints.md ? (dense ? 3 : 8) : 10,
-              ...(isSelected && { backgroundColor: blue[4] }),
+              ...(isSelected && !reorderMode && { backgroundColor: blue[4] }),
             }}
             style={[
               {
@@ -333,11 +360,23 @@ const Task = memo(function Task({
             ]}
           >
             <View style={{ marginTop: hasChip ? 5 : 0 }}>
-              <TaskCheckbox
-                isReadOnly={isReadOnly}
-                task={task}
-                mutateList={onTaskUpdate}
-              />
+              {reorderMode ? (
+                <View
+                  style={{
+                    padding: 10,
+                    margin: -10,
+                    transform: [{ translateX: -5 }],
+                  }}
+                >
+                  <Icon size={25}>drag_indicator</Icon>
+                </View>
+              ) : (
+                <TaskCheckbox
+                  isReadOnly={isReadOnly}
+                  task={task}
+                  mutateList={onTaskUpdate}
+                />
+              )}
             </View>
             <View style={{ flex: 1, alignItems: "flex-start" }}>
               <Text
@@ -357,6 +396,7 @@ const Task = memo(function Task({
                 style={[
                   {
                     flex: 1,
+                    maxWidth: "100%",
                     gap: 5,
                   },
                   isCompleted && { opacity: 0.4 },
@@ -367,7 +407,7 @@ const Task = memo(function Task({
                     <Text
                       numberOfLines={1}
                       weight={300}
-                      style={{ opacity: 0.7 }}
+                      style={{ opacity: 0.6, fontSize: 14, marginVertical: 2 }}
                     >
                       {getPreviewText(task.note).trim().substring(0, 100)}
                     </Text>
@@ -381,6 +421,7 @@ const Task = memo(function Task({
                     display: hasChip ? "flex" : "none",
                   }}
                 >
+                  {task.pinned && <TaskImportantChip />}
                   {showRelativeTime && task.start && (
                     <Chip
                       disabled
@@ -423,7 +464,6 @@ const Task = memo(function Task({
                   )}
                   {showLabel && task.label && <TaskLabelChip task={task} />}
                   <TaskNoteChips note={task.note} />
-                  {task.pinned && <TaskImportantChip />}
                 </View>
               </View>
             </View>

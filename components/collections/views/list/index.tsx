@@ -41,9 +41,7 @@ function ListItem({ d, data, item, listRef, mutate, onTaskUpdate, index }) {
           large
           variant="filled"
           height={70}
-          {...(!d.find((e) => e.header) && {
-            containerStyle: { marginBottom: 10 },
-          })}
+          containerStyle={{ borderRadius: 30 }}
         />
       </CreateTask>
     );
@@ -116,12 +114,6 @@ function ListItem({ d, data, item, listRef, mutate, onTaskUpdate, index }) {
         </LinearGradient>
       </>
     );
-  } else if (item.labelPicker) {
-    return (
-      <View style={{ paddingVertical: 20 }}>
-        <Button text="Edit labels" icon="tag" onPress={openLabelPicker} />
-      </View>
-    );
   } else {
     return (
       <Entity
@@ -174,8 +166,6 @@ export default function List() {
       if (t.length === 0) acc.push({ empty: true });
       return acc;
     }, []),
-
-    { labelPicker: true },
   ];
 
   if (d.length === 1) {
@@ -185,7 +175,7 @@ export default function List() {
   const ref = useRef(null);
 
   return (
-    <View style={{ flex: 1 }}>
+    <View style={{ flex: 1, marginTop: -15 }}>
       {d.length === 0 ? (
         <CollectionEmpty />
       ) : (

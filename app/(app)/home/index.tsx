@@ -119,11 +119,13 @@ export const MenuButton = ({
   back,
   icon,
   addInsets,
+  left = false,
 }: {
   gradient?: boolean;
   back?: boolean;
   icon?: string;
   addInsets?: boolean;
+  left?: boolean;
 }) => {
   const theme = useColorTheme();
   const { sidebarRef } = useSidebarContext();
@@ -140,7 +142,8 @@ export const MenuButton = ({
             top: 0,
             left: 0,
             zIndex: 10,
-            height: 130,
+            height: 100,
+            overflow: "visible",
             width: "100%",
             pointerEvents: "box-none",
           }}
@@ -154,9 +157,18 @@ export const MenuButton = ({
     (desktopCollapsed || !breakpoints.md || back) && (
       <Wrapper>
         <IconButton
-          style={[styles.menuButton, addInsets && { marginTop: insets.top }]}
+          style={[
+            styles.menuButton,
+            (!back || left) && {
+              right: undefined,
+              left: 20,
+            },
+            { zIndex: 1 },
+            addInsets && { marginTop: insets.top },
+          ]}
           icon={icon || (back ? "close" : <MenuIcon />)}
           size={45}
+          variant={back && !left ? "filled" : undefined}
           pressableStyle={{ pointerEvents: "auto" }}
           onPress={() => {
             if (back) {
