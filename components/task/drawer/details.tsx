@@ -605,6 +605,7 @@ function CanvasLiveInfo() {
     <SkeletonContainer
       style={{
         marginTop: 10,
+        marginBottom: 10,
         gap: 10,
         paddingHorizontal: 5,
         position: "relative",
@@ -827,4 +828,3 @@ export function TaskDetails() {
     </View>
   );
 }
-

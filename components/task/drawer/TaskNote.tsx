@@ -425,7 +425,7 @@ export const TaskNote = forwardRef(
 
     const focusedStyles = useAnimatedStyle(() => ({
       borderRadius: 10,
-      marginBottom: Platform.OS === "web" ? 0 : 100,
+      marginBottom: Platform.OS === "web" ? 20 : 100,
       position: "relative",
       backgroundColor: interpolateColor(
         isFocused.value,
@@ -532,4 +532,3 @@ export const TaskNote = forwardRef(
     );
   }
 );
-
