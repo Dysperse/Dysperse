@@ -613,7 +613,7 @@ const FocusPanel = memo(() => {
               borderRadius: 20,
               padding: 10,
               flexDirection: "row",
-              marginBottom: 8,
+              marginBottom: Platform.OS === "web" ? 10 : 8,
               marginHorizontal: 10,
             }}
           />
@@ -648,7 +648,7 @@ const FocusPanel = memo(() => {
         </Modal>
         <Button
           containerStyle={{
-            marginBottom: 6,
+            marginBottom: Platform.OS === "web" ? 10 : 6,
             paddingVertical: 0,
             borderRadius: 0,
             flex: 1,
