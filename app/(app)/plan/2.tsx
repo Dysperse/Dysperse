@@ -40,7 +40,7 @@ export const SubmitButton = ({ handleNext, disabled }) => {
         containerStyle={{
           width: "100%",
           marginTop: "auto",
-          marginBottom: insets.bottom,
+          marginBottom: Math.max(insets.bottom, 20),
         }}
         height={70}
       >
@@ -159,3 +159,4 @@ export default function Page() {
     </LinearGradient>
   );
 }
+
