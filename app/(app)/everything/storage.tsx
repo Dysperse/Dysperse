@@ -98,7 +98,6 @@ function SpaceStorage({ data }: { data: any }) {
                 marginLeft: "auto",
                 alignItems: "center",
                 justifyContent: "center",
-                borderRadius: 99,
               }}
             />
           )}
