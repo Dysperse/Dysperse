@@ -58,7 +58,7 @@ index 31f7614..d475c9c 100644
    }
  });
 diff --git a/node_modules/react-native-gesture-handler/src/components/ReanimatedDrawerLayout.tsx b/node_modules/react-native-gesture-handler/src/components/ReanimatedDrawerLayout.tsx
-index 9cc1ed1..664eaea 100644
+index 9cc1ed1..7178f4d 100644
 --- a/node_modules/react-native-gesture-handler/src/components/ReanimatedDrawerLayout.tsx
 +++ b/node_modules/react-native-gesture-handler/src/components/ReanimatedDrawerLayout.tsx
 @@ -13,15 +13,15 @@ import React, {
@@ -103,14 +103,16 @@ index 9cc1ed1..664eaea 100644
  
  const DRAG_TOSS = 0.05;
  
-@@ -528,8 +528,9 @@ const DrawerLayout = forwardRef<DrawerLayoutMethods, DrawerLayoutProps>(
+@@ -527,9 +527,10 @@ const DrawerLayout = forwardRef<DrawerLayoutMethods, DrawerLayoutProps>(
+         .activeCursor(activeCursor)
          .mouseButton(mouseButton)
          .hitSlop(drawerOpened ? fillHitSlop : edgeHitSlop)
-         .minDistance(drawerOpened ? 100 : 0)
+-        .minDistance(drawerOpened ? 100 : 0)
 -        .activeOffsetX(gestureOrientation * minSwipeDistance)
 -        .failOffsetY([-15, 15])
-+        .activeOffsetX([minSwipeDistance, drawerWidth]) // Make sure user intends a swipe
-+        .failOffsetY([-5, 5]) // Less sensitive to vertical movement
++        .minDistance(50)
++        .activeOffsetX([-30, 30]) // Make sure user intends a swipe
++        // .failOffsetY([-5, 5]) // Less sensitive to vertical movement
 +        .shouldCancelWhenOutside(true)
          .simultaneousWithExternalGesture(overlayDismissGesture)
          .enableTrackpadTwoFingerGesture(enableTrackpadTwoFingerGesture)

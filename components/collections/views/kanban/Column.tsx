@@ -111,16 +111,18 @@ export function Column(props: ColumnProps) {
             },
       ]}
     >
-      <KanbanHeader
-        showInspireMe={data.length === 0}
-        grid={props.grid}
-        label={{
-          ...props.label,
-          entitiesLength: Object.values(
-            props.label?.entities || props?.entities || {}
-          ).filter((e) => e.completionInstances.length === 0).length,
-        }}
-      />
+      {!(!breakpoints.md && !props.grid) && (
+        <KanbanHeader
+          showInspireMe={data.length === 0}
+          grid={props.grid}
+          label={{
+            ...props.label,
+            entitiesLength: Object.values(
+              props.label?.entities || props?.entities || {}
+            ).filter((e) => e.completionInstances.length === 0).length,
+          }}
+        />
+      )}
       {props.grid ? undefined : (
         <>
           {!isReadOnly && session && (

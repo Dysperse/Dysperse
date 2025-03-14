@@ -1,102 +1,53 @@
 import { useCollectionContext } from "@/components/collections/context";
 import { useResponsiveBreakpoints } from "@/helpers/useResponsiveBreakpoints";
-import { Button } from "@/ui/Button";
-import Emoji from "@/ui/Emoji";
-import Icon from "@/ui/Icon";
 import IconButton from "@/ui/IconButton";
-import Text from "@/ui/Text";
 import { useColorTheme } from "@/ui/color/theme-provider";
 import { useLocalSearchParams } from "expo-router";
-import { useRef, useState } from "react";
-import { ScrollView, View } from "react-native";
-import { FlatList } from "react-native-gesture-handler";
+import React, { useState } from "react";
+import { Dimensions, ScrollView, View } from "react-native";
+import { useSharedValue } from "react-native-reanimated";
+import Carousel, { ICarouselInstance } from "react-native-reanimated-carousel";
 import { CollectionEmpty } from "../CollectionEmpty";
 import { Column } from "./Column";
+import { KanbanHeader } from "./Header";
 import { KanbanContext } from "./context";
+
+const width = Dimensions.get("window").width;
 
 function ColumnSwitcher({ columns, setCurrentColumn, currentColumn }) {
   const theme = useColorTheme();
   const { openLabelPicker } = useCollectionContext();
 
-  const itemCount = Object.keys(columns[currentColumn]?.entities || {}).length;
-  const flatListRef = useRef<FlatList>(null);
+  const ref = React.useRef<ICarouselInstance>(null);
+  const progress = useSharedValue<number>(0);
 
   return (
     <>
-      <FlatList
-        ref={flatListRef}
-        horizontal
-        data={[...columns, "create"]}
-        keyExtractor={(column) => column.id}
-        contentContainerStyle={{
-          justifyContent: "center",
-          paddingHorizontal: 23,
-          paddingVertical: 10,
-          gap: 10,
+      <Carousel
+        ref={ref}
+        width={width}
+        height={90}
+        data={columns}
+        onProgressChange={progress}
+        onSnapToItem={(index) => setCurrentColumn(index)}
+        mode="parallax"
+        modeConfig={{
+          parallaxScrollingScale: 1,
+          parallaxAdjacentItemScale: 0.8,
+          parallaxScrollingOffset: 80,
         }}
-        style={{
-          maxHeight: 65,
-        }}
-        renderItem={({ item: column, index: i }) =>
-          column === "create" ? (
-            <IconButton icon="edit" size={40} onPress={openLabelPicker} />
-          ) : (
-            <Button
-              variant={currentColumn === i ? "filled" : "text"}
-              onPress={() => {
-                setCurrentColumn(i);
-                setTimeout(() => {
-                  flatListRef.current?.scrollToIndex({
-                    index: i,
-                    animated: true,
-                    viewOffset: 20,
-                  });
-                }, 100);
-              }}
-              style={{
-                opacity: i === currentColumn ? 1 : 0.6,
-                alignItems: "center",
-                overflow: "visible",
-              }}
-              containerStyle={{ overflow: "visible", borderRadius: 15 }}
-            >
-              <Emoji emoji={column.emoji} />
-              <Text
-                style={{
-                  marginLeft: 5,
-                  fontSize: 20,
-                  fontFamily: "serifText700",
-                  textAlign: "left",
-                  color: theme[11],
-                }}
-                numberOfLines={1}
-              >
-                {column?.name}
-              </Text>
-              <Icon
-                style={{
-                  opacity: currentColumn === i ? 1 : 0,
-                  marginRight: currentColumn === i ? 0 : -35,
-                }}
-              >
-                expand_more
-              </Icon>
-            </Button>
-          )
-        }
+        renderItem={({ item }) => (
+          <KanbanHeader
+            carouselRef={ref}
+            label={{
+              ...item,
+              entitiesLength: Object.values(
+                item.label?.entities || item?.entities || {}
+              ).filter((e) => e.completionInstances.length === 0).length,
+            }}
+          />
+        )}
       />
-      <Text
-        style={{
-          opacity: 0.6,
-          color: theme[11],
-          marginTop: -30,
-          fontSize: 20,
-          marginBottom: 10,
-          paddingHorizontal: 30,
-        }}
-      >
-        {itemCount} item{itemCount !== 1 ? "s" : ""}
-      </Text>
     </>
   );
 }
@@ -127,6 +78,13 @@ export default function Kanban() {
         hasOther: data.entities.length > 0,
       }}
     >
+      {!breakpoints.md && (
+        <ColumnSwitcher
+          columns={columns}
+          setCurrentColumn={setCurrentColumn}
+          currentColumn={currentColumn}
+        />
+      )}
       {data.labels.length === 0 ? (
         <CollectionEmpty />
       ) : (

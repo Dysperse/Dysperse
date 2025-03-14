@@ -281,7 +281,7 @@ export default function AppLayout() {
                                 <NotificationsModal />
                                 <TabFriendModal />
                                 <DrawerLayout
-                                  minSwipeDistance={20}
+                                  // minSwipeDistance={20}
                                   contentContainerStyle={{
                                     backgroundColor: "transparent",
                                     marginTop: -1,
@@ -325,7 +325,7 @@ export default function AppLayout() {
                                         ? 0
                                         : ORIGINAL_SIDEBAR_WIDTH
                                       : pathname.includes("grid")
-                                      ? 100
+                                      ? 10000
                                       : sidebarWidth
                                   }
                                   renderNavigationView={renderNavigationView}

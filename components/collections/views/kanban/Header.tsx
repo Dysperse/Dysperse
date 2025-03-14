@@ -22,6 +22,7 @@ export const KanbanHeader = memo(function KanbanHeader({
   list,
   hideNavigation,
   style,
+  carouselRef,
 }: {
   grid?: boolean;
   list?: boolean;
@@ -33,6 +34,7 @@ export const KanbanHeader = memo(function KanbanHeader({
     name: string;
     entitiesLength: number;
   };
+  carouselRef?: any;
   style?: StyleProp<ViewStyle>;
 }) {
   const breakpoints = useResponsiveBreakpoints();
@@ -145,27 +147,23 @@ export const KanbanHeader = memo(function KanbanHeader({
             {!breakpoints.md && !hideNavigation && (
               <IconButton
                 size={40}
-                onPress={() =>
-                  setCurrentColumn((d) =>
-                    d === -1 ? columnsLength - 1 : d - 1
-                  )
-                }
+                onPress={() => {
+                  carouselRef.current?.prev?.();
+                  setCurrentColumn(
+                    (d) => (d - 1 + columnsLength) % columnsLength
+                  );
+                }}
                 icon="arrow_back_ios_new"
-                disabled={currentColumn === 0}
-                style={[currentColumn === 0 && { opacity: 0.5 }]}
               />
             )}
             {!breakpoints.md && !hideNavigation && (
               <IconButton
                 size={40}
-                onPress={() =>
-                  setCurrentColumn((d) =>
-                    d === -1 ? -1 : d === columnsLength - 1 ? -1 : d + 1
-                  )
-                }
+                onPress={() => {
+                  carouselRef.current?.next?.();
+                  setCurrentColumn((d) => (d + 1) % columnsLength);
+                }}
                 icon="arrow_forward_ios"
-                disabled={currentColumn === (hasOther ? -1 : columnsLength - 1)}
-                style={[currentColumn === -1 && { opacity: 0.5 }]}
               />
             )}
           </>
