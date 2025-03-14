@@ -4,7 +4,12 @@ import IconButton from "@/ui/IconButton";
 import { useColorTheme } from "@/ui/color/theme-provider";
 import { useLocalSearchParams } from "expo-router";
 import React, { useState } from "react";
-import { Dimensions, ScrollView, View } from "react-native";
+import {
+  Dimensions,
+  ScrollView,
+  useWindowDimensions,
+  View,
+} from "react-native";
 import { useSharedValue } from "react-native-reanimated";
 import Carousel, { ICarouselInstance } from "react-native-reanimated-carousel";
 import { CollectionEmpty } from "../CollectionEmpty";
@@ -16,6 +21,7 @@ const width = Dimensions.get("window").width;
 
 function ColumnSwitcher({ columns, setCurrentColumn, currentColumn }) {
   const theme = useColorTheme();
+  const { width } = useWindowDimensions();
   const { openLabelPicker } = useCollectionContext();
 
   const ref = React.useRef<ICarouselInstance>(null);
@@ -31,10 +37,11 @@ function ColumnSwitcher({ columns, setCurrentColumn, currentColumn }) {
         onProgressChange={progress}
         onSnapToItem={(index) => setCurrentColumn(index)}
         mode="parallax"
+        loop={false}
         modeConfig={{
           parallaxScrollingScale: 1,
           parallaxAdjacentItemScale: 0.8,
-          parallaxScrollingOffset: 80,
+          parallaxScrollingOffset: width > 400 ? 80 : 60,
         }}
         renderItem={({ item }) => (
           <KanbanHeader

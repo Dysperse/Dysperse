@@ -80,7 +80,7 @@ export const KanbanHeader = memo(function KanbanHeader({
           size={40}
           icon="arrow_back_ios_new"
           onPress={() => setCurrentColumn_grid("HOME")}
-          style={{ marginLeft: -15 }}
+          style={{ marginLeft: -15, height: 60 }}
         />
       )}
       {label.emoji && (
@@ -147,6 +147,7 @@ export const KanbanHeader = memo(function KanbanHeader({
             {!breakpoints.md && !hideNavigation && (
               <IconButton
                 size={40}
+                disabled={currentColumn === 0}
                 onPress={() => {
                   carouselRef.current?.prev?.();
                   setCurrentColumn(
@@ -159,6 +160,7 @@ export const KanbanHeader = memo(function KanbanHeader({
             {!breakpoints.md && !hideNavigation && (
               <IconButton
                 size={40}
+                disabled={currentColumn === columnsLength - 1}
                 onPress={() => {
                   carouselRef.current?.next?.();
                   setCurrentColumn((d) => (d + 1) % columnsLength);
