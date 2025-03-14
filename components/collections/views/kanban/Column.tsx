@@ -232,7 +232,7 @@ export function Column(props: ColumnProps) {
         contentContainerStyle={{
           padding: props.grid ? 10 : 15,
           paddingTop: props.grid ? 5 : 15,
-          paddingBottom: insets.bottom + 15,
+          paddingBottom: insets.bottom + 35,
         }}
         ListFooterComponentStyle={[
           hasNoCompleteTasks && {
@@ -248,10 +248,10 @@ export function Column(props: ColumnProps) {
                   dense
                   containerStyle={{
                     marginRight: "auto",
-                    marginTop: 25,
-                    marginLeft: breakpoints.md ? 80 : "auto",
+                    marginTop: hasItems && props.grid ? 20 : 5,
+                    marginLeft: !hasItems ? 80 : "auto",
                   }}
-                  variant={breakpoints.md ? "filled" : "text"}
+                  variant={props.grid ? "filled" : undefined}
                 >
                   <ButtonText weight={600}>
                     {showCompleted ? "Hide completed" : "See completed"}
@@ -275,4 +275,3 @@ export function Column(props: ColumnProps) {
     </View>
   );
 }
-

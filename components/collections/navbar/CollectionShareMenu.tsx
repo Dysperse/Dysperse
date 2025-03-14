@@ -5,6 +5,7 @@ import IconButton from "@/ui/IconButton";
 import { useColorTheme } from "@/ui/color/theme-provider";
 import { router, useLocalSearchParams, usePathname } from "expo-router";
 import { memo, useCallback } from "react";
+import { useCollectionContext } from "../context";
 import { styles } from "./styles";
 
 export const CollectionShareMenu = memo(() => {
@@ -12,6 +13,7 @@ export const CollectionShareMenu = memo(() => {
   const breakpoints = useResponsiveBreakpoints();
   const theme = useColorTheme();
   const pathname = usePathname();
+  const { data } = useCollectionContext();
 
   const handleOpen = useCallback(
     () => router.push(pathname + "/share"),
@@ -42,7 +44,7 @@ export const CollectionShareMenu = memo(() => {
                 },
               ]}
             >
-              <Icon>ios_share</Icon>
+              <Icon>{data?.public ? "group" : "ios_share"}</Icon>
               {breakpoints.md && <ButtonText weight={400}>Share</ButtonText>}
             </Button>
           ) : (
@@ -58,4 +60,3 @@ export const CollectionShareMenu = memo(() => {
     </>
   );
 });
-

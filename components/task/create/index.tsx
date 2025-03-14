@@ -1224,11 +1224,15 @@ const TaskDescriptionInput = forwardRef(
   }
 );
 
-function SpeechRecognition({ setValue, handleSubmitButtonClick }) {
+function SpeechRecognition({ setValue }) {
   const theme = useColorTheme();
   const red = useColor("red");
   const breakpoints = useResponsiveBreakpoints();
   const [recognizing, setRecognizing] = useState(false);
+
+  useSpeechRecognitionEvent("volumechange", (event) => {
+    console.log("Volume changed to:", event.value);
+  });
 
   useSpeechRecognitionEvent("start", () => {
     setRecognizing(true);
@@ -1724,4 +1728,3 @@ const CreateTask = forwardRef(
 );
 
 export default CreateTask;
-

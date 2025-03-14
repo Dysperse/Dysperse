@@ -128,8 +128,8 @@ export function Column({
         data={taskSortAlgorithm(Object.values(column.entities))}
         estimatedItemSize={100}
         contentContainerStyle={{
-          padding: breakpoints.md ? 5 : 10,
-          paddingBottom: 50,
+          padding: 10,
+          paddingBottom: breakpoints.md ? 20 : 50,
           paddingHorizontal: 15,
         }}
         centerContent={Object.keys(column.entities).length === 0}
@@ -169,4 +169,3 @@ export function Column({
     </View>
   );
 }
-
