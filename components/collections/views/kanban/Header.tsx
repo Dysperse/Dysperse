@@ -129,7 +129,9 @@ export const KanbanHeader = memo(function KanbanHeader({
           </Text>
         )}
       </View>
-      <View style={{ flexDirection: "row", marginRight: -10 }}>
+      <View
+        style={{ flexDirection: "row", marginRight: -15, alignItems: "center" }}
+      >
         {label?.id && !isReadOnly && session && (
           <ColumnMenuTrigger label={label}>
             <IconButton
@@ -155,6 +157,7 @@ export const KanbanHeader = memo(function KanbanHeader({
                   );
                 }}
                 icon="arrow_back_ios_new"
+                style={{ height: 60 }}
               />
             )}
             {!breakpoints.md && !hideNavigation && (
@@ -166,6 +169,7 @@ export const KanbanHeader = memo(function KanbanHeader({
                   setCurrentColumn((d) => (d + 1) % columnsLength);
                 }}
                 icon="arrow_forward_ios"
+                style={{ height: 60 }}
               />
             )}
           </>

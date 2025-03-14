@@ -2,7 +2,7 @@ import { mutations } from "@/app/(app)/[tab]/collections/mutations";
 import CreateTask from "@/components/task/create";
 import { getTaskCompletionStatus } from "@/helpers/getTaskCompletionStatus";
 import { useResponsiveBreakpoints } from "@/helpers/useResponsiveBreakpoints";
-import { Button } from "@/ui/Button";
+import { Button, ButtonText } from "@/ui/Button";
 import { addHslAlpha } from "@/ui/color";
 import { useColorTheme } from "@/ui/color/theme-provider";
 import ErrorAlert from "@/ui/Error";
@@ -25,6 +25,64 @@ import { Entity } from "../../entity";
 import { AgendaButtons } from "../../navbar/AgendaButtons";
 
 const SkylineContext = createContext(null);
+
+function ColumnSwitcher({ setCurrentColumn, currentColumn }) {
+  const theme = useColorTheme();
+
+  const columns = [
+    ["Today", dayjs().format("MMM D")],
+    [
+      "Week",
+      `${dayjs().format("Do")} - ${dayjs().add(6, "days").format("Do")}`,
+    ],
+    ["Month", dayjs().format("MMMM")],
+    ["Year", dayjs().format("YYYY")],
+  ];
+
+  return (
+    <View
+      style={{
+        flexDirection: "row",
+        paddingHorizontal: 20,
+        marginBottom: -10,
+      }}
+    >
+      {columns.map((column, index) => (
+        <Button
+          key={index}
+          containerStyle={{ flex: 1, borderRadius: 20 }}
+          bold={currentColumn === index}
+          onPress={() => setCurrentColumn(index)}
+          style={{ flexDirection: "column", gap: 0 }}
+          height={60}
+          backgroundColors={
+            currentColumn === index
+              ? {
+                  default: addHslAlpha(theme[9], 0.1),
+                  hovered: addHslAlpha(theme[9], 0.2),
+                  pressed: addHslAlpha(theme[9], 0.3),
+                }
+              : {
+                  default: "transparent",
+                  hovered: addHslAlpha(theme[9], 0.1),
+                  pressed: addHslAlpha(theme[9], 0.2),
+                }
+          }
+        >
+          <ButtonText weight={600}>{column[0]}</ButtonText>
+          <ButtonText
+            style={{
+              opacity: 0.6,
+              fontSize: 12,
+            }}
+          >
+            {column[1]}
+          </ButtonText>
+        </Button>
+      ))}
+    </View>
+  );
+}
 
 function Header({
   title,
@@ -51,66 +109,74 @@ function Header({
   return (
     <>
       <View>
-        <View
-          style={[
-            {
-              padding: 20,
-              paddingBottom: 0,
-              backgroundColor: theme[breakpoints.md ? 2 : 1],
-            },
-            !breakpoints.md && {
-              borderTopWidth: 1,
-              flexDirection: "row",
-              alignItems: "center",
-              justifyContent: "space-between",
-              borderTopColor: theme[5],
-            },
-          ]}
-        >
-          {!breakpoints.md && (
-            <IconButton
-              icon="arrow_back"
-              onPress={() =>
-                setSelectedColumn(
-                  modes[(selectedColumn - 1 + modes.length) % modes.length]
-                )
-              }
-            />
-          )}
-          <View>
-            <Text
-              style={{
-                color: theme[11],
-                fontSize: large ? 27 : 20,
-                textAlign: "center",
-              }}
-              weight={900}
-            >
-              {title}
-            </Text>
-            <Text
-              style={{
-                marginBottom: 10,
-                color: theme[11],
-                opacity: 0.6,
-                textAlign: "center",
-              }}
-            >
-              {dayjs(range[0])
-                .utc()
-                .format("MMM D" + (large ? "o" : ""))}{" "}
-              {!large && "-"} {!large && dayjs(range[1]).utc().format("MMM D")}
-            </Text>
+        {!breakpoints.md && (
+          <ColumnSwitcher
+            setCurrentColumn={setSelectedColumn}
+            currentColumn={selectedColumn}
+          />
+        )}
+        {breakpoints.md && (
+          <View
+            style={[
+              {
+                padding: 20,
+                paddingVertical: 10,
+                paddingTop: 30,
+                backgroundColor: theme[breakpoints.md ? 2 : 3],
+              },
+              !breakpoints.md && {
+                flexDirection: "row",
+                alignItems: "center",
+                justifyContent: "space-between",
+              },
+            ]}
+          >
+            {!breakpoints.md && (
+              <IconButton
+                icon="arrow_back"
+                onPress={() =>
+                  setSelectedColumn(
+                    modes[(selectedColumn - 1 + modes.length) % modes.length]
+                  )
+                }
+              />
+            )}
+            <View>
+              <Text
+                style={{
+                  color: theme[11],
+                  fontSize: large ? 27 : 20,
+                  textAlign: "center",
+                }}
+                weight={900}
+              >
+                {title}
+              </Text>
+              <Text
+                style={{
+                  marginBottom: 10,
+                  color: theme[11],
+                  opacity: 0.6,
+                  textAlign: "center",
+                }}
+              >
+                {dayjs(range[0])
+                  .utc()
+                  .format("MMM D" + (large ? "o" : ""))}{" "}
+                {!large && "-"}{" "}
+                {!large && dayjs(range[1]).utc().format("MMM D")}
+              </Text>
+            </View>
+            {!breakpoints.md && (
+              <IconButton
+                icon="arrow_forward"
+                onPress={() =>
+                  setSelectedColumn((selectedColumn + 1) % modes.length)
+                }
+              />
+            )}
           </View>
-          {!breakpoints.md && (
-            <IconButton
-              icon="arrow_forward"
-              onPress={() =>
-                setSelectedColumn((selectedColumn + 1) % modes.length)
-              }
-            />
-          )}
-        </View>
+        )}
         <View
           style={{
             padding: 20,
@@ -293,13 +359,11 @@ function Content({ data, mutate }) {
       style={[
         columnStyles,
         {
-          borderTopWidth: 1,
-          borderTopColor: theme[5],
           flex: 1,
         },
       ]}
     >
-      <AgendaButtons />
+      <AgendaButtons center />
       <Header
         mutate={mutate}
         selectedColumn={selectedColumn}

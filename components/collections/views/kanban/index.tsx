@@ -40,8 +40,7 @@ function ColumnSwitcher({ columns, setCurrentColumn, currentColumn }) {
         loop={false}
         modeConfig={{
           parallaxScrollingScale: 1,
-          parallaxAdjacentItemScale: 0.8,
-          parallaxScrollingOffset: width > 400 ? 80 : 60,
+          parallaxScrollingOffset: 25,
         }}
         renderItem={({ item }) => (
           <KanbanHeader

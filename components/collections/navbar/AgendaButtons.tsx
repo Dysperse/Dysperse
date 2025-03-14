@@ -16,9 +16,11 @@ import { AgendaCalendarMenu } from "./AgendaCalendarMenu";
 export function AgendaButtons({
   handleMenuOpen,
   weekMode,
+  center,
 }: {
   handleMenuOpen?: () => void;
   weekMode?: boolean;
+  center?: boolean;
 }) {
   const theme = useColorTheme();
   // eslint-disable-next-line prefer-const
@@ -89,7 +91,7 @@ export function AgendaButtons({
   );
   const breakpoints = useResponsiveBreakpoints();
 
-  const titleFormat = weekMode ? "MMMM YYYY" : "MMM Do [& after]";
+  const titleFormat = "MMMM YYYY";
 
   const trigger = (
     <Button
@@ -107,7 +109,10 @@ export function AgendaButtons({
         hovered: breakpoints.md ? "transparent" : theme[4],
         pressed: breakpoints.md ? "transparent" : theme[5],
       }}
-      style={{ justifyContent: "flex-start", paddingHorizontal: 15 }}
+      style={{
+        justifyContent: "flex-start",
+        paddingHorizontal: 15,
+      }}
     >
       <Text
         numberOfLines={1}
@@ -197,8 +202,9 @@ export function AgendaButtons({
           style={[
             {
               flexDirection: "row",
-              justifyContent: "space-between",
+              justifyContent: center ? undefined : "space-between",
               alignItems: "center",
+              paddingHorizontal: center ? 5 : undefined,
             },
             breakpoints.md
               ? {
@@ -211,8 +217,7 @@ export function AgendaButtons({
           {typeof handleMenuOpen === "undefined" ? (
             <MenuPopover
               trigger={trigger}
-              scrollViewProps={{ bounces: false }}
-              containerStyle={{ width: 300 }}
+              containerStyle={{ width: breakpoints.md ? 300 : "100%" }}
             >
               <AgendaCalendarMenu weekMode={weekMode} />
             </MenuPopover>
