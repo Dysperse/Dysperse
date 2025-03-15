@@ -357,7 +357,7 @@ function TaskNameInput() {
 function WorkloadChip() {
   const theme = useColorTheme();
   const { task, isReadOnly, updateTask } = useTaskDrawerContext();
-  const complexityScale = [2, 4, 8, 16, 32];
+  const complexityScale = ["XS", "S", "M", "L", "XL"];
   const menuRef = useRef(null);
 
   return (
@@ -394,7 +394,7 @@ function WorkloadChip() {
                         color: theme[n === task.storyPoints ? 1 : 11],
                       }}
                     >
-                      {String(n).padStart(2, "0")}
+                      {n}
                     </Text>
                   </View>
                   <Text variant="menuItem">

@@ -5,10 +5,10 @@ import { useResponsiveBreakpoints } from "@/helpers/useResponsiveBreakpoints";
 import { Button } from "@/ui/Button";
 import { addHslAlpha } from "@/ui/color";
 import { useColorTheme } from "@/ui/color/theme-provider";
+import Icon from "@/ui/Icon";
 import IconButton from "@/ui/IconButton";
 import RefreshControl from "@/ui/RefreshControl";
-import * as shapes from "@/ui/shapes";
-import Text, { getFontName } from "@/ui/Text";
+import Text from "@/ui/Text";
 import { FlashList } from "@shopify/flash-list";
 import dayjs from "dayjs";
 import { LinearGradient } from "expo-linear-gradient";
@@ -40,23 +40,81 @@ const styles = StyleSheet.create({
   },
 });
 
+function StoryPointShape({ selected, index, onPress }) {
+  const scale = ["XS", "S", "M", "L", "XL"];
+  const theme = useColorTheme();
+
+  return (
+    <IconButton
+      size={45}
+      onPress={onPress}
+      backgroundColors={{
+        default: "transparent",
+        hovered: "transparent",
+        pressed: "transparent",
+      }}
+    >
+      <View
+        style={{
+          position: "absolute",
+          top: 0,
+          left: 0,
+          width: "100%",
+          height: "100%",
+          alignItems: "center",
+          justifyContent: "center",
+          transform: [{ scale: 1.2 }],
+        }}
+      >
+        <Icon
+          size={45}
+          filled={index > -1}
+          style={{ color: theme[selected ? 11 : 5] }}
+        >
+          {index === -1
+            ? "circle"
+            : ["circle", "square", "thermostat_carbon", "pentagon", "hexagon"][
+                index
+              ]}
+        </Icon>
+      </View>
+      <View
+        style={{
+          position: "absolute",
+          top: 0,
+          left: 0,
+          width: "100%",
+          height: "100%",
+          alignItems: "center",
+          justifyContent: "center",
+        }}
+      >
+        <Text
+          style={{
+            color: theme[selected ? 1 : 11],
+            fontSize: 15,
+            textAlign: "center",
+            marginTop: -2,
+          }}
+          weight={700}
+        >
+          {index === -1 ? <Icon>close</Icon> : scale[index]}
+        </Text>
+      </View>
+    </IconButton>
+  );
+}
+
 const StoryPointHeader = ({
-  scale,
   index,
   columnRef,
-  setSelectedScale,
 }: {
-  scale: number;
   index: number;
   columnRef: any;
   setSelectedScale: Dispatch<SetStateAction<number>>;
 }) => {
   const theme = useColorTheme();
   const breakpoints = useResponsiveBreakpoints();
-  const Shape = shapes[`shape${index + 1}`] || React.Fragment;
-
-  const handleBack = () => setSelectedScale((t) => (t === 0 ? 0 : t - 1));
-  const handleNext = () => setSelectedScale((t) => (t === 4 ? 4 : t + 1));
 
   return (
     <LinearGradient
@@ -81,58 +139,17 @@ const StoryPointHeader = ({
           gap: 15,
         }}
       >
-        <View
-          style={{
-            flexDirection: "column",
-            alignItems: "center",
-            width: 40,
-            height: 40,
-            justifyContent: "center",
-            marginHorizontal: "auto",
-            position: "relative",
-          }}
-        >
-          <View
-            style={{
-              position: "absolute",
-              top: 0,
-              left: 0,
-            }}
-          >
-            <Shape size={40} color={theme[5]} />
-          </View>
-          <Text
-            style={{
-              color: theme[11],
-              fontSize: 18,
-              fontFamily: getFontName("jetBrainsMono", 500),
-            }}
-          >
-            {scale}
-          </Text>
-        </View>
+        <StoryPointShape index={index} />
         <Text
-          style={{ color: theme[11], fontSize: 23, fontFamily: "serifText700" }}
+          style={{
+            color: theme[11],
+            fontSize: 23,
+            fontFamily: "serifText700",
+          }}
         >
           {STORY_POINT_SCALE[index]}
         </Text>
       </Pressable>
-      {!breakpoints.md && (
-        <IconButton
-          onPress={handleBack}
-          size={40}
-          icon="west"
-          disabled={index === 0}
-        />
-      )}
-      {!breakpoints.md && (
-        <IconButton
-          onPress={handleNext}
-          size={40}
-          icon="east"
-          disabled={index === 4}
-        />
-      )}
     </LinearGradient>
   );
 };
@@ -159,7 +176,7 @@ const StoryPoint = ({
       []
     ),
   ]
-    .filter((t) => t.storyPoints === scale && !t.trash)
+    .filter((t) => (t.storyPoints === scale || scale === -1) && !t.trash)
     .slice()
     .sort((a, b) => {
       const agendaOrderComparison = a.agendaOrder
@@ -193,16 +210,21 @@ const StoryPoint = ({
         },
       ]}
     >
-      <StoryPointHeader
-        setSelectedScale={setSelectedScale}
-        columnRef={columnRef}
-        scale={scale}
-        index={index}
-      />
+      {breakpoints.md && (
+        <StoryPointHeader
+          setSelectedScale={setSelectedScale}
+          columnRef={columnRef}
+          scale={scale}
+          index={index}
+        />
+      )}
       {isReadOnly ? null : (
         <>
           <View
-            style={[styles.header, { paddingHorizontal: 10, paddingTop: 10 }]}
+            style={[
+              styles.header,
+              { paddingHorizontal: 15, paddingTop: 10, marginBottom: -10 },
+            ]}
           >
             <CreateTask
               defaultValues={{
@@ -251,7 +273,7 @@ const StoryPoint = ({
           )}
         estimatedItemSize={100}
         contentContainerStyle={{
-          padding: 15,
+          padding: 10,
           paddingBottom: 50,
         }}
         centerContent={filteredTasks.length === 0}
@@ -272,8 +294,8 @@ const StoryPoint = ({
 
 export default function Workload() {
   const breakpoints = useResponsiveBreakpoints();
-  const [selectedScale, setSelectedScale] = useState(0);
-
+  const [selectedScale, setSelectedScale] = useState(-1);
+  const theme = useColorTheme();
   const scale = [2, 4, 8, 16, 32];
 
   return breakpoints.md ? (
@@ -288,11 +310,50 @@ export default function Workload() {
       ))}
     </ScrollView>
   ) : (
-    <StoryPoint
-      scale={scale[selectedScale]}
-      setSelectedScale={setSelectedScale}
-      index={selectedScale}
-    />
+    <>
+      {!breakpoints.md && (
+        <View style={{ padding: 15, gap: 5 }}>
+          <Text
+            style={{
+              color: theme[11],
+              fontSize: 23,
+              paddingHorizontal: 5,
+              fontFamily: "serifText700",
+            }}
+          >
+            {selectedScale == -1
+              ? "All tasks"
+              : STORY_POINT_SCALE[selectedScale]}
+          </Text>
+          <View
+            style={{
+              flexDirection: "row",
+              justifyContent: "center",
+              gap: 15,
+            }}
+          >
+            <StoryPointShape
+              index={-1}
+              selected={selectedScale === -1}
+              onPress={() => setSelectedScale(-1)}
+            />
+            {scale.map((s, i) => (
+              <StoryPointShape
+                key={s}
+                index={i}
+                selected={selectedScale === i}
+                onPress={() => setSelectedScale(i)}
+              />
+            ))}
+          </View>
+        </View>
+      )}
+      <StoryPoint
+        scale={selectedScale == -1 ? -1 : scale[selectedScale]}
+        setSelectedScale={setSelectedScale}
+        index={selectedScale}
+      />
+    </>
   );
 }
 

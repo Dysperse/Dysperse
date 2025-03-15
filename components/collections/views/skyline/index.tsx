@@ -13,6 +13,7 @@ import Text from "@/ui/Text";
 import capitalizeFirstLetter from "@/utils/capitalizeFirstLetter";
 import { FlashList } from "@shopify/flash-list";
 import dayjs from "dayjs";
+import { impactAsync, ImpactFeedbackStyle } from "expo-haptics";
 import { LinearGradient } from "expo-linear-gradient";
 import { useLocalSearchParams } from "expo-router";
 import { createContext, useMemo, useState } from "react";
@@ -45,6 +46,7 @@ function ColumnSwitcher({ setCurrentColumn, currentColumn }) {
         flexDirection: "row",
         paddingHorizontal: 20,
         marginBottom: -10,
+        marginTop: -5,
       }}
     >
       {columns.map((column, index) => (
@@ -52,7 +54,10 @@ function ColumnSwitcher({ setCurrentColumn, currentColumn }) {
           key={index}
           containerStyle={{ flex: 1, borderRadius: 20 }}
           bold={currentColumn === index}
-          onPress={() => setCurrentColumn(index)}
+          onPress={() => {
+            impactAsync(ImpactFeedbackStyle.Light);
+            setCurrentColumn(index);
+          }}
           style={{ flexDirection: "column", gap: 0 }}
           height={60}
           backgroundColors={

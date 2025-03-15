@@ -6,20 +6,15 @@ import { omit } from "@/helpers/omit";
 import { useResponsiveBreakpoints } from "@/helpers/useResponsiveBreakpoints";
 import { Button } from "@/ui/Button";
 import Emoji from "@/ui/Emoji";
-import Icon from "@/ui/Icon";
-import { ListItemButton } from "@/ui/ListItemButton";
-import ListItemText from "@/ui/ListItemText";
-import Modal from "@/ui/Modal";
 import RefreshControl from "@/ui/RefreshControl";
 import Text from "@/ui/Text";
 import TextField from "@/ui/TextArea";
 import { useColorTheme } from "@/ui/color/theme-provider";
 import { FlashList } from "@shopify/flash-list";
 import dayjs from "dayjs";
-import { router, useLocalSearchParams } from "expo-router";
-import { useRef, useState, useTransition } from "react";
-import { Pressable, useWindowDimensions, View } from "react-native";
-import { ScrollView } from "react-native-gesture-handler";
+import { useLocalSearchParams } from "expo-router";
+import { useState, useTransition } from "react";
+import { useWindowDimensions, View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { ColumnEmptyComponent } from "../../emptyComponent";
 
@@ -27,62 +22,10 @@ type streamType = "backlog" | "upcoming" | "completed" | "unscheduled";
 const streamViews = [
   { label: "Backlog", value: "backlog", icon: "west" },
   { label: "Upcoming", value: "upcoming", icon: "east" },
-  { label: "Completed", value: "completed", icon: "check_circle" },
+  { label: "Done", value: "completed", icon: "check_circle" },
   { label: "Unscheduled", value: "unscheduled", icon: "sunny" },
   { label: "Repeating", value: "repeating", icon: "loop" },
 ];
-
-function StreamViewPicker() {
-  const theme = useColorTheme();
-  const ref = useRef(null);
-  const { view } = useLocalSearchParams();
-  const currentView = streamViews.find((e) => e.value === (view || "backlog"));
-
-  return (
-    <>
-      <Pressable
-        onPress={() => ref.current.present()}
-        style={{
-          padding: 10,
-          paddingBottom: 0,
-          flexDirection: "row",
-          paddingHorizontal: 20,
-          alignItems: "center",
-        }}
-      >
-        <Text
-          weight={600}
-          style={{
-            fontSize: 23,
-            fontFamily: "serifText700",
-            color: theme[11],
-          }}
-        >
-          {currentView.label}
-        </Text>
-        <Icon size={30}>expand_more</Icon>
-      </Pressable>
-
-      <Modal sheetRef={ref} animation="SLIDE" height="auto">
-        <View style={{ padding: 20 }}>
-          {streamViews.map((e) => (
-            <ListItemButton
-              key={e.value}
-              onPress={() => {
-                router.setParams({ view: e.value });
-                ref.current.close();
-              }}
-              variant={e.value === currentView.value ? "filled" : "default"}
-            >
-              <Icon>{e.icon}</Icon>
-              <ListItemText primary={e.label} />
-            </ListItemButton>
-          ))}
-        </View>
-      </Modal>
-    </>
-  );
-}
 
 export default function Stream() {
   const params = useLocalSearchParams();
@@ -95,9 +38,7 @@ export default function Stream() {
   );
 
   function selectTab(nextTab) {
-    startTransition(() => {
-      setView(nextTab);
-    });
+    startTransition(() => setView(nextTab));
   }
 
   const theme = useColorTheme();
@@ -291,7 +232,11 @@ export default function Stream() {
             </CreateTask>
           )}
         </View>
-        <ScrollView>
+        <View
+          style={{
+            flexDirection: breakpoints.md ? "column" : "row",
+          }}
+        >
           {streamViews.map((e) => (
             <Button
               key={e.value}
@@ -305,10 +250,14 @@ export default function Stream() {
               text={e.label}
               style={{
                 justifyContent: "flex-start",
+                flexDirection: breakpoints.md ? "row" : "column",
               }}
+              height={50}
+              textStyle={{ fontSize: 12 }}
+              containerStyle={{ flex: 1, borderRadius: 10 }}
             />
           ))}
-        </ScrollView>
+        </View>
       </View>
       <FadeOnRender key={view} animateUp>
         <FlashList

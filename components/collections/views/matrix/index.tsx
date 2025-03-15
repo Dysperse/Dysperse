@@ -48,14 +48,12 @@ const styles = StyleSheet.create({
 });
 
 const Cell = ({
-  onEntityCreate,
-  onTaskUpdate,
+  name,
   tasks,
   defaultOptions,
   handleHome,
 }: {
-  onEntityCreate: any;
-  onTaskUpdate: any;
+  name?: string;
   tasks: any;
   defaultOptions: any;
   handleHome?: any;
@@ -114,9 +112,22 @@ const Cell = ({
               style={{ marginRight: 5 }}
             />
           )}
-          <Text weight={500} style={{ color: theme[11] }}>
-            {remainingTasks.length} task{remainingTasks.length !== 1 && "s"}
-          </Text>
+          <View>
+            {name && (
+              <Text
+                weight={800}
+                style={{ color: theme[11], fontSize: 18, marginBottom: -2 }}
+              >
+                {name}
+              </Text>
+            )}
+            <Text
+              weight={500}
+              style={{ color: theme[11], opacity: name ? 0.6 : 1 }}
+            >
+              {remainingTasks.length} task{remainingTasks.length !== 1 && "s"}
+            </Text>
+          </View>
           <CreateTask
             mutate={mutations.categoryBased.add(mutate)}
             defaultValues={defaultOptions}
@@ -144,7 +155,10 @@ const Cell = ({
         }
         estimatedItemSize={118}
         ref={ref}
-        contentContainerStyle={{ padding: breakpoints.md ? 10 : 20 }}
+        contentContainerStyle={{
+          padding: breakpoints.md ? 10 : 20,
+          paddingTop: breakpoints.md ? undefined : 5,
+        }}
         keyExtractor={(i: any) => i.id}
         ListEmptyComponent={() => <ColumnEmptyComponent row />}
         renderItem={({ item }) => (
@@ -460,6 +474,15 @@ export default function Matrix() {
         </>
       ) : (
         <Cell
+          name={
+            currentColumn == "pinnedImportant"
+              ? "Urgent & important"
+              : currentColumn == "important"
+              ? "Important"
+              : currentColumn == "pinned"
+              ? "Urgent"
+              : "Least priority"
+          }
           onEntityCreate={mutations.categoryBased.add(mutate)}
           onTaskUpdate={mutations.categoryBased.update(mutate)}
           tasks={grid[currentColumn]}
