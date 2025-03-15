@@ -140,6 +140,7 @@ export const KanbanHeader = memo(function KanbanHeader({
               icon={
                 grid && !breakpoints.md && !list ? "more_vert" : "more_horiz"
               }
+              style={{ marginRight: 4 }}
               iconProps={{ bold: true }}
               iconStyle={{ opacity: 0.7 }}
             />
