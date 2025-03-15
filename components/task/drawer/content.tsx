@@ -712,7 +712,7 @@ export function TaskDrawerContent({
           backgroundColor: theme[2],
           paddingHorizontal: 20,
           left: 0,
-          paddingTop: 10,
+          paddingTop: breakpoints.md ? 0 : 10,
         }}
       >
         <View
