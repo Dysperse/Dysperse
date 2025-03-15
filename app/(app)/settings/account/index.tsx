@@ -225,7 +225,7 @@ function TwoFactorAuthSection() {
     >
       <ListItemText
         primary="Two-factor auth"
-        secondary="Nobody likes doing this, but it increases your account's security"
+        secondary="We'll require an annoying code every time you login"
       />
       <ConfirmationModal
         title="Disable 2FA?"
