@@ -11,6 +11,7 @@ import RefreshControl from "@/ui/RefreshControl";
 import Text from "@/ui/Text";
 import { FlashList } from "@shopify/flash-list";
 import dayjs from "dayjs";
+import { impactAsync, ImpactFeedbackStyle } from "expo-haptics";
 import { LinearGradient } from "expo-linear-gradient";
 import React, { Dispatch, SetStateAction, useRef, useState } from "react";
 import { Pressable, StyleSheet, View } from "react-native";
@@ -47,7 +48,10 @@ function StoryPointShape({ selected, index, onPress }) {
   return (
     <IconButton
       size={45}
-      onPress={onPress}
+      onPress={() => {
+        impactAsync(ImpactFeedbackStyle.Light);
+        if (onPress) onPress();
+      }}
       backgroundColors={{
         default: "transparent",
         hovered: "transparent",
