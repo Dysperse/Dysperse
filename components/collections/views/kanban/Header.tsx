@@ -112,6 +112,7 @@ export const KanbanHeader = memo(function KanbanHeader({
           <Text
             style={{
               opacity: 0.6,
+              marginTop: 2,
               fontSize: isGridView && breakpoints.md ? 13 : undefined,
             }}
             numberOfLines={1}
