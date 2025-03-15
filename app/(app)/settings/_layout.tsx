@@ -226,7 +226,7 @@ export default function Layout() {
                 dark: true,
               }}
             >
-              <SystemBars style="light" />
+              {!breakpoints.md && <SystemBars style="light" />}
               <JsStack
                 initialRouteName={breakpoints.md ? "account/index" : "index"}
                 id={undefined}

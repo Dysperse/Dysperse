@@ -455,9 +455,12 @@ export default function AppLayout() {
                                           name="settings"
                                           options={{
                                             cardStyle: { padding: 0 },
-                                            presentation: "modal",
-                                            animation: "default",
-                                            ...TransitionPresets.ModalPresentationIOS,
+                                            ...(!breakpoints.md && {
+                                              presentation: "modal",
+                                              animation: "default",
+                                            }),
+                                            ...(!breakpoints.md &&
+                                              TransitionPresets.ModalPresentationIOS),
                                           }}
                                         />
                                       </JsStack>

@@ -137,21 +137,6 @@ const TaskDrawerWrapper = forwardRef(function TaskDrawerWrapper(
       ]}
     >
       <SafeBlurView>
-        {!breakpoints.md && (
-          <View style={{ backgroundColor: data ? theme[2] : undefined }}>
-            <View
-              style={{
-                width: 25,
-                height: 5,
-                marginTop: 15,
-                backgroundColor: theme[5],
-                borderRadius: 999,
-                marginHorizontal: "auto",
-                marginBottom: 10,
-              }}
-            />
-          </View>
-        )}
         {data?.id ? (
           <TaskDrawerContext.Provider
             value={{
