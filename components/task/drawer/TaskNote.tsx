@@ -28,7 +28,6 @@ import Animated, {
   withSpring,
 } from "react-native-reanimated";
 import Toast from "react-native-toast-message";
-import { getPreviewText } from "..";
 import TaskNoteEditor from "./TaskNoteEditor";
 import { useTaskDrawerContext } from "./context";
 
@@ -419,7 +418,7 @@ export const TaskNote = forwardRef(
     const { session } = useUser();
     const formatMenuRef = useRef(null);
     const [hasClicked, setHasClicked] = useState(showEditorWhenEmpty || false);
-    const shouldShow = Boolean(getPreviewText(task.note)) || hasClicked;
+    const shouldShow = Boolean(task.note) || hasClicked;
 
     const isFocused = useSharedValue(0);
 
@@ -532,3 +531,4 @@ export const TaskNote = forwardRef(
     );
   }
 );
+
