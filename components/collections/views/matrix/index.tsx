@@ -94,12 +94,12 @@ const Cell = ({
         <View
           style={[
             {
-              padding: breakpoints.md ? 5 : 10,
-              paddingHorizontal: 10,
+              padding: 10,
+              paddingHorizontal: breakpoints.md ? 20 : 10,
               paddingRight: 10,
-              backgroundColor: theme[3],
+              backgroundColor: theme[breakpoints.md ? 2 : 3],
               borderRadius: 25,
-              marginHorizontal: 20,
+              marginHorizontal: breakpoints.md ? 0 : 20,
               flexDirection: "row",
               alignItems: "center",
             },
@@ -390,7 +390,11 @@ export default function Matrix() {
       style={[
         styles.container,
         { padding },
-        { paddingBottom: (currentColumn ? 0 : insets.bottom) + padding },
+        {
+          paddingBottom: breakpoints.md
+            ? padding
+            : (currentColumn ? 0 : insets.bottom) + padding,
+        },
         { gap: breakpoints.md ? 20 : 10 },
         !currentColumn &&
           !breakpoints.md && {
