@@ -1,6 +1,7 @@
 import { useSession } from "@/context/AuthProvider";
 import { useUser } from "@/context/useUser";
 import { sendApiRequest } from "@/helpers/api";
+import { useResponsiveBreakpoints } from "@/helpers/useResponsiveBreakpoints";
 import { Button } from "@/ui/Button";
 import Icon from "@/ui/Icon";
 import IconButton from "@/ui/IconButton";
@@ -417,6 +418,7 @@ export const TaskNote = forwardRef(
     const theme = useColorTheme();
     const { session } = useUser();
     const formatMenuRef = useRef(null);
+    const breakpoints = useResponsiveBreakpoints();
     const [hasClicked, setHasClicked] = useState(showEditorWhenEmpty || false);
     const shouldShow = Boolean(task.note) || hasClicked;
 
@@ -424,7 +426,7 @@ export const TaskNote = forwardRef(
 
     const focusedStyles = useAnimatedStyle(() => ({
       borderRadius: 10,
-      marginBottom: Platform.OS === "web" ? 20 : 100,
+      marginBottom: breakpoints.md ? 20 : 100,
       position: "relative",
       backgroundColor: interpolateColor(
         isFocused.value,
