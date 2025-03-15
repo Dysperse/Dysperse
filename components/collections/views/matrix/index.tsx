@@ -10,6 +10,7 @@ import { addHslAlpha } from "@/ui/color";
 import { useColorTheme } from "@/ui/color/theme-provider";
 import { FlashList } from "@shopify/flash-list";
 import dayjs from "dayjs";
+import { impactAsync, ImpactFeedbackStyle } from "expo-haptics";
 import { LinearGradient } from "expo-linear-gradient";
 import { useMemo, useRef, useState } from "react";
 import {
@@ -234,7 +235,10 @@ function Preview({ tasks, onPress }) {
   return (
     <Animated.View style={style}>
       <Pressable
-        onPress={onPress}
+        onPress={() => {
+          onPress();
+          impactAsync(ImpactFeedbackStyle.Light);
+        }}
         onPressIn={() => (scale.value = 0.95)}
         onPressOut={() => (scale.value = 1)}
         style={[
