@@ -312,7 +312,7 @@ function OpenTabsList() {
         pressed: theme[4],
       }}
       height={50}
-      iconStyle={{ marginLeft: 2 }}
+      iconStyle={{ marginLeft: -2, marginRight: breakpoints.md ? -3 : 1 }}
       containerStyle={{
         borderRadius: 15,
       }}
