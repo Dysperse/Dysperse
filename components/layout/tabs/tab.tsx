@@ -238,7 +238,8 @@ function Tab({
   );
 
   const handlePress = useCallback(() => {
-    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Soft);
+    if (Platform.OS !== "web")
+      Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Soft);
     router.replace({
       pathname: tab.slug,
       params: {
