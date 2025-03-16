@@ -79,7 +79,7 @@ const Turnstile = ({
               border: "none",
             }}
             sandbox="allow-scripts allow-same-origin"
-          ></iframe>
+          />
         </View>
         <Text
           style={{ textAlign: "center" }}

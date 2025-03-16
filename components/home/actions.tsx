@@ -63,7 +63,7 @@ export function PlanDayPrompt() {
             styles.badge,
             { backgroundColor: theme[9], width: 10, height: 10 },
           ]}
-        ></View>
+        />
       )}
     </TouchableOpacity>
   );
