@@ -840,9 +840,7 @@ export function TaskDrawerContent({
                         pressed: addHslAlpha(theme[11], 0.3),
                       }
                 }
-                style={{
-                  ...(task.pinned && { borderColor: labelColors.orange[11] }),
-                }}
+                style={task.pinned && { borderColor: labelColors.orange[11] }}
               />
               {task && !task.parentTaskId && (
                 <LabelPicker
