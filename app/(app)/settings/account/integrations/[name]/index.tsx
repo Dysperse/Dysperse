@@ -53,7 +53,7 @@ function IntegrationList({ integrations, about }) {
             style={{ marginBottom: 5 }}
           >
             <ListItemText
-              primary={`Connect another account`}
+              primary={"Connect another account"}
               secondary={`Connect another account to ${about.name}`}
             />
             <Icon>add_circle</Icon>

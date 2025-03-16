@@ -230,7 +230,7 @@ export default function App() {
                       await sendApiRequest(
                         sessionToken,
                         "PUT",
-                        `user/passkeys`,
+                        "user/passkeys",
                         {
                           id: item.id,
                           friendlyName: e.nativeEvent.text,
@@ -257,7 +257,7 @@ export default function App() {
                   mutate((o) => o.filter((i) => i.id !== item.id), {
                     revalidate: false,
                   });
-                  sendApiRequest(sessionToken, "DELETE", `user/passkeys`, {
+                  sendApiRequest(sessionToken, "DELETE", "user/passkeys", {
                     id: item.id,
                   });
                   Toast.show({ type: "success", text1: "Deleted!" });

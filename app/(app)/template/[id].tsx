@@ -33,7 +33,7 @@ export default function Page() {
         await createTab(session, {
           label: collection.name,
           icon: "grid_view",
-          slug: `/[tab]/collections/[id]/[type]`,
+          slug: "/[tab]/collections/[id]/[type]",
           params: {
             id: collection.id,
             type: collection.defaultView || "planner",

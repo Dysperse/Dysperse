@@ -13,7 +13,7 @@ import { widgetStyles } from "../../widgetStyles";
 
 export default function Quotes() {
   const { data, mutate, error } = useSWR(
-    [``, {}, "https://quotes-api-self.vercel.app/quote"],
+    ["", {}, "https://quotes-api-self.vercel.app/quote"],
     null,
     {
       refreshInterval: 1000 * 60 * 60,

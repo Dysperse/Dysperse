@@ -153,7 +153,7 @@ export default function AppLayout() {
   useEffect(() => {
     if (Platform.OS === "web") {
       document
-        .querySelector(`meta[name="theme-color"]`)
+        .querySelector('meta[name="theme-color"]')
         .setAttribute("content", theme[2]);
     }
   }, [theme, breakpoints.md]);

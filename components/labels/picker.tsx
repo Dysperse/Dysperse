@@ -372,8 +372,8 @@ function LabelPickerContent({
                   secondary={
                     disabled(item)
                       ? !disabledLabels.includes(item.id)
-                        ? `Already connected with another integration`
-                        : `Already selected`
+                        ? "Already connected with another integration"
+                        : "Already selected"
                       : `${item._count.entities} item${
                           item._count.entities !== 1 ? "s" : ""
                         }`

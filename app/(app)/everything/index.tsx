@@ -451,7 +451,7 @@ const Labels = () => {
                         setSelectedLabel(item.id);
                       } else {
                         router.push({
-                          pathname: `/everything/labels/[id]`,
+                          pathname: "/everything/labels/[id]",
                           params: { id: item.id },
                         });
                       }

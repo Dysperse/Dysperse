@@ -95,7 +95,7 @@ export default function Layout() {
               contentPosition="bottom"
               contentFit="contain"
               source={{
-                uri: `https://raw.githubusercontent.com/Dysperse/Assets/0056596a1b906148b3cc0f53e26efdabc98f2673/app/mockuuups-iphone-15-pro-mockup-on-textured-stone-with-dramatic-shadow.png`,
+                uri: "https://raw.githubusercontent.com/Dysperse/Assets/0056596a1b906148b3cc0f53e26efdabc98f2673/app/mockuuups-iphone-15-pro-mockup-on-textured-stone-with-dramatic-shadow.png",
               }}
             />
           </ImageBackground>
