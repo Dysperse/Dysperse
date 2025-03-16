@@ -424,6 +424,7 @@ export default function Page() {
     <View>{isLoading ? <Spinner /> : <ErrorAlert />}</View>
   ) : (
     <ScrollView style={{ padding: 40 }}>
+      {error && <ErrorAlert />}
       <FormProvider {...methods}>
         <View style={{ marginTop: 10 }}>
           <View

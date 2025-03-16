@@ -159,7 +159,6 @@ const Timer = ({ params, setParam, pomodoro = false }) => {
       )) as `#${string}`;
 
   const [sound, setSound] = useState<any>(null);
-  const { panelState } = useFocusPanelContext();
 
   const playSound = async () => {
     console.log("Loading Sound");

@@ -401,7 +401,7 @@ const CollectionInvitedUser = ({ isReadOnly, mutateList, user }: any) => {
   );
 };
 
-const CollectionShareLink = ({ isReadOnly, navigation }) => {
+const CollectionShareLink = () => {
   const pathname = usePathname();
   return (
     <ListItemButton
@@ -493,7 +493,7 @@ const CollectionMembers = ({ collection, mutateList, navigation }) => {
       <Text variant="eyebrow" style={[modalStyles.eyebrow, { marginTop: 20 }]}>
         Publish
       </Text>
-      <CollectionShareLink isReadOnly={isReadOnly} navigation={navigation} />
+      <CollectionShareLink />
       <PublishCollection collection={collection} navigation={navigation} />
     </View>
   );
@@ -548,7 +548,7 @@ export default function Page() {
 
   return (
     <CollectionContext.Provider value={contextValue}>
-      {data && <Share handleClose={handleClose} />}
+      {data && <Share />}
     </CollectionContext.Provider>
   );
 }

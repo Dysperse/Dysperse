@@ -456,7 +456,7 @@ function NlpProcessor({
     ) {
       const match = value.match(regex);
       // 0: "at 10:00pm ", 1: "10:00", 2: "10", 3: "00", 4: "pm"
-      const [_, time, hour, minutes] = match;
+      const [_, __, hour, minutes] = match;
       let amPm = match[4];
 
       if (!amPm) {

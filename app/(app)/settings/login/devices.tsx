@@ -55,7 +55,7 @@ export function SessionCard({
     "tv_gen",
   ];
 
-  const { data, error } = useSWR(["user/sessions/device", { ip: session.ip }]);
+  const { data } = useSWR(["user/sessions/device", { ip: session.ip }]);
   const dark = useDarkMode();
 
   const breakpoints = useResponsiveBreakpoints();
