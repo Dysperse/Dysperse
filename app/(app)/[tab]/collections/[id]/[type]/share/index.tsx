@@ -480,8 +480,7 @@ const CollectionMembers = ({ collection, mutateList, navigation }) => {
             </ListItemButton>
           </ProfileModal>
         )}
-        {data &&
-          data.invitedUsers.map((user) => (
+        {data?.invitedUsers.map((user) => (
             <CollectionInvitedUser
               mutateList={mutateList}
               key={user.user.email}

@@ -110,7 +110,7 @@ export default function Page() {
   const { data, error } = useSWR(["space/integrations"]);
 
   const existingIntegrations =
-    data && data.filter((i) => i.integration.name === name);
+    data?.filter((i) => i.integration.name === name);
 
   return !data ? (
     <View

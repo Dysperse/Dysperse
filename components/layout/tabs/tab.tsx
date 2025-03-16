@@ -163,8 +163,7 @@ function Tab({
             >
               <Emoji emoji={tab.collection?.emoji || tab.label?.emoji} />
             </Avatar>
-            {badgeData &&
-              badgeData.collections.find((t) => t.id === tab.collectionId) &&
+            {badgeData?.collections.find((t) => t.id === tab.collectionId) &&
               badgeData.collections.find((t) => t.id === tab.collectionId)
                 .total > 0 && (
                 <View
