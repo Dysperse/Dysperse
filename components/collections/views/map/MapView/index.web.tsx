@@ -1,7 +1,7 @@
 "use dom";
 import { useDarkMode } from "@/ui/color";
 import { useColorTheme } from "@/ui/color/theme-provider";
-// @ts-ignore
+// @ts-expect-error
 import { Map, Marker } from "pigeon-maps";
 import React from "react";
 

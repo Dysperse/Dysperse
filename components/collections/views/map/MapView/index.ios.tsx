@@ -4,7 +4,7 @@ import { useColorTheme } from "@/ui/color/theme-provider";
 import Spinner from "@/ui/Spinner";
 import { useState } from "react";
 import { View } from "react-native";
-// @ts-ignore
+// @ts-expect-error
 import { LeafletView } from "react-native-leaflet-view";
 
 export default function NativeMapView({ tasks, onLocationSelect }) {
