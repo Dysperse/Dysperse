@@ -205,12 +205,10 @@ export function SettingsSidebar({ forceShow }: { forceShow?: boolean }) {
             if (Platform.OS == "web") {
               window.location.reload();
             } else {
-              if (Platform.OS === "android") {
-                try {
-                  deleteAsync(cacheDirectory + "/dysperse-cache/cache.json");
-                } catch (e) {
-                  console.error(e);
-                }
+              try {
+                deleteAsync(cacheDirectory + "/dysperse-cache/cache.json");
+              } catch (e) {
+                console.error(e);
               }
               Updates.reloadAsync();
             }
