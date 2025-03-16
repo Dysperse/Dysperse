@@ -665,7 +665,8 @@ function SecondarySidebar() {
         padding: 15,
         paddingRight: 0,
         paddingBottom: breakpoints.md ? undefined : 90 + insets.bottom,
-        paddingTop: insets.top + 30,
+        paddingTop:
+          insets.top + (!breakpoints.md || Platform.OS === "web" ? 30 : 0),
         backgroundColor: theme[2],
       }}
     >
