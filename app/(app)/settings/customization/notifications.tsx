@@ -68,7 +68,7 @@ async function registerForPushNotificationsAsync() {
         Constants?.expoConfig?.extra?.eas?.projectId ??
         Constants?.easConfig?.projectId;
       if (!projectId) {
-        console.log("Project ID not found");
+        
         Toast.show({ type: "error" });
       }
       try {
@@ -79,7 +79,7 @@ async function registerForPushNotificationsAsync() {
         ).data;
 
         Notifications.addNotificationResponseReceivedListener((response) => {
-          console.log(response);
+          
         });
 
         return pushTokenString;
@@ -213,7 +213,7 @@ const TestNotifications = () => {
       "POST",
       "user/notifications/test"
     );
-    console.log(data);
+    
     setIsLoading(false);
   };
 

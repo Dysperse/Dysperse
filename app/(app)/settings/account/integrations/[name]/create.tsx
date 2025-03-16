@@ -278,7 +278,7 @@ function OauthRedirect({ integration, onSubmit }) {
         additionalScopes={integration.authorization.scopes}
         redirectPath="space/integrations/settings/google-calendar/auth"
         onNewAccount={(e) => {
-          console.log(JSON.stringify(e));
+          
           if (e.account && e.tokens) {
             setValue("params", {
               account: JSON.parse(e.account),

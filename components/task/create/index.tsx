@@ -142,7 +142,7 @@ function Footer({
   const location = watch("location");
   const parentTask = watch("parentTask");
 
-  console.log("Footer -> parentTask", location);
+  
 
   return (
     <View
@@ -268,7 +268,7 @@ export const AiLabelSuggestion = ({ watch, setValue, nameRef, style }: any) => {
       }
     );
 
-    console.log("fetchSuggestions -> data", data);
+    
 
     setResult(data);
   }, 500);
@@ -532,12 +532,12 @@ function LabelNlpProcessor({
       /__LABEL__{([0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12})}__/g;
 
     value.match(regex)?.forEach((match) => {
-      console.log("MATCH FOUND: ", match);
+      
       const id = match.replace(/__LABEL__{([0-9a-f-]+)}__/, "$1");
       const str = `${Platform.OS === "web" ? "@" : "#"}[${
         label.find((e) => e.id === id)?.name
       }](${match})${Platform.OS === "web" ? "" : " "}`;
-      console.log("REPLACING: ", str, value);
+      
       onChange(value.replace(str, ""));
       setValue(
         "label",
@@ -813,7 +813,7 @@ function TaskNameInput({
                   },
                 }),
                 [Platform.OS === "web" ? "onKeyDown" : "onKeyPress"]: (e) => {
-                  console.log(e.key);
+                  
                   if (
                     Platform.OS === "web" &&
                     !e.shiftKey &&
@@ -1171,7 +1171,7 @@ function SpeechRecognition({ setValue }) {
   const [recognizing, setRecognizing] = useState(false);
 
   useSpeechRecognitionEvent("volumechange", (event) => {
-    console.log("Volume changed to:", event.value);
+    
   });
 
   useSpeechRecognitionEvent("start", () => {
@@ -1195,7 +1195,7 @@ function SpeechRecognition({ setValue }) {
     );
   });
   useSpeechRecognitionEvent("error", (event) => {
-    console.log("error code:", event.error, "error messsage:", event.message);
+    
   });
 
   const handleStart = async () => {

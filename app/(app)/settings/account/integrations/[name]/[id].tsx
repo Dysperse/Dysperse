@@ -411,7 +411,7 @@ export default function Page() {
           }),
         }
       );
-      console.log(collection);
+      
       Toast.show({ type: "success", text1: "Connected!" });
     } catch (e) {
       Toast.show({ type: "error" });

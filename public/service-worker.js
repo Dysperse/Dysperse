@@ -6,7 +6,7 @@ importScripts(
 );
 
 if (workbox) {
-  console.log("Workbox is loaded");
+  
 
   // Precache files
   workbox.precaching.precacheAndRoute(self.__WB_MANIFEST);
@@ -25,7 +25,7 @@ if (workbox) {
     })
   );
 } else {
-  console.log("Workbox failed to load");
+  
 }
 
 // Handle push events

@@ -94,7 +94,7 @@ export default function Trash() {
     }
   }, [session, data, mutate]);
 
-  console.log(data);
+  
 
   const isEmpty = (filteredData || []).filter((t) => t.trash).length === 0;
   const insets = useSafeAreaInsets();
@@ -205,7 +205,7 @@ export default function Trash() {
                     isReadOnly={false}
                     showLabel
                     onTaskUpdate={(newTask) => {
-                      console.log("New task recieved", newTask);
+                      
                       mutate((oldData) =>
                         oldData.map((t) => (t.id === newTask.id ? newTask : t))
                       );

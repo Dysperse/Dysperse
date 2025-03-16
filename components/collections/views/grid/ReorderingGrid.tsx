@@ -29,7 +29,7 @@ export function ReorderingGrid() {
   const updateLabelOrder = async (newOrder) => {
     const data = newOrder.map((l) => l.key).filter((e) => e);
 
-    console.log(data);
+    
 
     mutate(
       (oldData) => ({

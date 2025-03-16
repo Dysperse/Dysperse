@@ -143,7 +143,7 @@ export default function ChipInput({
       value={value}
       placeholder={placeholder}
       onChange={(e) => {
-        console.log(e.target.value);
+        
         setValue(e.target.value);
       }}
       {...inputProps}

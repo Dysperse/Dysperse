@@ -18,7 +18,7 @@ export function useSession() {
   const value = useContext(AuthContext);
   if (process.env.NODE_ENV !== "production") {
     if (!value) {
-      console.log("useSession must be wrapped in a <SessionProvider />");
+      
     }
   }
 

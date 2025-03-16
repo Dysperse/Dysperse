@@ -306,7 +306,7 @@ const CurrentTaskCard = ({
     ],
   }));
 
-  console.log(currentTask);
+  
   return (
     <Animated.View style={taskAnimationStyle}>
       <TaskDrawer
@@ -427,7 +427,7 @@ const CurrentTaskCard = ({
 };
 
 function TodaysTasks({ data, mutate, setStage, dateRange }: any) {
-  console.log(data);
+  
   const t = useMemo(
     () =>
       Array.isArray(data)

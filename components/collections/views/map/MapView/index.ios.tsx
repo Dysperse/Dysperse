@@ -79,7 +79,7 @@ export default function NativeMapView({ tasks, onLocationSelect }) {
           },
         ]}
         onMessageReceived={(message) => {
-          console.log(message);
+          
           if (message.event === "onMapMarkerClicked")
             onLocationSelect(message.payload.mapMarkerID);
         }}
