@@ -100,7 +100,7 @@ function ContentWrapper(props: ContentWrapperProps) {
           Platform.OS === "web" && ({ WebkitAppRegion: "no-drag" } as any),
           props.style,
           Platform.OS === "web" && {
-            maxHeight: `calc(calc(100vh - env(titlebar-area-height, 0)) - 20px)`,
+            maxHeight: "calc(calc(100vh - env(titlebar-area-height, 0)) - 20px)",
           },
         ]}
       >

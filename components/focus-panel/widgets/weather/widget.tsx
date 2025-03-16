@@ -62,7 +62,7 @@ export default function WeatherWidget({
   } = useSWR(
     location
       ? [
-          ``,
+          "",
           {
             latitude: location.coords.latitude,
             longitude: location.coords.longitude,
@@ -89,7 +89,7 @@ export default function WeatherWidget({
   const { data: airQualityData, isLoading: isAirQualityLoading } = useSWR(
     location
       ? [
-          ``,
+          "",
           {
             latitude: location.coords.latitude,
             longitude: location.coords.longitude,

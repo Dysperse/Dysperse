@@ -67,7 +67,7 @@ export const paletteItems = (
         label: capitalizeFirstLetter(key),
         key,
         icon: COLLECTION_VIEWS[key].icon,
-        slug: `/[tab]/collections/[id]/[type]`,
+        slug: "/[tab]/collections/[id]/[type]",
         about: COLLECTION_VIEWS[key].description,
         params: { type: key, id: "all" },
       })),
@@ -83,7 +83,7 @@ export const paletteItems = (
               icon: "grid_view",
               emoji: collection.emoji,
               data: collection,
-              slug: `/[tab]/collections/[id]/[type]`,
+              slug: "/[tab]/collections/[id]/[type]",
               params: {
                 id: collection.id,
                 type: collection.defaultView || "planner",
@@ -105,7 +105,7 @@ export const paletteItems = (
                 icon: "grid_view",
                 emoji: access.collection.emoji,
                 data: access.collection,
-                slug: `/[tab]/collections/[id]/[type]`,
+                slug: "/[tab]/collections/[id]/[type]",
                 params: { id: access.collection.id, type: "planner" },
               }))
             : [],
@@ -120,7 +120,7 @@ export const paletteItems = (
               key: access.id,
               icon: "grid_view",
               emoji: access.emoji,
-              slug: `/[tab]/labels/[id]`,
+              slug: "/[tab]/labels/[id]",
               params: { id: access.id, type: "planner" },
             }))
           : [],

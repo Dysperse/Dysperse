@@ -558,7 +558,7 @@ function AICategorizer({ task, updateTask }) {
             <ListItemButton>
               <Avatar icon="exercise" />
               <ListItemText
-                primary={`Complexity`}
+                primary={"Complexity"}
                 secondary={`${data.storyPoints} - ${data.storyPointReason}`}
               />
             </ListItemButton>

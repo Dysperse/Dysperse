@@ -84,7 +84,7 @@ export default function NativeMapView({ tasks, onLocationSelect }) {
             onLocationSelect(message.payload.mapMarkerID);
         }}
         mapMarkers={tasks.map((t) => ({
-          icon: `https://cdn.jsdelivr.net/gh/dysperse/assets/pin.png`,
+          icon: "https://cdn.jsdelivr.net/gh/dysperse/assets/pin.png",
           iconAnchor: [8, 29.5],
           size: [16, 29.5],
           position: t.location.coordinates,

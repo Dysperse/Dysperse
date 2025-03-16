@@ -113,7 +113,7 @@ const Scratch = () => {
       );
 
       await createTab(sessionToken, {
-        slug: `/[tab]/collections/[id]/[type]`,
+        slug: "/[tab]/collections/[id]/[type]",
         params: { type: "list", id },
       });
       forceClose({ duration: 1 });

@@ -61,7 +61,7 @@ const OpenCollectionButton = ({ collection }) => {
         try {
           setLoading(true);
           await createTab(session, {
-            slug: `/[tab]/collections/[id]/[type]`,
+            slug: "/[tab]/collections/[id]/[type]",
             params: {
               id: collection.id,
               type: "kanban",
@@ -271,7 +271,7 @@ const Collections = () => {
                         setSelectedCollection(item.id);
                       } else {
                         router.push({
-                          pathname: `/everything/collections/[id]`,
+                          pathname: "/everything/collections/[id]",
                           params: { id: item.id },
                         });
                       }

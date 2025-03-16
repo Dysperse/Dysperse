@@ -637,7 +637,7 @@ const TimeSuggestion = forwardRef(
               }
             : !tmwSuggestion && Platform.OS === "web"
             ? {
-                text: `Type "tmw" to set a due date for tomorrow`,
+                text: 'Type "tmw" to set a due date for tomorrow',
                 icon: "emoji_objects",
               }
             : false

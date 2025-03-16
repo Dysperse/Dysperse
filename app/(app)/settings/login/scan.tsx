@@ -52,7 +52,7 @@ export default function Page() {
         const res = await sendApiRequest(
           session,
           "PUT",
-          `auth/qr`,
+          "auth/qr",
           {},
           {
             body: JSON.stringify({
