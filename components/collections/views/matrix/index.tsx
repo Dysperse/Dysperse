@@ -414,7 +414,7 @@ export default function Matrix() {
                 marginVertical:
                   Platform.OS === "web" ? (breakpoints.md ? 0 : 3) : -10,
                 marginBottom:
-                  Platform.OS === "web" ? (breakpoints.md ? 0 : 10) : 0,
+                  Platform.OS === "web" ? (breakpoints.md ? 0 : 10) : -10,
               },
             ]}
           >

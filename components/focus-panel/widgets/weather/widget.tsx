@@ -240,6 +240,11 @@ export default function WeatherWidget({
           style={{ flexDirection: "column", paddingVertical: 20 }}
           containerStyle={{ borderRadius: 20 }}
           variant="outlined"
+          backgroundColors={{
+            default: theme[2],
+            pressed: theme[2],
+            hovered: theme[2],
+          }}
         >
           <View style={{ width: "100%" }}>
             <View

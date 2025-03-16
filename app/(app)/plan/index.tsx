@@ -69,7 +69,6 @@ export default function Page() {
     getPlan().then(setPlanData);
   }, [getPlan]);
 
-  
   const locationName =
     planData?.device?.city?.names?.en ||
     planData?.device?.country?.names?.en ||
@@ -202,7 +201,6 @@ export default function Page() {
         >
           <ButtonText
             style={[styles.buttonText, { color: theme[1] }]}
-            onPress={handleNext}
             weight={800}
           >
             Start

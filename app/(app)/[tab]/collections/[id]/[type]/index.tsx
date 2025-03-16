@@ -23,6 +23,7 @@ import CreateTask from "@/components/task/create";
 import { useSession } from "@/context/AuthProvider";
 import { SelectionContextProvider } from "@/context/SelectionContext";
 import { sendApiRequest } from "@/helpers/api";
+import { useHotkeys } from "@/helpers/useHotKeys";
 import { useResponsiveBreakpoints } from "@/helpers/useResponsiveBreakpoints";
 import { Button } from "@/ui/Button";
 import Modal from "@/ui/Modal";
@@ -41,7 +42,6 @@ import {
   usePathname,
 } from "expo-router";
 import { cloneElement, useEffect, useMemo, useRef, useState } from "react";
-import { useHotkeys } from "react-hotkeys-hook";
 import { InteractionManager, Pressable, StyleSheet, View } from "react-native";
 import { KeyboardAvoidingView } from "react-native-keyboard-controller";
 import Animated, {

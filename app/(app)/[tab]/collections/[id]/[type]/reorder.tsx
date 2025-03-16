@@ -174,6 +174,7 @@ const ReorderColumn = ({
             onPress={handlePrev}
           />
         ))}
+      {Platform.OS !== "web" && <IconButton icon="drag_indicator" />}
     </Pressable>
   );
 };

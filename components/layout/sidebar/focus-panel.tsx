@@ -19,7 +19,6 @@ import {
 } from "react";
 import { Freeze } from "react-freeze";
 import { Platform, View } from "react-native";
-import Animated, { FlipInXUp, FlipOutXDown } from "react-native-reanimated";
 
 const FocusPanel = memo(() => {
   const theme = useColorTheme();
@@ -51,7 +50,7 @@ const FocusPanel = memo(() => {
   }, []);
 
   const changeActiveWidget = async () => {
-    impactAsync(ImpactFeedbackStyle.Light);
+    if (Platform.OS !== "web") impactAsync(ImpactFeedbackStyle.Light);
     setActiveWidget((prev) => {
       const t = (prev + 1) % pinnedWidgets.length;
       activeStateRef.current = t;
@@ -156,10 +155,8 @@ const FocusPanel = memo(() => {
               borderRadius: 15,
             }}
           />
-          <Animated.View
+          <View
             key={activeWidget}
-            entering={FlipInXUp}
-            exiting={FlipOutXDown}
             style={{
               borderRadius: 20,
               padding: 10,
@@ -172,7 +169,7 @@ const FocusPanel = memo(() => {
             }}
           >
             <RenderWidget small widget={pinnedWidget} />
-          </Animated.View>
+          </View>
         </Button>
       </Freeze>
     )
