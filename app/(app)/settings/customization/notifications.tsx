@@ -426,7 +426,7 @@ function AppBadging({ notificationData, mutateSettings }) {
     <>
       <Text style={settingStyles.heading}>App badging</Text>
       <Section>
-        {data.map((collection) => (
+        {data?.map((collection) => (
           <ListItemButton
             key={collection.id}
             onPress={() => {
