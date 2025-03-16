@@ -603,6 +603,7 @@ export default function Page({ isPublic }: { isPublic: boolean }) {
   );
 
   const pathname = usePathname();
+
   useDidUpdate(() => {
     mutate();
   }, [pathname]);
@@ -641,9 +642,7 @@ export default function Page({ isPublic }: { isPublic: boolean }) {
                   <>
                     <CollectionNavbar />
                     {breakpoints.md ? (
-                      <FadeOnRender key={JSON.stringify(t)}>
-                        {content}
-                      </FadeOnRender>
+                      <FadeOnRender>{content}</FadeOnRender>
                     ) : (
                       content
                     )}
