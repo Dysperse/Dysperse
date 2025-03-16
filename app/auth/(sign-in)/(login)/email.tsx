@@ -122,7 +122,7 @@ export function GoogleAuth({
           })}`
         ).then((r) => r.json());
 
-        console.log(data);
+        
 
         if (data?.session) signIn(data.session);
 

@@ -318,7 +318,7 @@ function AcceptRequestButton({ mutate, id }) {
           }),
         }
       );
-      console.log(data);
+      
       await mutate();
       Toast.show({
         type: "success",

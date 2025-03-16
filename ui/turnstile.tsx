@@ -13,7 +13,7 @@ const Turnstile = ({
       const newToken =
         Platform.OS === "web" ? event?.data : event?.nativeEvent?.data;
       if (newToken && newToken.length > 100) {
-        console.log(newToken);
+        
         setToken(newToken);
       }
     },

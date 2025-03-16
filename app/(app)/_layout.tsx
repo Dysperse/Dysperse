@@ -168,7 +168,7 @@ export default function AppLayout() {
 
   useEffect(() => {
     if (session && !isUserLoading && !sessionData?.user) {
-      console.log("User not found, signing out");
+      
       Toast.show({
         type: "error",
         text1: "You've been signed out",

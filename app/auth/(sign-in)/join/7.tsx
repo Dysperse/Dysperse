@@ -43,7 +43,7 @@ export default function Page() {
           keepalive: true,
         }
       ).then((res) => res.json());
-      console.log(data);
+      
       if (data.error) throw new Error(data.error);
       setSuccess(true);
       signIn(data.id);

@@ -147,7 +147,7 @@ function Widgets() {
               order: newRank.toString(),
             }),
           }
-        ).then((t) => console.log(t));
+        ).then((t) => {});
         // 5. sort by rank
         return reorderItems(oldItems, from, to);
       },

@@ -24,7 +24,7 @@ const OtpInput = forwardRef(
         focusColor={theme[9]}
         type="numeric"
         focusStickBlinkingDuration={500}
-        onFilled={(text) => console.log(`OTP is ${text}`)}
+        onFilled={(text) => {}}
         textInputProps={{
           accessibilityLabel: "One-Time Password",
         }}

@@ -127,7 +127,7 @@ export function LocationPickerModal({
       ).then((res) => res.json());
 
       setData(res);
-      console.log(res);
+      
     } catch (e) {
       console.error(e);
       setError(e);

@@ -161,14 +161,14 @@ const Timer = ({ params, setParam, pomodoro = false }) => {
   const [sound, setSound] = useState<any>(null);
 
   const playSound = async () => {
-    console.log("Loading Sound");
+    
     const { sound } = await Audio.Sound.createAsync(
       // eslint-disable-next-line @typescript-eslint/no-var-requires
       require("@/assets/alarm.mp3")
     );
     setSound(sound);
 
-    console.log("Playing Sound");
+    
     await sound.playAsync();
   };
 

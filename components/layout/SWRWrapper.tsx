@@ -32,7 +32,7 @@ async function fileSystemProvider(cacheData) {
     async function ensureDirExists() {
       const dirInfo = await FileSystem.getInfoAsync(cacheDir);
       if (!dirInfo.exists) {
-        console.log("Cache directory doesn't exist, creating…");
+        
         await FileSystem.makeDirectoryAsync(cacheDir, { intermediates: true });
       }
     }
@@ -40,16 +40,16 @@ async function fileSystemProvider(cacheData) {
     const map = cacheData || new Map();
 
     if (map.size === 0) {
-      console.log("⛔ Cache is empty, not saving to disk.");
+      
       return;
     }
-    console.log("💾 Saving cache to disk…");
+    
     await ensureDirExists();
     await FileSystem.writeAsStringAsync(
       file,
       JSON.stringify(Array.from(map.entries()))
     );
-    console.log(`💾 Saved ${map.size} API routes to cache! `);
+    
   });
 }
 
@@ -85,13 +85,13 @@ export function SWRWrapper({ children }) {
       const file = `${cacheDir}cache.json`;
       const fileInfo = await FileSystem.getInfoAsync(file);
       if (fileInfo.exists) {
-        console.log("📂 Cache file exists, restoring cache…");
+        
         const data = await FileSystem.readAsStringAsync(file);
         const entries = JSON.parse(data);
         cacheData.current = new Map(entries);
-        console.log(`📂 Restored ${cacheData.current.size} API routes!`);
+        
       } else {
-        console.log("📂 Cache file doesn't exist, creating new cache…");
+        
         cacheData.current = new Map();
       }
       if (!cacheLoaded) setCacheLoaded(true);

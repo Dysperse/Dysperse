@@ -11,7 +11,7 @@ export function sendApiRequest(
   const url = `${etc.host}/${path}${
     Object.keys(params).length > 0 ? "?" : ""
   }${new URLSearchParams(params)}`;
-  console.log(`[${method.toUpperCase()}] `, url);
+  
 
   return fetch(url, {
     ...options,

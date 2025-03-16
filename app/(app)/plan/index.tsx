@@ -69,7 +69,7 @@ export default function Page() {
     getPlan().then(setPlanData);
   }, [getPlan]);
 
-  console.log(planData);
+  
   const locationName =
     planData?.device?.city?.names?.en ||
     planData?.device?.country?.names?.en ||

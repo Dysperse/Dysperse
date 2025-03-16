@@ -66,7 +66,7 @@ export default function Page() {
             }),
           }
         );
-        console.log(res);
+        
         if (res.error || !res.success) {
           throw new Error(res.error);
         }
