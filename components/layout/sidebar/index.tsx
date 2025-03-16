@@ -472,7 +472,7 @@ const Header = memo(function Header() {
           size={45}
           onPress={() => {
             impactAsync(ImpactFeedbackStyle.Light);
-            router.push("/everything");
+            router.replace("/everything");
           }}
         >
           <Icon>home_storage</Icon>
@@ -673,7 +673,7 @@ function SecondarySidebar() {
       <IconButton
         icon="west"
         onPress={() => {
-          router.replace("/home");
+          router.replace("/");
           impactAsync(ImpactFeedbackStyle.Light);
           InteractionManager.runAfterInteractions(() => {
             sidebarRef?.current?.openDrawer?.();

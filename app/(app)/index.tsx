@@ -7,22 +7,25 @@ import { useCallback, useEffect, useState } from "react";
 export default function Page() {
   const [hasSet, setHasSet] = useState(false);
 
-  const setCurrentPage = useCallback(async () => {
-    setHasSet(true);
+  const getPage = useCallback(async () => {
     const lastViewedRoute = await AsyncStorage.getItem("lastViewedRoute");
-    router.replace(
-      lastViewedRoute
-        ? lastViewedRoute === "/"
-          ? "/home"
-          : lastViewedRoute
-        : "/home"
-    );
+    return lastViewedRoute
+      ? lastViewedRoute === "/"
+        ? "/home"
+        : lastViewedRoute
+      : "/home";
   }, []);
 
   useEffect(() => {
-    if (!hasSet) setCurrentPage();
-    else router.replace("/home");
-  }, [hasSet, setCurrentPage]);
+    const fetchPage = async () => {
+      if (!hasSet) {
+        setHasSet(true);
+        const t = await getPage();
+        router.replace(t);
+      }
+    };
+    fetchPage();
+  }, [hasSet, getPage]);
 
   return (
     <Content
