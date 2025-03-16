@@ -302,7 +302,7 @@ function ResetPinButton({ children }: any) {
 
   return (
     <>
-      <Modal animation="SLIDE" maxWidth={500} sheetRef={ref}>
+      <Modal animation="SLIDE" maxWidth={500} sheetRef={ref} height={300}>
         <View style={{ padding: 30, gap: 10 }}>
           <Text
             style={{
