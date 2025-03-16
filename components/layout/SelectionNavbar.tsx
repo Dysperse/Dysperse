@@ -68,7 +68,7 @@ function Actions({ isLoading, setIsLoading }) {
   const { type } = useLocalSearchParams();
 
   const handleSelect = useCallback(
-    async (t, shouldClear = false) => {
+    async (t) => {
       try {
         setIsLoading(true);
         await sendApiRequest(
@@ -82,7 +82,7 @@ function Actions({ isLoading, setIsLoading }) {
         );
         badgingService.current.mutate();
         await mutate(() => true);
-        if (shouldClear) setSelection([]);
+        setSelection([]);
       } catch (e) {
         console.log(e);
         Toast.show({ type: "error" });
