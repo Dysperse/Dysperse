@@ -10,15 +10,13 @@ import Icon from "@/ui/Icon";
 import RefreshControl from "@/ui/RefreshControl";
 import { addHslAlpha } from "@/ui/color";
 import { useColorTheme } from "@/ui/color/theme-provider";
+import { FlashList } from "@shopify/flash-list";
 import { LinearGradient } from "expo-linear-gradient";
-import { useRef, useState } from "react";
+import React, { useRef, useState } from "react";
 import { Platform, View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { useDidUpdate } from "../../../../utils/useDidUpdate";
 import { ColumnEmptyComponent } from "../../emptyComponent";
-
-import { FlashList } from "@shopify/flash-list";
-import React from "react";
 import { KanbanHeader } from "./Header";
 
 export type ColumnProps =

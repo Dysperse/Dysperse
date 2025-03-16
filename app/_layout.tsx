@@ -34,7 +34,6 @@ import React, {
 import { Platform, StatusBar, useWindowDimensions } from "react-native";
 import { SystemBars } from "react-native-edge-to-edge";
 import "react-native-gesture-handler";
-import { DrawerLayout } from "react-native-gesture-handler";
 import { KeyboardProvider } from "react-native-keyboard-controller";
 import { useSharedValue } from "react-native-reanimated";
 import { SessionProvider } from "../context/AuthProvider";
@@ -135,7 +134,7 @@ function Root() {
     symbols_bold_outlined: require("../assets/fonts/symbols/bold.ttf"),
   });
 
-  const sidebarRef = useRef<DrawerLayout>(null);
+  const sidebarRef = useRef<any>(null);
 
   const ORIGINAL_SIDEBAR_WIDTH = breakpoints.md
     ? 220
