@@ -394,7 +394,7 @@ export default function Page() {
   const onSubmit = async (data) => {
     try {
       setLoading(true);
-      const collection = await sendApiRequest(
+      await sendApiRequest(
         sessionToken,
         "PUT",
         "space/integrations",
@@ -411,7 +411,7 @@ export default function Page() {
           }),
         }
       );
-      
+
       Toast.show({ type: "success", text1: "Connected!" });
     } catch (e) {
       Toast.show({ type: "error" });

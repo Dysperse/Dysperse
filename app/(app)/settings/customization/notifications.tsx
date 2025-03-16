@@ -68,7 +68,6 @@ async function registerForPushNotificationsAsync() {
         Constants?.expoConfig?.extra?.eas?.projectId ??
         Constants?.easConfig?.projectId;
       if (!projectId) {
-        
         Toast.show({ type: "error" });
       }
       try {
@@ -78,10 +77,7 @@ async function registerForPushNotificationsAsync() {
           })
         ).data;
 
-        Notifications.addNotificationResponseReceivedListener((response) => {
-          
-        });
-
+        // Notifications.addNotificationResponseReceivedListener((response) => {});
         return pushTokenString;
       } catch (e: unknown) {
         console.log(e);
@@ -208,12 +204,8 @@ const TestNotifications = () => {
   const { session } = useSession();
   const handleTest = async () => {
     setIsLoading(true);
-    const data = await sendApiRequest(
-      session,
-      "POST",
-      "user/notifications/test"
-    );
-    
+    await sendApiRequest(session, "POST", "user/notifications/test");
+
     setIsLoading(false);
   };
 

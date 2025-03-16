@@ -305,7 +305,7 @@ function AcceptRequestButton({ mutate, id }) {
   const handleAccept = async () => {
     try {
       setLoading(true);
-      const data = await sendApiRequest(
+      await sendApiRequest(
         sessionToken,
         "PUT",
         "user/friends",
@@ -318,7 +318,7 @@ function AcceptRequestButton({ mutate, id }) {
           }),
         }
       );
-      
+
       await mutate();
       Toast.show({
         type: "success",

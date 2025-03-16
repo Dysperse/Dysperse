@@ -291,7 +291,7 @@ function OpenTabsList() {
               order: newRank.toString(),
             }),
           }
-        ).then((t) => {});
+        );
         // 5. sort by rank
         return reorderItems(oldItems, from, to);
       },
