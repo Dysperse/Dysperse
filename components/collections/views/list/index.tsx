@@ -156,7 +156,7 @@ export default function List() {
       acc.push({ header: true, ...omit(["entities"], curr) });
       const t = taskSortAlgorithm(
         Object.values(curr.entities).filter(
-          (e) => !e.trash && (incompleteEntitiesFilter(e) || showCompleted)
+          (e) => !e.trash && incompleteEntitiesFilter(e)
         )
       );
 
