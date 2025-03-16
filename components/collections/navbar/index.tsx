@@ -148,15 +148,16 @@ const CollectionNavbar = memo(function CollectionNavbar({
     ["p", "y", "k", "s", "g", "w", "l", "m", "c", "a"],
     (e) => {
       e.preventDefault();
-      router.setParams({
-        type: Object.keys(COLLECTION_VIEWS).find((v) =>
-          v === "skyline"
-            ? e.key === "y"
-            : v === "map"
-            ? e.key === "a"
-            : v[0].toLowerCase() === e.key
-        ),
-      });
+      if (!pathname.includes("search"))
+        router.setParams({
+          type: Object.keys(COLLECTION_VIEWS).find((v) =>
+            v === "skyline"
+              ? e.key === "y"
+              : v === "map"
+              ? e.key === "a"
+              : v[0].toLowerCase() === e.key
+          ),
+        });
     },
     {
       ignoreEventWhen: () =>

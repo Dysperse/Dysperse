@@ -122,6 +122,9 @@ function SearchList({ collection, inputRef, listRef, handleClose }) {
 
   useEffect(() => {
     inputRef.current?.focus?.({ preventScroll: true });
+    setTimeout(() => {
+      inputRef.current?.focus?.({ preventScroll: true });
+    }, 1000);
   }, [inputRef, breakpoints]);
 
   useHotkeys("esc", () => router.back());
