@@ -19,6 +19,7 @@ import Stream from "@/components/collections/views/stream";
 import Workload from "@/components/collections/views/workload";
 import ContentWrapper from "@/components/layout/content";
 import { FadeOnRender } from "@/components/layout/FadeOnRender";
+import CreateTask from "@/components/task/create";
 import { useSession } from "@/context/AuthProvider";
 import { SelectionContextProvider } from "@/context/SelectionContext";
 import { sendApiRequest } from "@/helpers/api";
@@ -40,6 +41,7 @@ import {
   usePathname,
 } from "expo-router";
 import { cloneElement, useEffect, useMemo, useRef, useState } from "react";
+import { useHotkeys } from "react-hotkeys-hook";
 import { InteractionManager, Pressable, StyleSheet, View } from "react-native";
 import { KeyboardAvoidingView } from "react-native-keyboard-controller";
 import Animated, {
@@ -51,6 +53,7 @@ import Animated, {
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import Toast from "react-native-toast-message";
 import useSWR from "swr";
+import { mutations } from "../../mutations";
 import { Sidekick } from "./Sidekick";
 
 export const styles = StyleSheet.create({
@@ -607,6 +610,12 @@ export default function Page({ isPublic }: { isPublic: boolean }) {
   const panelRef = useRef(null);
   const collectionSidekickContextValue = useMemo(() => ({ panelRef }), []);
 
+  const createTaskRef = useRef(null);
+
+  useHotkeys("space", () => {
+    createTaskRef.current?.present();
+  });
+
   return (
     <SelectionContextProvider>
       <CollectionContext.Provider value={collectionContextValue}>
@@ -618,6 +627,11 @@ export default function Page({ isPublic }: { isPublic: boolean }) {
               <CollectionLabelMenu sheetRef={sheetRef}>
                 <Pressable />
               </CollectionLabelMenu>
+              <CreateTask
+                ref={createTaskRef}
+                mutate={mutations.categoryBased.add(mutate)}
+                defaultValues={{ collectionId: data?.id }}
+              />
               {(data ? (
                 (data.pinCode || data.pinCodeError) &&
                 (!data.pinAuthorizationExpiresAt ||
