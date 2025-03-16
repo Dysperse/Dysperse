@@ -5,7 +5,6 @@ import { FadeOnRender } from "@/components/layout/FadeOnRender";
 import { useHotkeys } from "@/helpers/useHotKeys";
 import { useResponsiveBreakpoints } from "@/helpers/useResponsiveBreakpoints";
 import { Button } from "@/ui/Button";
-import Chip from "@/ui/Chip";
 import Icon from "@/ui/Icon";
 import Text from "@/ui/Text";
 import TextField from "@/ui/TextArea";
@@ -228,9 +227,10 @@ function SearchList({ collection, inputRef, listRef, handleClose }) {
               keyboardShouldPersistTaps="handled"
             >
               {filters.map((filter) => (
-                <Chip
+                <Button
+                  dense
                   key={filter.label}
-                  label={filter.label}
+                  text={filter.label}
                   icon={
                     <Icon filled={activeFilters.includes(filter.label)}>
                       {filter.icon}
@@ -244,10 +244,18 @@ function SearchList({ collection, inputRef, listRef, handleClose }) {
                     );
                     inputRef.current.focus();
                   }}
-                  style={{
-                    backgroundColor: addHslAlpha(
+                  backgroundColors={{
+                    default: addHslAlpha(
                       theme[9],
                       activeFilters.includes(filter.label) ? 0.2 : 0.05
+                    ),
+                    hovered: addHslAlpha(
+                      theme[9],
+                      activeFilters.includes(filter.label) ? 0.3 : 0.1
+                    ),
+                    pressed: addHslAlpha(
+                      theme[9],
+                      activeFilters.includes(filter.label) ? 0.4 : 0.1
                     ),
                   }}
                 />

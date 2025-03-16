@@ -10,7 +10,7 @@ import { useUser } from "@/context/useUser";
 import { sendApiRequest } from "@/helpers/api";
 import { useResponsiveBreakpoints } from "@/helpers/useResponsiveBreakpoints";
 import { Avatar } from "@/ui/Avatar";
-import Chip from "@/ui/Chip";
+import { Button } from "@/ui/Button";
 import { addHslAlpha, useColor, useDarkMode } from "@/ui/color";
 import { useColorTheme } from "@/ui/color/theme-provider";
 import { DatePicker } from "@/ui/DatePicker";
@@ -147,8 +147,6 @@ function Footer({
   const location = watch("location");
   const parentTask = watch("parentTask");
 
-  const breakpoints = useResponsiveBreakpoints();
-  const { forceClose } = useBottomSheet();
   console.log("Footer -> parentTask", location);
 
   return (
@@ -183,33 +181,26 @@ function Footer({
         keyboardShouldPersistTaps="handled"
       >
         {location && (
-          <Chip
-            outlined
+          <Button
+            chip
+            large
+            variant="outlined"
             icon="location_on"
             onDismiss={() => {
               setValue("location", null);
             }}
-            style={({ pressed, hovered }) => ({
-              borderWidth: 1,
-              borderColor: addHslAlpha(
-                theme[9],
-                pressed ? 0.3 : hovered ? 0.2 : 0.1
-              ),
-            })}
-            label={
-              <Text
-                style={{ color: theme[11], maxWidth: 100 }}
-                numberOfLines={1}
-              >
-                {location.name}
-              </Text>
-            }
+            text={location.name}
+            textProps={{
+              style: { maxWidth: 100 },
+              numberOfLines: 1,
+            }}
           />
         )}
         {(date || recurrenceRule) && !parentTask && (
-          <Chip
-            outlined
-            icon={<Icon>{recurrenceRule ? "loop" : "calendar_today"}</Icon>}
+          <Button
+            chip
+            large
+            icon={recurrenceRule ? "loop" : "calendar_today"}
             onDismiss={
               (recurrenceRule || date) &&
               (() => {
@@ -221,14 +212,18 @@ function Footer({
               if (date) dateRef.current.present();
               else if (recurrenceRule) recurrenceRef.current.present();
             }}
-            style={({ pressed, hovered }) => ({
-              borderWidth: 1,
-              borderColor: addHslAlpha(
-                theme[9],
-                pressed ? 0.3 : hovered ? 0.2 : 0.1
-              ),
-            })}
-            label={
+            variant="outlined"
+            borderColors={{
+              default: addHslAlpha(theme[9], 0.1),
+              hovered: addHslAlpha(theme[9], 0.2),
+              pressed: addHslAlpha(theme[9], 0.3),
+            }}
+            backgroundColors={{
+              default: addHslAlpha(theme[9], 0),
+              hovered: addHslAlpha(theme[9], 0.1),
+              pressed: addHslAlpha(theme[9], 0.15),
+            }}
+            text={
               recurrenceRule
                 ? capitalizeFirstLetter(new RRule(recurrenceRule).toText())
                 : date
@@ -291,9 +286,11 @@ export const AiLabelSuggestion = ({ watch, setValue, nameRef, style }: any) => {
     result?.id &&
     name &&
     !label && (
-      <Chip
-        label={result?.name}
-        outlined
+      <Button
+        chip
+        large
+        text={result?.name}
+        variant="outlined"
         icon="add"
         onPress={() => {
           setValue("label", result);
@@ -309,7 +306,6 @@ const CreateTaskLabelInput = memo(function CreateTaskLabelInput({
   control,
   collectionId,
   labelMenuRef,
-  onLabelPickerClose,
   watch,
   setValue,
 }: any) {
@@ -346,11 +342,21 @@ const CreateTaskLabelInput = memo(function CreateTaskLabelInput({
             sheetProps={{ sheetRef: labelMenuRef }}
             autoFocus
           >
-            {label ? (
-              <Chip
-                colorTheme={value?.color}
+            {label?.id ? (
+              <Button
                 onDismiss={value ? () => onChange(null) : undefined}
-                label={value?.name || "Label"}
+                text={value?.name || "Label"}
+                chip
+                large
+                textStyle={{
+                  color: colors[value?.color]?.[11] || theme[11],
+                }}
+                containerStyle={{ borderRadius: 15 }}
+                dismissButtonProps={{
+                  iconStyle: {
+                    color: colors[value?.color]?.[11] || theme[11],
+                  },
+                }}
                 icon={
                   value?.emoji ? (
                     <Emoji emoji={value?.emoji} />
@@ -358,17 +364,25 @@ const CreateTaskLabelInput = memo(function CreateTaskLabelInput({
                     <Icon>tag</Icon>
                   )
                 }
-                style={({ pressed, hovered }) => ({
-                  borderWidth: 1,
-                  backgroundColor: addHslAlpha(
+                backgroundColors={{
+                  default: addHslAlpha(
                     colors[value?.color]?.[9] || theme[9],
-                    pressed ? 0.3 : hovered ? 0.2 : 0.1
+                    0.1
                   ),
-                })}
+                  hovered: addHslAlpha(
+                    colors[value?.color]?.[9] || theme[9],
+                    0.2
+                  ),
+                  pressed: addHslAlpha(
+                    colors[value?.color]?.[9] || theme[9],
+                    0.3
+                  ),
+                }}
               />
             ) : (
               collectionId && (
-                <Chip
+                <Button
+                  chip
                   icon={
                     collectionData ? (
                       <Emoji
@@ -376,15 +390,18 @@ const CreateTaskLabelInput = memo(function CreateTaskLabelInput({
                           collectionData?.find((e) => e.id === collectionId)
                             ?.emoji
                         }
+                        size={20}
                       />
                     ) : (
                       <Spinner />
                     )
                   }
+                  height={35}
+                  textStyle={{ fontSize: 15 }}
+                  containerStyle={{ borderRadius: 15 }}
                   onDismiss={() => setValue("collectionId", null)}
-                  style={{ borderWidth: 1 }}
-                  outlined
-                  label={
+                  variant="outlined"
+                  text={
                     collectionData
                       ? collectionData.find((e) => e.id === collectionId)?.name
                       : "Loading..."
@@ -1728,3 +1745,4 @@ const CreateTask = forwardRef(
 );
 
 export default CreateTask;
+

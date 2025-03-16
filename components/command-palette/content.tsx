@@ -2,7 +2,6 @@ import { useUser } from "@/context/useUser";
 import { useResponsiveBreakpoints } from "@/helpers/useResponsiveBreakpoints";
 import { Avatar, ProfilePicture } from "@/ui/Avatar";
 import { Button, ButtonText } from "@/ui/Button";
-import Chip from "@/ui/Chip";
 import Emoji from "@/ui/Emoji";
 import Icon from "@/ui/Icon";
 import IconButton from "@/ui/IconButton";
@@ -61,16 +60,13 @@ const PaletteItem = memo(
       >
         {item.emoji ? <Emoji emoji={item.emoji} /> : <Icon>{item.icon}</Icon>}
         <ListItemText primary={item.label} />
-        {item.hasSeen === false && (
-          <Chip
+        {!!item.hasSeen && (
+          <Button
             dense
-            icon={
-              <Icon style={{ color: theme[1] }} filled>
-                fiber_manual_record
-              </Icon>
-            }
-            label={<Text style={{ color: theme[1] }}>New</Text>}
-            style={{ backgroundColor: theme[11] }}
+            icon="fiber_manual_record"
+            text="New"
+            iconStyle={{ fontFamily: "symbols_filled" }}
+            style={{ backgroundColor: theme[5] }}
           />
         )}
       </ListItemButton>
@@ -102,8 +98,8 @@ const PaletteFilters = memo(({ filters, filter, setFilter }: any) => {
         style={{ marginRight: -60 }}
       >
         {filters.map(({ name, icon }) => (
-          <Chip
-            label={name}
+          <Button
+            text={name}
             icon={icon}
             key={name}
             onPress={() => {
@@ -113,11 +109,10 @@ const PaletteFilters = memo(({ filters, filter, setFilter }: any) => {
                 setFilter(name);
               }
             }}
-            outlined={filter !== name}
-            style={[
-              { borderWidth: 1 },
-              filter === name && { backgroundColor: theme[5] },
-            ]}
+            chip
+            textStyle={{ fontSize: 15 }}
+            variant={filter !== name ? "outlined" : undefined}
+            style={[filter === name && { backgroundColor: theme[5] }]}
           />
         ))}
       </ScrollView>
@@ -520,23 +515,26 @@ function CommandPalettePreview({ loading, setPreview, preview, onCreate }) {
 
             <View style={{ flexDirection: "row", gap: 5 }}>
               {preview.data?._count?.labels ? (
-                <Chip
+                <Button
+                  chip
                   style={{ backgroundColor: addHslAlpha(theme[9], 0.1) }}
-                  label={`${preview.data._count.labels} label${
+                  text={`${preview.data._count.labels} label${
                     preview.data._count.labels === 1 ? "" : "s"
                   }`}
                 />
               ) : null}
               {preview.data?.pinned && (
-                <Chip
+                <Button
+                  chip
                   style={{ backgroundColor: addHslAlpha(theme[9], 0.1) }}
-                  label={"Pinned"}
+                  text={"Pinned"}
                 />
               )}
               {preview.data?.archived && (
-                <Chip
+                <Button
+                  chip
                   style={{ backgroundColor: addHslAlpha(theme[9], 0.1) }}
-                  label={"Archived"}
+                  text={"Archived"}
                 />
               )}
             </View>

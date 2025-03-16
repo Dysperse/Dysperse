@@ -8,7 +8,6 @@ import { useResponsiveBreakpoints } from "@/helpers/useResponsiveBreakpoints";
 import AutoSizeTextArea from "@/ui/AutoSizeTextArea";
 import { Avatar } from "@/ui/Avatar";
 import { Button } from "@/ui/Button";
-import Chip from "@/ui/Chip";
 import Emoji from "@/ui/Emoji";
 import ErrorAlert from "@/ui/Error";
 import Icon from "@/ui/Icon";
@@ -435,19 +434,28 @@ function WorkloadChip() {
           ] as any
         }
         trigger={
-          <Chip
+          <Button
+            chip
             disabled={isReadOnly}
             icon="exercise"
-            label={
+            text={
               STORY_POINT_SCALE[
                 complexityScale.findIndex((i) => i === task.storyPoints)
               ]
             }
-            style={{
-              borderRadius: 10,
-              borderWidth: 1,
+            large
+            backgroundColors={{
+              default: addHslAlpha(theme[11], 0),
+              hovered: addHslAlpha(theme[11], 0.1),
+              pressed: addHslAlpha(theme[11], 0.2),
             }}
-            outlined
+            borderColors={{
+              default: addHslAlpha(theme[11], 0.1),
+              hovered: addHslAlpha(theme[11], 0.2),
+              pressed: addHslAlpha(theme[11], 0.3),
+            }}
+            variant="outlined"
+            iconStyle={{ marginTop: -3 }}
           />
         }
       />
@@ -637,7 +645,7 @@ export function TaskDrawerContent({
   const SafeScrollView = forceClose ? BottomSheetScrollView : ScrollView;
 
   const handlePriorityChange = useCallback(() => {
-    impactAsync(ImpactFeedbackStyle.Light);
+    if (Platform.OS === "web") impactAsync(ImpactFeedbackStyle.Light);
     rotate.value = withSpring(!task.pinned ? -35 : 0, {
       mass: 1,
       damping: 10,
@@ -785,7 +793,10 @@ export function TaskDrawerContent({
               style={{ marginHorizontal: -30 }}
               showsHorizontalScrollIndicator={false}
             >
-              <Chip
+              <Button
+                chip
+                large
+                variant="outlined"
                 disabled={isReadOnly}
                 onPress={handlePriorityChange}
                 icon={
@@ -793,6 +804,7 @@ export function TaskDrawerContent({
                     <Icon
                       filled={task.pinned}
                       style={{
+                        marginTop: -3,
                         ...(task.pinned
                           ? { color: labelColors.orange[3] }
                           : {}),
@@ -802,14 +814,34 @@ export function TaskDrawerContent({
                     </Icon>
                   </Animated.View>
                 }
-                outlined
+                backgroundColors={
+                  task.pinned
+                    ? {
+                        default: labelColors.orange[11],
+                        hovered: labelColors.orange[11],
+                        pressed: labelColors.orange[12],
+                      }
+                    : {
+                        default: addHslAlpha(theme[11], 0),
+                        hovered: addHslAlpha(theme[11], 0.1),
+                        pressed: addHslAlpha(theme[11], 0.2),
+                      }
+                }
+                borderColors={
+                  task.pinned
+                    ? {
+                        default: addHslAlpha(labelColors.orange[11], 0),
+                        hovered: addHslAlpha(labelColors.orange[11], 0.1),
+                        pressed: addHslAlpha(labelColors.orange[11], 0.2),
+                      }
+                    : {
+                        default: addHslAlpha(theme[11], 0.1),
+                        hovered: addHslAlpha(theme[11], 0.2),
+                        pressed: addHslAlpha(theme[11], 0.3),
+                      }
+                }
                 style={{
-                  borderRadius: 10,
-                  borderWidth: 1,
                   ...(task.pinned && { borderColor: labelColors.orange[11] }),
-                  backgroundColor: task.pinned
-                    ? labelColors.orange[11]
-                    : undefined,
                 }}
               />
               {task && !task.parentTaskId && (
@@ -828,31 +860,29 @@ export function TaskDrawerContent({
                   sheetProps={{ sheetRef: labelPickerRef }}
                   defaultCollection={collectionId as any}
                 >
-                  <Chip
+                  <Button
+                    chip
                     disabled={isReadOnly}
                     icon={
                       task?.collection?.emoji ? (
                         <Emoji emoji={task?.collection?.emoji} size={20} />
+                      ) : task.label.name ? (
+                        <Emoji emoji={task.label.emoji} size={20} />
                       ) : (
                         <Icon>new_label</Icon>
                       )
                     }
-                    label={task?.collection?.name || "Add label"}
-                    outlined
-                    style={{
-                      borderRadius: 10,
-                      borderWidth: 1,
+                    large
+                    text={
+                      task?.label?.name || task?.collection?.name || "Add label"
+                    }
+                    variant="outlined"
+                    backgroundColors={{
+                      default: addHslAlpha(theme[11], 0),
+                      hovered: addHslAlpha(theme[11], 0.1),
+                      pressed: addHslAlpha(theme[11], 0.2),
                     }}
-                    {...(task.label && {
-                      icon: <Emoji emoji={task.label.emoji} size={20} />,
-                      label: (
-                        <Text
-                          style={{ color: labelColors[task.label.color][11] }}
-                        >
-                          {task.label.name}
-                        </Text>
-                      ),
-                    })}
+                    textStyle={{ fontSize: 15 }}
                   />
                 </LabelPicker>
               )}

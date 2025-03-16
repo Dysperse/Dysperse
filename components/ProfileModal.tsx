@@ -1,5 +1,5 @@
 import { ProfilePicture } from "@/ui/Avatar";
-import Chip from "@/ui/Chip";
+import { Button } from "@/ui/Button";
 import ErrorAlert from "@/ui/Error";
 import Icon from "@/ui/Icon";
 import { ListItemButton } from "@/ui/ListItemButton";
@@ -59,13 +59,15 @@ function ProfileModalContent({ email }) {
             {data.profile.name}
           </Text>
           <View style={{ flexDirection: "row" }}>
-            <Chip
+            <Button
               onPress={() => {
                 setStringAsync(data.email);
                 Toast.show({ type: "success", text1: "Copied to clipboard" });
               }}
-              icon={<Icon>alternate_email</Icon>}
-              label={data.username || data.email}
+              icon="alternate_email"
+              chip
+              large
+              text={data.username || data.email}
             />
           </View>
           <View style={{ gap: 10 }}>

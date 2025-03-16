@@ -4,7 +4,6 @@ import { useUser } from "@/context/useUser";
 import { sendApiRequest } from "@/helpers/api";
 import { useResponsiveBreakpoints } from "@/helpers/useResponsiveBreakpoints";
 import { Button } from "@/ui/Button";
-import Chip from "@/ui/Chip";
 import Emoji from "@/ui/Emoji";
 import { EmojiPicker } from "@/ui/EmojiPicker";
 import ErrorAlert from "@/ui/Error";
@@ -514,10 +513,12 @@ function AiSlide({ aiPrompt, setSlide }) {
             }}
           >
             {data.labels.map((label) => (
-              <Chip
+              <Button
+                chip
+                large
                 dense
                 key={label}
-                label={label.name}
+                text={label.name}
                 icon={<Emoji emoji={label.emoji} size={20} />}
               />
             ))}

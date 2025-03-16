@@ -3,7 +3,6 @@ import { useLabelColors } from "@/components/labels/useLabelColors";
 import { useResponsiveBreakpoints } from "@/helpers/useResponsiveBreakpoints";
 import { DBottomSheetProps } from "@/ui/BottomSheet";
 import { Button, ButtonText } from "@/ui/Button";
-import Chip from "@/ui/Chip";
 import Emoji from "@/ui/Emoji";
 import ErrorAlert from "@/ui/Error";
 import Icon from "@/ui/Icon";
@@ -73,6 +72,7 @@ function CollectionChips({
   setSelectedCollection,
 }: any) {
   const ref = useRef(null);
+  const theme = useColorTheme();
 
   useEffect(() => {
     const t = collections.findIndex((c) => c.id === selectedCollection);
@@ -95,13 +95,20 @@ function CollectionChips({
           });
         }}
         renderItem={({ item }) => (
-          <Chip
+          <Button
+            chip
             key={item.id}
-            outlined={selectedCollection && selectedCollection !== item.id}
+            variant={
+              selectedCollection && selectedCollection !== item.id
+                ? "outlined"
+                : undefined
+            }
+            height={35}
+            containerStyle={{ borderRadius: 15 }}
             icon={<Emoji emoji={item.emoji || "270c"} size={20} />}
-            label={
+            text={
               <>
-                <Text>{item.name}</Text>
+                <Text style={{ color: theme[11] }}>{item.name}</Text>
                 {selectedCollection === item.id && <Icon>check</Icon>}
               </>
             }

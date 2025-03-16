@@ -130,8 +130,6 @@ const TaskDrawerWrapper = forwardRef(function TaskDrawerWrapper(
             Platform.OS === "android" ? 1 : 0.5
           ),
           marginTop: "auto",
-          // overflow: "hidden",
-          // maxHeight: "100%",
           borderRadius: 25,
         },
       ]}

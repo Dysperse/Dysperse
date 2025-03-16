@@ -828,3 +828,4 @@ export function TaskDetails() {
     </View>
   );
 }
+

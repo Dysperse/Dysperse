@@ -12,7 +12,6 @@ import { useUser } from "@/context/useUser";
 import { sendApiRequest } from "@/helpers/api";
 import { useResponsiveBreakpoints } from "@/helpers/useResponsiveBreakpoints";
 import { Button } from "@/ui/Button";
-import Chip from "@/ui/Chip";
 import Emoji from "@/ui/Emoji";
 import ErrorAlert from "@/ui/Error";
 import Icon from "@/ui/Icon";
@@ -380,12 +379,14 @@ const CurrentTaskCard = ({
           >
             {currentTask.name}
           </Text>
-          <Chip
+          <Button
+            chip
+            large
             disabled
             style={taskStyles.chip}
             icon="calendar_today"
             textStyle={{ flex: 1 }}
-            label={capitalizeFirstLetter(
+            text={capitalizeFirstLetter(
               currentTask.recurrenceRule
                 ? normalizeRecurrenceRuleObject(
                     currentTask.recurrenceRule
@@ -394,20 +395,20 @@ const CurrentTaskCard = ({
             )}
           />
           {getTaskCompletionStatus(currentTask, currentTask.recurrenceDay) && (
-            <Chip
+            <Button
               disabled
               style={taskStyles.chip}
               icon="done_outline"
               textStyle={{ flex: 1 }}
-              label={"Completed!"}
+              text="Completed!"
             />
           )}
           {currentTask.storyPoints && (
-            <Chip
+            <Button
               disabled
               style={taskStyles.chip}
               icon="exercise"
-              label={`${
+              text={`${
                 STORY_POINT_SCALE[
                   [2, 4, 8, 16, 32].indexOf(currentTask.storyPoints)
                 ]
@@ -415,11 +416,11 @@ const CurrentTaskCard = ({
             />
           )}
           {currentTask.attachments?.length > 0 && (
-            <Chip
+            <Button
               disabled
               style={taskStyles.chip}
               icon="attachment"
-              label={`${currentTask.attachments?.length} attachment${
+              text={`${currentTask.attachments?.length} attachment${
                 currentTask.attachments?.length > 1 ? "s" : ""
               }`}
             />
@@ -436,8 +437,8 @@ function TodaysTasks({ data, mutate, setStage, dateRange }) {
     () =>
       Array.isArray(data)
         ? Object.values(
-            data.find((d) => dayjs().isBetween(dayjs(d.start), dayjs(d.end)))
-              ?.entities
+            data?.find?.((d) => dayjs().isBetween(dayjs(d.start), dayjs(d.end)))
+              ?.entities || {}
           )?.filter(
             (i) =>
               (i.start && i.start && dayjs(i.start).isSame(dayjs(), "day")) ||
@@ -555,8 +556,8 @@ export default function Page() {
 
   const todaysTasks = Array.isArray(data)
     ? Object.values(
-        data?.find((d) => dayjs().isBetween(dayjs(d.start), dayjs(d.end)))
-          ?.entities
+        data?.find?.((d) => dayjs().isBetween(dayjs(d.start), dayjs(d.end)))
+          ?.entities || {}
       )
     : [];
 
@@ -628,14 +629,14 @@ export default function Page() {
           <TodaysTasks
             dateRange={[
               new Date(
-                data?.find((d) =>
+                data?.find?.((d) =>
                   dayjs().isBetween(dayjs(d.start), dayjs(d.end))
-                ).start
+                )?.start
               ),
               new Date(
-                data?.find((d) =>
+                data?.find?.((d) =>
                   dayjs().isBetween(dayjs(d.start), dayjs(d.end))
-                ).end
+                )?.end
               ),
             ]}
             setStage={setStage}

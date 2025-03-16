@@ -1,20 +1,13 @@
 import { useUser } from "@/context/useUser";
-import {
-  Platform,
-  Pressable,
-  StyleProp,
-  StyleSheet,
-  TextProps,
-  TextStyle,
-  ViewStyle,
-} from "react-native";
-import { addHslAlpha, useColor } from "../color";
+import { StyleProp, TextProps, TextStyle, ViewStyle } from "react-native";
+import { Button, DButtonProps } from "../Button";
+import { useColor } from "../color";
 import { useColorTheme } from "../color/theme-provider";
 import Icon from "../Icon";
 import IconButton from "../IconButton";
 import Text from "../Text";
 
-interface ChipProps {
+interface ChipProps extends DButtonProps {
   icon?: React.ReactNode;
   label?: React.ReactNode;
   onPress?: () => void;
@@ -32,113 +25,66 @@ interface ChipProps {
   onDismiss?: () => void;
 }
 
-const styles = StyleSheet.create({
-  container: {
-    flexDirection: "row",
-    alignItems: "center",
-    borderWidth: 2,
-    borderRadius: 999,
-  },
-});
-
-export default function Chip({
-  icon,
-  label,
-  onPress,
-  outlined = false,
-  style = {},
-  iconPosition = "before",
-  dense = false,
-  color,
-  textStyle = {},
-  disabled = false,
-  colorTheme,
-  textWeight = 400,
-  onDismiss,
-  textProps = {},
-  iconStyle = {},
-}: ChipProps) {
+export default function Chip(props: ChipProps) {
   const { session } = useUser();
   const colorScheme = useColorTheme();
 
   const specifiedTheme = useColor(
-    colorTheme || session?.user?.profile?.theme || "mint"
+    props.colorTheme || session?.user?.profile?.theme || "mint"
   );
 
-  const theme = colorTheme ? specifiedTheme : colorScheme;
+  const theme = props.colorTheme ? specifiedTheme : colorScheme;
 
   return (
-    <Pressable
-      disabled={disabled}
-      style={({ hovered, pressed }: any) => [
-        styles.container,
-        Platform.OS === "web" && {
-          transition: "background-color .3s, border-color .3s",
-        },
+    <Button
+      disabled={props.disabled}
+      variant={props.outlined ? "outlined" : "filled"}
+      height={props.dense ? 30 : 35}
+      style={[
         {
-          paddingHorizontal: dense ? 5 : 10,
-          ...(icon && { paddingRight: dense ? 7 : 12 }),
-          height: dense ? 30 : 35,
-          ...(outlined
-            ? {
-                backgroundColor: addHslAlpha(
-                  theme[11],
-                  pressed ? 0.1 : hovered ? 0.05 : 0
-                ),
-                borderColor: addHslAlpha(
-                  theme[11],
-                  pressed ? 0.3 : hovered ? 0.2 : 0.1
-                ),
-              }
-            : {
-                borderColor: "transparent",
-                backgroundColor: theme[pressed ? 5 : hovered ? 4 : 3],
-              }),
-          gap: dense ? 5 : 10,
+          ...(props.icon && { paddingRight: props.dense ? 7 : 12 }),
+          gap: props.dense ? 5 : 10,
         },
-        typeof style === "function" ? style({ pressed, hovered }) : style,
       ]}
-      {...(onPress && { onPress })}
+      {...props}
     >
-      {iconPosition === "before" &&
-        (typeof icon === "string" ? (
-          <Icon style={iconStyle}>{icon}</Icon>
-        ) : (
-          icon
-        ))}
-      {typeof label === "string" ? (
+      {typeof props.label === "string" ? (
         <Text
           style={[
             {
-              color: color || theme[11],
-              ...(dense && { fontSize: 13 }),
+              color: props.color || theme[11],
+              ...(props.dense && { fontSize: 13 }),
             },
-            textStyle,
+            props.textStyle,
           ]}
-          weight={textWeight as any}
-          {...textProps}
+          weight={props.textWeight as any}
+          {...props.textProps}
         >
-          {label}
+          {props.label}
         </Text>
       ) : (
-        label
+        props.label
       )}
-      {iconPosition === "after" &&
-        (typeof icon === "string" ? <Icon>{icon}</Icon> : icon)}
+      {props.iconPosition === "after" &&
+        (typeof props.icon === "string" ? (
+          <Icon>{props.icon}</Icon>
+        ) : (
+          props.icon
+        ))}
 
-      {onDismiss && (
+      {props.onDismiss && (
         <IconButton
           onPress={(e) => {
             e.stopPropagation();
-            onDismiss();
+            props.onDismiss();
           }}
           icon="close"
-          iconStyle={{ color: color || theme[11] }}
+          iconStyle={{ color: props.color || theme[11] }}
           style={{ marginRight: -5 }}
-          size={dense ? 20 : 33}
+          size={props.dense ? 20 : 33}
         />
       )}
-    </Pressable>
+    </Button>
   );
 }
 

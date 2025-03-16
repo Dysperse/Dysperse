@@ -19,6 +19,7 @@ import { addHslAlpha } from "@/ui/color";
 import { useColorTheme } from "@/ui/color/theme-provider";
 import { BottomSheetModal, BottomSheetScrollView } from "@gorhom/bottom-sheet";
 import dayjs from "dayjs";
+import * as ImagePicker from "expo-image-picker";
 import { LinearGradient } from "expo-linear-gradient";
 import { router } from "expo-router";
 import { useCallback, useRef, useState } from "react";
@@ -26,24 +27,46 @@ import { Controller, useForm } from "react-hook-form";
 import { View } from "react-native";
 import Toast from "react-native-toast-message";
 import useSWR from "swr";
-import { pickImageAsync } from "./profile";
 
-function Section({ children }: any) {
-  const theme = useColorTheme();
-  return (
-    <View
-      style={{
-        borderRadius: 20,
-        borderWidth: 1,
-        padding: 5,
-        marginTop: 5,
-        borderColor: theme[5],
-      }}
-    >
-      {children}
-    </View>
-  );
-}
+export const pickImageAsync = async (setLoading, onChange) => {
+  try {
+    const result = await ImagePicker.launchImageLibraryAsync({
+      allowsEditing: true,
+      quality: 1,
+      mediaTypes: ImagePicker.MediaTypeOptions.Images,
+      presentationStyle: ImagePicker.UIImagePickerPresentationStyle.POPOVER,
+    });
+
+    if (!result.canceled) {
+      setLoading(true);
+
+      // convert to File
+      const blob = await fetch(result.assets[0].uri).then((r) => r.blob());
+      const form = new FormData();
+
+      form.append(
+        "source",
+        new File([blob], "filename", {
+          type: "image/png",
+          lastModified: new Date().getTime(),
+        })
+      );
+
+      const res = await fetch("https://api.dysperse.com/upload", {
+        method: "POST",
+        body: form,
+      }).then((res) => res.json());
+
+      onChange(res.image.display_url);
+    } else {
+      alert("You did not select any image.");
+    }
+  } catch (e) {
+    Toast.show({ type: "error" });
+  } finally {
+    setLoading(false);
+  }
+};
 
 function EmailSection({ editing }) {
   const theme = useColorTheme();

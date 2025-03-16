@@ -1,12 +1,10 @@
 import { useUser } from "@/context/useUser";
 import { sendApiRequest } from "@/helpers/api";
 import { useResponsiveBreakpoints } from "@/helpers/useResponsiveBreakpoints";
-import Chip from "@/ui/Chip";
-import Icon from "@/ui/Icon";
 import IconButton from "@/ui/IconButton";
 import MenuPopover, { MenuOption } from "@/ui/MenuPopover";
 import Text from "@/ui/Text";
-import { useColor, useDarkMode } from "@/ui/color";
+import { useDarkMode } from "@/ui/color";
 import { useColorTheme } from "@/ui/color/theme-provider";
 import { useNavigation } from "@react-navigation/native";
 import { View } from "react-native";
@@ -20,24 +18,6 @@ export type Widget =
   | "music"
   | "quotes"
   | "word of the day";
-
-export const ImportantChip = () => {
-  const orange = useColor("orange");
-  return (
-    <Chip
-      dense
-      disabled
-      label="Urgent"
-      icon={
-        <Icon size={22} style={{ color: orange[11] }}>
-          priority_high
-        </Icon>
-      }
-      style={{ backgroundColor: orange[4] }}
-      color={orange[11]}
-    />
-  );
-};
 
 export const Navbar = ({
   title,

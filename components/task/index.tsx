@@ -3,7 +3,7 @@ import { useGlobalTaskContext } from "@/context/globalTaskContext";
 import { getTaskCompletionStatus } from "@/helpers/getTaskCompletionStatus";
 import { useResponsiveBreakpoints } from "@/helpers/useResponsiveBreakpoints";
 import { Avatar } from "@/ui/Avatar";
-import Chip from "@/ui/Chip";
+import { Button } from "@/ui/Button";
 import Emoji from "@/ui/Emoji";
 import Icon from "@/ui/Icon";
 import { ListItemButton } from "@/ui/ListItemButton";
@@ -55,17 +55,14 @@ export const TaskImportantChip = ({
 }) => {
   const orange = useColor("orange");
   return (
-    <Chip
-      dense={!large}
+    <Button
+      chip
+      text="Urgent"
       disabled
-      label="Urgent"
-      icon={
-        <Icon size={large ? 24 : 22} style={{ color: orange[11] }}>
-          priority_high
-        </Icon>
-      }
+      icon="priority_high"
       style={{ backgroundColor: orange[published ? 4 : 6] }}
-      color={orange[11]}
+      iconStyle={{ color: orange[11] }}
+      textStyle={{ color: orange[11] }}
     />
   );
 };
@@ -81,26 +78,22 @@ export const TaskLabelChip = ({
   const theme = useColor(task.label.color);
 
   return (
-    <Chip
-      disabled
-      dense={!large}
-      label={
+    <Button
+      chip
+      text={
         large
           ? task.label.name
           : task.label.name.length > 10
           ? `${task.label.name.slice(0, 10)}...`
           : `${task.label.name}`
       }
-      colorTheme={task.label.color}
+      backgroundColors={{
+        default: theme[3],
+        hovered: theme[4],
+        pressed: theme[5],
+      }}
       icon={<Emoji size={large ? 23 : 17} emoji={task.label.emoji} />}
-      style={[
-        {
-          paddingHorizontal: 10,
-        },
-        published && {
-          backgroundColor: theme[4],
-        },
-      ]}
+      textStyle={{ color: theme[11] }}
     />
   );
 };
@@ -197,11 +190,11 @@ function TaskNoteChips({ note }) {
               onPress: () => Linking.openURL(link.image || link.href),
             }))}
           trigger={
-            <Chip
-              dense
-              label={`${chips.length} links`}
+            <Button
+              chip
+              text={`${chips.length} links`}
               icon="expand_more"
-              iconPosition="after"
+              iconPosition="end"
             />
           }
         />
@@ -213,10 +206,10 @@ function TaskNoteChips({ note }) {
               key={index + link.type}
               image={link.type === "IMAGE" && link.image}
             >
-              <Chip
-                dense
+              <Button
+                chip
                 key={index}
-                label={link.text}
+                text={link.text}
                 textProps={{ numberOfLines: 1 }}
                 onPress={() => Linking.openURL(link.image || link.href)}
                 icon={
@@ -423,18 +416,17 @@ const Task = memo(function Task({
                 >
                   {task.pinned && <TaskImportantChip />}
                   {showRelativeTime && task.start && (
-                    <Chip
-                      disabled
-                      dense
-                      label={dayjs(task.start).fromNow()}
-                      icon={<Icon>access_time</Icon>}
+                    <Button
+                      chip
+                      text={dayjs(task.start).fromNow()}
+                      icon="access_time"
                     />
                   )}
                   {showDate && task.start && (
                     <DayTaskModal date={task.start} taskId={task.id}>
-                      <Chip
-                        dense
-                        label={dayjs(task.start).format(
+                      <Button
+                        chip
+                        text={dayjs(task.start).format(
                           task.dateOnly
                             ? "MMM Do"
                             : dayjs(task.start).minute() === 0
@@ -446,9 +438,9 @@ const Task = memo(function Task({
                     </DayTaskModal>
                   )}
                   {task.recurrenceRule && (
-                    <Chip
-                      dense
-                      label="Repeats"
+                    <Button
+                      chip
+                      text="Repeats"
                       icon="loop"
                       onPress={() => {
                         Toast.show({

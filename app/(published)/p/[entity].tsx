@@ -11,7 +11,7 @@ import { STORY_POINT_SCALE } from "@/constants/workload";
 import { useResponsiveBreakpoints } from "@/helpers/useResponsiveBreakpoints";
 import Alert from "@/ui/Alert";
 import { Avatar, ProfilePicture } from "@/ui/Avatar";
-import Chip from "@/ui/Chip";
+import { Button } from "@/ui/Button";
 import { addHslAlpha, useColor } from "@/ui/color";
 import { ColorThemeProvider, useColorTheme } from "@/ui/color/theme-provider";
 import Icon from "@/ui/Icon";
@@ -125,8 +125,10 @@ const TaskChips = () => {
         gap: 10,
       }}
     >
-      <Chip
-        label="Public"
+      <Button
+        chip
+        large
+        text="Public"
         style={{ backgroundColor: theme[4] }}
         icon="public"
       />
@@ -448,3 +450,4 @@ export default function Page() {
     </PublishedEntityContext.Provider>
   );
 }
+

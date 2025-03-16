@@ -1,7 +1,6 @@
 import { useUser } from "@/context/useUser";
 import { useResponsiveBreakpoints } from "@/helpers/useResponsiveBreakpoints";
 import { Avatar, ProfilePicture } from "@/ui/Avatar";
-import Chip from "@/ui/Chip";
 import ErrorAlert from "@/ui/Error";
 import Icon from "@/ui/Icon";
 import Spinner from "@/ui/Spinner";
@@ -187,12 +186,11 @@ export function FriendActivity() {
                       image={friend.user.profile?.picture}
                       size={breakpoints.md ? 50 : 45}
                     />
-                    <Chip
-                      dense
-                      disabled
+                    <View
                       style={[
                         styles.friendBadge,
-                        { borderColor: theme[2] },
+                        { borderRadius: 99 },
+                        { borderColor: theme[2], backgroundColor: theme[4] },
                         getProfileLastActiveRelativeTime(
                           friend.user.profile?.lastActive
                         ) === "NOW" && {
@@ -202,12 +200,16 @@ export function FriendActivity() {
                           paddingHorizontal: 0,
                         },
                       ]}
-                      textStyle={{ fontSize: 13 }}
-                      textWeight={700}
-                      label={getProfileLastActiveRelativeTime(
-                        friend.user.profile?.lastActive
-                      ).replace("NOW", "")}
-                    />
+                    >
+                      <Text
+                        style={{ fontSize: 13, color: theme[11] }}
+                        weight={700}
+                      >
+                        {getProfileLastActiveRelativeTime(
+                          friend.user.profile?.lastActive
+                        ).replace("NOW", "")}
+                      </Text>
+                    </View>
                   </View>
                   <Text style={{ opacity: 0.6, fontSize: 13 }}>
                     {friend.user.profile?.name.split(" ")?.[0]}

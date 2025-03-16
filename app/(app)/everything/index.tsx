@@ -6,7 +6,6 @@ import { sendApiRequest } from "@/helpers/api";
 import { useHotkeys } from "@/helpers/useHotKeys";
 import { useResponsiveBreakpoints } from "@/helpers/useResponsiveBreakpoints";
 import { Button } from "@/ui/Button";
-import Chip from "@/ui/Chip";
 import ConfirmationModal from "@/ui/ConfirmationModal";
 import Emoji from "@/ui/Emoji";
 import ErrorAlert from "@/ui/Error";
@@ -242,7 +241,13 @@ export const LabelDetails = ({
                     style={{ flexWrap: "wrap", flexDirection: "row", gap: 15 }}
                   >
                     {label.collections.map((c) => (
-                      <Chip key={c.id} label={c.name} icon="folder" />
+                      <Button
+                        chip
+                        key={c.id}
+                        text={c.name}
+                        large
+                        icon="folder"
+                      />
                     ))}
                   </View>
                 )}
@@ -255,8 +260,10 @@ export const LabelDetails = ({
                   <View
                     style={{ flexWrap: "wrap", flexDirection: "row", gap: 15 }}
                   >
-                    <Chip
-                      label={`${capitalizeFirstLetter(
+                    <Button
+                      chip
+                      large
+                      text={`${capitalizeFirstLetter(
                         label.integration.name.replaceAll("-", " ")
                       )}`}
                       icon="sync_alt"
