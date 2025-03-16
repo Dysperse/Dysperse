@@ -846,7 +846,7 @@ export function TaskDrawerContent({
               />
               {task && !task.parentTaskId && (
                 <LabelPicker
-                  label={task.label}
+                  label={task?.label}
                   setLabel={(e: any) => {
                     updateTask(
                       {
@@ -866,7 +866,7 @@ export function TaskDrawerContent({
                     icon={
                       task?.collection?.emoji ? (
                         <Emoji emoji={task?.collection?.emoji} size={20} />
-                      ) : task.label.name ? (
+                      ) : task.label && task.label.name ? (
                         <Emoji emoji={task.label.emoji} size={20} />
                       ) : (
                         <Icon>new_label</Icon>

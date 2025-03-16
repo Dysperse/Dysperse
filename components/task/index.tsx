@@ -290,7 +290,11 @@ const Task = memo(function Task({
   );
 
   const hasChip = useMemo(
-    () => (showLabel && task.label) || task.note || task.pinned,
+    () =>
+      (showLabel && task.label) ||
+      task.note ||
+      task.pinned ||
+      task.recurrenceRule,
     [task, showLabel]
   );
 
