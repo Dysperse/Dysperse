@@ -35,12 +35,7 @@ import TextField from "@/ui/TextArea";
 import { useDidUpdate } from "@/utils/useDidUpdate";
 import { BottomSheetModal } from "@gorhom/bottom-sheet";
 import dayjs from "dayjs";
-import {
-  router,
-  useGlobalSearchParams,
-  useLocalSearchParams,
-  usePathname,
-} from "expo-router";
+import { router, useLocalSearchParams, usePathname } from "expo-router";
 import { cloneElement, useEffect, useMemo, useRef, useState } from "react";
 import { InteractionManager, Pressable, StyleSheet, View } from "react-native";
 import { KeyboardAvoidingView } from "react-native-keyboard-controller";
@@ -526,7 +521,6 @@ export default function Page({ isPublic }: { isPublic: boolean }) {
   const { id, type }: any = useLocalSearchParams();
   const sheetRef = useRef(null);
   const breakpoints = useResponsiveBreakpoints();
-  const t = useGlobalSearchParams();
 
   const swrKey = useMemo(
     () =>
