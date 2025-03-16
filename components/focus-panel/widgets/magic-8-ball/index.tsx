@@ -36,7 +36,7 @@ const messages = [
   "Very doubtful",
 ];
 
-export default function Magic8Ball({ menuActions }) {
+export default function Magic8Ball() {
   const theme = useColorTheme();
   const [message, setMessage] = useState("");
 
