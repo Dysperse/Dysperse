@@ -93,7 +93,7 @@ export function Column(props: ColumnProps) {
                 backgroundColor: theme[2],
                 borderRadius: 20,
                 borderWidth: 1,
-                borderColor: addHslAlpha(theme[5], 0.7),
+                borderColor: addHslAlpha(theme[5], 0.5),
               }),
               width: breakpoints.md ? 320 : "100%",
               flex: 1,
