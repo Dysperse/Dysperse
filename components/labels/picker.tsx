@@ -125,13 +125,7 @@ function CollectionChips({
   );
 }
 
-const CloseButton = memo(function CloseButton({
-  onClose,
-  disabled,
-}: {
-  onClose: any;
-  disabled?: boolean;
-}) {
+const CloseButton = memo(function CloseButton({ onClose }: { onClose: any }) {
   const { forceClose } = useBottomSheet();
   const [loading, setLoading] = useState(false);
 

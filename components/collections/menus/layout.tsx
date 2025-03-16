@@ -4,15 +4,12 @@ import Spinner from "@/ui/Spinner";
 import Text from "@/ui/Text";
 import { addHslAlpha } from "@/ui/color";
 import { useColorTheme } from "@/ui/color/theme-provider";
-import { router, useLocalSearchParams } from "expo-router";
+import { useLocalSearchParams } from "expo-router";
 import { Platform, ScrollView, View } from "react-native";
 import useSWR from "swr";
 
 export function CollectionMenuLayout({ title, children }) {
   const theme = useColorTheme();
-
-  const handleClose = () =>
-    router.canGoBack() ? router.back() : router.navigate("/");
 
   const { id }: any = useLocalSearchParams();
   const { data, mutate, error } = useSWR(

@@ -226,15 +226,6 @@ function EmailSection({ editing }) {
   );
 }
 
-function AccountMenuTrigger({ text }: any) {
-  return (
-    <Button variant="filled">
-      <ButtonText>{text}</ButtonText>
-      <Icon>expand_more</Icon>
-    </Button>
-  );
-}
-
 function TwoFactorAuthSection() {
   const { session, sessionToken, mutate } = useUser();
   const isEnabled = session.user.twoFactorSecret;

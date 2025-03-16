@@ -24,15 +24,7 @@ import Toast from "react-native-toast-message";
 import timezones from "timezones-list";
 import { useFocusPanelContext } from "../../context";
 
-const Time = ({
-  setParam,
-  params,
-  navigation,
-}: {
-  setParam?: any;
-  params?: any;
-  navigation?: any;
-}) => {
+const Time = () => {
   const theme = useColorTheme();
   const [time, setTime] = useState(dayjs());
 
@@ -556,7 +548,7 @@ function TimeZoneModal({ timeZoneModalRef, setParam, params }) {
   );
 }
 
-export default function Clock({ widget, navigation, setParam }) {
+export default function Clock({ widget, setParam }) {
   const theme = useColorTheme();
   const [view, setView] = useState<ClockViewType>(
     widget.params?.view || "Clock"
@@ -616,13 +608,7 @@ export default function Clock({ widget, navigation, setParam }) {
         ]}
       >
         <ColorThemeProvider theme={theme}>
-          {view === "Clock" && (
-            <Time
-              navigation={navigation}
-              setParam={setParam}
-              params={widget.params}
-            />
-          )}
+          {view === "Clock" && <Time />}
           {view === "Stopwatch" && (
             <Stopwatch setParam={setParam} params={widget.params} />
           )}
@@ -644,3 +630,4 @@ export default function Clock({ widget, navigation, setParam }) {
     </View>
   );
 }
+

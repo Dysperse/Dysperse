@@ -7,15 +7,13 @@ import LabelPicker from "../../labels/picker";
 import { useCollectionContext } from "../context";
 
 export const CollectionLabelMenu = memo(function CollectionLabelMenu({
-  onOpen,
   children,
   sheetRef,
 }: {
-  onOpen?: () => void;
   children?: React.ReactNode;
   sheetRef?: any;
 }) {
-  const { data, mutate,openLabelPicker } = useCollectionContext();
+  const { data, mutate, openLabelPicker } = useCollectionContext();
   const { session } = useSession();
   const [labels, setLabels] = useState(data?.labels?.map((i) => i.id) || []);
 
@@ -58,3 +56,4 @@ export const CollectionLabelMenu = memo(function CollectionLabelMenu({
     </LabelPicker>
   );
 });
+

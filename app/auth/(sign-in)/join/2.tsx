@@ -122,10 +122,7 @@ function Content() {
 
   const [hasTouched, setHasTouched] = useState(false);
 
-  // const [selected, setSelected] = useState("");
-
   const orange = useColor("orange");
-  const gray = useColor("gray");
 
   const [planData, setPlanData] = useState(null);
 
@@ -158,8 +155,6 @@ function Content() {
         })
       );
   }, [getPlan]);
-
-  const dark = useDarkMode();
 
   const locationName =
     planData?.device?.city?.names?.en ||

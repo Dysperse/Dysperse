@@ -6,12 +6,11 @@ import { useColor } from "@/ui/color";
 import { useColorTheme } from "@/ui/color/theme-provider";
 import capitalizeFirstLetter from "@/utils/capitalizeFirstLetter";
 import { Image } from "expo-image";
-import { useEffect, useRef, useState } from "react";
 import { Linking, Pressable, View } from "react-native";
 import Animated, { FadeInRight, FadeOutLeft } from "react-native-reanimated";
 import useSWR from "swr";
 
-function formatNumber(num, d) {
+function formatNumber(num) {
   const formatter = Intl.NumberFormat("en", { notation: "compact" });
   return formatter.format(parseInt(num));
 }
@@ -55,17 +54,7 @@ function StockChange({ subtle, number }: { subtle?: boolean; number: number }) {
   );
 }
 
-export function StockItem({
-  large,
-  stock,
-  navigation,
-  widget,
-}: {
-  large?: boolean;
-  stock: any;
-  navigation;
-  widget: any;
-}) {
+export function StockItem({ large, stock }: { large?: boolean; stock: any }) {
   const theme = useColorTheme();
 
   return (
@@ -109,12 +98,12 @@ export function StockItem({
           </ButtonText>
         </View>
         <ButtonText style={{ marginLeft: "auto", opacity: 0.6, flexShrink: 0 }}>
-          ${formatNumber(stock.currentPrice, 1)}
+          ${formatNumber(stock.currentPrice)}
         </ButtonText>
       </View>
       {large && (
         <Text style={{ color: theme[11], opacity: 0.5 }} weight={600}>
-          Market cap: ${formatNumber(stock.marketCap, 2)}
+          Market cap: ${formatNumber(stock.marketCap)}
         </Text>
       )}
       {large && (
@@ -122,7 +111,7 @@ export function StockItem({
           style={{ color: theme[11], opacity: 0.5, marginTop: -7 }}
           weight={600}
         >
-          Volume (24H): {formatNumber(stock.volume24h, 2)}
+          Volume (24H): {formatNumber(stock.volume24h)}
         </Text>
       )}
       {large && (
@@ -167,30 +156,12 @@ export function StockItem({
   );
 }
 
-export default function Widget({ navigation, menuActions, widget }) {
+export default function Widget({ navigation, widget }) {
   const theme = useColorTheme();
   const { data, error } = useSWR(
     "https://bubble-screener-api.neil-dahiya.workers.dev/api",
     (url) => fetch(url).then((res) => res.json())
   );
-
-  const [currentIndex, setCurrentIndex] = useState(0);
-  const intervalRef = useRef(null);
-
-  useEffect(() => {
-    if (data && data.length > 0) {
-      const sortedData = data.sort((a, b) => b.marketCap - a.marketCap);
-      setCurrentIndex(0); // Reset index on data fetch
-
-      intervalRef.current = setInterval(() => {
-        setCurrentIndex((prevIndex) => (prevIndex + 2) % sortedData.length);
-      }, 7000);
-    }
-
-    return () => {
-      clearInterval(intervalRef.current);
-    };
-  }, [data]);
 
   if (error) {
     return <ErrorAlert />;
@@ -198,19 +169,6 @@ export default function Widget({ navigation, menuActions, widget }) {
 
   return (
     <View>
-      {/* {panelState !== "COLLAPSED" && (
-        <MenuPopover
-          options={menuActions}
-          trigger={
-            <Button style={widgetMenuStyles.button} dense>
-              <ButtonText weight={800} style={widgetMenuStyles.text}>
-                Top stocks
-              </ButtonText>
-              <Icon style={{ color: theme[11] }}>expand_more</Icon>
-            </Button>
-          }
-        />
-      )} */}
       <Text variant="eyebrow" style={{ marginBottom: 7 }}>
         Top stocks
       </Text>

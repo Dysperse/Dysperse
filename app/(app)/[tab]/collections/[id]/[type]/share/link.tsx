@@ -27,7 +27,7 @@ import { ScrollView, View } from "react-native";
 import Toast from "react-native-toast-message";
 import useSWR from "swr";
 
-const Link = ({ collection, navigation }) => {
+const Link = ({ collection }) => {
   const theme = useColorTheme();
   const { session } = useSession();
   const [isLoading, setIsLoading] = useState(false);
@@ -232,8 +232,7 @@ const Link = ({ collection, navigation }) => {
   );
 };
 
-function Share({ handleClose }) {
-  const theme = useColorTheme();
+function Share() {
   const collection = useCollectionContext();
   useHotkeys("esc", () => router.back());
 
@@ -270,7 +269,7 @@ export default function Page() {
 
   return (
     <CollectionContext.Provider value={contextValue}>
-      {data && <Share handleClose={handleClose} />}
+      {data && <Share />}
     </CollectionContext.Provider>
   );
 }

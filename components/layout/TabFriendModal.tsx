@@ -9,12 +9,10 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import { router } from "expo-router";
 import { useCallback, useRef } from "react";
 import { View } from "react-native";
-import useSWR from "swr";
 
 export default function TabFriendModal() {
   const t = useDeviceNotificationState();
   const ref = useRef<BottomSheetModal>(null);
-  const { data, mutate } = useSWR(["user/notifications"]);
 
   const show = useCallback(async () => {
     if (t === "prompt") {

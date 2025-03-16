@@ -19,7 +19,7 @@ import { CollectionEmpty } from "../CollectionEmpty";
 import { Column } from "../kanban/Column";
 import { GridContext, GridContextSelectedColumn } from "./context";
 
-export default function Grid({ editOrderMode }: any) {
+export default function Grid() {
   const theme = useColorTheme();
   const insets = useSafeAreaInsets();
   const { data, openLabelPicker, access, isPublic } = useCollectionContext();

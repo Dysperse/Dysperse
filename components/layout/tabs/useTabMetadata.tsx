@@ -14,7 +14,7 @@ export const useTabMetadata = (slug: string, tab: any) => {
         ].filter(Boolean),
     },
     "/[tab]/labels/": {
-      name: (params) => [tab.collection ? "-" : undefined, tab].filter(Boolean),
+      name: () => [tab.collection ? "-" : undefined, tab].filter(Boolean),
       icon: "label",
     },
     "/[tab]/welcome": {

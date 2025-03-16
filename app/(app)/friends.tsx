@@ -346,23 +346,6 @@ function AcceptRequestButton({ mutate, id }) {
   );
 }
 
-function BlockRequestButton({ mutate, id }) {
-  return (
-    <ConfirmationModal
-      height={410}
-      title="Block user?"
-      secondary="You can unblock this user any time. We won't let this person know you've blocked them."
-      onSuccess={async () => {
-        await new Promise((r) => setTimeout(() => r("hi"), 100));
-      }}
-    >
-      <IconButton variant="outlined" size={40} style={{ marginRight: -10 }}>
-        <Icon>person_off</Icon>
-      </IconButton>
-    </ConfirmationModal>
-  );
-}
-
 function FriendOptionsButton({ id }) {
   const { sessionToken } = useUser();
 
@@ -395,7 +378,6 @@ function FriendOptionsButton({ id }) {
 export default function Page() {
   const { session } = useUser();
   const theme = useColorTheme();
-  const insets = useSafeAreaInsets();
   const [view, setView] = useState<FriendsPageView>("all");
 
   const { data, isLoading, mutate, error } = useSWR([
@@ -582,7 +564,6 @@ export default function Page() {
                     <DeleteRequestButton mutate={mutate} id={item.user.id} />
                   ) : view === "requests" ? (
                     <>
-                      {/* <BlockRequestButton mutate={mutate} id={item.user.id} /> */}
                       <DeleteRequestButton
                         reject
                         mutate={mutate}

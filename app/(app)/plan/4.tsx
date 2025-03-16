@@ -1,7 +1,6 @@
 import { createTab } from "@/components/layout/openTab";
 import { useUser } from "@/context/useUser";
 import { sendApiRequest } from "@/helpers/api";
-import { useResponsiveBreakpoints } from "@/helpers/useResponsiveBreakpoints";
 import { Button, ButtonText } from "@/ui/Button";
 import Icon from "@/ui/Icon";
 import Text from "@/ui/Text";
@@ -70,7 +69,6 @@ const PlannerButton = () => {
 };
 
 export default function Page() {
-  const breakpoints = useResponsiveBreakpoints();
   const { sessionToken } = useUser();
   const theme = useColorTheme();
 

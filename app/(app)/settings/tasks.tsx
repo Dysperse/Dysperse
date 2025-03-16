@@ -46,11 +46,9 @@ function AccountMenuTrigger({ text }: any) {
 }
 
 function TasksSettings({ updateUserSettings }: any) {
-  const { mutate, session } = useUser();
+  const { session } = useUser();
 
   const theme = useColorTheme();
-  const showComingSoon = () =>
-    Toast.show({ type: "info", text1: "Coming soon!" });
 
   return !session?.user ? null : (
     <>

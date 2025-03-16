@@ -1,7 +1,6 @@
 import { Button, ButtonText } from "@/ui/Button";
 import { useColorTheme } from "@/ui/color/theme-provider";
 import Icon from "@/ui/Icon";
-import MenuPopover from "@/ui/MenuPopover";
 import { useState } from "react";
 import { Pressable, View } from "react-native";
 import Animated, {
@@ -13,8 +12,6 @@ import Animated, {
 } from "react-native-reanimated";
 import Svg, { Path } from "react-native-svg";
 import Toast from "react-native-toast-message";
-import { useFocusPanelContext } from "../../context";
-import { widgetMenuStyles } from "../../widgetMenuStyles";
 
 const messages = [
   "It is certain",
@@ -39,12 +36,9 @@ const messages = [
   "Very doubtful",
 ];
 
-export default function Magic8Ball({ navigation, menuActions, widget }) {
+export default function Magic8Ball({ menuActions }) {
   const theme = useColorTheme();
   const [message, setMessage] = useState("");
-  const { panelState } = useFocusPanelContext();
-
-  const isCollapsed = panelState === "COLLAPSED";
 
   const offset = useSharedValue<number>(0);
 
@@ -58,20 +52,6 @@ export default function Magic8Ball({ navigation, menuActions, widget }) {
 
   return (
     <View>
-      {!isCollapsed && (
-        <MenuPopover
-          options={menuActions}
-          containerStyle={{ marginTop: -15 }}
-          trigger={
-            <Button style={widgetMenuStyles.button} dense>
-              <ButtonText weight={800} style={widgetMenuStyles.text}>
-                Magic 8 ball
-              </ButtonText>
-              <Icon style={{ color: theme[11] }}>expand_more</Icon>
-            </Button>
-          }
-        />
-      )}
       <Pressable
         style={{
           padding: 16,
@@ -82,8 +62,8 @@ export default function Magic8Ball({ navigation, menuActions, widget }) {
       >
         <View
           style={{
-            transform: isCollapsed ? [{ scale: 0.4 }] : [],
-            marginVertical: isCollapsed ? -70 : 0,
+            transform: [{ scale: 0.4 }],
+            marginVertical: -70,
           }}
         >
           <Animated.View
@@ -138,14 +118,13 @@ export default function Magic8Ball({ navigation, menuActions, widget }) {
           </Animated.View>
         </View>
         <Button
-          height={isCollapsed ? 40 : 60}
+          height={40}
           dense
-          variant={isCollapsed ? "text" : "outlined"}
+          variant="text"
           containerStyle={{
-            borderWidth: isCollapsed ? 0 : 1,
+            borderWidth: 0,
             marginTop: 10,
-            marginBottom: isCollapsed ? -10 : 0,
-            flex: isCollapsed ? undefined : 1,
+            marginBottom: -10,
           }}
           icon="casino"
           onPress={() => {
@@ -160,18 +139,18 @@ export default function Magic8Ball({ navigation, menuActions, widget }) {
                 offset.value = withSpring(0, { damping: 30, stiffness: 400 });
                 const t = messages[Math.floor(Math.random() * messages.length)];
                 setMessage(t);
-                if (panelState === "COLLAPSED")
-                  setTimeout(() => {
-                    Toast.show({ type: "info", text1: t });
-                  }, 1000);
+                setTimeout(() => {
+                  Toast.show({ type: "info", text1: t });
+                }, 1000);
               }
             );
           }}
         >
-          <Icon size={isCollapsed ? 20 : 24}>casino</Icon>
+          <Icon size={20}>casino</Icon>
           <ButtonText>Shake</ButtonText>
         </Button>
       </Pressable>
     </View>
   );
 }
+

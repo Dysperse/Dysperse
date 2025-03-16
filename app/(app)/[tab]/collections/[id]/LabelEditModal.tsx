@@ -65,7 +65,7 @@ export const LabelEditModal = memo(function LabelEditModal({
 
   const nameRef = useRef(null);
 
-  const handleButtonClick = handleSubmit(onSubmit, (err) =>
+  const handleButtonClick = handleSubmit(onSubmit, () =>
     Toast.show({ type: "error", text1: "Please type a name" })
   );
 

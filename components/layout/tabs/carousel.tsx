@@ -29,7 +29,6 @@ import ReorderableList, {
   ReorderableListReorderEvent,
   reorderItems,
 } from "react-native-reorderable-list";
-import { useSafeAreaInsets } from "react-native-safe-area-context";
 import Toast from "react-native-toast-message";
 import useSWR from "swr";
 import PWAInstallerPrompt from "../PWAInstaller";
@@ -233,7 +232,6 @@ function OpenTabsList() {
   );
 
   const theme = useColorTheme();
-  const insets = useSafeAreaInsets();
   const breakpoints = useResponsiveBreakpoints();
 
   const badgingRef = useBadgingService();

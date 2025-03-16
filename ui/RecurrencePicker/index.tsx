@@ -19,18 +19,9 @@ import Modal from "../Modal";
 import Text from "../Text";
 import TextField from "../TextArea";
 
-const Every = ({
-  value,
-  setValue,
-  handleEdit,
-}: {
-  value;
-  setValue;
-  handleEdit;
-}) => {
+const Every = ({ value, handleEdit }: { value; handleEdit }) => {
   const frequency = value.freq;
   const interval = value.interval;
-  const theme = useColorTheme();
 
   return (
     <View>
@@ -457,27 +448,15 @@ export const RecurrencePicker = forwardRef(
             </View>
             {value && (
               <View style={{ paddingTop: 10, gap: 10 }}>
-                <Every
-                  value={value}
-                  setValue={setValue}
-                  handleEdit={handleEdit}
-                />
+                <Every value={value} handleEdit={handleEdit} />
                 {value.freq !== 0 && (
-                  <On
-                    value={value}
-                    setValue={setValue}
-                    handleEdit={handleEdit}
-                  />
+                  <On value={value} handleEdit={handleEdit} />
                 )}
-                <Ends
-                  value={value}
-                  setValue={setValue}
-                  handleEdit={handleEdit}
-                />
+                <Ends value={value} setValue={setValue} />
               </View>
             )}
 
-            <AtTime value={value} setValue={setValue} handleEdit={handleEdit} />
+            <AtTime value={value} setValue={setValue} />
             <Preview value={value} />
           </View>
         </BottomSheetScrollView>

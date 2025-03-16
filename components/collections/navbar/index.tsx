@@ -78,8 +78,7 @@ const CollectionNavbar = memo(function CollectionNavbar({
 }: CollectionNavbarProps) {
   const { session } = useSession();
   const { session: userSession } = useUser();
-  const { data, access, type, swrKey, openLabelPicker, ...ctx } =
-    useCollectionContext();
+  const { data, access, type, swrKey, ...ctx } = useCollectionContext();
   const isReadOnly = access?.access === "READ_ONLY" || (!access && !session);
   const breakpoints = useResponsiveBreakpoints();
   const { id, mode, fullscreen, tab } = useGlobalSearchParams();
@@ -95,7 +94,7 @@ const CollectionNavbar = memo(function CollectionNavbar({
     await ctx.mutate();
   };
 
-  const openPopOut = async (e) => {
+  const openPopOut = async () => {
     if (fullscreen) return;
     const t = new URL(window.location.href);
     t.searchParams.set("fullscreen", "true");
@@ -306,3 +305,4 @@ const CollectionNavbar = memo(function CollectionNavbar({
 });
 
 export default CollectionNavbar;
+

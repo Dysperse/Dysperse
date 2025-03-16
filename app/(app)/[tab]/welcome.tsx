@@ -1,6 +1,4 @@
 import Content from "@/components/layout/content";
-import { createTab } from "@/components/layout/openTab";
-import { useUser } from "@/context/useUser";
 import { useResponsiveBreakpoints } from "@/helpers/useResponsiveBreakpoints";
 import { addHslAlpha } from "@/ui/color";
 import { useColorTheme } from "@/ui/color/theme-provider";
@@ -9,14 +7,7 @@ import { ListItemButton } from "@/ui/ListItemButton";
 import ListItemText from "@/ui/ListItemText";
 import Logo from "@/ui/logo";
 import Text from "@/ui/Text";
-import {
-  Linking,
-  Platform,
-  Pressable,
-  StyleProp,
-  View,
-  ViewStyle,
-} from "react-native";
+import { StyleProp, View, ViewStyle } from "react-native";
 import { ScrollView } from "react-native-gesture-handler";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { MenuButton } from "../home";
@@ -69,73 +60,18 @@ function PlusButton() {
   );
 }
 
-function Footer() {
-  return (
-    <View
-      style={{
-        width: "100%",
-        gap: 25,
-        marginVertical: 25,
-        marginTop: 10,
-        paddingHorizontal: 25,
-      }}
-    >
-      {[
-        {
-          title: "Follow our Instagram",
-          description:
-            "Recieve useful (and aesthetic) productivity updates in your feed",
-          href: "https://click.dysperse.com/VkcuwHU",
-        },
-        {
-          title: "Explore the Dysverse",
-          description: "Discover collection templates created by others",
-          href: "https://dysperse.com/templates",
-        },
-        {
-          title: "Check out our blog",
-          description:
-            "Read articles about productivity tips and how to use our platform",
-          href: "https://blog.dysperse.com",
-        },
-      ].map((card) => (
-        <Pressable
-          onPress={() => {
-            if (card.href) {
-              Linking.openURL(card.href);
-            }
-          }}
-          style={{
-            flexDirection: "row",
-            gap: 20,
-            alignItems: "center",
-            width: Platform.OS === "web" ? undefined : "100%",
-          }}
-          key={card.title}
-        >
-          <View style={{ flex: 1 }}>
-            <Text weight={900}>{card.title}</Text>
-            <Text>{card.description}</Text>
-          </View>
-          <Icon>north_east</Icon>
-        </Pressable>
-      ))}
-    </View>
-  );
-}
-
 export default function Page() {
   const theme = useColorTheme();
   const breakpoints = useResponsiveBreakpoints();
 
-  const { sessionToken } = useUser();
-  const handleCreateTab = () => {
-    createTab(sessionToken, {
-      slug: "/[tab]/collections/[id]/[type]",
-      icon: "transition_slide",
-      params: { type: "planner", id: "all" },
-    });
-  };
+  // const { sessionToken } = useUser();
+  // const handleCreateTab = () => {
+  //   createTab(sessionToken, {
+  //     slug: "/[tab]/collections/[id]/[type]",
+  //     icon: "transition_slide",
+  //     params: { type: "planner", id: "all" },
+  //   });
+  // };
 
   return (
     <Content noPaddingTop>

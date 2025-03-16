@@ -42,7 +42,7 @@ export const KanbanHeader = memo(function KanbanHeader({
   const { session } = useSession();
   const isReadOnly = access?.access === "READ_ONLY";
   const theme = useColorTheme();
-  const { setCurrentColumn, currentColumn, columnsLength, hasOther } =
+  const { setCurrentColumn, currentColumn, columnsLength } =
     useKanbanContext() || {};
 
   const isGridView = grid && !list;

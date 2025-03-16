@@ -235,7 +235,7 @@ export default forwardRef<any, object>(function TaskNoteEditor(
     if (containerRef) {
       const element = containerRef.current;
 
-      element.addEventListener("focusout", (event) => {
+      element.addEventListener("focusout", () => {
         element.spellcheck = false;
         if (!element.matches(":focus-within")) {
           setFocused(false);

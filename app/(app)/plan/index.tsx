@@ -6,7 +6,7 @@ import { Button, ButtonText } from "@/ui/Button";
 import Icon from "@/ui/Icon";
 import Spinner from "@/ui/Spinner";
 import Text from "@/ui/Text";
-import { useColor, useDarkMode } from "@/ui/color";
+import { useColor } from "@/ui/color";
 import { useColorTheme } from "@/ui/color/theme-provider";
 import dayjs from "dayjs";
 import { LinearGradient } from "expo-linear-gradient";
@@ -70,7 +70,6 @@ export default function Page() {
   }, [getPlan]);
 
   console.log(planData);
-  const dark = useDarkMode();
   const locationName =
     planData?.device?.city?.names?.en ||
     planData?.device?.country?.names?.en ||
@@ -78,7 +77,6 @@ export default function Page() {
   const temp = planData?.weather?.current?.temperature_2m;
 
   const orange = useColor("orange");
-  const gray = useColor("gray");
 
   const icon =
     weatherCodes[planData?.weather?.current?.weather_code]?.[

@@ -1,15 +1,9 @@
 import { useCollectionContext } from "@/components/collections/context";
 import { useResponsiveBreakpoints } from "@/helpers/useResponsiveBreakpoints";
 import IconButton from "@/ui/IconButton";
-import { useColorTheme } from "@/ui/color/theme-provider";
 import { useLocalSearchParams } from "expo-router";
 import React, { useState } from "react";
-import {
-  Dimensions,
-  ScrollView,
-  useWindowDimensions,
-  View,
-} from "react-native";
+import { ScrollView, useWindowDimensions, View } from "react-native";
 import { useSharedValue } from "react-native-reanimated";
 import Carousel, { ICarouselInstance } from "react-native-reanimated-carousel";
 import { CollectionEmpty } from "../CollectionEmpty";
@@ -17,12 +11,8 @@ import { Column } from "./Column";
 import { KanbanHeader } from "./Header";
 import { KanbanContext } from "./context";
 
-const width = Dimensions.get("window").width;
-
-function ColumnSwitcher({ columns, setCurrentColumn, currentColumn }) {
-  const theme = useColorTheme();
+function ColumnSwitcher({ columns, setCurrentColumn }) {
   const { width } = useWindowDimensions();
-  const { openLabelPicker } = useCollectionContext();
 
   const ref = React.useRef<ICarouselInstance>(null);
   const progress = useSharedValue<number>(0);
@@ -85,11 +75,7 @@ export default function Kanban() {
       }}
     >
       {!breakpoints.md && (
-        <ColumnSwitcher
-          columns={columns}
-          setCurrentColumn={setCurrentColumn}
-          currentColumn={currentColumn}
-        />
+        <ColumnSwitcher columns={columns} setCurrentColumn={setCurrentColumn} />
       )}
       {data.labels.length === 0 ? (
         <CollectionEmpty />

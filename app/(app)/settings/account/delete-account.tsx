@@ -87,7 +87,7 @@ export default function Page() {
         control={control}
         name="reason"
         rules={{ required: true }}
-        render={({ field: { onChange, onBlur, value } }) => (
+        render={({ field: { onChange, value } }) => (
           <>
             {[
               "Dysperse is too confusing",
@@ -233,3 +233,4 @@ export default function Page() {
     </SettingsScrollView>
   );
 }
+

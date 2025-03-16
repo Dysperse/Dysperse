@@ -4,16 +4,14 @@ import { useSelectionContext } from "@/context/SelectionContext";
 import { sendApiRequest } from "@/helpers/api";
 import { useResponsiveBreakpoints } from "@/helpers/useResponsiveBreakpoints";
 import { Button } from "@/ui/Button";
-import Icon from "@/ui/Icon";
-import IconButton from "@/ui/IconButton";
 import MenuPopover from "@/ui/MenuPopover";
 import Spinner from "@/ui/Spinner";
 import Text from "@/ui/Text";
 import { useColor } from "@/ui/color";
 import { LinearGradient } from "expo-linear-gradient";
 import { useLocalSearchParams } from "expo-router";
-import { memo, useCallback, useMemo, useState } from "react";
-import { View, ViewStyle } from "react-native";
+import { memo, useCallback, useState } from "react";
+import { View } from "react-native";
 import Animated, {
   useAnimatedStyle,
   withSpring,
@@ -58,49 +56,12 @@ function NavbarHeader({ isLoading, setIsLoading }) {
   );
 }
 
-const PinButton = ({ textStyle, itemStyle, handleSelect }) => {
-  const [pinned, setPinned] = useState(true);
-  const { isLoading } = useSelectionContext();
-  const breakpoints = useResponsiveBreakpoints();
-
-  return (
-    <View style={itemStyle}>
-      <IconButton
-        variant={breakpoints.md ? "text" : "outlined"}
-        disabled={isLoading}
-        onPress={() => {
-          setPinned((t) => !t);
-          handleSelect({ pinned });
-        }}
-        icon={<Icon filled={pinned}>push_pin</Icon>}
-        size={45}
-      />
-      {!breakpoints.md && (
-        <Text style={textStyle}>{pinned ? "Unpin" : "Pin"}</Text>
-      )}
-    </View>
-  );
-};
-
 function Actions({ isLoading, setIsLoading }) {
   const { session } = useSession();
   const { selection } = useSelectionContext();
-  const breakpoints = useResponsiveBreakpoints();
   const { setSelection } = useSelectionContext();
   const blue = useColor("blue");
   const { mutate } = useSWRConfig();
-
-  const itemStyle: ViewStyle = useMemo(
-    () =>
-      breakpoints.md
-        ? undefined
-        : {
-            alignItems: "center",
-            width: 90,
-            gap: 5,
-          },
-    [breakpoints]
-  );
 
   const badgingService = useBadgingService();
   const { reorderMode, setReorderMode } = useSelectionContext();
@@ -253,3 +214,4 @@ const SelectionNavbar = memo(function SelectionNavbar() {
 });
 
 export default SelectionNavbar;
+

@@ -73,8 +73,6 @@ const TaskDrawerWrapper = forwardRef(function TaskDrawerWrapper(
     { id, ...(pathname.includes("/c/") && { inviteLinkId }) },
   ]);
 
-  const breakpoints = useResponsiveBreakpoints();
-
   useImperativeHandle(ref, () => ({
     triggerMutate: () => mutateList(data),
   }));

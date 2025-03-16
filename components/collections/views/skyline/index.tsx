@@ -94,9 +94,9 @@ function Header({
   mutate,
   large = false,
   range,
-  setSelectedColumn = (t) => {},
+  setSelectedColumn = () => {},
   selectedColumn = 0,
-}) {
+}: any) {
   const theme = useColorTheme();
   const breakpoints = useResponsiveBreakpoints();
   const { data } = useCollectionContext();

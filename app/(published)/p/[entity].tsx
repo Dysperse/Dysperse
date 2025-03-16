@@ -1,13 +1,10 @@
-import MarkdownRenderer from "@/components/MarkdownRenderer";
 import { TaskImportantChip, TaskLabelChip } from "@/components/task";
 import { TaskDrawerContent } from "@/components/task/drawer/content";
 import { TaskDrawerContext } from "@/components/task/drawer/context";
 import {
   handleLocationPress,
   isValidHttpUrl,
-  normalizeRecurrenceRuleObject,
 } from "@/components/task/drawer/details";
-import { STORY_POINT_SCALE } from "@/constants/workload";
 import { useResponsiveBreakpoints } from "@/helpers/useResponsiveBreakpoints";
 import Alert from "@/ui/Alert";
 import { Avatar, ProfilePicture } from "@/ui/Avatar";
@@ -16,21 +13,16 @@ import { addHslAlpha, useColor } from "@/ui/color";
 import { ColorThemeProvider, useColorTheme } from "@/ui/color/theme-provider";
 import Icon from "@/ui/Icon";
 import IconButton from "@/ui/IconButton";
-import { ListItemButton } from "@/ui/ListItemButton";
-import ListItemText from "@/ui/ListItemText";
 import Logo from "@/ui/logo";
 import Spinner from "@/ui/Spinner";
 import Text from "@/ui/Text";
-import capitalizeFirstLetter from "@/utils/capitalizeFirstLetter";
 import { BottomSheetModalProvider } from "@gorhom/bottom-sheet";
-import dayjs from "dayjs";
 import { useLocalSearchParams } from "expo-router";
 import * as Sharing from "expo-sharing";
 import { createContext, useCallback, useContext, useMemo } from "react";
 import { Linking, Pressable, View } from "react-native";
 import { ScrollView } from "react-native-gesture-handler";
 import { MenuProvider } from "react-native-popup-menu";
-import Animated from "react-native-reanimated";
 import useSWR from "swr";
 
 const PublishedEntityContext = createContext(null);
@@ -87,8 +79,6 @@ const Header = () => {
 const ErrorPage = () => {
   const theme = useColor("mint");
   const breakpoints = useResponsiveBreakpoints();
-
-  const AnimatedPressable = Animated.createAnimatedComponent(Pressable);
 
   return (
     <ColorThemeProvider setHTMLAttributes theme={theme}>
@@ -221,125 +211,6 @@ const TaskAttachmentCard = ({ item }) => {
         </View>
       </View>
     </Pressable>
-  );
-};
-
-const Info = () => {
-  const { data } = usePublishedEntityContext();
-  const theme = useColorTheme();
-  const breakpoints = useResponsiveBreakpoints();
-
-  return (
-    <View
-      style={{
-        width: breakpoints.xl
-          ? 1200
-          : breakpoints.lg
-          ? 1000
-          : breakpoints.md
-          ? 800
-          : 700,
-        maxWidth: "100%",
-        backgroundColor: theme[1],
-        shadowColor: "rgba(0,0,0,0.1)",
-        shadowRadius: 20,
-        shadowOffset: {
-          width: 10,
-          height: 10,
-        },
-        padding: 25,
-        borderRadius: 25,
-        borderWidth: 1,
-        borderColor: theme[5],
-        gap: 20,
-      }}
-    >
-      <TaskChips />
-      <Text style={{ fontSize: 35, marginVertical: -10 }} weight={900}>
-        {data.name}
-      </Text>
-      {data.note && (
-        <View>
-          <Text variant="eyebrow" style={{ marginBottom: -5 }}>
-            About
-          </Text>
-          <MarkdownRenderer>{data.note}</MarkdownRenderer>
-        </View>
-      )}
-      <View
-        style={{ flexDirection: breakpoints.md ? "row" : "column", gap: 20 }}
-      >
-        {data.start && (
-          <View style={{ gap: 5, flex: 1 }}>
-            <Text variant="eyebrow">Due</Text>
-            <ListItemButton disabled variant="filled">
-              <Avatar icon="calendar_today" theme="mint" size={40} />
-              <ListItemText
-                primary={dayjs(data.start).format(
-                  data.dateOnly ? "MMMM Do, YYYY" : "MMMM Do, YYYY [@] h:mm A"
-                )}
-                secondary={dayjs(data.start).fromNow()}
-              />
-            </ListItemButton>
-          </View>
-        )}
-        {data.recurrenceRule && (
-          <View style={{ gap: 5, flex: 1 }}>
-            <Text variant="eyebrow">Repeats</Text>
-            <ListItemButton disabled variant="filled">
-              <Avatar icon="loop" theme="mint" size={40} />
-              <ListItemText
-                primary={capitalizeFirstLetter(
-                  normalizeRecurrenceRuleObject(data.recurrenceRule).toText()
-                )}
-              />
-            </ListItemButton>
-          </View>
-        )}
-        <View style={{ gap: 5, flex: 1 }}>
-          <Text variant="eyebrow">Complexity</Text>
-          <ListItemButton disabled variant="filled">
-            <Avatar icon="exercise" theme="mint" size={40} />
-            <ListItemText
-              primary={`${data.storyPoints} points`}
-              secondary={`Marked as requiring ${
-                STORY_POINT_SCALE[[2, 4, 8, 16, 32].indexOf(data.storyPoints)]
-              }`}
-            />
-          </ListItemButton>
-        </View>
-      </View>
-      {data.attachments?.length > 0 && (
-        <View>
-          <Text variant="eyebrow">Attachments</Text>
-          <View
-            style={{
-              flexDirection: breakpoints.md ? "row" : "column",
-              flexWrap: "wrap",
-              gap: 10,
-              marginTop: 5,
-            }}
-          >
-            {data.attachments.map((item, index) => (
-              <TaskAttachmentCard key={index} item={item} />
-            ))}
-          </View>
-        </View>
-      )}
-      {data.integrationId && (
-        <Text
-          style={{
-            fontSize: 14,
-            marginTop: 20,
-            color: theme[11],
-            opacity: 0.7,
-            textAlign: "center",
-          }}
-        >
-          This item is synced with another third-party application.
-        </Text>
-      )}
-    </View>
   );
 };
 

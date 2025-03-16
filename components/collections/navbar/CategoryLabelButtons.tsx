@@ -1,4 +1,3 @@
-import { COLLECTION_VIEWS } from "@/components/layout/command-palette/list";
 import { useSession } from "@/context/AuthProvider";
 import { sendApiRequest } from "@/helpers/api";
 import { useColorTheme } from "@/ui/color/theme-provider";
@@ -8,24 +7,20 @@ import Icon from "@/ui/Icon";
 import IconButton from "@/ui/IconButton";
 import MenuPopover, { MenuItem } from "@/ui/MenuPopover";
 import Text from "@/ui/Text";
-import { router, useLocalSearchParams, usePathname } from "expo-router";
+import { router, useLocalSearchParams } from "expo-router";
 import { memo, useRef } from "react";
 import { Pressable, View } from "react-native";
 import Toast from "react-native-toast-message";
 import { useCollectionContext } from "../context";
 
 export const CategoryLabelButtons = memo(() => {
-  const pathname = usePathname();
-  const { data, openLabelPicker, mutate } = useCollectionContext();
-  const { type, hiddenLabels: rawHiddenLabels } = useLocalSearchParams();
+  const { data, mutate } = useCollectionContext();
+  const { hiddenLabels: rawHiddenLabels } = useLocalSearchParams();
   const menuRef = useRef(null);
   const theme = useColorTheme();
   const { session } = useSession();
 
   const hiddenLabels = rawHiddenLabels ? rawHiddenLabels?.split(",") || [] : [];
-
-  const isCategoryBased =
-    COLLECTION_VIEWS[type.toString()]?.type === "Category Based";
 
   const toggleShowCompleted = async () => {
     const showCompleted = !data.showCompleted;
@@ -157,3 +152,4 @@ export const CategoryLabelButtons = memo(() => {
     />
   );
 });
+

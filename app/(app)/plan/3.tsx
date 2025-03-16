@@ -56,12 +56,10 @@ const taskStyles = StyleSheet.create({
 
 function CurrentTaskFooter({
   taskAnimationState,
-  slide,
   setSlide,
   task,
   onTaskUpdate,
-  dateRange,
-}) {
+}: any) {
   const { sessionToken } = useUser();
   const theme = useColorTheme();
   const badgingService = useBadgingService();
@@ -108,7 +106,6 @@ function CurrentTaskFooter({
         <TaskDatePicker
           setValue={(date) => handleEdit("start", date)}
           watch={() => task.start}
-          defaultView="date"
           dueDateOnly
         >
           <Button
@@ -188,7 +185,6 @@ function CurrentTaskFooter({
           </Text>
         </Button>
         <Checkbox
-          dateRange={dateRange}
           task={task}
           isReadOnly={false}
           mutateList={(...t) => {
@@ -239,7 +235,7 @@ function CurrentTaskFooter({
   );
 }
 
-const CurrentSlideIndicator = ({ slide, slidesLength }) => (
+const CurrentSlideIndicator = ({ slide, slidesLength }: any) => (
   <Text variant="eyebrow">{slidesLength - slide} left</Text>
 );
 
@@ -247,8 +243,7 @@ const CurrentTaskCard = ({
   onTaskUpdate,
   currentTask,
   taskAnimationState,
-  dateRange,
-}) => {
+}: any) => {
   const theme = useColorTheme();
 
   // @ts-expect-error idk
@@ -431,7 +426,7 @@ const CurrentTaskCard = ({
   );
 };
 
-function TodaysTasks({ data, mutate, setStage, dateRange }) {
+function TodaysTasks({ data, mutate, setStage, dateRange }: any) {
   console.log(data);
   const t = useMemo(
     () =>
@@ -440,7 +435,7 @@ function TodaysTasks({ data, mutate, setStage, dateRange }) {
             data?.find?.((d) => dayjs().isBetween(dayjs(d.start), dayjs(d.end)))
               ?.entities || {}
           )?.filter(
-            (i) =>
+            (i: any) =>
               (i.start && i.start && dayjs(i.start).isSame(dayjs(), "day")) ||
               i.recurrenceRule
           )
@@ -470,8 +465,6 @@ function TodaysTasks({ data, mutate, setStage, dateRange }) {
 
   const [slide, setSlide] = useState(0);
   const slidesLength = t?.length || 0;
-
-  const theme = useColorTheme();
 
   const currentTask = t?.[slide];
   const taskAnimationState = useSharedValue<
@@ -523,7 +516,6 @@ function TodaysTasks({ data, mutate, setStage, dateRange }) {
           />
           <CurrentTaskFooter
             taskAnimationState={taskAnimationState}
-            dateRange={dateRange}
             onTaskUpdate={onTaskUpdate}
             task={currentTask}
             slide={slide}
@@ -619,9 +611,7 @@ export default function Page() {
               }}
               text="Continue"
               icon="arrow_forward_ios"
-              onPress={() => {
-                setStage(1);
-              }}
+              onPress={() => setStage(1)}
             />
           </>
         )}

@@ -2,12 +2,6 @@ import { GoogleAuth } from "@/app/auth/(sign-in)/(login)/email";
 import { useSession } from "@/context/AuthProvider";
 import { sendApiRequest } from "@/helpers/api";
 import { Button } from "@/ui/Button";
-import Emoji from "@/ui/Emoji";
-import { EmojiPicker } from "@/ui/EmojiPicker";
-import ErrorAlert from "@/ui/Error";
-import Icon from "@/ui/Icon";
-import IconButton from "@/ui/IconButton";
-import { ListItemButton } from "@/ui/ListItemButton";
 import Spinner from "@/ui/Spinner";
 import Text from "@/ui/Text";
 import TextField from "@/ui/TextArea";
@@ -15,7 +9,7 @@ import { useColorTheme } from "@/ui/color/theme-provider";
 import Logo from "@/ui/logo";
 import { Image } from "expo-image";
 import { router, useLocalSearchParams } from "expo-router";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import {
   Controller,
   FormProvider,
@@ -85,123 +79,13 @@ const Intro = ({ integration }) => {
   );
 };
 
-const LabelCustomizer = ({
-  handleSubmit,
-  connectedIntegration,
-  status,
-  setSlide,
-}) => {
-  const theme = useColorTheme();
-  const { getValues, control, setValue } = useFormContext();
-
-  const { data, error } = useSWR([
-    "space/integrations/get-labels",
-    { ...getValues().params, integration: getValues().integration },
-  ]);
-
-  useEffect(() => {
-    if (data?.error) {
-      setSlide(1);
-      Toast.show({
-        type: "error",
-        text1: "Couldn't find any labels",
-        text2: "Check if you entered everything correctly",
-      });
-    } else setValue("labels", data);
-  }, [data, setSlide, setValue]);
-
-  return (
-    <>
-      <Text style={{ opacity: 0.6, marginBottom: 10 }}>
-        We found some labels for you. Customize them if you want.
-      </Text>
-      {data ? (
-        <Controller
-          control={control}
-          name="labels"
-          render={({ field: { onChange, value } }) =>
-            value?.length > 0 && (
-              <>
-                {data.map((label, index) => (
-                  <ListItemButton
-                    key={`${label?.id}-${index}`}
-                    variant={label.id ? "filled" : "outlined"}
-                    disabled
-                    style={{ marginBottom: 15 }}
-                  >
-                    <EmojiPicker
-                      setEmoji={(emoji) => {
-                        const newLabels = [...value];
-                        newLabels[index].emoji = emoji;
-                        onChange(newLabels);
-                      }}
-                    >
-                      <IconButton
-                        variant="outlined"
-                        size={50}
-                        style={{ borderColor: theme[6] }}
-                      >
-                        <Emoji emoji={value[index]?.emoji || label?.emoji} />
-                      </IconButton>
-                    </EmojiPicker>
-                    <TextField
-                      value={value[index]?.name || label?.name}
-                      onChangeText={(text) => {
-                        const newLabels = [...value];
-                        newLabels[index].name = text;
-                        onChange(newLabels);
-                      }}
-                      style={{
-                        flex: 1,
-                        fontSize: 20,
-                        minWidth: 10,
-                      }}
-                      weight={600}
-                    />
-                    {label.id && (
-                      <Icon style={{ marginRight: 10 }}>check_circle</Icon>
-                    )}
-                  </ListItemButton>
-                ))}
-                <View style={[styles.footer, { marginTop: "auto" }]}>
-                  <Button
-                    large
-                    containerStyle={{ marginTop: 20 }}
-                    isLoading={status === "loading"}
-                    iconPosition="end"
-                    variant="filled"
-                    icon="done"
-                    text="Finish setup"
-                    onPress={handleSubmit}
-                  />
-                </View>
-              </>
-            )
-          }
-        />
-      ) : error ? (
-        <ErrorAlert />
-      ) : (
-        <Spinner style={{ marginBottom: "auto" }} />
-      )}
-    </>
-  );
-};
-
-const Outro = ({
-  setConnectedSuccess,
-  connectedIntegration,
-  integration,
-  submit,
-  setSlide,
-}) => {
+const Outro = ({ integration, submit }: any) => {
   const [status, setStatus] = useState<"idle" | "loading" | "success">("idle");
 
   const handleClick = async () => {
     try {
       setStatus("loading");
       await submit();
-      setConnectedSuccess(true);
     } finally {
       setStatus("success");
     }
@@ -366,7 +250,7 @@ const ParamSlide = ({ slide, currentSlide }) => {
   );
 };
 
-function OauthRedirect({ integration, setSlide, onSubmit }) {
+function OauthRedirect({ integration, onSubmit }) {
   const { setValue, handleSubmit } = useFormContext();
 
   return (
@@ -457,8 +341,6 @@ export default function Page() {
     }
   };
 
-  const [connectedSuccess, setConnectedSuccess] = useState(false);
-
   const slidesLength =
     (data?.authorization?.params?.length || 0) +
     (data?.authorization.type === "GoogleOAuth2"
@@ -506,11 +388,7 @@ export default function Page() {
           {slide === 0 && <Intro integration={data} />}
 
           {slide === 1 && data.authorization.type === "GoogleOAuth2" && (
-            <OauthRedirect
-              onSubmit={onSubmit}
-              setSlide={setSlide}
-              integration={data}
-            />
+            <OauthRedirect onSubmit={onSubmit} integration={data} />
           )}
 
           {slide > 0 && slide <= data.authorization?.params?.length && (
@@ -526,7 +404,6 @@ export default function Page() {
           data.authorization.type !== "GoogleOAuth2" ? (
             <FormProvider {...methods}>
               <Outro
-                setConnectedSuccess={setConnectedSuccess}
                 connectedIntegration={connectedIntegration}
                 setSlide={setSlide}
                 integration={data}

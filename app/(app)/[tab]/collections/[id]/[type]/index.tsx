@@ -62,7 +62,7 @@ export const styles = StyleSheet.create({
   },
 });
 
-const Loading = ({ error, isPublic }: any) => {
+const Loading = ({ isPublic }: any) => {
   let content;
   const insets = useSafeAreaInsets();
   const breakpoints = useResponsiveBreakpoints();

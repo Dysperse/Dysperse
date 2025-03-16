@@ -1,4 +1,3 @@
-import { widgetStyles } from "@/components/focus-panel/widgetStyles";
 import { Avatar } from "@/ui/Avatar";
 import { Button } from "@/ui/Button";
 import Icon from "@/ui/Icon";
@@ -21,6 +20,7 @@ export default function WeatherWidget({
   widget,
   handlePin,
 }: {
+  small;
   widget: any;
   handlePin: any;
 }) {
@@ -59,7 +59,6 @@ export default function WeatherWidget({
     data,
     isLoading: isWeatherLoading,
     error,
-    mutate: mutateWeather,
   } = useSWR(
     location
       ? [
@@ -119,14 +118,6 @@ export default function WeatherWidget({
   };
 
   const theme = useColorTheme();
-
-  const weatherCardStyles = ({ pressed, hovered }) => [
-    widgetStyles.card,
-    {
-      backgroundColor: theme[pressed ? 5 : hovered ? 4 : 3],
-      borderColor: theme[5],
-    },
-  ];
 
   const weatherDescription = useMemo(
     () =>

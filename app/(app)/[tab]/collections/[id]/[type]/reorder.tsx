@@ -282,7 +282,7 @@ function EditListView() {
   );
 }
 
-function Reorder({ handleClose }: any) {
+function Reorder() {
   const theme = useColorTheme();
   const { type: view } = useLocalSearchParams();
   useHotkeys("esc", () => router.back());
@@ -361,7 +361,7 @@ export default function Page() {
 
   return (
     <CollectionContext.Provider value={contextValue}>
-      {data && <Reorder handleClose={handleClose} />}
+      {data && <Reorder />}
     </CollectionContext.Provider>
   );
 }

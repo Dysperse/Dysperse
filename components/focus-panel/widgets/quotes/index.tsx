@@ -11,7 +11,7 @@ import Toast from "react-native-toast-message";
 import useSWR from "swr";
 import { widgetStyles } from "../../widgetStyles";
 
-export default function Quotes({ widget }) {
+export default function Quotes() {
   const { data, mutate, error } = useSWR(
     [``, {}, "https://quotes-api-self.vercel.app/quote"],
     null,

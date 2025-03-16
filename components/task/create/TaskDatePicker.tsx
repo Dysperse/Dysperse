@@ -10,7 +10,6 @@ function TaskDatePicker({
   children,
   dueDateOnly,
   sheetRef: _sheetRef,
-  defaultRecurrenceOptions,
 }: {
   setValue: any;
   watch: any;
@@ -18,7 +17,6 @@ function TaskDatePicker({
   dueDateOnly?: boolean;
   title?: string;
   sheetRef?: React.MutableRefObject<BottomSheetModal>;
-  defaultRecurrenceOptions?: any;
 }) {
   const dateRef = React.useRef(null);
   const recurrenceRef = React.useRef(null);

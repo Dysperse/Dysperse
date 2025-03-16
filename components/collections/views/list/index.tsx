@@ -9,7 +9,7 @@ import RefreshControl from "@/ui/RefreshControl";
 import { FlashList } from "@shopify/flash-list";
 import { BlurView } from "expo-blur";
 import { LinearGradient } from "expo-linear-gradient";
-import { useRef, useState } from "react";
+import { useRef } from "react";
 import { Platform, Pressable, View } from "react-native";
 import { ColumnEmptyComponent } from "../../emptyComponent";
 import { Entity } from "../../entity";
@@ -17,10 +17,9 @@ import { CollectionEmpty } from "../CollectionEmpty";
 import { KanbanHeader } from "../kanban/Header";
 import { taskSortAlgorithm } from "../skyline";
 
-function ListItem({ d, data, item, listRef, mutate, onTaskUpdate, index }) {
+function ListItem({ d, data, item, listRef, mutate, onTaskUpdate }) {
   const theme = useColorTheme();
   const isDark = useDarkMode();
-  const { openLabelPicker } = useCollectionContext();
 
   if (item.empty) {
     return (
@@ -131,11 +130,10 @@ const incompleteEntitiesFilter = (e) =>
 
 export default function List() {
   const { data, mutate } = useCollectionContext();
-  const [showCompleted, setShowCompleted] = useState(data.showCompleted);
 
   const shownEntities = taskSortAlgorithm(
     Object.values(data.entities).filter(
-      (e) => !e.trash && (incompleteEntitiesFilter(e) || showCompleted)
+      (e) => !e.trash && (incompleteEntitiesFilter(e) || data.showCompleted)
     )
   );
 
@@ -190,7 +188,7 @@ export default function List() {
             <RefreshControl refreshing={false} onRefresh={() => mutate()} />
           }
           contentContainerStyle={{ paddingVertical: 30 }}
-          renderItem={({ item, index }) => (
+          renderItem={({ item }) => (
             <View
               style={{
                 width: 600,
@@ -201,7 +199,6 @@ export default function List() {
               }}
             >
               <ListItem
-                index={index}
                 d={d}
                 data={data}
                 onTaskUpdate={mutations.categoryBased.update(mutate)}

@@ -44,25 +44,20 @@ if (Platform.OS !== "ios") {
 
 function MessageBar({
   onRetry,
-  messageState,
   messageRef,
-  placeholder = "Type a message...",
 }: {
   onRetry?: any;
-  messageState;
   messageRef;
   placeholder?: string;
 }) {
   const theme = useColorTheme();
   const [value, setValue] = useState("");
   const { panelRef } = useCollectionSidekickContext();
-  const [message, setMessage] = messageState;
   const breakpoints = useResponsiveBreakpoints();
 
   const handleKeyPress = ({ nativeEvent }) => {
     if (nativeEvent.key === "Enter" && !nativeEvent.shiftKey) {
       nativeEvent.preventDefault();
-      setMessage(value);
     }
     if (nativeEvent.key === "Escape") {
       panelRef.current.close();
@@ -122,7 +117,6 @@ function MessageBar({
             pressed: theme[value ? 12 : 6],
           }}
           onPress={() => {
-            setMessage(value);
             setValue("");
           }}
           iconProps={{ bold: true, size: 17 }}
@@ -215,7 +209,7 @@ function CollectionQuestionAnser({ message, messageRef, messageState }) {
   const breakpoints = useResponsiveBreakpoints();
   const theme = useColorTheme();
 
-  const { data, mutate, error, isLoading, isValidating } = useSWR(
+  const { data, mutate, isLoading, isValidating } = useSWR(
     !message
       ? null
       : [
@@ -307,7 +301,6 @@ function CollectionQuestionAnser({ message, messageRef, messageState }) {
           onRetry={mutate}
           placeholder="Ask another question"
           messageRef={messageRef}
-          messageState={messageState}
         />
       </View>
     </View>
@@ -410,10 +403,7 @@ export function Sidekick() {
           !breakpoints.md ? { marginTop: "auto" } : { marginBottom: "auto" }
         }
       >
-        <MessageBar
-          messageState={[message, setMessage]}
-          messageRef={messageRef}
-        />
+        <MessageBar messageRef={messageRef} />
       </View>
     </View>
   );

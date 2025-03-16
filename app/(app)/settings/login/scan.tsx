@@ -9,23 +9,12 @@ import * as Device from "expo-device";
 import { router } from "expo-router";
 import { useState } from "react";
 import { Platform, StyleSheet, View, useWindowDimensions } from "react-native";
-import { useSafeAreaInsets } from "react-native-safe-area-context";
 import Toast from "react-native-toast-message";
-
-const isJson = (str) => {
-  try {
-    JSON.parse(str);
-  } catch (e) {
-    return false;
-  }
-  return true;
-};
 
 export default function Page() {
   const breakpoints = useResponsiveBreakpoints();
   const { session } = useSession();
-  const { width, height } = useWindowDimensions();
-  const insets = useSafeAreaInsets();
+  const { width } = useWindowDimensions();
   const [permission, requestPermission] = useCameraPermissions();
   const [isLoading, setIsLoading] = useState(false);
 

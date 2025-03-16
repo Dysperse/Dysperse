@@ -1,4 +1,3 @@
-import { useResponsiveBreakpoints } from "@/helpers/useResponsiveBreakpoints";
 import { Avatar } from "@/ui/Avatar";
 import { Button } from "@/ui/Button";
 import ErrorAlert from "@/ui/Error";
@@ -12,7 +11,6 @@ import { memo } from "react";
 import { Platform, View } from "react-native";
 import { AnimatedCircularProgress } from "react-native-circular-progress";
 import useSWR from "swr";
-import { useContentWrapperContext } from "../layout/content";
 
 const GoalIndicator = ({ completed, goal, name }) => {
   const theme = useColorTheme();
@@ -71,8 +69,6 @@ const GoalIndicator = ({ completed, goal, name }) => {
 
 function StreakGoal() {
   const theme = useColorTheme();
-  const breakpoints = useResponsiveBreakpoints();
-  const { width } = useContentWrapperContext();
 
   const { data, error } = useSWR([
     "user/streaks",

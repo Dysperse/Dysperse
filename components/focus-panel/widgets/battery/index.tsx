@@ -8,7 +8,7 @@ import { useEffect, useState } from "react";
 import { Pressable, View } from "react-native";
 import Svg, { Path } from "react-native-svg";
 
-export default function BatteryWidget({ navigation, widget, menuActions }) {
+export default function BatteryWidget({ menuActions }) {
   const theme = useColorTheme();
   const isDark = useDarkMode();
   const [batteryLevel, setBatteryLevel] = useState(-1);

@@ -225,7 +225,6 @@ export function LocationPickerModal({
 
 function CreateTaskButton({ mutate }) {
   const breakpoints = useResponsiveBreakpoints();
-  const ref = useRef(null);
   const createTaskRef = useRef(null);
 
   return (

@@ -59,7 +59,6 @@ import Toast from "react-native-toast-message";
 import { RRule } from "rrule";
 import useSWR from "swr";
 import { useDebouncedCallback } from "use-debounce";
-import { TaskAttachmentButton } from "../drawer/attachment/button";
 import { TaskNote } from "../drawer/TaskNote";
 
 const PinTask = memo(function PinTask({ watch, control }: any) {
@@ -124,8 +123,6 @@ function Footer({
   control,
   dateRef,
   recurrenceRef,
-  handleSubmitButtonClick,
-  hintRef,
 }: {
   nameRef: any;
   labelMenuRef: React.MutableRefObject<BottomSheetModal>;
@@ -134,8 +131,6 @@ function Footer({
   control: any;
   dateRef: React.MutableRefObject<BottomSheetModal>;
   recurrenceRef: React.MutableRefObject<BottomSheetModal>;
-  handleSubmitButtonClick;
-  hintRef;
 }) {
   const theme = useColorTheme();
   const recurrenceRule = watch("recurrenceRule");
@@ -555,20 +550,17 @@ function LabelNlpProcessor({
 }
 
 const TimeSuggestion = forwardRef(
-  (
-    {
-      value,
-      hintRef,
-      watch,
-      isDirty,
-    }: {
-      value: any;
-      hintRef: any;
-      watch;
-      isDirty;
-    },
-    ref
-  ) => {
+  ({
+    value,
+    hintRef,
+    watch,
+    isDirty,
+  }: {
+    value: any;
+    hintRef: any;
+    watch;
+    isDirty;
+  }) => {
     const hasTypedRef = useRef(false);
     const date = watch("date");
     const label = watch("label");
@@ -661,7 +653,6 @@ const TimeSuggestion = forwardRef(
 function TaskNameInput({
   control,
   handleSubmitButtonClick,
-  menuRef,
   nameRef,
   setValue,
   watch,
@@ -672,7 +663,6 @@ function TaskNameInput({
 }: {
   control: any;
   handleSubmitButtonClick: any;
-  menuRef: React.MutableRefObject<BottomSheetModal>;
   nameRef: any;
   setValue: any;
   watch;
@@ -986,52 +976,7 @@ const TaskAttachments = ({ watch, setValue }: any) => {
       </ScrollView>
     )
   );
-  // return null;
 };
-
-function Attachment({ control, nameRef, setValue, menuRef }: any) {
-  const breakpoints = useResponsiveBreakpoints();
-  const theme = useColorTheme();
-
-  return (
-    <Controller
-      name="attachments"
-      control={control}
-      render={({ field: { onChange, value } }) => (
-        <>
-          <TaskAttachmentButton
-            menuRef={menuRef}
-            onClose={() => nameRef.current.focus()}
-            task={{ attachments: value }}
-            updateTask={(key, value) => {
-              if (key !== "note") {
-                onChange(value);
-              } else {
-                setValue("note", value);
-              }
-            }}
-          >
-            <IconButton
-              size={breakpoints.md ? 50 : 35}
-              pressableStyle={{
-                gap: 5,
-                flexDirection: "row",
-              }}
-              variant="filled"
-              backgroundColors={{
-                default: addHslAlpha(theme[9], 0.15),
-                hovered: addHslAlpha(theme[9], 0.25),
-                pressed: addHslAlpha(theme[9], 0.35),
-              }}
-            >
-              <Icon>note_stack_add</Icon>
-            </IconButton>
-          </TaskAttachmentButton>
-        </>
-      )}
-    />
-  );
-}
 
 const SubmitButton = forwardRef(({ onSubmit }: any, ref) => {
   const theme = useColorTheme();
@@ -1062,29 +1007,7 @@ const SubmitButton = forwardRef(({ onSubmit }: any, ref) => {
   );
 });
 
-const CancelButton = memo(() => {
-  const { forceClose } = useBottomSheet();
-  const breakpoints = useResponsiveBreakpoints();
-
-  return (
-    <IconButton
-      size={breakpoints.md ? 50 : 35}
-      variant="filled"
-      icon="close"
-      style={{ marginRight: "auto" }}
-      onPress={() => forceClose()}
-    />
-  );
-});
-
-function DateButton({
-  watch,
-  colors,
-  dateRef,
-  recurrenceRef,
-  defaultValues,
-  setValue,
-}: any) {
+function DateButton({ watch, colors, dateRef, recurrenceRef, setValue }: any) {
   const breakpoints = useResponsiveBreakpoints();
   const recurrenceRule = watch("recurrenceRule");
 
@@ -1136,7 +1059,7 @@ function DateButton({
   );
 }
 
-function LabelButton({ watch, colors, defaultValues, setValue }: any) {
+function LabelButton({ watch, colors, setValue }: any) {
   const value = watch("label");
   const breakpoints = useResponsiveBreakpoints();
   const collectionId = watch("collectionId");
@@ -1167,7 +1090,7 @@ function LabelButton({ watch, colors, defaultValues, setValue }: any) {
   );
 }
 
-function SubTaskInformation({ watch, setValue }) {
+function SubTaskInformation({ watch }) {
   const parentTask = watch("parentTask");
   const theme = useColorTheme();
 
@@ -1211,7 +1134,7 @@ function SubTaskInformation({ watch, setValue }) {
 }
 
 const TaskDescriptionInput = forwardRef(
-  ({ watch, control, nameRef }: { watch; control; nameRef }, ref) => {
+  ({ control, nameRef }: { control; nameRef }, ref) => {
     const editorRef = useRef(null);
 
     useImperativeHandle(ref, () => ({
@@ -1377,7 +1300,6 @@ const BottomSheetContent = forwardRef(
     const dateRef = useRef(null);
     const recurrenceRef = useRef(null);
     const submitRef = useRef(null);
-    const menuRef = useRef<BottomSheetModal>(null);
     const labelMenuRef = useRef<BottomSheetModal>(null);
     const badgingService = useBadgingService();
 
@@ -1499,7 +1421,7 @@ const BottomSheetContent = forwardRef(
               : "systemUltraThinMaterialLight"
           }
         >
-          <SubTaskInformation watch={watch} setValue={setValue} />
+          <SubTaskInformation watch={watch} />
           <View
             style={{
               flex: 1,
@@ -1508,8 +1430,6 @@ const BottomSheetContent = forwardRef(
             }}
           >
             <Footer
-              hintRef={hintRef}
-              handleSubmitButtonClick={handleSubmitButtonClick}
               dateRef={dateRef}
               recurrenceRef={recurrenceRef}
               setValue={setValue}
@@ -1526,7 +1446,6 @@ const BottomSheetContent = forwardRef(
                 reset={reset}
                 watch={watch}
                 control={control}
-                menuRef={menuRef}
                 handleSubmitButtonClick={handleSubmitButtonClick}
                 nameRef={nameRef}
                 setValue={setValue}
@@ -1535,7 +1454,6 @@ const BottomSheetContent = forwardRef(
                 <TaskDescriptionInput
                   nameRef={nameRef}
                   control={control}
-                  watch={watch}
                   ref={descriptionRef}
                 />
               )}
@@ -1556,12 +1474,7 @@ const BottomSheetContent = forwardRef(
               defaultValues={defaultValues}
               colors={colors}
             />
-            <LocationButton
-              watch={watch}
-              setValue={setValue}
-              defaultValues={defaultValues}
-              colors={colors}
-            />
+            <LocationButton watch={watch} setValue={setValue} colors={colors} />
             <DateButton
               watch={watch}
               setValue={setValue}

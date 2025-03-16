@@ -10,7 +10,7 @@ import Animated, {
 } from "react-native-reanimated";
 import { useImageColors } from "./useImageColors";
 
-export const SpotifyPreview = ({ data, navigation, mutate }) => {
+export const SpotifyPreview = ({ data, mutate }) => {
   const theme = useColorTheme();
   const progress = useSharedValue(data.progress_ms / data.item.duration_ms);
   const colors = useImageColors(data.item.album.images[0].url);

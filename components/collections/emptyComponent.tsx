@@ -120,14 +120,12 @@ const messages = [
 
 export const ColumnEmptyComponent = function ColumnEmptyComponent({
   row,
-  dense,
   list,
   showInspireMe,
   labelId,
   finished,
 }: {
   row?: boolean;
-  dense?: boolean;
   list?: boolean;
   showInspireMe?: boolean;
   labelId?: string;

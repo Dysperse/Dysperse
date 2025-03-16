@@ -19,7 +19,7 @@ import Accordion from "react-native-collapsible/Accordion";
 import Toast from "react-native-toast-message";
 import useSWR from "swr";
 
-function AiIntegration({ sections, data, section, mutate }) {
+function AiIntegration({ data, section, mutate }) {
   const apiKeyRef = useRef(null);
   const theme = useColorTheme();
   const { sessionToken } = useUser();

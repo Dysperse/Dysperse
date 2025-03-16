@@ -47,7 +47,6 @@ export const videoChatPlatforms = [
 ];
 
 export const TaskImportantChip = ({
-  large,
   published,
 }: {
   large?: boolean;
@@ -68,7 +67,6 @@ export const TaskImportantChip = ({
 };
 export const TaskLabelChip = ({
   task,
-  published = false,
   large = false,
 }: {
   task: any;

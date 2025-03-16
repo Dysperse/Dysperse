@@ -69,9 +69,6 @@ export function Column(props: ColumnProps) {
   const hasNoCompleteTasks =
     data.filter((e) => e.completionInstances.length === 0).length === 0;
 
-  const hasNoIncompleteTasks =
-    data.filter((e) => e.completionInstances.length > 0).length === 0;
-
   const centerContent = data.length === 0;
 
   useDidUpdate(() => {
@@ -113,7 +110,6 @@ export function Column(props: ColumnProps) {
     >
       {!(!breakpoints.md && !props.grid) && (
         <KanbanHeader
-          showInspireMe={data.length === 0}
           grid={props.grid}
           label={{
             ...props.label,
@@ -275,3 +271,4 @@ export function Column(props: ColumnProps) {
     </View>
   );
 }
+
