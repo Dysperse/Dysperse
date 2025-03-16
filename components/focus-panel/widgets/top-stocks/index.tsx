@@ -186,8 +186,7 @@ export default function Widget({ navigation, widget }) {
             width: "100%",
           }}
         >
-          {data &&
-            data.map((stock) => (
+          {data?.map((stock) => (
               <Animated.View
                 key={stock.ticker}
                 entering={FadeInRight}

@@ -864,7 +864,7 @@ export function TaskDrawerContent({
                     icon={
                       task?.collection?.emoji ? (
                         <Emoji emoji={task?.collection?.emoji} size={20} />
-                      ) : task.label && task.label.name ? (
+                      ) : task.label?.name ? (
                         <Emoji emoji={task.label.emoji} size={20} />
                       ) : (
                         <Icon>new_label</Icon>
