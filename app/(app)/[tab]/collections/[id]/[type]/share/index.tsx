@@ -523,9 +523,6 @@ function Share() {
 }
 
 export default function Page() {
-  const handleClose = () =>
-    router.canGoBack() ? router.back() : router.navigate("/");
-
   const { id }: any = useLocalSearchParams();
   const { data, mutate, error } = useSWR(
     id
