@@ -2,6 +2,7 @@ import { RenderWidget } from "@/app/(app)/home";
 import { useFocusPanelContext } from "@/components/focus-panel/context";
 import { useResponsiveBreakpoints } from "@/helpers/useResponsiveBreakpoints";
 import { Button } from "@/ui/Button";
+import IconButton from "@/ui/IconButton";
 import Modal from "@/ui/Modal";
 import Text from "@/ui/Text";
 import { useColorTheme } from "@/ui/color/theme-provider";
@@ -91,16 +92,29 @@ const FocusPanel = memo(() => {
               gap: 20,
             }}
           >
-            <Text
+            <View
               style={{
-                fontFamily: "serifText700",
-                fontSize: 25,
-                marginBottom: -10,
-                color: theme[11],
+                flexDirection: "row",
+                justifyContent: "space-between",
+                alignItems: "center",
               }}
             >
-              Pinned
-            </Text>
+              <Text
+                style={{
+                  fontFamily: "serifText700",
+                  fontSize: 25,
+                  marginBottom: -10,
+                  color: theme[11],
+                }}
+              >
+                Pinned
+              </Text>
+              <IconButton
+                icon="close"
+                variant="filled"
+                onPress={() => sheetRef.current?.close?.()}
+              />
+            </View>
             {pinnedWidgets.map((w) => (
               <RenderWidget widget={w} key={w.id} />
             ))}
