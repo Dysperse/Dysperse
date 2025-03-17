@@ -62,12 +62,12 @@ export default function NativeMapView({ tasks, onLocationSelect }) {
             background: ${addHslAlpha(theme[9], 0.1)}!important;
             color: ${theme[11]}!important;
             border-color: ${addHslAlpha(theme[9], 0.1)}!important;
-            backdrop-filter: blur(10px)!important;
           }
             .leaflet-control-zoom {
               border-radius: 100px!important;
               box-shadow: none !important;
               border: 0!important;
+            backdrop-filter: blur(10px)!important;
               overflow: hidden !important;
             }
           .leaflet-marker-icon.marker-cluster {
