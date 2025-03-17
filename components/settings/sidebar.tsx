@@ -292,12 +292,21 @@ export function SettingsSidebar({ forceShow }: { forceShow?: boolean }) {
         }}
       >
         {!breakpoints.md && (
-          <Text style={[settingStyles.title, { marginTop: -30 }]}>
+          <Text
+            style={[
+              settingStyles.title,
+              {
+                marginTop: -30,
+                fontSize: 35,
+                fontFamily: "serifText700",
+              },
+            ]}
+          >
             Settings
           </Text>
         )}
         <TextField
-          variant="filled"
+          variant="filled+outlined"
           style={{
             paddingVertical: breakpoints.md ? 10 : 15,
             paddingHorizontal: breakpoints.md ? 15 : 20,
@@ -315,7 +324,7 @@ export function SettingsSidebar({ forceShow }: { forceShow?: boolean }) {
             }
           }}
           value={search}
-          placeholder="Search…"
+          placeholder="Search..."
         />
       </View>
       {settingsOptions.length === 0 && (

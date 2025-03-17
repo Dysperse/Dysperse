@@ -266,6 +266,21 @@ export default function Layout() {
                         d !== "settings/index" &&
                         !d.includes("/integrations/[name]"),
                       headerTitle: d !== "settings/index" && "Settings",
+                      header: () =>
+                        breakpoints.md ? null : (
+                          <MenuButton
+                            back
+                            gradient
+                            gradientColors={
+                              d.includes("scan")
+                                ? ["rgba(0,0,0,0.5)", "transparent"]
+                                : undefined
+                            }
+                            iconColor={d.includes("scan") ? "#fff" : null}
+                            left
+                            icon="west"
+                          />
+                        ),
                       animationEnabled: true,
                       detachPreviousScreen: true,
                       ...(breakpoints.md

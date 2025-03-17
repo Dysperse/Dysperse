@@ -119,13 +119,17 @@ export const MenuButton = ({
   back,
   icon,
   addInsets,
+  gradientColors,
+  iconColor,
   left = false,
 }: {
   gradient?: boolean;
   back?: boolean;
   icon?: string;
   addInsets?: boolean;
+  gradientColors?: string[];
   left?: boolean;
+  iconColor?: string;
 }) => {
   const theme = useColorTheme();
   const { sidebarRef } = useSidebarContext();
@@ -136,7 +140,7 @@ export const MenuButton = ({
   const Wrapper = gradient
     ? ({ children }) => (
         <LinearGradient
-          colors={[theme[1], addHslAlpha(theme[1], 0)]}
+          colors={gradientColors || [theme[1], addHslAlpha(theme[1], 0)]}
           style={{
             position: "absolute",
             top: 0,
@@ -167,6 +171,7 @@ export const MenuButton = ({
             addInsets && { marginTop: insets.top },
           ]}
           icon={icon || (back ? "close" : <MenuIcon />)}
+          iconStyle={iconColor ? { color: iconColor } : undefined}
           size={45}
           variant={back && !left ? "filled" : undefined}
           pressableStyle={{ pointerEvents: "auto" }}

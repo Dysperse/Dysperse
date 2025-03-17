@@ -367,7 +367,7 @@ export default function Page() {
   return (
     <>
       <CollectionContext.Provider value={contextValue}>
-        <SystemBars style="dark" />
+        <SystemBars style="light" />
         {data && (
           <SearchList
             handleClose={handleClose}

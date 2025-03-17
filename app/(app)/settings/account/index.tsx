@@ -539,7 +539,7 @@ export default function Page() {
 
   return (
     <SettingsScrollView>
-      <Text style={settingStyles.title}>Account</Text>
+      <Text style={[settingStyles.title]}>Account</Text>
       {data ? (
         <>
           <Text style={settingStyles.heading} weight={700}>

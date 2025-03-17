@@ -3,7 +3,7 @@ import themes from "@/components/themes.json";
 import { useUser } from "@/context/useUser";
 import { sendApiRequest } from "@/helpers/api";
 import { useResponsiveBreakpoints } from "@/helpers/useResponsiveBreakpoints";
-import { Button } from "@/ui/Button";
+import { Button, ButtonText } from "@/ui/Button";
 import Icon from "@/ui/Icon";
 import { ListItemButton } from "@/ui/ListItemButton";
 import ListItemText from "@/ui/ListItemText";
@@ -185,64 +185,72 @@ export default function Page() {
     <SettingsScrollView>
       <Text style={settingStyles.title}>Appearance</Text>
       <Text style={settingStyles.heading}>Theme</Text>
-      {[
-        { text: "Dark", icon: "dark_mode" },
-        { text: "Light", icon: "light_mode" },
-        { text: "System", icon: "computer" },
-      ]
-        .map((e) => ({
-          ...e,
-          selected: e.text.toLowerCase() === session?.user?.profile?.darkMode,
-          callback: () => {
-            try {
-              sendApiRequest(
-                sessionToken,
-                "PUT",
-                "user/profile",
-                {},
-                {
-                  body: JSON.stringify({
-                    darkMode: e.text.toLowerCase(),
-                  }),
-                }
-              );
-              mutate(
-                (oldData) => ({
-                  ...oldData,
-                  user: {
-                    ...oldData.user,
-                    profile: {
-                      ...oldData.user.profile,
+      <View style={{ flexDirection: "row", gap: 10 }}>
+        {[
+          { text: "Dark", icon: "dark_mode" },
+          { text: "Light", icon: "light_mode" },
+          { text: "System", icon: "computer" },
+        ]
+          .map((e) => ({
+            ...e,
+            selected: e.text.toLowerCase() === session?.user?.profile?.darkMode,
+            callback: () => {
+              try {
+                sendApiRequest(
+                  sessionToken,
+                  "PUT",
+                  "user/profile",
+                  {},
+                  {
+                    body: JSON.stringify({
                       darkMode: e.text.toLowerCase(),
+                    }),
+                  }
+                );
+                mutate(
+                  (oldData) => ({
+                    ...oldData,
+                    user: {
+                      ...oldData.user,
+                      profile: {
+                        ...oldData.user.profile,
+                        darkMode: e.text.toLowerCase(),
+                      },
                     },
-                  },
-                }),
-                {
+                  }),
+                  {
+                    revalidate: false,
+                  }
+                );
+              } catch (e) {
+                Toast.show({ type: "error" });
+                mutate(() => session, {
                   revalidate: false,
-                }
-              );
-            } catch (e) {
-              Toast.show({ type: "error" });
-              mutate(() => session, {
-                revalidate: false,
-              });
-            }
-          },
-        }))
-        .map((e) => (
-          <ListItemButton
-            key={e.text}
-            onPress={e.callback}
-            variant="outlined"
-            style={{ marginBottom: 7 }}
-          >
-            <Icon>{e.icon}</Icon>
-            <ListItemText primary={e.text} />
-            <Icon filled={e.selected}>
-              {e.selected ? "check_circle" : "radio_button_unchecked"}
-            </Icon>
-          </ListItemButton>
-        ))}
+                });
+              }
+            },
+          }))
+          .map((e) => (
+            <Button
+              key={e.text}
+              onPress={e.callback}
+              variant="filled"
+              containerStyle={{ flex: 1, borderRadius: 30 }}
+              height={140}
+              style={{
+                paddingVertical: 20,
+                flexDirection: "column",
+                alignItems: "center",
+              }}
+            >
+              <Icon size={35}>{e.icon}</Icon>
+              <ButtonText>{e.text}</ButtonText>
+              <Icon filled={e.selected}>
+                {e.selected ? "check_circle" : "radio_button_unchecked"}
+              </Icon>
+            </Button>
+          ))}
+      </View>
 
       <Text style={settingStyles.heading}>Color</Text>
       <View

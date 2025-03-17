@@ -1,6 +1,7 @@
 import { settingStyles } from "@/components/settings/settingsStyles";
 import { useUser } from "@/context/useUser";
 import { sendApiRequest } from "@/helpers/api";
+import { useResponsiveBreakpoints } from "@/helpers/useResponsiveBreakpoints";
 import Alert from "@/ui/Alert";
 import { Button } from "@/ui/Button";
 import ConfirmationModal from "@/ui/ConfirmationModal";
@@ -13,7 +14,7 @@ import { setStringAsync } from "expo-clipboard";
 import { Image } from "expo-image";
 import { router } from "expo-router";
 import { Fragment } from "react";
-import { Linking, View } from "react-native";
+import { Linking, Platform, View } from "react-native";
 import Toast from "react-native-toast-message";
 import useSWR from "swr";
 
@@ -54,6 +55,7 @@ function SpotifyIntegration({ children }) {
 
 const IntegrationItem = ({ item, data }) => {
   const theme = useColorTheme();
+  const breakpoints = useResponsiveBreakpoints();
   const { session } = useUser();
 
   const Container = item.slug === "spotify" ? SpotifyIntegration : Fragment;
@@ -70,7 +72,7 @@ const IntegrationItem = ({ item, data }) => {
     <View
       key={item.slug}
       style={{
-        width: "50%",
+        width: breakpoints.md ? "50%" : "100%",
         padding: 10,
       }}
     >
@@ -156,7 +158,7 @@ export default function Page() {
 
   const { data: integrationsList } = useSWR(
     `${
-      process.env.NODE_ENV === "development"
+      process.env.NODE_ENV === "development" && Platform.OS === "web"
         ? "/integrations.json"
         : "https://app.dysperse.com/integrations.json"
     }`,

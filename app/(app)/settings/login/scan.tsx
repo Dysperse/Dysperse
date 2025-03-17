@@ -66,7 +66,7 @@ export default function Page() {
             }),
           }
         );
-        
+
         if (res.error || !res.success) {
           throw new Error(res.error);
         }
@@ -85,7 +85,7 @@ export default function Page() {
     <View
       style={{
         flex: 1,
-        borderRadius: 20,
+        borderRadius: 10,
         overflow: "hidden",
       }}
     >
