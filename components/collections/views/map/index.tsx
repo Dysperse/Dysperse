@@ -127,7 +127,6 @@ export function LocationPickerModal({
       ).then((res) => res.json());
 
       setData(res);
-      
     } catch (e) {
       console.error(e);
       setError(e);
@@ -466,7 +465,7 @@ export default function MapView() {
                   ? 0.3
                   : breakpoints.md
                   ? 2
-                  : 5)
+                  : 4.5)
             }
           />
         )}
@@ -479,4 +478,3 @@ export default function MapView() {
     </View>
   );
 }
-
