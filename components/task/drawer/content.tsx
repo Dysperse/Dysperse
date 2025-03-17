@@ -645,7 +645,7 @@ export function TaskDrawerContent({
   const SafeScrollView = forceClose ? BottomSheetScrollView : ScrollView;
 
   const handlePriorityChange = useCallback(() => {
-    if (Platform.OS === "web") impactAsync(ImpactFeedbackStyle.Light);
+    if (Platform.OS !== "web") impactAsync(ImpactFeedbackStyle.Light);
     rotate.value = withSpring(!task.pinned ? -35 : 0, {
       mass: 1,
       damping: 10,
@@ -911,4 +911,3 @@ export function TaskDrawerContent({
     </>
   );
 }
-

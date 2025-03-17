@@ -1,24 +1,18 @@
 import PWAInstallerPrompt from "@/components/layout/PWAInstaller";
 import { settingStyles } from "@/components/settings/settingsStyles";
+import { useResponsiveBreakpoints } from "@/helpers/useResponsiveBreakpoints";
 import { Avatar } from "@/ui/Avatar";
+import { Button } from "@/ui/Button";
 import { addHslAlpha } from "@/ui/color";
 import { useColorTheme } from "@/ui/color/theme-provider";
 import Icon from "@/ui/Icon";
 import SettingsScrollView from "@/ui/SettingsScrollView";
 import Text, { getFontName } from "@/ui/Text";
 import { LinearGradient } from "expo-linear-gradient";
-import {
-  Linking,
-  Platform,
-  Pressable,
-  StyleSheet,
-  TextStyle,
-  View,
-} from "react-native";
+import { Linking, Platform, StyleSheet, TextStyle, View } from "react-native";
 
 const styles = StyleSheet.create({
   card: {
-    borderWidth: 1,
     marginTop: 15,
     marginBottom: 5,
     borderRadius: 20,
@@ -31,10 +25,11 @@ const styles = StyleSheet.create({
 });
 
 export default function Page() {
+  const breakpoints = useResponsiveBreakpoints();
   const theme = useColorTheme();
 
   const cardHeading: TextStyle = {
-    fontSize: 25,
+    fontSize: breakpoints.md ? 25 : 18,
     fontFamily: getFontName("jost", 700),
     color: theme[11],
   };
@@ -47,26 +42,16 @@ export default function Page() {
 
   return (
     <SettingsScrollView>
-      <Text style={settingStyles.title}>Download</Text>
-      <Text>
-        Stay organized. Anywhere. Download #dysperse on all your favorite
-        platforms for a supercharged experience.
+      <Text style={settingStyles.title}>Get the apps</Text>
+      <Text style={{ opacity: 0.6, marginBottom: 20 }}>
+        Download Dysperse on all of your devices!
       </Text>
 
       <View>
         {Platform.OS === "web" && (
           <PWAInstallerPrompt
             render={({ onClick }) => (
-              <Pressable
-                onPress={onClick}
-                style={({ pressed, hovered }) => [
-                  styles.card,
-                  {
-                    borderColor: theme[pressed ? 7 : hovered ? 6 : 5],
-                    backgroundColor: theme[pressed ? 5 : hovered ? 4 : 3],
-                  },
-                ]}
-              >
+              <Button variant="filled" onPress={onClick}>
                 <Avatar
                   icon="install_desktop"
                   style={{ backgroundColor: addHslAlpha(theme[11], 0.1) }}
@@ -80,7 +65,7 @@ export default function Page() {
                   </Text>
                 </View>
                 <Icon>north_east</Icon>
-              </Pressable>
+              </Button>
             )}
           />
         )}
@@ -104,46 +89,69 @@ export default function Page() {
             href: "https://app.dysperse.com",
             description: "Works on all modern browsers on any device",
           },
-          {
-            icon: "globe",
-            name: "Chrome Extension",
-            new: true,
-            href: "https://click.dysperse.com/chrome-extension",
-            description:
-              "Quickly add tasks and save any web page to Dysperse via Chrome & other browsers!",
-          },
-          {
-            icon: "globe",
-            name: "Edge Extension",
-            href: "https://app.dysperse.com",
-            new: true,
-            description:
-              "Quickly add tasks and save any web page to Dysperse via Microsoft Edge",
-          },
           { icon: "ios", name: "iOS", comingSoon: true },
           { icon: "android", name: "Android", comingSoon: true },
-        ].map(
-          (app) =>
-            app && (
-              <Pressable
-                onPress={() => {
-                  if (app.name === "PWA") {
-                    window.open(app.href, "_blank");
-                    return;
-                  }
-                  Linking.openURL(app.href);
+          {
+            text: "Browser extensions",
+            description:
+              "Quickly create tasks and save web\npages to your collections",
+          },
+          {
+            name: "Chrome",
+            href: "https://click.dysperse.com/chrome-extension",
+          },
+          {
+            name: "Edge",
+            href: "https://microsoftedge.microsoft.com/addons/detail/dysperse/jholcbknkbnmaceagionfohdjhkpnpjd",
+          },
+          {
+            name: "Firefox",
+            href: "https://addons.mozilla.org/en-US/firefox/addon/dysperse",
+          },
+        ].map((app) =>
+          app && app.text ? (
+            <View
+              style={{
+                marginTop: 40,
+                marginBottom: 20,
+                paddingHorizontal: 10,
+              }}
+            >
+              <Text
+                style={{
+                  fontSize: 20,
+                  fontFamily: "serifText700",
+                  marginBottom: 5,
+                  color: theme[11],
                 }}
-                style={({ pressed, hovered }) => [
-                  styles.card,
-                  {
-                    borderColor: theme[pressed ? 7 : hovered ? 6 : 5],
-                    backgroundColor: theme[pressed ? 5 : hovered ? 4 : 3],
-                    opacity: app.comingSoon ? 0.7 : 1,
-                  },
-                ]}
-                key={app.name}
-                disabled={app.comingSoon}
               >
+                {app.text}
+              </Text>
+              <Text style={{ color: theme[11], opacity: 0.6, fontSize: 18 }}>
+                {app.description}
+              </Text>
+            </View>
+          ) : (
+            <Button
+              onPress={() => {
+                if (app.name === "PWA") {
+                  window.open(app.href, "_blank");
+                  return;
+                }
+                Linking.openURL(app.href);
+              }}
+              key={app.name}
+              variant="filled"
+              height={"auto" as any}
+              style={{ paddingHorizontal: 20, gap: 15, paddingVertical: 20 }}
+              containerStyle={{
+                marginTop: 10,
+                borderRadius: 30,
+                opacity: app.comingSoon ? 0.6 : 1,
+              }}
+              disabled={app.comingSoon}
+            >
+              {app.icon && (
                 <Avatar
                   disabled
                   icon={app.icon}
@@ -151,51 +159,54 @@ export default function Page() {
                   iconProps={{ filled: true }}
                   size={40}
                 />
-                <View style={{ flex: 1 }}>
-                  <View
-                    style={{
-                      flexDirection: "row",
-                      alignItems: "center",
-                      gap: 10,
-                    }}
-                  >
-                    <Text style={cardHeading}>{app.name}</Text>
-                    {app.experimental && (
-                      <LinearGradient
-                        colors={["#ff0f7b", "#f89b29"]}
-                        style={{
-                          paddingHorizontal: 10,
-                          borderRadius: 99,
-                          paddingVertical: 3,
-                        }}
-                      >
-                        <Text style={{ fontSize: 12, color: "#fff" }}>
-                          Experimental
-                        </Text>
-                      </LinearGradient>
-                    )}
-                    {app.new && (
-                      <LinearGradient
-                        colors={["#fc9305", "#f24389", "#b01041"]}
-                        start={{ x: 0, y: 0 }}
-                        end={{ x: 1, y: 0 }}
-                        style={{
-                          paddingHorizontal: 10,
-                          borderRadius: 99,
-                          paddingVertical: 3,
-                        }}
-                      >
-                        <Text style={{ fontSize: 12, color: "#fff" }}>NEW</Text>
-                      </LinearGradient>
-                    )}
-                  </View>
+              )}
+              <View style={{ flex: 1 }}>
+                <View
+                  style={{
+                    flexDirection: "row",
+                    alignItems: "center",
+                    gap: 10,
+                  }}
+                >
+                  <Text style={cardHeading}>{app.name}</Text>
+                  {app.experimental && (
+                    <LinearGradient
+                      colors={["#ff0f7b", "#f89b29"]}
+                      style={{
+                        paddingHorizontal: 10,
+                        borderRadius: 99,
+                        paddingVertical: 3,
+                      }}
+                    >
+                      <Text style={{ fontSize: 12, color: "#fff" }}>
+                        Experimental
+                      </Text>
+                    </LinearGradient>
+                  )}
+                  {app.new && (
+                    <LinearGradient
+                      colors={["#fc9305", "#f24389", "#b01041"]}
+                      start={{ x: 0, y: 0 }}
+                      end={{ x: 1, y: 0 }}
+                      style={{
+                        paddingHorizontal: 10,
+                        borderRadius: 99,
+                        paddingVertical: 3,
+                      }}
+                    >
+                      <Text style={{ fontSize: 12, color: "#fff" }}>NEW</Text>
+                    </LinearGradient>
+                  )}
+                </View>
+                {(app.description || app.comingSoon) && (
                   <Text style={cardDescription}>
                     {app.comingSoon ? "Coming soon" : app.description}
                   </Text>
-                </View>
-                <Icon>north_east</Icon>
-              </Pressable>
-            )
+                )}
+              </View>
+              <Icon>north_east</Icon>
+            </Button>
+          )
         )}
       </View>
     </SettingsScrollView>

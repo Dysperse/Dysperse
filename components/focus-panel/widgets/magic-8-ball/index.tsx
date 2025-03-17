@@ -1,6 +1,7 @@
 import { Button, ButtonText } from "@/ui/Button";
 import { useColorTheme } from "@/ui/color/theme-provider";
 import Icon from "@/ui/Icon";
+import Text from "@/ui/Text";
 import { useState } from "react";
 import { Pressable, View } from "react-native";
 import Animated, {
@@ -52,11 +53,16 @@ export default function Magic8Ball() {
 
   return (
     <View>
+      <Text variant="eyebrow" style={{ marginBottom: 7 }}>
+        Magic 8 Ball
+      </Text>
       <Pressable
         style={{
           padding: 16,
           alignItems: "center",
-          backgroundColor: theme[3],
+          backgroundColor: theme[2],
+          borderWidth: 1,
+          borderColor: theme[5],
           borderRadius: 20,
         }}
       >
@@ -153,4 +159,3 @@ export default function Magic8Ball() {
     </View>
   );
 }
-

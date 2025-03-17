@@ -17,6 +17,7 @@ export default function Quotes() {
     null,
     {
       refreshInterval: 1000 * 60 * 60,
+      revalidateOnFocus: false,
     }
   );
 
@@ -87,4 +88,3 @@ export default function Quotes() {
     </View>
   );
 }
-

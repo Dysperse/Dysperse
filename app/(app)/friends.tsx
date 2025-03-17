@@ -18,9 +18,12 @@ import ListItemText from "@/ui/ListItemText";
 import Spinner from "@/ui/Spinner";
 import Text from "@/ui/Text";
 import TextField from "@/ui/TextArea";
+import { addHslAlpha } from "@/ui/color";
 import { useColorTheme } from "@/ui/color/theme-provider";
+import capitalizeFirstLetter from "@/utils/capitalizeFirstLetter";
 import { FlashList } from "@shopify/flash-list";
 import dayjs from "dayjs";
+import { impactAsync, ImpactFeedbackStyle } from "expo-haptics";
 import { router } from "expo-router";
 import { useCallback, useEffect, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
@@ -93,17 +96,14 @@ const Suggestions = ({ watch, setValue }) => {
             alignItems: "center",
             justifyContent: "center",
             flex: 1,
+            flexDirection: "row",
+            gap: 10,
           }}
         >
-          <Emoji
-            emoji={debouncedQuery.length > 2 ? "1F614" : "1f50d"}
-            size={50}
-            style={{ marginBottom: 10 }}
-          />
-          <Text
-            style={{ textAlign: "center", opacity: 0.4, color: theme[11] }}
-            weight={900}
-          >
+          <Icon bold>
+            {debouncedQuery.length > 2 ? "heart_broken" : "search"}
+          </Icon>
+          <Text style={{ textAlign: "center", color: theme[11] }} weight={600}>
             {debouncedQuery.length > 2
               ? "No users found"
               : "Start typing to search for users"}
@@ -111,6 +111,7 @@ const Suggestions = ({ watch, setValue }) => {
         </View>
       ) : (
         <FlashList
+          keyboardShouldPersistTaps={"always"}
           data={data}
           estimatedItemSize={100}
           centerContent={!data || data?.length === 0}
@@ -195,17 +196,17 @@ function AddFriend({ friends, mutate, setView }) {
   return (
     <>
       <KeyboardAvoidingView
-        behavior="height"
+        behavior="padding"
         style={{
           gap: 20,
           flex: 1,
           padding: 20,
-          paddingBottom: insets.bottom + 10,
         }}
       >
         <IconButton
           icon="arrow_back_ios_new"
           size={45}
+          variant="filled"
           onPress={() => setView("all")}
         />
         {breakpoints.md && (
@@ -236,6 +237,7 @@ function AddFriend({ friends, mutate, setView }) {
                 placeholder="Find by email or username…"
                 style={{
                   flex: 1,
+                  textAlign: "center",
                   padding: 20,
                   height: 55,
                   borderRadius: 99,
@@ -253,6 +255,7 @@ function AddFriend({ friends, mutate, setView }) {
           height={70}
           variant="filled"
           onPress={handleSubmit(onSubmit)}
+          containerStyle={{ marginBottom: insets.bottom + 60 }}
         >
           <ButtonText weight={900} style={{ fontSize: 20 }}>
             Send request
@@ -405,12 +408,12 @@ export default function Page() {
 
   const Header = () => (
     <>
-      <SystemBars style="light" />
       <View
         style={{
-          paddingBottom: 40,
+          paddingBottom: 20,
           paddingTop: 10,
           alignItems: "center",
+          flexDirection: "row",
           justifyContent: "space-between",
           gap: 5,
         }}
@@ -419,39 +422,51 @@ export default function Page() {
           Friends
         </Text>
         <Button
-          containerStyle={{ width: 100 }}
           variant="filled"
+          large
+          bold
+          icon="person_add"
+          text="Add"
           onPress={() => setView("search")}
-        >
-          <Icon>person_add</Icon>
-          <ButtonText>Add</ButtonText>
-        </Button>
+        />
       </View>
-      <View style={{ flexDirection: "row", justifyContent: "center", gap: 5 }}>
-        <Button
-          variant={view === "all" ? "filled" : undefined}
-          onPress={() => setView("all")}
-          containerStyle={{ minWidth: 0 }}
-          style={{ paddingHorizontal: 15 }}
-        >
-          <ButtonText>All</ButtonText>
-        </Button>
-        <Button
-          variant={view === "requests" ? "filled" : undefined}
-          onPress={() => setView("requests")}
-          containerStyle={{ minWidth: 0 }}
-          style={{ paddingHorizontal: 15 }}
-        >
-          <ButtonText>Requests</ButtonText>
-        </Button>
-        <Button
-          variant={view === "pending" ? "filled" : undefined}
-          onPress={() => setView("pending")}
-          containerStyle={{ minWidth: 0 }}
-          style={{ paddingHorizontal: 15 }}
-        >
-          <ButtonText>Pending</ButtonText>
-        </Button>
+      <View
+        style={{
+          flexDirection: "row",
+          justifyContent: "center",
+          backgroundColor: theme[3],
+          borderRadius: 20,
+          marginBottom: 10,
+        }}
+      >
+        {["all", "requests", "pending"].map((button) => (
+          <Button
+            key={button}
+            large
+            variant={view === button ? "filled" : undefined}
+            backgroundColors={
+              view === button
+                ? {
+                    default: addHslAlpha(theme[9], 0.1),
+                    hovered: addHslAlpha(theme[9], 0.1),
+                    pressed: addHslAlpha(theme[9], 0.2),
+                  }
+                : {
+                    default: addHslAlpha(theme[9], 0),
+                    hovered: addHslAlpha(theme[9], 0.1),
+                    pressed: addHslAlpha(theme[9], 0.2),
+                  }
+            }
+            bold={view === button}
+            onPress={() => {
+              setView(button as any);
+              impactAsync(ImpactFeedbackStyle.Light);
+            }}
+            containerStyle={{ minWidth: 0, flex: 1, borderRadius: 20 }}
+            style={{ paddingHorizontal: 15 }}
+            text={capitalizeFirstLetter(button)}
+          />
+        ))}
       </View>
     </>
   );
@@ -469,6 +484,7 @@ export default function Page() {
           marginHorizontal: "auto",
         }}
       >
+        <SystemBars style="light" />
         {view === "search" ? (
           <AddFriend setView={setView} friends={data} mutate={mutate} />
         ) : (
@@ -584,4 +600,3 @@ export default function Page() {
     </View>
   );
 }
-

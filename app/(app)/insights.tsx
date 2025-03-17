@@ -153,42 +153,45 @@ function Insights({ year }) {
         >
           {Object.entries(data.insights?.viewCount || {})
             .sort((a, b) => b[1] - a[1])
-            .map(([key, value]) => (
-              <View
-                style={{
-                  height: 200,
-                  flex: 1,
-                  justifyContent: "flex-end",
-                }}
-                key={key}
-              >
-                <View
-                  style={{
-                    flexDirection: "column",
-                    backgroundColor: addHslAlpha(theme[6], 0.7),
-                    borderRadius: 15,
-                    height: `${Math.max(
-                      1,
-                      (value /
-                        Math.max(
-                          ...Object.values(data.insights?.viewCount || {})
-                        )) *
-                        100 -
-                        15
-                    )}%`,
-                    justifyContent: "flex-end",
-                    alignItems: "center",
-                    maxWidth: 35,
-                  }}
-                />
-                <Icon
-                  bold
-                  style={{ color: theme[11], marginLeft: 7, marginTop: 5 }}
-                >
-                  {COLLECTION_VIEWS[key]?.icon}
-                </Icon>
-              </View>
-            ))}
+            .map(
+              ([key, value]) =>
+                COLLECTION_VIEWS[key] && (
+                  <View
+                    style={{
+                      height: 200,
+                      flex: 1,
+                      justifyContent: "flex-end",
+                    }}
+                    key={key}
+                  >
+                    <View
+                      style={{
+                        flexDirection: "column",
+                        backgroundColor: addHslAlpha(theme[6], 0.7),
+                        borderRadius: 15,
+                        height: `${Math.max(
+                          1,
+                          (value /
+                            Math.max(
+                              ...Object.values(data.insights?.viewCount || {})
+                            )) *
+                            100 -
+                            15
+                        )}%`,
+                        justifyContent: "flex-end",
+                        alignItems: "center",
+                        maxWidth: 35,
+                      }}
+                    />
+                    <Icon
+                      bold
+                      style={{ color: theme[11], marginLeft: 7, marginTop: 5 }}
+                    >
+                      {COLLECTION_VIEWS[key]?.icon}
+                    </Icon>
+                  </View>
+                )
+            )}
         </View>
       </View>
 
@@ -368,4 +371,3 @@ export default function Page() {
     </View>
   );
 }
-

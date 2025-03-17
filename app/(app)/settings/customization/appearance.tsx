@@ -5,15 +5,13 @@ import { sendApiRequest } from "@/helpers/api";
 import { useResponsiveBreakpoints } from "@/helpers/useResponsiveBreakpoints";
 import { Button, ButtonText } from "@/ui/Button";
 import Icon from "@/ui/Icon";
-import { ListItemButton } from "@/ui/ListItemButton";
-import ListItemText from "@/ui/ListItemText";
 import SettingsScrollView from "@/ui/SettingsScrollView";
 import Text from "@/ui/Text";
 import { ColorTheme, useColor, useDarkMode } from "@/ui/color";
 import { ColorThemeProvider, useColorTheme } from "@/ui/color/theme-provider";
 import { setAlternateAppIcon } from "expo-alternate-app-icons";
 import { Image } from "expo-image";
-import { Platform, Pressable, View } from "react-native";
+import { Platform, TouchableOpacity, View } from "react-native";
 import Toast from "react-native-toast-message";
 
 function ThemedSlide({
@@ -133,25 +131,34 @@ function AppIconSection() {
   return (
     <>
       <Text style={settingStyles.heading}>App icon</Text>
-      <View style={{ flexDirection: "row", flexWrap: "wrap", gap: 10 }}>
+      <View
+        style={{ flexDirection: "row", flexWrap: "wrap", marginHorizontal: -5 }}
+      >
         {[
           ...Object.keys(themes).map((t) => `${t}Light`),
           ...Object.keys(themes).map((t) => `${t}Dark`),
           "testflight",
         ].map((theme) => {
           return (
-            <Pressable key={theme} onPress={() => setAlternateAppIcon(theme)}>
+            <TouchableOpacity
+              key={theme}
+              onPress={() => setAlternateAppIcon(theme)}
+              style={{
+                padding: 5,
+                width: `${100 / 7}%`,
+              }}
+            >
               <Image
-                style={{ width: 50, height: 50, borderRadius: 10 }}
+                style={{ width: "100%", aspectRatio: 1, borderRadius: 10 }}
                 source={{
                   uri: `https://assets.dysperse.com/icons/${theme}.png`,
                 }}
               />
-            </Pressable>
+            </TouchableOpacity>
           );
         })}
       </View>
-      <ListItemButton
+      {/* <ListItemButton
         onPress={() => {
           setAlternateAppIcon(null);
           mutate(
@@ -167,12 +174,11 @@ function AppIconSection() {
             }
           );
         }}
-        variant="outlined"
-        style={{ marginTop: 17 }}
+        variant="filled"
+        style={{ marginTop: 10 }}
       >
-        <ListItemText primary="Reset" />
-        <Icon filled={!session?.user?.profile?.theme}>check_circle</Icon>
-      </ListItemButton>
+        <ListItemText primary="Reset icon" />
+      </ListItemButton> */}
     </>
   );
 }
@@ -268,4 +274,3 @@ export default function Page() {
     </SettingsScrollView>
   );
 }
-

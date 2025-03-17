@@ -20,6 +20,7 @@ import ReorderableList, {
   ReorderableListReorderEvent,
   useReorderableDrag,
 } from "react-native-reorderable-list";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 import useSWR from "swr";
 
 function EditKanbanOrder() {
@@ -62,10 +63,18 @@ function EditKanbanOrder() {
     );
   };
 
+  const insets = useSafeAreaInsets();
+
   return data.kanbanOrder ? (
     <ScrollView
       horizontal
-      contentContainerStyle={{ gap: 20, padding: 20, paddingTop: 0 }}
+      contentContainerStyle={{
+        gap: 20,
+        padding: 20,
+        paddingTop: 0,
+        paddingBottom: 0,
+        marginBottom: insets.bottom,
+      }}
     >
       {updatedKanbanOrder.map((label, index) => {
         const t = data.labels.find((i) => i.id === label);
@@ -123,7 +132,7 @@ const ReorderColumn = ({
         justifyContent: "space-between",
         gap: 30,
         padding: 20,
-        marginBottom: 20,
+        marginBottom: 10,
         flexDirection: "row",
       }}
       key={label.id}
@@ -141,30 +150,35 @@ const ReorderColumn = ({
           gap: list && breakpoints.md ? 20 : 10,
           flex: 1,
           alignItems: "center",
-          flexDirection: list && breakpoints.md ? "row" : "column",
+          flexDirection: list || breakpoints.md ? "row" : "column",
         }}
       >
-        <Emoji emoji={label.emoji} size={list && breakpoints.md ? 24 : 40} />
-        <Text
-          style={{
-            fontSize: list && breakpoints.md ? 17 : 20,
-            marginTop: list && breakpoints.md ? 0 : 5,
-          }}
-          weight={900}
-          numberOfLines={1}
-        >
-          {label.name}
-        </Text>
-        <Text
-          style={{
-            fontSize: 17,
-            opacity: 0.6,
-            marginTop: list && breakpoints.md ? 0 : -5,
-          }}
-        >
-          {Object.keys(label.entities)?.length} item
-          {Object.keys(label.entities)?.length !== 1 && "s"}
-        </Text>
+        <Emoji
+          emoji={label.emoji}
+          size={!breakpoints.md ? 30 : list && breakpoints.md ? 24 : 40}
+        />
+        <View style={{ gap: 5, alignItems: list ? undefined : "center" }}>
+          <Text
+            style={{
+              fontSize: !breakpoints.md ? 15 : list && breakpoints.md ? 17 : 20,
+              marginTop: !breakpoints.md ? 0 : list && breakpoints.md ? 0 : 5,
+            }}
+            weight={breakpoints.md ? 500 : 900}
+            numberOfLines={1}
+          >
+            {label.name}
+          </Text>
+          <Text
+            style={{
+              fontSize: !breakpoints.md ? undefined : 17,
+              opacity: 0.6,
+              marginTop: list && breakpoints.md ? 0 : -5,
+            }}
+          >
+            {Object.keys(label.entities)?.length} item
+            {Object.keys(label.entities)?.length !== 1 && "s"}
+          </Text>
+        </View>
       </View>
       {Platform.OS === "web" ||
         (!list && (
@@ -174,7 +188,7 @@ const ReorderColumn = ({
             onPress={handlePrev}
           />
         ))}
-      {Platform.OS !== "web" && <IconButton icon="drag_indicator" />}
+      {Platform.OS !== "web" && list && <IconButton icon="drag_indicator" />}
     </Pressable>
   );
 };
@@ -302,21 +316,19 @@ function Reorder() {
           ),
         }}
       >
-        <Text
-          style={{
-            textAlign: "center",
-            fontFamily: "serifText800",
-            fontSize: 40,
-            marginVertical: 40,
-            marginBottom: 0,
-          }}
-        >
-          Reorder labels
-        </Text>
-        <View style={{ paddingHorizontal: 20 }}>
+        <View style={{ paddingHorizontal: 25 }}>
           <Text
             style={{
-              textAlign: "center",
+              fontFamily: "serifText700",
+              fontSize: 30,
+              marginVertical: 40,
+              marginBottom: 5,
+            }}
+          >
+            Reorder labels
+          </Text>
+          <Text
+            style={{
               marginBottom: 15,
               opacity: 0.6,
             }}
@@ -363,4 +375,3 @@ export default function Page() {
     </CollectionContext.Provider>
   );
 }
-

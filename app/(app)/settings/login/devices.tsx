@@ -122,6 +122,7 @@ export function SessionCard({
                 backgroundColor: theme[5],
               },
             ]}
+            containerStyle={{ margin: 7, marginTop: -5 }}
             disabled={isCurrentDevice}
           >
             <ButtonText>
@@ -139,7 +140,7 @@ export function SessionCard({
                 filter: "invert(5) brightness(2) contrast(0.8)",
               }),
             width: breakpoints.md ? 300 : "100%",
-            height: breakpoints.md ? 300 : "100%",
+            height: breakpoints.md ? 300 : undefined,
             borderRadius: 25,
             maxWidth: "100%",
             aspectRatio: "1/1",
@@ -149,7 +150,7 @@ export function SessionCard({
         <View
           style={{
             width: breakpoints.md ? 300 : "100%",
-            height: breakpoints.md ? 300 : "100%",
+            height: breakpoints.md ? 300 : undefined,
             borderRadius: 25,
             backgroundColor: theme[4],
             justifyContent: "center",
@@ -196,9 +197,7 @@ export default function Page() {
             <View style={{ marginBottom: 20, paddingTop: 50 }}>
               <Text style={settingStyles.title}>Devices</Text>
               <Text style={{ opacity: 0.6 }}>
-                Forgot to log out of someone else's device? Seeing any weird
-                activity?
-                {"\n"}No worries, you can log out here.
+                See where else you're logged in here
               </Text>
               <ConfirmationModal
                 onSuccess={handleSignOutAllDevices}
@@ -207,12 +206,12 @@ export default function Page() {
                 secondary="We won't log you out of this one"
               >
                 <Button
-                  variant="outlined"
+                  variant="filled"
+                  bold
+                  text="Sign out from all devices"
                   height={60}
                   containerStyle={{ marginTop: 20 }}
-                >
-                  <ButtonText>Sign out all devices</ButtonText>
-                </Button>
+                />
               </ConfirmationModal>
             </View>
           )}
@@ -233,4 +232,3 @@ export default function Page() {
     </SettingsScrollView>
   );
 }
-
