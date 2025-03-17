@@ -369,6 +369,7 @@ function OpenTabsList() {
             )}
             contentContainerStyle={{
               paddingVertical: 10,
+              paddingTop: 5,
               paddingHorizontal: Platform.OS === "web" && 10,
               minHeight: widgets.find((i) => i.pinned) ? undefined : "100%",
             }}

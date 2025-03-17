@@ -83,7 +83,7 @@ const Cell = ({
         styles.cell,
         breakpoints.md
           ? { backgroundColor: theme[2], borderColor: theme[5] }
-          : { borderWidth: 0, borderRadius: 0 },
+          : { borderWidth: 0, borderRadius: 0, marginTop: 10 },
       ]}
     >
       <Pressable
