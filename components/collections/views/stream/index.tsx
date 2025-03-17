@@ -9,9 +9,12 @@ import Emoji from "@/ui/Emoji";
 import RefreshControl from "@/ui/RefreshControl";
 import Text from "@/ui/Text";
 import TextField from "@/ui/TextArea";
+import { addHslAlpha } from "@/ui/color";
 import { useColorTheme } from "@/ui/color/theme-provider";
 import { FlashList } from "@shopify/flash-list";
 import dayjs from "dayjs";
+import { impactAsync, ImpactFeedbackStyle } from "expo-haptics";
+import { LinearGradient } from "expo-linear-gradient";
 import { useLocalSearchParams } from "expo-router";
 import { useState, useTransition } from "react";
 import { useWindowDimensions, View } from "react-native";
@@ -38,6 +41,7 @@ export default function Stream() {
   );
 
   function selectTab(nextTab) {
+    impactAsync(ImpactFeedbackStyle.Light);
     startTransition(() => setView(nextTab));
   }
 
@@ -224,8 +228,9 @@ export default function Stream() {
                 containerStyle={{
                   marginLeft: "auto",
                 }}
-                style={{ paddingHorizontal: 20 }}
+                style={{ paddingHorizontal: breakpoints.md ? 20 : 40 }}
                 text="Create"
+                bold={!breakpoints.md}
                 iconPosition="end"
                 icon="stylus_note"
               />
@@ -249,17 +254,27 @@ export default function Stream() {
               onPress={() => selectTab(e.value)}
               text={e.label}
               style={{
-                justifyContent: "flex-start",
+                justifyContent: breakpoints.md ? "flex-start" : undefined,
                 flexDirection: breakpoints.md ? "row" : "column",
               }}
-              height={50}
+              height={breakpoints.md ? 50 : 75}
               textStyle={{ fontSize: 12 }}
-              containerStyle={{ flex: 1, borderRadius: 10 }}
+              containerStyle={{
+                flex: 1,
+                borderRadius: breakpoints.md ? 10 : 20,
+                paddingVertical: breakpoints.md ? undefined : 10,
+              }}
             />
           ))}
         </View>
       </View>
       <FadeOnRender key={view} animateUp>
+        {!breakpoints.md && (
+          <LinearGradient
+            colors={[theme[1], addHslAlpha(theme[1], 0)]}
+            style={{ width: "100%", zIndex: 99, height: 50, marginBottom: -50 }}
+          />
+        )}
         <FlashList
           key={view}
           refreshControl={
@@ -290,7 +305,7 @@ export default function Stream() {
           estimatedItemSize={113}
           contentContainerStyle={{
             padding: 15,
-            paddingTop: 40,
+            paddingTop: breakpoints.md ? 40 : 0.1,
             paddingBottom: insets.bottom + 15,
           }}
           renderItem={({ item }) => (
