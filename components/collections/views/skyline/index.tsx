@@ -44,9 +44,12 @@ function ColumnSwitcher({ setCurrentColumn, currentColumn }) {
     <View
       style={{
         flexDirection: "row",
-        paddingHorizontal: 20,
         marginBottom: -10,
+        padding: 2,
         marginTop: -5,
+        backgroundColor: theme[3],
+        borderRadius: 20,
+        marginHorizontal: 20,
       }}
     >
       {columns.map((column, index) => (
@@ -434,4 +437,3 @@ export default function Skyline() {
     </SkylineContext.Provider>
   );
 }
-

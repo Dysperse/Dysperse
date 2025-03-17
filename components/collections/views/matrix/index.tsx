@@ -21,6 +21,7 @@ import {
   View,
 } from "react-native";
 import Animated, {
+  FadeInDown,
   useAnimatedStyle,
   useSharedValue,
   withSpring,
@@ -78,7 +79,8 @@ const Cell = ({
     : tasks.filter((e) => e.completionInstances.length === 0);
 
   return (
-    <View
+    <Animated.View
+      entering={FadeInDown}
       style={[
         styles.cell,
         breakpoints.md
@@ -161,7 +163,7 @@ const Cell = ({
           paddingTop: breakpoints.md ? undefined : 5,
         }}
         keyExtractor={(i: any) => i.id}
-        ListEmptyComponent={() => <ColumnEmptyComponent row />}
+        ListEmptyComponent={() => <ColumnEmptyComponent row={breakpoints.md} />}
         renderItem={({ item }) => (
           <Entity
             showRelativeTime
@@ -186,7 +188,7 @@ const Cell = ({
           )
         }
       />
-    </View>
+    </Animated.View>
   );
 };
 
@@ -501,4 +503,3 @@ export default function Matrix() {
     </View>
   );
 }
-
