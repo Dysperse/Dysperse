@@ -461,7 +461,7 @@ export default function MapView() {
             icon="fullscreen"
             onPress={() =>
               (flex.value =
-                flex.value === (breakpoints.md ? 2 : 5)
+                flex.value === (breakpoints.md ? 2 : 4.5)
                   ? 0.3
                   : breakpoints.md
                   ? 2

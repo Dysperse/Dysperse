@@ -15,7 +15,12 @@ export default function NativeMapView({ tasks, onLocationSelect }) {
 
   return (
     <View
-      style={{ position: "relative", flex: 1, width: "100%", height: "100%" }}
+      style={{
+        position: "relative",
+        flex: 1,
+        width: "100%",
+        height: "100%",
+      }}
     >
       <LeafletView
         key={isDark ? "dark" : "light"}
@@ -25,7 +30,11 @@ export default function NativeMapView({ tasks, onLocationSelect }) {
          .leaflet-container, body {
               background: ${theme[3]};
           }
+              *::before, *::after {
+          user-select:none!important;
+              }
           * {
+          user-select:none!important;
             -webkit-tap-highlight-color: rgba(0, 0, 0, 0)!important;
             }
             .leaflet-control-attribution {margin:5px!important;border-radius:10px!important;background:${addHslAlpha(
