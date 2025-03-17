@@ -4,8 +4,8 @@ import Icon from "@/ui/Icon";
 import Text from "@/ui/Text";
 import { useColor } from "@/ui/color";
 import { useColorTheme } from "@/ui/color/theme-provider";
-import capitalizeFirstLetter from "@/utils/capitalizeFirstLetter";
 import { Image } from "expo-image";
+import { useEffect, useState } from "react";
 import { Linking, Pressable, View } from "react-native";
 import Animated, { FadeInRight, FadeOutLeft } from "react-native-reanimated";
 import useSWR from "swr";
@@ -62,11 +62,10 @@ export function StockItem({ large, stock }: { large?: boolean; stock: any }) {
       key={stock.ticker}
       style={[
         {
-          borderRadius: 20,
-          marginBottom: 10,
-          padding: 20,
-          paddingVertical: 10,
-          backgroundColor: theme[3],
+          paddingVertical: 20,
+          flex: 1,
+          paddingHorizontal: 20,
+          alignItems: "center",
         },
       ]}
       onPress={() => {
@@ -75,82 +74,28 @@ export function StockItem({ large, stock }: { large?: boolean; stock: any }) {
         );
       }}
     >
-      <View
-        style={{ flexDirection: "row", alignItems: "center", gap: 20, flex: 1 }}
-      >
-        <Image
-          source={{
-            uri: `https://companiesmarketcap.com/img/company-logos/64/${stock.ticker.replace(
-              "GOOGL",
-              "GOOG"
-            )}.webp`,
-          }}
-          style={{ width: 24, height: 24 }}
-        />
-        <View style={{ minWidth: 0, overflow: "hidden", flex: 1 }}>
-          {large && (
-            <ButtonText numberOfLines={1} weight={900}>
-              {stock.name}
-            </ButtonText>
-          )}
-          <ButtonText style={{ width: "100%", height: 20 }}>
-            {stock.ticker}
-          </ButtonText>
-        </View>
-        <ButtonText style={{ marginLeft: "auto", opacity: 0.6, flexShrink: 0 }}>
-          ${formatNumber(stock.currentPrice)}
-        </ButtonText>
-      </View>
-      {large && (
-        <Text style={{ color: theme[11], opacity: 0.5 }} weight={600}>
-          Market cap: ${formatNumber(stock.marketCap)}
-        </Text>
-      )}
-      {large && (
-        <Text
-          style={{ color: theme[11], opacity: 0.5, marginTop: -7 }}
-          weight={600}
-        >
-          Volume (24H): {formatNumber(stock.volume24h)}
-        </Text>
-      )}
-      {large && (
-        <Text
-          style={{ color: theme[11], opacity: 0.5, marginTop: -7 }}
-          weight={600}
-        >
-          Previous Close: ${(stock.prev, 2)}
-        </Text>
-      )}
+      <Image
+        source={{
+          uri: `https://companiesmarketcap.com/img/company-logos/64/${stock.ticker.replace(
+            "GOOGL",
+            "GOOG"
+          )}.webp`,
+        }}
+        style={{ width: 24, height: 24, marginBottom: 10 }}
+      />
+      <ButtonText weight={900}>{stock.ticker}</ButtonText>
+      <ButtonText numberOfLines={1} weight={200} style={{ fontSize: 12 }}>
+        {stock.name}
+      </ButtonText>
       <View
         style={{
           flexDirection: "row",
           alignItems: "center",
           gap: 10,
+          marginTop: 10,
         }}
       >
-        {large ? (
-          <View style={{ width: large ? "100%" : undefined }}>
-            {["5min", "today", "week", "month", "year"].map((key) => (
-              <View
-                key={key}
-                style={{
-                  flexDirection: "row",
-                  gap: 5,
-                  alignItems: "center",
-                  justifyContent: "space-between",
-                }}
-              >
-                <Text style={{ fontSize: 12, color: theme[11], flex: 1 }}>
-                  {capitalizeFirstLetter(key.replace("5", "5 "))}
-                </Text>
-                <StockChange subtle key={key} number={stock[key]} />
-              </View>
-            ))}
-          </View>
-        ) : (
-          <StockChange number={stock.today} />
-        )}
+        <StockChange number={stock.today} />
       </View>
     </Pressable>
   );
@@ -162,6 +107,16 @@ export default function Widget({ navigation, widget }) {
     "https://bubble-screener-api.neil-dahiya.workers.dev/api",
     (url) => fetch(url).then((res) => res.json())
   );
+
+  const [currentPage, setCurrentPage] = useState(0);
+  const PER_PAGE = 3;
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setCurrentPage((currentPage) => (currentPage + 1) % PER_PAGE);
+    }, 5000);
+    return () => clearInterval(interval);
+  }, []);
 
   if (error) {
     return <ErrorAlert />;
@@ -182,25 +137,28 @@ export default function Widget({ navigation, widget }) {
       >
         <View
           style={{
-            height: 120,
             width: "100%",
+            flexDirection: "row",
           }}
         >
-          {data?.map((stock) => (
-              <Animated.View
-                key={stock.ticker}
-                entering={FadeInRight}
-                exiting={FadeOutLeft}
-                style={{ flex: 1 }}
-              >
-                <StockItem
-                  widget={widget}
+          {data &&
+            data
+              .slice(currentPage * PER_PAGE, currentPage * PER_PAGE + PER_PAGE)
+              ?.map((stock) => (
+                <Animated.View
                   key={stock.ticker}
-                  stock={stock}
-                  navigation={navigation}
-                />
-              </Animated.View>
-            ))}
+                  entering={FadeInRight}
+                  exiting={FadeOutLeft}
+                  style={{ flex: 1 }}
+                >
+                  <StockItem
+                    widget={widget}
+                    key={stock.ticker}
+                    stock={stock}
+                    navigation={navigation}
+                  />
+                </Animated.View>
+              ))}
         </View>
       </Pressable>
     </View>

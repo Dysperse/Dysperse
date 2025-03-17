@@ -152,7 +152,7 @@ function Widgets() {
       </View>
       <FlatList
         data={sections}
-        contentContainerStyle={{ paddingTop: 7 }}
+        contentContainerStyle={{ paddingTop: 7, paddingBottom: 30 }}
         renderItem={({ item, index }: any) =>
           item.header ? (
             <Text
@@ -222,7 +222,7 @@ export default function Page() {
 
   return (
     <>
-      <MenuButton gradient icon="arrow_back_ios_new" back />
+      <MenuButton gradient icon="arrow_back_ios_new" back left />
       <ScrollView>
         <SystemBars style="light" />
         <View style={{ paddingHorizontal: 30 }}>
