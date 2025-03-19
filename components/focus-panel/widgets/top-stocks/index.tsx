@@ -8,7 +8,12 @@ import { useColorTheme } from "@/ui/color/theme-provider";
 import { Image } from "expo-image";
 import { useEffect, useState } from "react";
 import { Linking, Pressable, View } from "react-native";
-import Animated, { FadeInRight, FadeOutLeft } from "react-native-reanimated";
+import Animated, {
+  FadeInDown,
+  FadeInRight,
+  FadeOutLeft,
+  FadeOutUp,
+} from "react-native-reanimated";
 import useSWR from "swr";
 
 function StockChange({
@@ -141,9 +146,12 @@ export default function Widget({ small, handlePin, navigation, widget }) {
   const PER_PAGE = 3;
 
   useEffect(() => {
-    const interval = setInterval(() => {
-      setCurrentPage((currentPage) => (currentPage + 1) % PER_PAGE);
-    }, 5000);
+    const interval = setInterval(
+      () => {
+        setCurrentPage((currentPage) => (currentPage + 1) % PER_PAGE);
+      },
+      small ? 10000 : 5000
+    );
     return () => clearInterval(interval);
   }, []);
 
@@ -159,8 +167,8 @@ export default function Widget({ small, handlePin, navigation, widget }) {
           ?.map((stock) => (
             <Animated.View
               key={stock.ticker}
-              entering={FadeInRight}
-              exiting={FadeOutLeft}
+              entering={small ? FadeInDown : FadeInRight}
+              exiting={small ? FadeOutUp : FadeOutLeft}
               style={{ flex: 1 }}
             >
               <StockItem
