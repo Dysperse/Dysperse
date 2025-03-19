@@ -59,7 +59,11 @@ export const TaskImportantChip = ({
       text="Urgent"
       disabled
       icon="priority_high"
-      style={{ backgroundColor: orange[published ? 4 : 6] }}
+      backgroundColors={{
+        default: orange[published ? 4 : 6],
+        hovered: orange[published ? 4 : 6],
+        pressed: orange[published ? 4 : 6],
+      }}
       iconStyle={{ color: orange[11] }}
       textStyle={{ color: orange[11] }}
     />
@@ -475,4 +479,3 @@ const Task = memo(function Task({
 });
 
 export default React.memo(Task);
-
