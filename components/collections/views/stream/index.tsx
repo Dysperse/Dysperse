@@ -88,13 +88,18 @@ function StreamColumn({ view, mutate, filteredTasks }) {
 
   return (
     <View
-      style={{
-        backgroundColor: theme[2],
-        borderWidth: 1,
-        borderColor: addHslAlpha(theme[5], 0.5),
-        borderRadius: 20,
-        width: 320,
-      }}
+      style={[
+        breakpoints.md && {
+          backgroundColor: theme[2],
+          borderWidth: 1,
+          borderColor: addHslAlpha(theme[5], 0.5),
+          borderRadius: 20,
+          width: 320,
+        },
+        {
+          flex: 1,
+        },
+      ]}
     >
       <View
         style={{
@@ -175,7 +180,6 @@ function MobileHeader() {
 }
 
 export default function Stream() {
-  const theme = useColorTheme();
   const breakpoints = useResponsiveBreakpoints();
   const { data, mutate } = useCollectionContext();
   const { mobileStreamMode } = useLocalSearchParams();
@@ -262,25 +266,33 @@ export default function Stream() {
           />
         </CreateTask>
       </View>
-      <ScrollView
-        horizontal
-        style={{
-          flex: 1,
-        }}
-        contentContainerStyle={{
-          padding: 15,
-          paddingTop: 2.5,
-          gap: 15,
-        }}
-      >
-        {streamViews.map((view) => (
-          <StreamColumn
-            view={view}
-            mutate={mutate}
-            filteredTasks={filteredTasks(view.value)}
-          />
-        ))}
-      </ScrollView>
+      {breakpoints.md ? (
+        <ScrollView
+          horizontal
+          style={{
+            flex: 1,
+          }}
+          contentContainerStyle={{
+            padding: 15,
+            paddingTop: 2.5,
+            gap: 15,
+          }}
+        >
+          {streamViews.map((view) => (
+            <StreamColumn
+              view={view}
+              mutate={mutate}
+              filteredTasks={filteredTasks(view.value)}
+            />
+          ))}
+        </ScrollView>
+      ) : (
+        <StreamColumn
+          view={mobileStreamMode || "backlog"}
+          mutate={mutate}
+          filteredTasks={filteredTasks(mobileStreamMode || "backlog")}
+        />
+      )}
     </View>
   );
 }
