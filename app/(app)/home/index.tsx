@@ -390,9 +390,10 @@ export function RenderWidget({ navigation, widget, index, small }) {
       return (
         <TopStocks
           navigation={navigation}
-          menuActions={menuActions}
+          handlePin={() => handlePin(widget)}
           widget={widget}
           key={index}
+          small={small}
         />
       );
     case "weather":
@@ -557,4 +558,3 @@ function Page() {
 }
 
 export default memo(Page);
-
