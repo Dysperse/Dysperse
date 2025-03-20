@@ -12,6 +12,7 @@ import { useColorTheme } from "@/ui/color/theme-provider";
 import { FlashList } from "@shopify/flash-list";
 import dayjs from "dayjs";
 import { LinearGradient } from "expo-linear-gradient";
+import { useLocalSearchParams } from "expo-router";
 import { ScrollView, View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { ColumnEmptyComponent } from "../../emptyComponent";
@@ -154,9 +155,30 @@ function StreamColumn({ view, mutate, filteredTasks }) {
   );
 }
 
+function MobileHeader() {
+  const theme = useColorTheme();
+  const { mobileStreamMode } = useLocalSearchParams();
+
+  return (
+    <View style={{ padding: 15, paddingBottom: 0 }}>
+      <Text
+        style={{
+          fontSize: 30,
+          fontFamily: "serifText700",
+          color: theme[11],
+        }}
+      >
+        {mobileStreamMode || "Backlog"}
+      </Text>
+    </View>
+  );
+}
+
 export default function Stream() {
+  const theme = useColorTheme();
   const breakpoints = useResponsiveBreakpoints();
   const { data, mutate } = useCollectionContext();
+  const { mobileStreamMode } = useLocalSearchParams();
 
   const filteredTasks = (_view) =>
     [
@@ -189,6 +211,7 @@ export default function Stream() {
 
   return (
     <View style={{ flex: 1 }}>
+      {!breakpoints.md && <MobileHeader />}
       <View style={{ padding: 15, paddingBottom: 2.5 }}>
         <CreateTask
           defaultValues={{ collectionId: data.id }}
