@@ -592,6 +592,7 @@ export const CreateCollectionModal = forwardRef(
         {trigger}
         <Modal sheetRef={ref} animation="SCALE" maxWidth={600}>
           <BottomSheetScrollView
+            keyboardShouldPersistTaps="handled"
             showsVerticalScrollIndicator={false}
             showsHorizontalScrollIndicator={false}
           >

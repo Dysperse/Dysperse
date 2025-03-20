@@ -334,11 +334,14 @@ function TaskList({ tasks }) {
         <FlashList
           style={{ flex: 1 }}
           data={tasks}
+          centerContent={tasks.length === 0}
           refreshControl={
-            <RefreshControl refreshing={!data} onRefresh={() => mutate()} />
+            tasks.length === 0 ? undefined : (
+              <RefreshControl refreshing={!data} onRefresh={() => mutate()} />
+            )
           }
           ListEmptyComponent={() => (
-            <View style={{ paddingTop: 100 }}>
+            <View>
               <ColumnEmptyComponent />
             </View>
           )}
@@ -397,7 +400,7 @@ export default function MapView() {
     }),
   }));
 
-  const { mode } = useLocalSearchParams();
+  const { locationMode } = useLocalSearchParams();
 
   const tasksWithLocation = (data?.labels || [])
     .flatMap((label) =>
@@ -416,9 +419,9 @@ export default function MapView() {
     );
 
   const tasks = taskSortAlgorithm(
-    mode === "location"
+    locationMode === "location"
       ? tasksWithLocation
-      : mode === "no-location"
+      : locationMode === "no-location"
       ? tasksWithoutLocation
       : tasksWithLocation.concat(tasksWithoutLocation)
   );
@@ -478,3 +481,4 @@ export default function MapView() {
     </View>
   );
 }
+
