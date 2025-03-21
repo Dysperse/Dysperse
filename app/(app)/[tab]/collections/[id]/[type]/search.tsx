@@ -303,6 +303,7 @@ function SearchList({ collection, inputRef, listRef, handleClose }) {
                           marginTop: 10,
                           color: theme[11],
                           textAlign: "center",
+                          marginBottom: 60,
                         }}
                       >
                         Nothing matched your search
