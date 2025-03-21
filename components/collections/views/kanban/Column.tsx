@@ -243,7 +243,11 @@ export function Column(props: ColumnProps) {
                   containerStyle={{
                     marginRight: "auto",
                     marginTop: hasItems && props.grid ? 20 : 5,
-                    marginLeft: !hasItems ? 80 : "auto",
+                    marginLeft: breakpoints.md
+                      ? !hasItems
+                        ? 80
+                        : "auto"
+                      : "auto",
                   }}
                   variant={props.grid ? "filled" : undefined}
                 >
