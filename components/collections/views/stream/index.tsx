@@ -174,6 +174,7 @@ function MobileHeader() {
       style={{
         padding: 15,
         paddingBottom: 0,
+        paddingLeft: 25,
         flexDirection: "row",
         justifyContent: "space-between",
         alignItems: "center",
@@ -181,7 +182,7 @@ function MobileHeader() {
     >
       <Text
         style={{
-          fontSize: 30,
+          fontSize: 23,
           fontFamily: "serifText700",
           color: theme[11],
         }}

@@ -47,7 +47,6 @@ function StoryPointShape({ selected, index, onPress }) {
 
   return (
     <IconButton
-      size={45}
       onPress={() => {
         impactAsync(ImpactFeedbackStyle.Light);
         if (onPress) onPress();
@@ -56,6 +55,10 @@ function StoryPointShape({ selected, index, onPress }) {
         default: "transparent",
         hovered: "transparent",
         pressed: "transparent",
+      }}
+      style={{
+        flex: 1,
+        aspectRatio: 1,
       }}
     >
       <View
@@ -71,7 +74,7 @@ function StoryPointShape({ selected, index, onPress }) {
         }}
       >
         <Icon
-          size={45}
+          size={50}
           filled={index > -1}
           style={{ color: theme[selected ? 11 : 5] }}
         >
