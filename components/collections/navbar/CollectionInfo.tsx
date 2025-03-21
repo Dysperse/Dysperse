@@ -132,8 +132,6 @@ export const CollectionInfo = ({ collection }) => {
           placeholder="Collection name"
           defaultValue={data.name}
           variant="filled+outlined"
-          style={{ fontSize: 30 }}
-          weight={900}
           onBlur={(e) => updateCollection("name", e.nativeEvent.text)}
         />
         <Text variant="eyebrow" style={{ marginVertical: 5, marginTop: 20 }}>
