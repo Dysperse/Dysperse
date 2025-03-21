@@ -264,7 +264,9 @@ export default function Stream() {
   return (
     <View style={{ flex: 1 }}>
       {!breakpoints.md && <MobileHeader />}
-      <View style={{ padding: 15, paddingBottom: 2.5, zIndex: 999 }}>
+      <View
+        style={{ padding: 15, paddingBottom: 2.5, paddingTop: 0, zIndex: 999 }}
+      >
         <CreateTask
           defaultValues={{ collectionId: data.id }}
           mutate={(newTask) => {
