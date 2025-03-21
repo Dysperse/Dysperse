@@ -27,21 +27,24 @@ function ProfileModalContent({ email }) {
       <BottomSheetScrollView
         showsVerticalScrollIndicator={false}
         aria-label="Scrollbar-Hidden"
-        contentContainerStyle={{ backgroundColor: theme[2], flex: 1 }}
+        contentContainerStyle={{ backgroundColor: theme[2] }}
+        bounces={false}
       >
         <LinearGradient
           colors={[theme[9], theme[5]]}
           style={{
             padding: 30,
             height: 140,
+            overflow: "visible",
           }}
         >
           <ProfilePicture
             style={{
               top: 80,
-              left: 20,
+              left: 30,
               position: "absolute",
               backgroundColor: theme[6],
+              zIndex: 999,
             }}
             name={data.profile?.name || "--"}
             image={data.profile?.picture}
@@ -81,7 +84,9 @@ function ProfileModalContent({ email }) {
             <ListItemButton variant="filled">
               <Icon>schedule</Icon>
               <ListItemText
-                primary={dayjs(data.profile.lastActive).fromNow() || "Unknown"}
+                primary={(
+                  dayjs(data.profile.lastActive).fromNow() || "Unknown"
+                ).replace("a few seconds ago", "Just now")}
                 secondary="Last active"
               />
             </ListItemButton>

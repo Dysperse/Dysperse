@@ -147,7 +147,7 @@ const ReorderColumn = ({
         ))}
       <View
         style={{
-          gap: list && breakpoints.md ? 20 : 10,
+          gap: list ? 20 : 10,
           flex: 1,
           alignItems: "center",
           flexDirection: list || breakpoints.md ? "row" : "column",
@@ -246,7 +246,7 @@ function EditListView() {
         ...(data.listOrder || []).filter((id) =>
           data.labels.some((label) => label.id === id)
         ),
-        ...data.labels
+        ...(data.labels || [])
           .filter((label) => !(data.listOrder || []).includes(label.id))
           .map((label) => label.id),
       ]
@@ -375,3 +375,4 @@ export default function Page() {
     </CollectionContext.Provider>
   );
 }
+
