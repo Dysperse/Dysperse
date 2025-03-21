@@ -56,68 +56,78 @@ export default function DayTaskModal({ children, date, taskId }) {
         snapPoints={["70%"]}
         onClose={() => sheetRef.current.close()}
       >
-        <View
-          style={{
-            padding: 20,
-            alignItems: "center",
-            justifyContent: "center",
-            height: 130,
-            paddingTop: 30,
-          }}
-        >
-          <Text style={{ fontSize: 25, fontFamily: "serifText700" }}>
-            {dayjs(date).format("dddd, MMMM Do")}
-          </Text>
-          <Text
-            weight={300}
-            style={{ fontSize: 18, opacity: 0.7, marginTop: 5 }}
-          >
-            {data
-              ? `${tasksLength} other task${
-                  tasksLength === 1 ? "" : "s"
-                } on this day`
-              : "Finding other tasks for this day..."}
-          </Text>
-        </View>
-
-        {!data ? (
+        <View style={{ height: "100%" }}>
           <View
             style={{
               padding: 20,
               alignItems: "center",
               justifyContent: "center",
-              flex: 1,
+              height: 130,
+              paddingTop: 30,
             }}
           >
-            <Spinner />
+            <Text style={{ fontSize: 25, fontFamily: "serifText700" }}>
+              {dayjs(date).format("dddd, MMMM Do")}
+            </Text>
+            <Text
+              weight={300}
+              style={{ fontSize: 18, opacity: 0.7, marginTop: 5 }}
+            >
+              {data
+                ? `${tasksLength} other task${
+                    tasksLength === 1 ? "" : "s"
+                  } on this day`
+                : "Finding other tasks for this day..."}
+            </Text>
           </View>
-        ) : (
-          <BottomSheetFlashList
-            data={taskSortAlgorithm(
-              Object.values(column.entities).filter((t: any) => t.id !== taskId)
-            )}
-            estimatedItemSize={100}
-            contentContainerStyle={{ padding: 10, paddingTop: 0 }}
-            centerContent={Object.keys(column.entities).length === 0}
-            ListEmptyComponent={() => (
-              <View style={{ marginVertical: "auto" }}>
-                <Text style={{ textAlign: "center" }}>
-                  There are no tasks for this day!
-                </Text>
-              </View>
-            )}
-            renderItem={({ item }: any) => (
-              <Entity
-                showLabel
-                dateRange={item.recurrenceDay}
-                isReadOnly={false}
-                item={item}
-                onTaskUpdate={mutations.timeBased.update(mutate)}
+
+          {!data ? (
+            <View
+              style={{
+                padding: 20,
+                alignItems: "center",
+                justifyContent: "center",
+                flex: 1,
+              }}
+            >
+              <Spinner />
+            </View>
+          ) : (
+            <View style={{ flex: 1 }}>
+              <BottomSheetFlashList
+                data={taskSortAlgorithm(
+                  Object.values(column.entities).filter(
+                    (t: any) => t.id !== taskId
+                  )
+                )}
+                estimatedItemSize={100}
+                contentContainerStyle={{
+                  padding: 10,
+                  paddingTop: 0,
+                  paddingBottom: 40,
+                }}
+                centerContent={Object.keys(column.entities).length === 0}
+                ListEmptyComponent={() => (
+                  <View style={{ marginVertical: "auto" }}>
+                    <Text style={{ textAlign: "center" }}>
+                      There are no tasks for this day!
+                    </Text>
+                  </View>
+                )}
+                renderItem={({ item }: any) => (
+                  <Entity
+                    showLabel
+                    dateRange={item.recurrenceDay}
+                    isReadOnly={false}
+                    item={item}
+                    onTaskUpdate={mutations.timeBased.update(mutate)}
+                  />
+                )}
+                keyExtractor={(i: any, d) => `${i.id}-${d}`}
               />
-            )}
-            keyExtractor={(i: any, d) => `${i.id}-${d}`}
-          />
-        )}
+            </View>
+          )}
+        </View>
       </BottomSheet>
     </>
   );
