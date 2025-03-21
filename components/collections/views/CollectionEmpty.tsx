@@ -1,15 +1,19 @@
+import { useResponsiveBreakpoints } from "@/helpers/useResponsiveBreakpoints";
 import { Button } from "@/ui/Button";
 import { useColorTheme } from "@/ui/color/theme-provider";
 import Emoji from "@/ui/Emoji";
 import Text from "@/ui/Text";
 import { useLocalSearchParams } from "expo-router";
-import { View } from "react-native";
+import { Platform, View } from "react-native";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { useCollectionContext } from "../context";
 
 export const CollectionEmpty = () => {
   const theme = useColorTheme();
   const { openLabelPicker } = useCollectionContext();
   const { id } = useLocalSearchParams();
+  const insets = useSafeAreaInsets();
+  const breakpoints = useResponsiveBreakpoints();
 
   return (
     <View
@@ -18,6 +22,8 @@ export const CollectionEmpty = () => {
         justifyContent: "center",
         flex: 1,
         padding: 20,
+        paddingBottom:
+          insets.bottom + (Platform.OS === "ios" && !breakpoints.md ? 100 : 0),
       }}
     >
       <View
@@ -62,3 +68,4 @@ export const CollectionEmpty = () => {
     </View>
   );
 };
+
