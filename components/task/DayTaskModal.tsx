@@ -53,7 +53,7 @@ export default function DayTaskModal({ children, date, taskId }) {
       {trigger}
       <BottomSheet
         sheetRef={sheetRef}
-        snapPoints={["70%"]}
+        snapPoints={["60%", "90%"]}
         onClose={() => sheetRef.current.close()}
       >
         <View style={{ height: "100%" }}>
