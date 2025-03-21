@@ -99,19 +99,19 @@ export const Button = forwardRef<PressableProps, DButtonProps>((props, ref) => {
       (variant === "filled"
         ? props.backgroundColors?.default || theme[3]
         : variant === "text"
-        ? "transparent"
+        ? addHslAlpha(theme[11], 0)
         : addHslAlpha(theme[11], 0.1)),
     props.borderColors?.hovered ||
       (variant === "filled"
         ? props.backgroundColors?.hovered || theme[4]
         : variant === "text"
-        ? "transparent"
+        ? addHslAlpha(theme[11], 0)
         : addHslAlpha(theme[11], 0.2)),
     props.borderColors?.pressed ||
       (variant === "filled"
         ? props.backgroundColors?.pressed || theme[5]
         : variant === "text"
-        ? "transparent"
+        ? addHslAlpha(theme[11], 0)
         : addHslAlpha(theme[11], 0.3)),
   ];
 
@@ -120,19 +120,19 @@ export const Button = forwardRef<PressableProps, DButtonProps>((props, ref) => {
       (variant === "filled"
         ? theme[3]
         : variant === "text"
-        ? "transparent"
+        ? addHslAlpha(theme[11], 0)
         : addHslAlpha(theme[11], 0)),
     props.backgroundColors?.hovered ||
       (variant === "filled"
         ? theme[4]
         : variant === "text"
-        ? "transparent"
+        ? addHslAlpha(theme[11], 0)
         : addHslAlpha(theme[11], 0.1)),
     props.backgroundColors?.pressed ||
       (variant === "filled"
         ? theme[5]
         : variant === "text"
-        ? "transparent"
+        ? addHslAlpha(theme[11], 0)
         : addHslAlpha(theme[11], 0.2)),
   ];
 

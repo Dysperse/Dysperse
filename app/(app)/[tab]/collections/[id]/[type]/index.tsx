@@ -26,17 +26,16 @@ import { sendApiRequest } from "@/helpers/api";
 import { useHotkeys } from "@/helpers/useHotKeys";
 import { useResponsiveBreakpoints } from "@/helpers/useResponsiveBreakpoints";
 import { Button } from "@/ui/Button";
-import Modal from "@/ui/Modal";
+import { useColorTheme } from "@/ui/color/theme-provider";
 import OtpInput from "@/ui/OtpInput";
 import CircularSkeleton from "@/ui/Skeleton/circular";
 import LinearSkeleton, { LinearSkeletonArray } from "@/ui/Skeleton/linear";
 import Text from "@/ui/Text";
 import TextField from "@/ui/TextArea";
 import { useDidUpdate } from "@/utils/useDidUpdate";
-import { BottomSheetModal } from "@gorhom/bottom-sheet";
 import dayjs from "dayjs";
 import { router, useLocalSearchParams, usePathname } from "expo-router";
-import { cloneElement, useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { InteractionManager, Pressable, StyleSheet, View } from "react-native";
 import { KeyboardAvoidingView } from "react-native-keyboard-controller";
 import Animated, {
@@ -246,32 +245,17 @@ const Loading = ({ isPublic }: any) => {
   );
 };
 
-function ResetPinButton({ children }: any) {
+function ResetPin({ handleClose }: any) {
   const { session } = useSession();
   const { data, mutate } = useCollectionContext();
-  const ref = useRef<BottomSheetModal>(null);
   const inputRef = useRef(null);
   const [loading, setLoading] = useState(false);
-
-  const handleClose = () =>
-    ref.current?.forceClose({
-      damping: 400,
-      stiffness: 900,
-      overshootClamping: true,
-    });
-
-  const trigger = cloneElement(children, {
-    onPress: () => {
-      ref.current?.present();
-      setTimeout(() => inputRef.current?.focus(), 500);
-    },
-  });
+  const [password, setPassword] = useState("");
 
   const handleSubmit = async () => {
     setLoading(true);
+
     try {
-      const password = inputRef.current?.value;
-      if (!password) return;
       const t = await sendApiRequest(
         session,
         "POST",
@@ -287,6 +271,11 @@ function ResetPinButton({ children }: any) {
       if (t?.error) {
         Toast.show({ type: "error" });
         throw new Error(t.error);
+      } else {
+        Toast.show({
+          type: "info",
+          text1: "Pin code for this collection has been removed",
+        });
       }
       await mutate();
       handleClose();
@@ -297,75 +286,56 @@ function ResetPinButton({ children }: any) {
 
   return (
     <>
-      <Modal animation="SLIDE" maxWidth={500} sheetRef={ref} height={300}>
-        <View style={{ padding: 30, gap: 10 }}>
-          <Text
-            style={{
-              fontFamily: "serifText800",
-              textAlign: "center",
-              fontSize: 35,
-            }}
-          >
-            Forgot code?
-          </Text>
-          <Text
-            style={{
-              textAlign: "center",
-              fontSize: 18,
-              opacity: 0.7,
-              marginBottom: 10,
-            }}
-            weight={300}
-          >
-            Unlock this collection with your account password
-          </Text>
-          <TextField
-            variant="filled+outlined"
-            placeholder="Password"
-            secureTextEntry
-            inputRef={inputRef}
-            style={{
-              height: 60,
-              borderRadius: 999,
-              fontSize: 20,
-              paddingHorizontal: 25,
-              marginBottom: 10,
-            }}
-            editable={!loading}
-            weight={700}
-            onKeyPress={({ nativeEvent }) => {
-              if (nativeEvent.key === "Escape") handleClose();
-            }}
-            onSubmitEditing={handleSubmit}
-          />
-          <View
-            style={{
-              flexDirection: "row",
-              gap: 10,
-            }}
-          >
-            <Button
-              text="Cancel"
-              variant="outlined"
-              large
-              height={60}
-              containerStyle={{ flex: 1 }}
-              onPress={handleClose}
-            />
-            <Button
-              text="Unlock"
-              variant="filled"
-              large
-              containerStyle={{ flex: 1 }}
-              bold
-              height={60}
-              isLoading={loading}
-              onPress={handleSubmit}
-            />
-          </View>
-        </View>
-      </Modal>
-      {trigger}
+      <TextField
+        variant="filled+outlined"
+        placeholder="Password"
+        secureTextEntry
+        inputRef={inputRef}
+        style={{
+          height: 60,
+          borderRadius: 999,
+          fontSize: 20,
+          paddingHorizontal: 25,
+          textAlign: "center",
+        }}
+        autoFocus
+        editable={!loading}
+        onChangeText={setPassword}
+        value={password}
+        weight={700}
+        onKeyPress={({ nativeEvent }) => {
+          if (nativeEvent.key === "Escape") handleClose();
+        }}
+        onSubmitEditing={handleSubmit}
+      />
+      <View
+        style={{
+          flexDirection: "row",
+          gap: 10,
+        }}
+      >
+        <Button
+          text="Cancel"
+          variant="outlined"
+          large
+          height={60}
+          containerStyle={{ flex: 1 }}
+          onPress={handleClose}
+        />
+        <Button
+          text="Unlock"
+          variant="filled"
+          large
+          containerStyle={{ flex: 1, opacity: password ? 1 : 0.5 }}
+          bold
+          height={60}
+          isLoading={loading}
+          icon="arrow_forward_ios"
+          iconPosition="end"
+          disabled={!password}
+          onPress={handleSubmit}
+        />
+      </View>
     </>
   );
 }
@@ -374,9 +344,13 @@ function PasswordPrompt({ mutate }) {
   const breakpoints = useResponsiveBreakpoints();
   const { data } = useCollectionContext();
   const ref = useRef(null);
+  const theme = useColorTheme();
   const [loading, setLoading] = useState(false);
   const [code, setCode] = useState("");
   const { session } = useSession();
+  const insets = useSafeAreaInsets();
+
+  const [view, setView] = useState<"unlock" | "reset">("unlock");
 
   useEffect(() => {
     if (!breakpoints.md)
@@ -454,63 +428,77 @@ function PasswordPrompt({ mutate }) {
           style={{
             justifyContent: "center",
             gap: breakpoints.md ? 20 : 10,
+            paddingTop: insets.top,
+            paddingBottom: insets.bottom,
           }}
         >
           <View>
             <Text
               style={{
                 fontSize: breakpoints.md ? 35 : 30,
-                fontFamily: "serifText800",
+                fontFamily: breakpoints.md ? "serifText800" : "serifText700",
                 textAlign: "center",
+                color: theme[11],
                 marginBottom: 5,
               }}
             >
-              Password required
+              {view === "unlock" ? "Password required" : "Reset your password"}
             </Text>
             <Text
               style={{
-                fontSize: breakpoints.md ? 18 : undefined,
+                color: theme[11],
+                fontSize: breakpoints.md ? 18 : 16,
                 textAlign: "center",
-                marginBottom: breakpoints.md ? 0 : 15,
+                marginBottom: breakpoints.md ? 0 : 5,
               }}
-              weight={300}
+              weight={breakpoints.md ? 300 : 500}
             >
-              Enter the PIN code to unlock this collection
+              {
+                {
+                  unlock: "Enter the PIN code to unlock this collection",
+                  reset: "Enter your account password to continue",
+                }[view]
+              }
             </Text>
           </View>
-          <Animated.View style={errorAnimationStyle}>
-            <OtpInput
-              ref={ref}
-              textInputProps={{ autoComplete: "off" }}
-              secureTextEntry
-              numberOfDigits={6}
-              blurOnFilled
-              containerGap={5}
-              onTextChange={setCode}
-              onFilled={(t) => handleSubmit(t)}
-            />
-          </Animated.View>
-          <View style={{ flexDirection: "row", marginTop: 10, gap: 10 }}>
-            <ResetPinButton>
-              <Button
-                large
-                variant="outlined"
-                text="Forgot?"
-                containerStyle={{ flex: 1 }}
-              />
-            </ResetPinButton>
-            <Button
-              isLoading={loading}
-              text="Unlock"
-              variant="filled"
-              large
-              iconPosition="end"
-              icon="arrow_forward_ios"
-              bold
-              onPress={handleSubmit}
-              containerStyle={{ flex: 1 }}
-            />
-          </View>
+          {view === "reset" ? (
+            <ResetPin handleClose={() => setView("unlock")} />
+          ) : (
+            <>
+              <Animated.View style={errorAnimationStyle}>
+                <OtpInput
+                  ref={ref}
+                  textInputProps={{ autoComplete: "off" }}
+                  secureTextEntry
+                  numberOfDigits={6}
+                  blurOnFilled
+                  containerGap={5}
+                  onTextChange={setCode}
+                  onFilled={(t) => handleSubmit(t)}
+                />
+              </Animated.View>
+              <View style={{ flexDirection: "row", marginTop: 10, gap: 10 }}>
+                <Button
+                  large
+                  variant="outlined"
+                  text="Forgot?"
+                  containerStyle={{ flex: 1 }}
+                  onPress={() => setView("reset")}
+                />
+                <Button
+                  isLoading={loading}
+                  text="Unlock"
+                  variant="filled"
+                  large
+                  iconPosition="end"
+                  icon="arrow_forward_ios"
+                  bold
+                  onPress={handleSubmit}
+                  containerStyle={{ flex: 1 }}
+                />
+              </View>
+            </>
+          )}
         </FadeOnRender>
       </KeyboardAvoidingView>
     </View>

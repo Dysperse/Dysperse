@@ -77,7 +77,7 @@ const Link = ({ collection }) => {
             ) : (
               <>
                 <TextField
-                  value={url}
+                  value={url.replace("https://", "").replace("http://", "")}
                   style={{ flex: 1 }}
                   variant="filled"
                   editable={false}
@@ -109,10 +109,7 @@ const Link = ({ collection }) => {
           </View>
           <Text variant="eyebrow">Preferences</Text>
           <ListItemButton disabled style={{ marginHorizontal: -13 }}>
-            <ListItemText
-              primary="Default view"
-              secondary="People will see this when this link is opened. They can still toggle between other views as well."
-            />
+            <ListItemText primary="Default view" />
             <MenuPopover
               trigger={
                 <Button
@@ -137,13 +134,13 @@ const Link = ({ collection }) => {
               {
                 key: "NO_ACCESS",
                 text: "No access",
-                description: "Nobody can see your collection",
+                description: "Disables link sharing",
               },
               {
                 key: "READ_ONLY",
-                text: "Read only",
+                text: "View only",
                 description:
-                  "Anyone with the link can view this collection, even those who don't have an account.",
+                  "Anyone with the link can view, even those who don't have an account.",
               },
             ].map((access) => (
               <ListItemButton
@@ -213,7 +210,7 @@ const Link = ({ collection }) => {
           >
             <ListItemText
               primary="Refresh link"
-              secondary="This will generate a new link for your collection. The old link will no longer work."
+              secondary="We'll create a new link, and old ones will not work"
             />
           </ListItemButton>
         </ScrollView>

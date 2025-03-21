@@ -70,12 +70,16 @@ export default function Quotes() {
             <Text
               style={{
                 fontSize: 23,
+                color: theme[11],
                 fontFamily: getFontName("crimsonPro", 800),
               }}
             >
               &ldquo;{data?.quote}&rdquo;
             </Text>
-            <Text style={{ marginTop: 10, opacity: 0.6 }} weight={400}>
+            <Text
+              style={{ marginTop: 10, opacity: 0.6, color: theme[11] }}
+              weight={400}
+            >
               &mdash; {data?.author}
             </Text>
           </>
@@ -88,3 +92,4 @@ export default function Quotes() {
     </View>
   );
 }
+

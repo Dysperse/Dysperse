@@ -15,6 +15,7 @@ import TextField from "@/ui/TextArea";
 import { LinearGradient } from "expo-linear-gradient";
 import { useState } from "react";
 import { View } from "react-native";
+import { SystemBars } from "react-native-edge-to-edge";
 import { ScrollView } from "react-native-gesture-handler";
 import { KeyboardAvoidingView } from "react-native-keyboard-controller";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
@@ -137,6 +138,7 @@ export default function Page() {
   return (
     <View style={{ flex: 1 }}>
       <MenuButton back gradient />
+      <SystemBars style="light" />
       <KeyboardAvoidingView
         behavior="height"
         style={{

@@ -51,7 +51,7 @@ function StockChange({
       <Text
         variant="eyebrow"
         style={{
-          fontSize: 11,
+          fontSize: small ? 9 : 11,
           textAlign: small ? "right" : "center",
           fontFamily: "mono",
           color: number > 0 ? green[small ? 9 : 5] : red[small ? 9 : 5],
@@ -110,7 +110,7 @@ export function StockItem({ small, stock }: { small?: boolean; stock: any }) {
         weight={900}
         style={{
           fontSize: small ? 11 : undefined,
-          lineHeight: small ? 11 : undefined,
+          lineHeight: small ? 13 : undefined,
         }}
       >
         {stock.ticker}
@@ -246,3 +246,4 @@ export default function Widget({ small, handlePin, navigation, widget }) {
     </View>
   );
 }
+

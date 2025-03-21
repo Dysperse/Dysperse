@@ -142,8 +142,6 @@ function Footer({
   const location = watch("location");
   const parentTask = watch("parentTask");
 
-  
-
   return (
     <View
       style={{
@@ -267,8 +265,6 @@ export const AiLabelSuggestion = ({ watch, setValue, nameRef, style }: any) => {
         body: JSON.stringify({ name: t, collectionId: id }),
       }
     );
-
-    
 
     setResult(data);
   }, 500);
@@ -532,12 +528,11 @@ function LabelNlpProcessor({
       /__LABEL__{([0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12})}__/g;
 
     value.match(regex)?.forEach((match) => {
-      
       const id = match.replace(/__LABEL__{([0-9a-f-]+)}__/, "$1");
       const str = `${Platform.OS === "web" ? "@" : "#"}[${
         label.find((e) => e.id === id)?.name
       }](${match})${Platform.OS === "web" ? "" : " "}`;
-      
+
       onChange(value.replace(str, ""));
       setValue(
         "label",
@@ -813,7 +808,6 @@ function TaskNameInput({
                   },
                 }),
                 [Platform.OS === "web" ? "onKeyDown" : "onKeyPress"]: (e) => {
-                  
                   if (
                     Platform.OS === "web" &&
                     !e.shiftKey &&
@@ -1170,9 +1164,7 @@ function SpeechRecognition({ setValue }) {
   const breakpoints = useResponsiveBreakpoints();
   const [recognizing, setRecognizing] = useState(false);
 
-  useSpeechRecognitionEvent("volumechange", (event) => {
-    
-  });
+  useSpeechRecognitionEvent("volumechange", (event) => {});
 
   useSpeechRecognitionEvent("start", () => {
     setRecognizing(true);
@@ -1194,9 +1186,7 @@ function SpeechRecognition({ setValue }) {
         : event.results[0]?.transcript?.trim()
     );
   });
-  useSpeechRecognitionEvent("error", (event) => {
-    
-  });
+  useSpeechRecognitionEvent("error", (event) => {});
 
   const handleStart = async () => {
     const result = await ExpoSpeechRecognitionModule.requestPermissionsAsync();

@@ -1,4 +1,5 @@
 import { createContext, useContext, type PropsWithChildren } from "react";
+import { Platform } from "react-native";
 import { useStorageState } from "./useStorageState";
 
 const AuthContext = createContext<{
@@ -18,7 +19,6 @@ export function useSession() {
   const value = useContext(AuthContext);
   if (process.env.NODE_ENV !== "production") {
     if (!value) {
-      
     }
   }
 
@@ -37,7 +37,7 @@ export function SessionProvider({ children }: PropsWithChildren) {
         signOut: () => {
           setSession(null);
           (window as any).disableSaveData = true;
-          localStorage.clear();
+          if (Platform.OS === "web") localStorage.clear();
         },
         session,
         isLoading,

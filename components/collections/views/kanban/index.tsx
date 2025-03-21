@@ -1,6 +1,7 @@
 import { useCollectionContext } from "@/components/collections/context";
 import { useResponsiveBreakpoints } from "@/helpers/useResponsiveBreakpoints";
 import IconButton from "@/ui/IconButton";
+import { impactAsync, ImpactFeedbackStyle } from "expo-haptics";
 import { useLocalSearchParams } from "expo-router";
 import React, { useState } from "react";
 import { ScrollView, useWindowDimensions, View } from "react-native";
@@ -25,7 +26,10 @@ function ColumnSwitcher({ columns, setCurrentColumn }) {
         height={90}
         data={columns}
         onProgressChange={progress}
-        onSnapToItem={(index) => setCurrentColumn(index)}
+        onSnapToItem={(index) => {
+          setCurrentColumn(index);
+        }}
+        onScrollStart={() => impactAsync(ImpactFeedbackStyle.Light)}
         mode="parallax"
         loop={false}
         modeConfig={{

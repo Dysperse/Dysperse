@@ -7,10 +7,12 @@ import { PortalProvider } from "@gorhom/portal";
 import { Redirect } from "expo-router";
 import { useWindowDimensions } from "react-native";
 import { MenuProvider } from "react-native-popup-menu";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 import Toast from "react-native-toast-message";
 
 export default function Layout() {
   const theme = useColorTheme();
+  const insets = useSafeAreaInsets();
   const { width } = useWindowDimensions();
 
   const { sessionToken } = useUser();
@@ -33,7 +35,7 @@ export default function Layout() {
                 gestureVelocityImpact: 0.7,
               }}
             />
-            <Toast config={toastConfig(theme)} />
+            <Toast topOffset={insets.top + 15} config={toastConfig(theme)} />
           </PortalProvider>
         </ColorThemeProvider>
       </MenuProvider>

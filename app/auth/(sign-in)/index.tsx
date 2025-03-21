@@ -167,9 +167,7 @@ export default function SignIn() {
       >
         Pick a method to sign in
       </Text>
-      <View
-        style={{ flexDirection: breakpoints.md ? "row" : "column", gap: 10 }}
-      >
+      <View style={{ flexDirection: "row", gap: 10 }}>
         <GoogleAuth
           onNewAccount={(d) => {
             Toast.show({
@@ -214,10 +212,22 @@ export default function SignIn() {
             }
             text="Google"
             iconStyle={{ marginBottom: Platform.OS === "web" ? 0 : -5 }}
-            style={{ justifyContent: "flex-start", paddingLeft: 25, gap: 15 }}
+            style={[
+              { justifyContent: "flex-start", paddingLeft: 25, gap: 15 },
+              !breakpoints.md && {
+                flexDirection: "column",
+                justifyContent: "center",
+                gap: 5,
+              },
+            ]}
+            height={breakpoints.md ? undefined : 90}
             onPress={handleSignUpPress}
             textStyle={{ color: theme[3] }}
-            containerStyle={breakpoints.md && { flex: 1 }}
+            containerStyle={[
+              { flex: 1 },
+              !breakpoints.md && { borderRadius: 30 },
+            ]}
+            iconSize={30}
             backgroundColors={{
               default: theme[11],
               hovered: theme[11],
@@ -231,14 +241,26 @@ export default function SignIn() {
           icon="alternate_email"
           text="Email"
           onPress={() => router.push("/auth/email")}
-          style={{ justifyContent: "flex-start", paddingLeft: 25, gap: 15 }}
-          containerStyle={breakpoints.md && { flex: 1 }}
+          style={[
+            { justifyContent: "flex-start", paddingLeft: 25, gap: 15 },
+            !breakpoints.md && {
+              flexDirection: "column",
+              justifyContent: "center",
+              gap: 5,
+            },
+          ]}
+          iconSize={30}
+          height={breakpoints.md ? undefined : 90}
+          containerStyle={[
+            { flex: 1 },
+            !breakpoints.md && { borderRadius: 30 },
+          ]}
           variant="filled"
         />
       </View>
       <View
         style={{
-          flexDirection: breakpoints.md ? "row" : "column",
+          flexDirection: "row",
           gap: 10,
           marginVertical: 10,
         }}
@@ -251,8 +273,20 @@ export default function SignIn() {
             text="Passkey"
             variant="filled"
             onPress={handleSignUpPress}
-            style={{ justifyContent: "flex-start", paddingLeft: 25, gap: 15 }}
-            containerStyle={breakpoints.md && { flex: 1 }}
+            style={[
+              { justifyContent: "flex-start", paddingLeft: 25, gap: 15 },
+              !breakpoints.md && {
+                flexDirection: "column",
+                justifyContent: "center",
+                gap: 5,
+              },
+            ]}
+            iconSize={30}
+            height={breakpoints.md ? undefined : 90}
+            containerStyle={[
+              { flex: 1 },
+              !breakpoints.md && { borderRadius: 30 },
+            ]}
           />
         </PasskeyModal>
         <QrModal>
@@ -263,8 +297,20 @@ export default function SignIn() {
             text="QR code"
             onPress={handleSignUpPress}
             variant="filled"
-            style={{ justifyContent: "flex-start", paddingLeft: 25, gap: 15 }}
-            containerStyle={breakpoints.md && { flex: 1 }}
+            style={[
+              { justifyContent: "flex-start", paddingLeft: 25, gap: 15 },
+              !breakpoints.md && {
+                flexDirection: "column",
+                justifyContent: "center",
+                gap: 5,
+              },
+            ]}
+            iconSize={30}
+            height={breakpoints.md ? undefined : 90}
+            containerStyle={[
+              { flex: 1 },
+              !breakpoints.md && { borderRadius: 30 },
+            ]}
           />
         </QrModal>
       </View>
@@ -280,3 +326,4 @@ export default function SignIn() {
     </View>
   );
 }
+

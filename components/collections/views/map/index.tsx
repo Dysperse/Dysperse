@@ -273,7 +273,8 @@ function TaskList({ tasks }) {
         style={[
           {
             padding: 10,
-            paddingTop: breakpoints.md ? undefined : 0,
+            paddingHorizontal: breakpoints.md ? 10 : 20,
+            paddingTop: breakpoints.md ? undefined : 10,
             flexDirection: "row",
           },
         ]}
@@ -313,13 +314,20 @@ function TaskList({ tasks }) {
         />
         <View style={{ flex: 1 }} />
       </View>
-      <View style={{ paddingHorizontal: 10, zIndex: 999 }}>
+      <View
+        style={{ paddingHorizontal: breakpoints.md ? 10 : 20, zIndex: 999 }}
+      >
         <CreateTaskButton mutate={mutations.categoryBased.add(mutate)} />
       </View>
       <View
         style={[
           { flex: 1, marginBottom: -10 },
-          !breakpoints.md && { padding: 10, paddingBottom: 0 },
+          !breakpoints.md && {
+            padding: 10,
+            paddingBottom: 0,
+            paddingTop: 0,
+            paddingHorizontal: 20,
+          },
         ]}
       >
         <LinearGradient
@@ -346,7 +354,7 @@ function TaskList({ tasks }) {
             </View>
           )}
           contentContainerStyle={{
-            paddingTop: 20,
+            paddingTop: breakpoints.md ? 20 : 10,
             paddingBottom: insets.bottom + 10,
           }}
           renderItem={({ item }) => (

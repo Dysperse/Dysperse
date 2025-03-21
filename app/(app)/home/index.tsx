@@ -548,6 +548,12 @@ function Page() {
             </View>
             <Actions />
             <StreakGoal />
+            {/* <Tip
+              key="CREATE_WIDGETS"
+              icon="emoji_objects"
+              title="Make home yours"
+              description="Add widgets and customize your background"
+            /> */}
             <Widgets />
             <CustomizeButton />
           </View>
@@ -558,3 +564,4 @@ function Page() {
 }
 
 export default memo(Page);
+

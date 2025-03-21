@@ -1,9 +1,9 @@
-import { taskInputStyles } from "@/components/signup/TaskCreator";
 import { useBadgingService } from "@/context/BadgingProvider";
 import { useUser } from "@/context/useUser";
 import { sendApiRequest } from "@/helpers/api";
 import { useResponsiveBreakpoints } from "@/helpers/useResponsiveBreakpoints";
 import { Button, ButtonText } from "@/ui/Button";
+import Emoji from "@/ui/Emoji";
 import Icon from "@/ui/Icon";
 import Text from "@/ui/Text";
 import TextField from "@/ui/TextArea";
@@ -13,80 +13,72 @@ import { router } from "expo-router";
 import { Controller, useForm } from "react-hook-form";
 import { View } from "react-native";
 import { KeyboardAwareScrollView } from "react-native-keyboard-controller";
-import Animated, {
-  useAnimatedStyle,
-  useSharedValue,
-  withSpring,
-} from "react-native-reanimated";
+import { useSharedValue } from "react-native-reanimated";
 import { styles } from ".";
 
 const TaskInput = ({ control }) => {
   const theme = useColorTheme();
   const focus = useSharedValue(0);
-  const textStyles = useAnimatedStyle(
-    () => ({
-      opacity: withSpring(focus.value ? 0.6 : 0),
-      color: theme[11],
-      marginTop: withSpring(focus.value ? -5 : -50, {
-        overshootClamping: true,
-      }),
-    }),
-    [focus]
-  );
 
   return (
-    <View
-      style={[
-        taskInputStyles.container,
-        {
-          backgroundColor: theme[2],
-          borderColor: theme[5],
-          marginVertical: 10,
-        },
-      ]}
-    >
-      <View style={[taskInputStyles.check, { borderColor: theme[6] }]} />
-      <View style={{ flex: 1 }}>
-        <Controller
-          name="name"
-          control={control}
-          render={({ field: { onChange } }) => (
-            <TextField
-              onChangeText={onChange}
-              style={{ paddingVertical: 13, shadowRadius: 0 }}
-              placeholder="Type here…"
-              onFocus={() => (focus.value = 1)}
-              onBlur={() => (focus.value = 0)}
-            />
-          )}
-        />
-        <Animated.View
-          style={[
-            textStyles,
-            {
-              pointerEvents: "none",
+    <Controller
+      name="name"
+      control={control}
+      render={({ field: { onChange, value } }) => (
+        <>
+          <TextField
+            onChangeText={onChange}
+            style={{
+              paddingVertical: 13,
+              shadowRadius: 0,
+              fontSize: 20,
+              borderWidth: 0,
+              backgroundColor: theme[5],
+              marginBottom: 10,
+              marginTop: 15,
+            }}
+            placeholder="Type here…"
+            value={value}
+            onFocus={() => (focus.value = 1)}
+            onBlur={() => (focus.value = 0)}
+            weight={900}
+            variant="filled+outlined"
+          />
+          <View
+            style={{
               flexDirection: "row",
-              alignItems: "center",
-              height: 50,
+              flexWrap: "wrap",
               gap: 10,
-              paddingRight: 30,
-            },
-          ]}
-        >
-          <Text
-            style={[
-              {
-                fontSize: 12,
-                color: theme[11],
-                marginBottom: 5,
-              },
-            ]}
+              marginBottom: 15,
+            }}
           >
-            Keep it simple, from making your bed to drinking a glass of water.
-          </Text>
-        </Animated.View>
-      </View>
-    </View>
+            {[
+              { emoji: "1F6CF", text: "Make my bed" },
+              { emoji: "1F3C3", text: "Exercise" },
+              { emoji: "2615", text: "Coffee" },
+              { emoji: "1F9F9", text: "Organize my space" },
+              { emoji: "1F4DA", text: "Read a book" },
+              { emoji: "1F3B5", text: "Listen to music" },
+            ].map(({ emoji, text }) => (
+              <Button
+                chip
+                key={text}
+                large
+                backgroundColors={{
+                  default: theme[5],
+                  hovered: theme[6],
+                  pressed: theme[7],
+                }}
+                onPress={() => onChange(text)}
+              >
+                <Emoji emoji={emoji} />
+                <ButtonText style={{ marginLeft: 5 }}>{text}</ButtonText>
+              </Button>
+            ))}
+          </View>
+        </>
+      )}
+    />
   );
 };
 
@@ -167,11 +159,12 @@ export default function Page() {
       <KeyboardAwareScrollView
         centerContent
         contentContainerStyle={{
-          padding: breakpoints.md ? 50 : 20,
+          padding: breakpoints.md ? 50 : 30,
           maxWidth: 700,
           width: "100%",
           marginHorizontal: "auto",
         }}
+        keyboardShouldPersistTaps="handled"
       >
         <Text
           style={{

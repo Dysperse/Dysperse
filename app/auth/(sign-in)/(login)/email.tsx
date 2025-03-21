@@ -122,8 +122,6 @@ export function GoogleAuth({
           })}`
         ).then((r) => r.json());
 
-        
-
         if (data?.session) signIn(data.session);
 
         setLoading(false);
@@ -292,6 +290,7 @@ function Email({ control, handleSubmit }: { control: any; handleSubmit }) {
               onChangeText={onChange}
               onSubmitEditing={onFinish}
               variant="filled+outlined"
+              keyboardType="email-address"
             />
           )}
           name="email"
@@ -327,6 +326,7 @@ function Email({ control, handleSubmit }: { control: any; handleSubmit }) {
             flexDirection: "row",
             justifyContent: "space-between",
             gap: 10,
+            marginTop: 5,
           }}
         >
           <IconButton

@@ -205,8 +205,12 @@ function CurrentTaskFooter({
             height={100}
           >
             <Icon bold>done_outline</Icon>
-            <Text style={{ color: theme[11] }} weight={700} numberOfLines={1}>
-              {isCompleted ? "Completed" : "Finish"}
+            <Text
+              style={{ color: theme[11], lineHeight: 18 }}
+              weight={700}
+              numberOfLines={2}
+            >
+              {isCompleted ? "Done!" : "Mark done"}
             </Text>
           </Button>
         </Checkbox>
@@ -306,7 +310,6 @@ const CurrentTaskCard = ({
     ],
   }));
 
-  
   return (
     <Animated.View style={taskAnimationStyle}>
       <TaskDrawer
@@ -378,9 +381,10 @@ const CurrentTaskCard = ({
             chip
             large
             disabled
-            style={taskStyles.chip}
+            backgroundColors={{ default: "transparent" }}
             icon="calendar_today"
             textStyle={{ flex: 1 }}
+            style={{ paddingLeft: 0 }}
             text={capitalizeFirstLetter(
               currentTask.recurrenceRule
                 ? normalizeRecurrenceRuleObject(
@@ -392,10 +396,13 @@ const CurrentTaskCard = ({
           {getTaskCompletionStatus(currentTask, currentTask.recurrenceDay) && (
             <Button
               disabled
-              style={taskStyles.chip}
+              chip
+              large
               icon="done_outline"
               textStyle={{ flex: 1 }}
               text="Completed!"
+              backgroundColors={{ default: "transparent" }}
+              style={{ paddingLeft: 0 }}
             />
           )}
           {currentTask.storyPoints && (
@@ -427,7 +434,6 @@ const CurrentTaskCard = ({
 };
 
 function TodaysTasks({ data, mutate, setStage, dateRange }: any) {
-  
   const t = useMemo(
     () =>
       Array.isArray(data)

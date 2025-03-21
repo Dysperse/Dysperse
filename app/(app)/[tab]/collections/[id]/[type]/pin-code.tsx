@@ -8,11 +8,12 @@ import OtpInput from "@/ui/OtpInput";
 import Text from "@/ui/Text";
 import { router } from "expo-router";
 import { useState } from "react";
+import { SystemBars } from "react-native-edge-to-edge";
 import Toast from "react-native-toast-message";
 
 function Content() {
   const { session } = useSession();
-  const { data } = useCollectionContext();
+  const { data, mutate } = useCollectionContext();
   useHotkeys("esc", () => router.back());
   const [code, setCode] = useState(data.pinCode || "");
   const [loading, setLoading] = useState(false);
@@ -32,6 +33,8 @@ function Content() {
           }),
         }
       );
+      await mutate();
+      router.dismissAll();
       Toast.show({
         type: "success",
         text1: "PIN code " + (typeof r === "boolean" ? "removed" : "set"),
@@ -110,7 +113,9 @@ function Content() {
 export default function Page() {
   return (
     <CollectionMenuLayout title="PIN code">
+      <SystemBars style="light" />
       <Content />
     </CollectionMenuLayout>
   );
 }
+
