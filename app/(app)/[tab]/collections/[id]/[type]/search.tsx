@@ -302,9 +302,10 @@ function SearchList({ collection, inputRef, listRef, handleClose }) {
                           fontSize: 20,
                           marginTop: 10,
                           color: theme[11],
+                          textAlign: "center",
                         }}
                       >
-                        Nothing in this collection matched your search.
+                        Nothing matched your search
                       </Text>
                     </View>
                   ) : (
