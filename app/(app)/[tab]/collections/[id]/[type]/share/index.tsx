@@ -480,14 +480,14 @@ const CollectionMembers = ({ collection, mutateList, navigation }) => {
             </ListItemButton>
           </ProfileModal>
         )}
-        {data?.invitedUsers.map((user) => (
-            <CollectionInvitedUser
-              mutateList={mutateList}
-              key={user.user.email}
-              user={user}
-              isReadOnly={isReadOnly}
-            />
-          ))}
+        {data?.invitedUsers?.map((user) => (
+          <CollectionInvitedUser
+            mutateList={mutateList}
+            key={user.user.email}
+            user={user}
+            isReadOnly={isReadOnly}
+          />
+        ))}
       </View>
       <Text variant="eyebrow" style={[modalStyles.eyebrow, { marginTop: 20 }]}>
         Publish
