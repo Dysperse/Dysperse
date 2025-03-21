@@ -5,14 +5,17 @@ import { omit } from "@/helpers/omit";
 import { useResponsiveBreakpoints } from "@/helpers/useResponsiveBreakpoints";
 import { Button } from "@/ui/Button";
 import Icon from "@/ui/Icon";
+import IconButton from "@/ui/IconButton";
 import RefreshControl from "@/ui/RefreshControl";
 import Text from "@/ui/Text";
 import { addHslAlpha } from "@/ui/color";
 import { useColorTheme } from "@/ui/color/theme-provider";
+import capitalizeFirstLetter from "@/utils/capitalizeFirstLetter";
 import { FlashList } from "@shopify/flash-list";
 import dayjs from "dayjs";
+import { impactAsync, ImpactFeedbackStyle } from "expo-haptics";
 import { LinearGradient } from "expo-linear-gradient";
-import { useLocalSearchParams } from "expo-router";
+import { router, useLocalSearchParams } from "expo-router";
 import { ScrollView, View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { ColumnEmptyComponent } from "../../emptyComponent";
@@ -126,8 +129,9 @@ function StreamColumn({ view, mutate, filteredTasks }) {
         style={{
           width: "100%",
           zIndex: 99,
-          height: 50,
-          marginBottom: -50,
+          height: 30,
+          marginBottom: -30,
+          marginTop: -40,
           pointerEvents: "none",
         }}
       />
@@ -142,7 +146,8 @@ function StreamColumn({ view, mutate, filteredTasks }) {
         estimatedItemSize={113}
         contentContainerStyle={{
           padding: 5,
-          paddingTop: breakpoints.md ? 20 : 0.001,
+          paddingHorizontal: breakpoints.md ? 5 : 15,
+          paddingTop: 20,
           paddingBottom: insets.bottom + 15,
         }}
         renderItem={({ item }) => (
@@ -165,7 +170,15 @@ function MobileHeader() {
   const { mobileStreamMode } = useLocalSearchParams();
 
   return (
-    <View style={{ padding: 15, paddingBottom: 0 }}>
+    <View
+      style={{
+        padding: 15,
+        paddingBottom: 0,
+        flexDirection: "row",
+        justifyContent: "space-between",
+        alignItems: "center",
+      }}
+    >
       <Text
         style={{
           fontSize: 30,
@@ -173,8 +186,43 @@ function MobileHeader() {
           color: theme[11],
         }}
       >
-        {mobileStreamMode || "Backlog"}
+        {capitalizeFirstLetter(mobileStreamMode || "unscheduled")}
       </Text>
+
+      <View style={{ flexDirection: "row" }}>
+        <IconButton
+          icon="west"
+          size={50}
+          disabled={mobileStreamMode === "unscheduled"}
+          onPress={() => {
+            router.setParams({
+              mobileStreamMode:
+                streamViews[
+                  streamViews.findIndex(
+                    (v) => v.value === (mobileStreamMode || "unscheduled")
+                  ) - 1
+                ]?.value,
+            });
+            impactAsync(ImpactFeedbackStyle.Light);
+          }}
+        />
+        <IconButton
+          icon="east"
+          size={50}
+          disabled={mobileStreamMode === "upcoming"}
+          onPress={() => {
+            router.setParams({
+              mobileStreamMode:
+                streamViews[
+                  streamViews.findIndex(
+                    (v) => v.value === (mobileStreamMode || "unscheduled")
+                  ) + 1
+                ]?.value,
+            });
+            impactAsync(ImpactFeedbackStyle.Light);
+          }}
+        />
+      </View>
     </View>
   );
 }
@@ -216,7 +264,7 @@ export default function Stream() {
   return (
     <View style={{ flex: 1 }}>
       {!breakpoints.md && <MobileHeader />}
-      <View style={{ padding: 15, paddingBottom: 2.5 }}>
+      <View style={{ padding: 15, paddingBottom: 2.5, zIndex: 999 }}>
         <CreateTask
           defaultValues={{ collectionId: data.id }}
           mutate={(newTask) => {
@@ -288,11 +336,12 @@ export default function Stream() {
         </ScrollView>
       ) : (
         <StreamColumn
-          view={mobileStreamMode || "backlog"}
+          view={mobileStreamMode || "unscheduled"}
           mutate={mutate}
-          filteredTasks={filteredTasks(mobileStreamMode || "backlog")}
+          filteredTasks={filteredTasks(mobileStreamMode || "unscheduled")}
         />
       )}
     </View>
   );
 }
+
