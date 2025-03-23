@@ -217,7 +217,7 @@ export const normalizeRecurrenceRuleObject = (rule) => {
   });
 };
 function SubtaskList() {
-  const { task, updateTask, isReadOnly, mutateList } = useTaskDrawerContext();
+  const { task, updateTask, isReadOnly } = useTaskDrawerContext();
   const theme = useColorTheme();
 
   return (
