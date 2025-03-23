@@ -1,7 +1,7 @@
 import { CreateLabelModal } from "@/components/labels/createModal";
 import { useLabelColors } from "@/components/labels/useLabelColors";
 import { useResponsiveBreakpoints } from "@/helpers/useResponsiveBreakpoints";
-import { DBottomSheetProps } from "@/ui/BottomSheet";
+import BottomSheet, { DBottomSheetProps } from "@/ui/BottomSheet";
 import { Button, ButtonText } from "@/ui/Button";
 import Emoji from "@/ui/Emoji";
 import ErrorAlert from "@/ui/Error";
@@ -9,13 +9,18 @@ import Icon from "@/ui/Icon";
 import IconButton from "@/ui/IconButton";
 import { ListItemButton } from "@/ui/ListItemButton";
 import ListItemText from "@/ui/ListItemText";
-import Modal from "@/ui/Modal";
 import Spinner from "@/ui/Spinner";
 import Text from "@/ui/Text";
 import TextField from "@/ui/TextArea";
+import { addHslAlpha } from "@/ui/color";
 import { useColorTheme } from "@/ui/color/theme-provider";
-import { BottomSheetModal, useBottomSheet } from "@gorhom/bottom-sheet";
-import { FlashList } from "@shopify/flash-list";
+import {
+  BottomSheetFlashList,
+  BottomSheetFlatList,
+  BottomSheetModal,
+  useBottomSheet,
+} from "@gorhom/bottom-sheet";
+import { LinearGradient } from "expo-linear-gradient";
 import fuzzysort from "fuzzysort";
 import React, {
   cloneElement,
@@ -26,7 +31,6 @@ import React, {
   useState,
 } from "react";
 import { Pressable, View } from "react-native";
-import { FlatList } from "react-native-gesture-handler";
 import useSWR from "swr";
 import { labelPickerStyles } from "./labelPickerStyles";
 
@@ -49,12 +53,14 @@ const Search = ({ query, setQuery, autoFocus }) => {
       style={{
         backgroundColor: theme[3],
         paddingHorizontal: 20,
-        paddingVertical: 10,
         borderRadius: 99,
+        height: 50,
         shadowRadius: 0,
         flex: 1,
-        fontSize: 20,
+        textAlign: "center",
+        fontSize: 18,
       }}
+      weight={800}
       onKeyPress={({ nativeEvent }) => {
         if (nativeEvent.key === "Escape") {
           forceClose({ duration: 0.0001, overshootClamping: true });
@@ -82,7 +88,7 @@ function CollectionChips({
   return (
     <View style={{ padding: 10, gap: 10 }}>
       {collections.length !== 0 && <Text variant="eyebrow">Collections</Text>}
-      <FlatList
+      <BottomSheetFlatList
         horizontal
         ref={ref}
         onScrollToIndexFailed={(info) => {
@@ -180,7 +186,8 @@ function LabelPickerContent({
     ? data
         ?.map((l) => l.collections.map((c) => c))
         ?.flat()
-        ?.filter((c, i, arr) => arr.findIndex((a) => a.id === c.id) === i) || []
+        ?.filter((c, i, arr) => arr.findIndex((a) => a.id === c.id) === i)
+        .sort((a, b) => a.name.localeCompare(b.name)) || []
     : [];
 
   const [selectedCollection, setSelectedCollection] = useState(() => {
@@ -216,19 +223,14 @@ function LabelPickerContent({
           />
         </View>
       )}
-      <View
-        style={[
-          labelPickerStyles.searchBox,
-          {
-            backgroundColor: theme[3],
-            borderColor: theme[6],
-          },
-        ]}
-      >
+      <View style={[labelPickerStyles.searchBox]}>
         {!hideBack && (
-          <IconButton onPress={handleClose} style={{ marginLeft: 10 }}>
-            <Icon>close</Icon>
-          </IconButton>
+          <IconButton
+            onPress={handleClose}
+            icon="close"
+            size={50}
+            variant="filled"
+          />
         )}
         <Search query={query} setQuery={setQuery} autoFocus={autoFocus} />
         <CreateLabelModal
@@ -248,13 +250,22 @@ function LabelPickerContent({
             }
           }}
         >
-          <IconButton style={{ marginRight: 10 }} size={30}>
-            <Icon>add_circle</Icon>
-          </IconButton>
+          <Button
+            onPress={handleClose}
+            icon="add"
+            height={50}
+            text="New"
+            variant="filled"
+            style={{ paddingHorizontal: 15 }}
+          />
         </CreateLabelModal>
       </View>
+      <LinearGradient
+        colors={[theme[2], addHslAlpha(theme[2], 0)]}
+        style={{ height: 40, zIndex: 99, marginBottom: -40, width: "100%" }}
+      />
       {Array.isArray(data) ? (
-        <FlashList
+        <BottomSheetFlashList
           showsVerticalScrollIndicator={false}
           estimatedItemSize={62}
           data={fuzzysort
@@ -301,7 +312,7 @@ function LabelPickerContent({
               </View>
             </>
           }
-          contentContainerStyle={{ paddingBottom: 100 }}
+          contentContainerStyle={{ paddingBottom: 100, paddingTop: 10 }}
           ListEmptyComponent={
             <View
               style={{
@@ -380,14 +391,7 @@ function LabelPickerContent({
                   }
                 />
                 {((label as any)?.id == item.id || multiple) && (
-                  <Icon
-                    filled={
-                      multiple &&
-                      Array.isArray(label) &&
-                      label.includes(item.id)
-                    }
-                    size={30}
-                  >
+                  <Icon filled size={30}>
                     {isSelected ? "check_circle" : "circle"}
                   </Icon>
                 )}
@@ -451,7 +455,9 @@ export default function LabelPicker({
 
   const handleClose = useCallback(async () => {
     await onClose?.();
-    ref.current?.close({ duration: 0.0001, overshootClamping: true });
+    ref.current?.close(
+      breakpoints.md ? { duration: 0.0001, overshootClamping: true } : undefined
+    );
   }, [ref, onClose]);
 
   const trigger = cloneElement(children || <Pressable />, {
@@ -463,12 +469,11 @@ export default function LabelPicker({
   return (
     <>
       {trigger}
-      <Modal
-        animation="SCALE"
+      <BottomSheet
         sheetRef={ref}
         onClose={handleClose}
         maxWidth={(breakpoints.md ? 450 : "100%") as any}
-        height={500}
+        snapPoints={["90%"]}
         {...sheetProps}
       >
         <LabelPickerContent
@@ -483,7 +488,7 @@ export default function LabelPicker({
           handleClose={handleClose}
           onClose={onClose}
         />
-      </Modal>
+      </BottomSheet>
     </>
   );
 }

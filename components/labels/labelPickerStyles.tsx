@@ -5,8 +5,8 @@ export const labelPickerStyles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     borderRadius: 999,
-    marginBottom: 10,
-    borderWidth: 1,
+    marginBottom: 0,
+    gap: 10,
   },
   sectionError: {},
   labelOption: {
@@ -28,3 +28,4 @@ export const labelPickerStyles = StyleSheet.create({
     opacity: 0.6,
   },
 });
+

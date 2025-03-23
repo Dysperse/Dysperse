@@ -46,7 +46,7 @@ import React, {
   useState,
 } from "react";
 import { Controller, useForm } from "react-hook-form";
-import { Keyboard, Linking, Platform, Pressable, View } from "react-native";
+import { Linking, Platform, Pressable, View } from "react-native";
 import { ScrollView } from "react-native-gesture-handler";
 import Animated, {
   useAnimatedStyle,
@@ -60,6 +60,7 @@ import { RRule } from "rrule";
 import useSWR from "swr";
 import { useDebouncedCallback } from "use-debounce";
 import { TaskNote } from "../drawer/TaskNote";
+import VolumeBars from "./speech-recognition";
 
 const PinTask = memo(function PinTask({ watch, control }: any) {
   const orange = useColor("orange");
@@ -88,7 +89,8 @@ const PinTask = memo(function PinTask({ watch, control }: any) {
       render={({ field: { onChange, value } }) => (
         <IconButton
           icon="push_pin"
-          size={breakpoints.md ? 50 : 35}
+          size={50}
+          style={{ flex: 1 }}
           onPress={() => onChange(!value)}
           variant="filled"
           iconProps={{ filled: value }}
@@ -123,6 +125,7 @@ function Footer({
   control,
   dateRef,
   recurrenceRef,
+  defaultValues,
 }: {
   nameRef: any;
   labelMenuRef: React.MutableRefObject<BottomSheetModal>;
@@ -131,15 +134,14 @@ function Footer({
   control: any;
   dateRef: React.MutableRefObject<BottomSheetModal>;
   recurrenceRef: React.MutableRefObject<BottomSheetModal>;
+  defaultValues;
 }) {
   const theme = useColorTheme();
   const recurrenceRule = watch("recurrenceRule");
   const collectionId = watch("collectionId");
   const date = watch("date");
   const dateOnly = watch("dateOnly");
-  const label = watch("label");
   const name = watch("name");
-  const location = watch("location");
   const parentTask = watch("parentTask");
 
   return (
@@ -148,11 +150,7 @@ function Footer({
         flexDirection: "row",
         alignItems: "center",
         justifyContent: "flex-end",
-        paddingBottom:
-          (date || recurrenceRule || label || location || collectionId) &&
-          !parentTask
-            ? 10
-            : 0,
+        paddingBottom: 10,
       }}
     >
       <ScrollView
@@ -164,31 +162,10 @@ function Footer({
           alignItems: "center",
           flexDirection: "row",
           gap: 5,
-          // display:
-          //   (date || recurrenceRule || label || collectionId || location) &&
-          //   !parentTask
-          //     ? "flex"
-          //     : "none",
         }}
         showsHorizontalScrollIndicator={false}
         keyboardShouldPersistTaps="handled"
       >
-        {location && (
-          <Button
-            chip
-            large
-            variant="outlined"
-            icon="location_on"
-            onDismiss={() => {
-              setValue("location", null);
-            }}
-            text={location.name}
-            textProps={{
-              style: { maxWidth: 100 },
-              numberOfLines: 1,
-            }}
-          />
-        )}
         {(date || recurrenceRule) && !parentTask && (
           <Button
             chip
@@ -225,18 +202,23 @@ function Footer({
             }
           />
         )}
-        {(label || collectionId) && !parentTask && (
-          <CreateTaskLabelInput
-            setValue={setValue}
-            watch={watch}
-            collectionId={collectionId}
-            control={control}
-            labelMenuRef={labelMenuRef}
-            onLabelPickerClose={() => {
-              nameRef?.current?.focus();
-            }}
-          />
-        )}
+        <DateButton
+          watch={watch}
+          setValue={setValue}
+          defaultValues={defaultValues}
+          dateRef={dateRef}
+          recurrenceRef={recurrenceRef}
+        />
+        <LocationButton watch={watch} setValue={setValue} />
+        <CreateTaskLabelInput
+          nameRef={nameRef}
+          setValue={setValue}
+          watch={watch}
+          collectionId={collectionId}
+          control={control}
+          labelMenuRef={labelMenuRef}
+          onLabelPickerClose={() => nameRef?.current?.focus()}
+        />
         <AiLabelSuggestion
           nameRef={nameRef}
           setValue={setValue}
@@ -299,6 +281,7 @@ const CreateTaskLabelInput = memo(function CreateTaskLabelInput({
   labelMenuRef,
   watch,
   setValue,
+  nameRef,
 }: any) {
   const theme = useColorTheme();
   const colors = useLabelColors();
@@ -331,18 +314,46 @@ const CreateTaskLabelInput = memo(function CreateTaskLabelInput({
             setLabel={onChange}
             defaultCollection={collectionId}
             sheetProps={{ sheetRef: labelMenuRef }}
+            onClose={() => nameRef.current.focus()}
             autoFocus
           >
-            {label?.id ? (
+            {!label?.id && collectionId ? (
+              <Button
+                chip
+                icon={
+                  collectionData ? (
+                    <Emoji
+                      emoji={
+                        collectionData?.find((e) => e.id === collectionId)
+                          ?.emoji
+                      }
+                      size={20}
+                    />
+                  ) : (
+                    <Spinner />
+                  )
+                }
+                height={35}
+                textStyle={{ fontSize: 15 }}
+                containerStyle={{ borderRadius: 15 }}
+                onDismiss={() => setValue("collectionId", null)}
+                variant="outlined"
+                text={
+                  collectionData
+                    ? collectionData.find((e) => e.id === collectionId)?.name
+                    : "Loading..."
+                }
+              />
+            ) : (
               <Button
                 onDismiss={value ? () => onChange(null) : undefined}
-                text={value?.name || "Label"}
+                text={value?.name}
                 chip
                 large
+                variant={value ? "filled" : "outlined"}
                 textStyle={{
                   color: colors[value?.color]?.[11] || theme[11],
                 }}
-                containerStyle={{ borderRadius: 15 }}
                 dismissButtonProps={{
                   iconStyle: {
                     color: colors[value?.color]?.[11] || theme[11],
@@ -355,50 +366,25 @@ const CreateTaskLabelInput = memo(function CreateTaskLabelInput({
                     <Icon>tag</Icon>
                   )
                 }
-                backgroundColors={{
-                  default: addHslAlpha(
-                    colors[value?.color]?.[9] || theme[9],
-                    0.1
-                  ),
-                  hovered: addHslAlpha(
-                    colors[value?.color]?.[9] || theme[9],
-                    0.2
-                  ),
-                  pressed: addHslAlpha(
-                    colors[value?.color]?.[9] || theme[9],
-                    0.3
-                  ),
-                }}
+                backgroundColors={
+                  !value
+                    ? undefined
+                    : {
+                        default: addHslAlpha(
+                          colors[value?.color]?.[9] || theme[9],
+                          0.1
+                        ),
+                        hovered: addHslAlpha(
+                          colors[value?.color]?.[9] || theme[9],
+                          0.2
+                        ),
+                        pressed: addHslAlpha(
+                          colors[value?.color]?.[9] || theme[9],
+                          0.3
+                        ),
+                      }
+                }
               />
-            ) : (
-              collectionId && (
-                <Button
-                  chip
-                  icon={
-                    collectionData ? (
-                      <Emoji
-                        emoji={
-                          collectionData?.find((e) => e.id === collectionId)
-                            ?.emoji
-                        }
-                        size={20}
-                      />
-                    ) : (
-                      <Spinner />
-                    )
-                  }
-                  height={35}
-                  textStyle={{ fontSize: 15 }}
-                  containerStyle={{ borderRadius: 15 }}
-                  onDismiss={() => setValue("collectionId", null)}
-                  variant="outlined"
-                  text={
-                    collectionData
-                      ? collectionData.find((e) => e.id === collectionId)?.name
-                      : "Loading..."
-                  }
-                />
-              )
             )}
           </LabelPicker>
         )}
@@ -691,12 +677,6 @@ function TaskNameInput({
     []
   );
 
-  useEffect(() => {
-    Keyboard.addListener("keyboardWillHide", () => {
-      setTimeout(() => nameRef?.current?.focusInputWithKeyboard?.(), 0);
-    });
-  }, [nameRef]);
-
   return (
     <Controller
       control={control}
@@ -972,10 +952,9 @@ const TaskAttachments = ({ watch, setValue }: any) => {
   );
 };
 
-const SubmitButton = forwardRef(({ onSubmit }: any, ref) => {
+const SubmitButton = forwardRef(({ onSubmit, watch }: any, ref) => {
   const theme = useColorTheme();
-  const breakpoints = useResponsiveBreakpoints();
-
+  const name = watch("name");
   const [disabled, setDisabled] = useState(false);
 
   useImperativeHandle(ref, () => ({
@@ -984,16 +963,24 @@ const SubmitButton = forwardRef(({ onSubmit }: any, ref) => {
   }));
 
   return (
-    <IconButton
-      disabled={disabled}
-      size={breakpoints.md ? 50 : 35}
-      iconStyle={{ color: theme[1] }}
-      iconProps={{ bold: true }}
+    <Button
+      disabled={disabled || !name}
+      height={50}
+      text="Create"
+      bold
       backgroundColors={{
-        default: theme[10],
-        hovered: theme[11],
-        pressed: theme[12],
+        default:
+          disabled || !name
+            ? addHslAlpha(theme[9], 0.15)
+            : addHslAlpha(theme[9], 0.4),
+        hovered: theme[7],
+        pressed: theme[8],
       }}
+      iconPosition="end"
+      style={{ paddingHorizontal: 20 }}
+      containerStyle={{ flex: 1.5 }}
+      textStyle={{ opacity: disabled || !name ? 0.6 : 1 }}
+      iconStyle={{ opacity: disabled || !name ? 0.6 : 1 }}
       variant="filled"
       icon="arrow_upward"
       onPress={onSubmit}
@@ -1002,7 +989,6 @@ const SubmitButton = forwardRef(({ onSubmit }: any, ref) => {
 });
 
 function DateButton({ watch, colors, dateRef, recurrenceRef, setValue }: any) {
-  const breakpoints = useResponsiveBreakpoints();
   const recurrenceRule = watch("recurrenceRule");
 
   const date = watch("date");
@@ -1041,45 +1027,15 @@ function DateButton({ watch, colors, dateRef, recurrenceRef, setValue }: any) {
           },
         ]}
         trigger={
-          <IconButton
+          <Button
             backgroundColors={colors}
             icon="calendar_today"
-            size={breakpoints.md ? 50 : 35}
-            variant="filled"
+            variant="outlined"
+            chip
+            large
           />
         }
       />
-    </View>
-  );
-}
-
-function LabelButton({ watch, colors, setValue }: any) {
-  const value = watch("label");
-  const breakpoints = useResponsiveBreakpoints();
-  const collectionId = watch("collectionId");
-  const labelMenuRef = useRef<BottomSheetModal>(null);
-  const parentTask = watch("parentTask");
-
-  return parentTask ? null : (
-    <View
-      style={{
-        display: value ? "none" : "flex",
-      }}
-    >
-      <LabelPicker
-        label={value}
-        setLabel={(e) => setValue("label", e)}
-        defaultCollection={collectionId}
-        sheetProps={{ sheetRef: labelMenuRef }}
-        autoFocus
-      >
-        <IconButton
-          backgroundColors={colors}
-          icon="tag"
-          size={breakpoints.md ? 50 : 35}
-          variant="filled"
-        />
-      </LabelPicker>
     </View>
   );
 }
@@ -1161,18 +1117,20 @@ const TaskDescriptionInput = forwardRef(
 function SpeechRecognition({ setValue }) {
   const theme = useColorTheme();
   const red = useColor("red");
-  const breakpoints = useResponsiveBreakpoints();
   const [recognizing, setRecognizing] = useState(false);
 
-  useSpeechRecognitionEvent("volumechange", (event) => {});
+  useSpeechRecognitionEvent("volumechange", (event) => {
+    console.log(event);
+  });
 
   useSpeechRecognitionEvent("start", () => {
     setRecognizing(true);
-    Toast.show({
-      type: "info",
-      text1: "Listening...",
-      visibilityTime: 99999999,
-    });
+    if (Platform.OS === "web")
+      Toast.show({
+        type: "info",
+        text1: "Listening...",
+        visibilityTime: 99999999,
+      });
   });
   useSpeechRecognitionEvent("end", () => {
     setRecognizing(false);
@@ -1210,36 +1168,41 @@ function SpeechRecognition({ setValue }) {
   };
 
   return (
-    <IconButton
-      variant="outlined"
-      icon="mic"
-      size={breakpoints.md ? 50 : 35}
-      iconProps={{ filled: recognizing }}
-      iconStyle={{
-        color: recognizing ? red[2] : theme[11],
-      }}
-      backgroundColors={
-        recognizing
-          ? { default: red[9], hovered: red[10], pressed: red[11] }
-          : {}
-      }
-      borderColors={
-        recognizing
-          ? {
-              default: red[9],
-              hovered: red[10],
-              pressed: red[11],
-            }
-          : {}
-      }
-      style={{ marginRight: "auto" }}
-      onPress={recognizing ? ExpoSpeechRecognitionModule.stop : handleStart}
-    />
+    <>
+      <IconButton
+        variant="filled"
+        icon={recognizing ? <VolumeBars /> : "mic"}
+        size={50}
+        style={{ flex: 1 }}
+        iconProps={{ filled: recognizing }}
+        iconStyle={{
+          color: recognizing ? red[2] : theme[11],
+        }}
+        backgroundColors={
+          recognizing
+            ? { default: red[9], hovered: red[10], pressed: red[11] }
+            : {
+                default: addHslAlpha(theme[9], 0.15),
+                hovered: addHslAlpha(theme[9], 0.25),
+                pressed: addHslAlpha(theme[9], 0.35),
+              }
+        }
+        borderColors={
+          recognizing
+            ? {
+                default: red[9],
+                hovered: red[10],
+                pressed: red[11],
+              }
+            : {}
+        }
+        onPress={recognizing ? ExpoSpeechRecognitionModule.stop : handleStart}
+      />
+    </>
   );
 }
 
 function LocationButton({ watch, setValue }) {
-  const breakpoints = useResponsiveBreakpoints();
   const theme = useColorTheme();
   const location = watch("location");
 
@@ -1254,16 +1217,22 @@ function LocationButton({ watch, setValue }) {
           })
         }
       >
-        <IconButton
-          variant="filled"
-          backgroundColors={{
-            default: addHslAlpha(theme[9], 0.15),
-            hovered: addHslAlpha(theme[9], 0.25),
-            pressed: addHslAlpha(theme[9], 0.35),
-          }}
+        <Button
+          variant={location ? "filled" : "outlined"}
+          text={location?.name}
+          backgroundColors={
+            !location
+              ? undefined
+              : {
+                  default: addHslAlpha(theme[9], 0.15),
+                  hovered: addHslAlpha(theme[9], 0.25),
+                  pressed: addHslAlpha(theme[9], 0.35),
+                }
+          }
           icon="near_me"
+          chip
+          large
           iconStyle={{ transform: [{ scale: 1.1 }] }}
-          size={breakpoints.md ? 50 : 35}
         />
       </LocationPickerModal>
     )
@@ -1372,12 +1341,6 @@ const BottomSheetContent = forwardRef(
         )();
     };
 
-    const colors = {
-      default: addHslAlpha(theme[9], 0.15),
-      hovered: addHslAlpha(theme[9], 0.25),
-      pressed: addHslAlpha(theme[9], 0.35),
-    };
-
     useEffect(() => {
       return () => {
         if (addedTasks.current.length > 0) {
@@ -1400,7 +1363,7 @@ const BottomSheetContent = forwardRef(
       >
         <BlurView
           style={{ flex: 1, padding: 25, gap: 20, flexDirection: "column" }}
-          intensity={Platform.OS === "android" ? 0 : 50}
+          intensity={Platform.OS === "android" ? 0 : 90}
           tint={
             Platform.OS === "ios"
               ? isDark
@@ -1420,6 +1383,7 @@ const BottomSheetContent = forwardRef(
             }}
           >
             <Footer
+              defaultValues={defaultValues}
               dateRef={dateRef}
               recurrenceRef={recurrenceRef}
               setValue={setValue}
@@ -1458,23 +1422,12 @@ const BottomSheetContent = forwardRef(
             }}
           >
             <SpeechRecognition setValue={setValue} />
-            <LabelButton
-              watch={watch}
-              setValue={setValue}
-              defaultValues={defaultValues}
-              colors={colors}
-            />
-            <LocationButton watch={watch} setValue={setValue} colors={colors} />
-            <DateButton
-              watch={watch}
-              setValue={setValue}
-              defaultValues={defaultValues}
-              dateRef={dateRef}
-              recurrenceRef={recurrenceRef}
-              colors={colors}
-            />
             <PinTask watch={watch} control={control} />
-            <SubmitButton ref={submitRef} onSubmit={handleSubmitButtonClick} />
+            <SubmitButton
+              watch={watch}
+              ref={submitRef}
+              onSubmit={handleSubmitButtonClick}
+            />
           </View>
         </BlurView>
       </Pressable>
@@ -1634,6 +1587,11 @@ const CreateTask = forwardRef(
           outerContent={
             breakpoints.md && <CreateTaskOuterContent ref={hintRef} />
           }
+          closeContainerStyles={{
+            justifyContent: "flex-end",
+            paddingBottom: 10,
+            paddingHorizontal: 10,
+          }}
         >
           <BottomSheetContent
             ref={formRef}

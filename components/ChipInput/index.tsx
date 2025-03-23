@@ -143,7 +143,6 @@ export default function ChipInput({
       value={value}
       placeholder={placeholder}
       onChange={(e) => {
-        
         setValue(e.target.value);
       }}
       {...inputProps}
@@ -249,8 +248,8 @@ export default function ChipInput({
       value={value.replaceAll("/", "‎").replace("‎‎", "")}
       onChange={(d) => setValue(d.replaceAll("‎", "/").replace("‎‎", ""))}
       style={{
-        fontSize: 25,
-        fontFamily: "serifText800",
+        fontSize: 30,
+        fontFamily: "serifText700",
         height: "100%",
         color: theme[11],
         verticalAlign: "top",

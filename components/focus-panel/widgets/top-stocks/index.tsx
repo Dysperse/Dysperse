@@ -116,7 +116,7 @@ export function StockItem({ small, stock }: { small?: boolean; stock: any }) {
         {stock.ticker}
       </ButtonText>
       {!small && (
-        <ButtonText numberOfLines={1} weight={200} style={{ fontSize: 12 }}>
+        <ButtonText numberOfLines={1} style={{ fontSize: 12 }}>
           {stock.name}
         </ButtonText>
       )}
