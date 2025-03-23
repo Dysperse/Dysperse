@@ -74,7 +74,12 @@ export function Avatar(props: DAvatarProps) {
             </Icon>
           ) as any)}
       </View>
-      {props.image && <Image source={props.image} style={styles.image} />}
+      {props.image && (
+        <Image
+          source={props.image}
+          style={[styles.image, { backgroundColor: theme[3] }]}
+        />
+      )}
     </Pressable>
   );
 }
