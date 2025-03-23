@@ -28,6 +28,7 @@ export default function Page() {
     <>
       <MenuButton gradient back />
       <ScrollView
+        keyboardShouldPersistTaps="handled"
         contentContainerStyle={{
           paddingTop: 100,
           padding: 20,

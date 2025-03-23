@@ -125,7 +125,7 @@ export function CreateLabelModal({
             <Icon>close</Icon>
           </IconButton>
         </View>
-        <ScrollView>
+        <ScrollView keyboardShouldPersistTaps="handled">
           <View
             style={{
               padding: 20,
