@@ -248,7 +248,7 @@ export default function ChipInput({
       value={value.replaceAll("/", "‎").replace("‎‎", "")}
       onChange={(d) => setValue(d.replaceAll("‎", "/").replace("‎‎", ""))}
       style={{
-        fontSize: 30,
+        fontSize: 28,
         fontFamily: "serifText700",
         height: "100%",
         color: theme[11],

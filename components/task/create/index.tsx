@@ -90,7 +90,7 @@ const PinTask = memo(function PinTask({ watch, control }: any) {
         <IconButton
           icon="push_pin"
           size={50}
-          style={{ flex: 1 }}
+          style={breakpoints.md ? { marginLeft: "auto" } : { flex: 1 }}
           onPress={() => onChange(!value)}
           variant="filled"
           iconProps={{ filled: value }}
@@ -156,12 +156,13 @@ function Footer({
       <ScrollView
         horizontal
         style={{
-          marginRight: name ? 0 : 50,
+          marginHorizontal: -25,
         }}
         contentContainerStyle={{
           alignItems: "center",
           flexDirection: "row",
           gap: 5,
+          paddingHorizontal: 25,
         }}
         showsHorizontalScrollIndicator={false}
         keyboardShouldPersistTaps="handled"
@@ -955,6 +956,7 @@ const TaskAttachments = ({ watch, setValue }: any) => {
 const SubmitButton = forwardRef(({ onSubmit, watch }: any, ref) => {
   const theme = useColorTheme();
   const name = watch("name");
+  const breakpoints = useResponsiveBreakpoints();
   const [disabled, setDisabled] = useState(false);
 
   useImperativeHandle(ref, () => ({
@@ -978,7 +980,7 @@ const SubmitButton = forwardRef(({ onSubmit, watch }: any, ref) => {
       }}
       iconPosition="end"
       style={{ paddingHorizontal: 20 }}
-      containerStyle={{ flex: 1.5 }}
+      containerStyle={!breakpoints.md && { flex: 1.5 }}
       textStyle={{ opacity: disabled || !name ? 0.6 : 1 }}
       iconStyle={{ opacity: disabled || !name ? 0.6 : 1 }}
       variant="filled"
@@ -1115,6 +1117,7 @@ const TaskDescriptionInput = forwardRef(
 );
 
 function SpeechRecognition({ setValue }) {
+  const breakpoints = useResponsiveBreakpoints();
   const theme = useColorTheme();
   const red = useColor("red");
   const [recognizing, setRecognizing] = useState(false);
@@ -1173,7 +1176,7 @@ function SpeechRecognition({ setValue }) {
         variant="filled"
         icon={recognizing ? <VolumeBars /> : "mic"}
         size={50}
-        style={{ flex: 1 }}
+        style={{ flex: breakpoints.md ? undefined : 1 }}
         iconProps={{ filled: recognizing }}
         iconStyle={{
           color: recognizing ? red[2] : theme[11],
@@ -1587,11 +1590,13 @@ const CreateTask = forwardRef(
           outerContent={
             breakpoints.md && <CreateTaskOuterContent ref={hintRef} />
           }
-          closeContainerStyles={{
-            justifyContent: "flex-end",
-            paddingBottom: 10,
-            paddingHorizontal: 10,
-          }}
+          closeContainerStyles={
+            !breakpoints.md && {
+              justifyContent: "flex-end",
+              paddingBottom: 10,
+              paddingHorizontal: 10,
+            }
+          }
         >
           <BottomSheetContent
             ref={formRef}

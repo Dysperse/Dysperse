@@ -36,6 +36,8 @@ export function Column({
   const [refreshing] = React.useState(false);
   const breakpoints = useResponsiveBreakpoints();
 
+  const data = taskSortAlgorithm(Object.values(column.entities));
+
   return (
     <View
       style={[
@@ -123,9 +125,14 @@ export function Column({
       <FlashList
         ref={columnRef}
         refreshControl={
-          <RefreshControl refreshing={refreshing} onRefresh={() => mutate()} />
+          data.length > 0 && (
+            <RefreshControl
+              refreshing={refreshing}
+              onRefresh={() => mutate()}
+            />
+          )
         }
-        data={taskSortAlgorithm(Object.values(column.entities))}
+        data={data}
         estimatedItemSize={100}
         contentContainerStyle={{
           padding: 10,
@@ -169,3 +176,4 @@ export function Column({
     </View>
   );
 }
+
