@@ -133,14 +133,17 @@ function CollectionChips({
 
 const CloseButton = memo(function CloseButton({ onClose }: { onClose: any }) {
   const { forceClose } = useBottomSheet();
+  const breakpoints = useResponsiveBreakpoints();
   const [loading, setLoading] = useState(false);
 
   const handleClose = useCallback(async () => {
     setLoading(true);
     await onClose?.();
-    forceClose({ duration: 0.0001, overshootClamping: true });
+    forceClose(
+      breakpoints.md ? { duration: 0.0001, overshootClamping: true } : undefined
+    );
     setLoading(false);
-  }, [forceClose, onClose]);
+  }, [forceClose, onClose, breakpoints]);
 
   return (
     <Button
