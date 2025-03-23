@@ -1248,7 +1248,7 @@ function LocationButton({ watch, setValue, nameRef }) {
         large
         textStyle={{ maxWidth: 100 }}
         iconStyle={{ transform: [{ scale: 1.1 }] }}
-        onDismiss={() => setValue("location", null)}
+        onDismiss={location ? undefined : () => setValue("location", null)}
       />
     </LocationPickerModal>
   );
