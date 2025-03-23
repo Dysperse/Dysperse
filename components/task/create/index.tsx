@@ -210,7 +210,6 @@ function Footer({
           dateRef={dateRef}
           recurrenceRef={recurrenceRef}
         />
-        <LocationButton watch={watch} setValue={setValue} />
         <CreateTaskLabelInput
           nameRef={nameRef}
           setValue={setValue}
@@ -220,6 +219,7 @@ function Footer({
           labelMenuRef={labelMenuRef}
           onLabelPickerClose={() => nameRef?.current?.focus()}
         />
+        <LocationButton watch={watch} setValue={setValue} />
         <AiLabelSuggestion
           nameRef={nameRef}
           setValue={setValue}

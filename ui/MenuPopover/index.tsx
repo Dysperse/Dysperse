@@ -222,6 +222,7 @@ function MenuPopover({
               intensity={Platform.OS === "android" || isFirefox ? 0 : undefined}
             >
               <ScrollView
+                keyboardShouldPersistTaps="handled"
                 bounces={false}
                 {...scrollViewProps}
                 style={scrollViewStyle}

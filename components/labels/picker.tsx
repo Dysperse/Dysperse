@@ -31,6 +31,11 @@ import React, {
   useState,
 } from "react";
 import { Pressable, View } from "react-native";
+import Animated, {
+  useAnimatedStyle,
+  useSharedValue,
+  withSpring,
+} from "react-native-reanimated";
 import useSWR from "swr";
 import { labelPickerStyles } from "./labelPickerStyles";
 
@@ -199,6 +204,24 @@ function LabelPickerContent({
     return hasLabels ? defaultCollection : null;
   });
 
+  const hideCreate = useSharedValue(0);
+
+  const hideCreateStyle = useAnimatedStyle(() => ({
+    width: 100,
+    marginRight: withSpring(hideCreate.value === 1 ? -110 : 0, {
+      stiffness: 400,
+      damping: 30,
+    }),
+    opacity: withSpring(hideCreate.value === 1 ? 0 : 1, {
+      stiffness: 400,
+      damping: 30,
+    }),
+  }));
+
+  useEffect(() => {
+    hideCreate.value = query ? 1 : 0;
+  }, [query, hideCreate]);
+
   return (
     <View
       style={{
@@ -236,32 +259,35 @@ function LabelPickerContent({
           />
         )}
         <Search query={query} setQuery={setQuery} autoFocus={autoFocus} />
-        <CreateLabelModal
-          collectionId={selectedCollection}
-          mutate={mutate}
-          onClose={() => searchRef.current?.focus()}
-          onCreate={(item) => {
-            if (multiple && Array.isArray(label)) {
-              if (label.includes(item.id) && typeof label === "object") {
-                setLabel(label.filter((id) => id !== item.id));
+        <Animated.View style={hideCreateStyle}>
+          <CreateLabelModal
+            collectionId={selectedCollection}
+            mutate={mutate}
+            onClose={() => searchRef.current?.focus()}
+            onCreate={(item) => {
+              if (multiple && Array.isArray(label)) {
+                if (label.includes(item.id) && typeof label === "object") {
+                  setLabel(label.filter((id) => id !== item.id));
+                } else {
+                  setLabel([...label, item.id]);
+                }
               } else {
-                setLabel([...label, item.id]);
+                setLabel(item.id === (label as any)?.id ? null : item);
+                setTimeout(handleClose, 0);
               }
-            } else {
-              setLabel(item.id === (label as any)?.id ? null : item);
-              setTimeout(handleClose, 0);
-            }
-          }}
-        >
-          <Button
-            onPress={handleClose}
-            icon="add"
-            height={50}
-            text="New"
-            variant="filled"
-            style={{ paddingHorizontal: 15 }}
-          />
-        </CreateLabelModal>
+            }}
+          >
+            <Button
+              onPress={handleClose}
+              icon="add"
+              height={50}
+              text="New"
+              bold
+              variant="filled"
+              containerStyle={{ flex: 1 }}
+            />
+          </CreateLabelModal>
+        </Animated.View>
       </View>
       <LinearGradient
         colors={[theme[2], addHslAlpha(theme[2], 0)]}
