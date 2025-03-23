@@ -182,7 +182,15 @@ const Scratch = () => {
         />
         <IconButton
           onPress={handleSubmit(onSubmit)}
-          icon={loading ? <Spinner /> : "east"}
+          icon={
+            loading ? (
+              <View style={{ padding: 5 }}>
+                <Spinner color={theme[1]} />
+              </View>
+            ) : (
+              "east"
+            )
+          }
           backgroundColors={{
             default: theme[name && !loading ? 10 : 5],
             hovered: theme[name && !loading ? 11 : 6],
@@ -190,7 +198,10 @@ const Scratch = () => {
           }}
           disabled={!name || loading}
           variant="filled"
-          style={{ borderRadius: 10, opacity: 1 }}
+          style={{
+            borderRadius: 10,
+            opacity: 1,
+          }}
           iconStyle={name && { color: theme[2] }}
         />
       </View>
