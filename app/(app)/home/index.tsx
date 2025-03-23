@@ -140,7 +140,7 @@ export const MenuButton = ({
   const Wrapper = gradient
     ? ({ children }) => (
         <LinearGradient
-          colors={gradientColors || [theme[1], addHslAlpha(theme[1], 0)]}
+          colors={gradientColors || [theme[2], addHslAlpha(theme[2], 0)]}
           style={{
             position: "absolute",
             top: 0,

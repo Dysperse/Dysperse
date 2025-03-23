@@ -168,7 +168,6 @@ export default function AppLayout() {
 
   useEffect(() => {
     if (session && !isUserLoading && !sessionData?.user) {
-      
       Toast.show({
         type: "error",
         text1: "You've been signed out",
@@ -413,6 +412,38 @@ export default function AppLayout() {
                                         />
                                         <JsStack.Screen
                                           name="friends"
+                                          options={arcCard({
+                                            theme,
+                                            breakpoints,
+                                            maxWidth: 500,
+                                          })}
+                                        />
+                                        <JsStack.Screen
+                                          name="[tab]/welcome/task"
+                                          options={arcCard({
+                                            theme,
+                                            breakpoints,
+                                            maxWidth: 500,
+                                          })}
+                                        />
+                                        <JsStack.Screen
+                                          name="[tab]/welcome/labels"
+                                          options={arcCard({
+                                            theme,
+                                            breakpoints,
+                                            maxWidth: 500,
+                                          })}
+                                        />
+                                        <JsStack.Screen
+                                          name="[tab]/welcome/collections"
+                                          options={arcCard({
+                                            theme,
+                                            breakpoints,
+                                            maxWidth: 500,
+                                          })}
+                                        />
+                                        <JsStack.Screen
+                                          name="[tab]/welcome/views"
                                           options={arcCard({
                                             theme,
                                             breakpoints,

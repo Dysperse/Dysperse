@@ -1,5 +1,7 @@
 import Content from "@/components/layout/content";
+import { useUser } from "@/context/useUser";
 import { useResponsiveBreakpoints } from "@/helpers/useResponsiveBreakpoints";
+import { Button, DButtonProps } from "@/ui/Button";
 import { addHslAlpha } from "@/ui/color";
 import { useColorTheme } from "@/ui/color/theme-provider";
 import Icon from "@/ui/Icon";
@@ -7,34 +9,44 @@ import { ListItemButton } from "@/ui/ListItemButton";
 import ListItemText from "@/ui/ListItemText";
 import Logo from "@/ui/logo";
 import Text from "@/ui/Text";
+import { router } from "expo-router";
 import { StyleProp, View, ViewStyle } from "react-native";
 import { ScrollView } from "react-native-gesture-handler";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
-import { MenuButton } from "../home";
+import { MenuButton } from "../../home";
 
 function Card({
   children,
   style,
+  buttonProps,
 }: {
   children: React.ReactNode;
   style?: StyleProp<ViewStyle>;
+  buttonProps?: DButtonProps;
 }) {
   const theme = useColorTheme();
 
   return (
-    <View
+    <Button
+      height="auto"
+      containerStyle={[style, { borderRadius: 20 }]}
       style={[
         {
           backgroundColor: theme[3],
-          padding: 20,
-          borderRadius: 20,
+          borderRadius: 30,
           position: "relative",
+          flexDirection: "column",
+          alignItems: "flex-start",
+          gap: 0,
+          paddingVertical: 20,
+          paddingHorizontal: 20,
         },
         style,
       ]}
+      {...buttonProps}
     >
       {children}
-    </View>
+    </Button>
   );
 }
 
@@ -64,6 +76,7 @@ export default function Page() {
   const theme = useColorTheme();
   const breakpoints = useResponsiveBreakpoints();
   const insets = useSafeAreaInsets();
+  const { session } = useUser();
 
   // const { sessionToken } = useUser();
   // const handleCreateTab = () => {
@@ -74,12 +87,14 @@ export default function Page() {
   //   });
   // };
 
+  const name = session.user?.profile?.name?.split(" ")[0];
+
   return (
     <Content noPaddingTop>
       <MenuButton addInsets gradient />
       <ScrollView style={{ flex: 1 }}>
         <View
-          style={{ flexShrink: 0, paddingVertical: 100, marginTop: insets.top }}
+          style={{ flexShrink: 0, paddingVertical: 50, marginTop: insets.top }}
         >
           <View
             style={{ alignItems: "center", marginBottom: 15 }}
@@ -98,7 +113,7 @@ export default function Page() {
             }}
             aria-valuetext="web-blur"
           >
-            Welcome to Dysperse!
+            Hey there, {name}
           </Text>
           <Text
             numberOfLines={1}
@@ -112,44 +127,71 @@ export default function Page() {
             }}
             aria-valuetext="web-blur-2"
           >
-            Here's our app in a nutshell...
+            Here's Dysperse in a nutshell...
           </Text>
         </View>
 
         <View
           style={{
-            maxWidth: 1200,
+            maxWidth: 800,
             width: "100%",
             marginHorizontal: "auto",
             paddingHorizontal: 20,
             paddingBottom: 20,
           }}
         >
-          <Card>
-            <Text variant="eyebrow">one</Text>
-            <Text
-              weight={900}
-              style={{ fontSize: 30, lineHeight: 43, color: theme[11] }}
+          <View style={{ flexDirection: "row", gap: 10 }}>
+            <Card
+              style={{ flex: 1 }}
+              buttonProps={{
+                onPress: () => router.push(`/[tab]/welcome/task`),
+              }}
             >
-              It all starts with a task
-            </Text>
-
-            <PlusButton />
-          </Card>
-
-          <View style={{ flexDirection: "row", gap: 10, marginVertical: 10 }}>
-            <Card style={{ flex: 1 }}>
-              <Text variant="eyebrow">two</Text>
+              <Text variant="eyebrow">one</Text>
               <Text
                 weight={900}
-                style={{ fontSize: 30, lineHeight: 43, color: theme[11] }}
+                style={{
+                  fontSize: 30,
+                  lineHeight: 36,
+                  marginTop: 10,
+                  color: theme[11],
+                }}
               >
-                Group related tasks into labels
+                It all starts with{"\n"}a task
               </Text>
 
               <PlusButton />
             </Card>
-            <Card style={{ flex: 1 }}>
+            <Card
+              style={{ flex: 1 }}
+              buttonProps={{
+                onPress: () => router.push(`/[tab]/welcome/labels`),
+              }}
+            >
+              <Text variant="eyebrow">two</Text>
+              <Text
+                weight={900}
+                style={{
+                  fontSize: 30,
+                  lineHeight: 36,
+                  marginTop: 10,
+                  color: theme[11],
+                }}
+              >
+                Group tasks into labels
+              </Text>
+
+              <PlusButton />
+            </Card>
+          </View>
+
+          <View style={{ flexDirection: "row", gap: 10, marginVertical: 10 }}>
+            <Card
+              style={{ flex: 1 }}
+              buttonProps={{
+                onPress: () => router.push(`/[tab]/welcome/collections`),
+              }}
+            >
               <Text variant="eyebrow">three</Text>
               <Text
                 weight={900}
@@ -157,23 +199,27 @@ export default function Page() {
               >
                 Sort labels into collections
               </Text>
+              <PlusButton />
+            </Card>
+            <Card
+              style={{ flex: 1.5 }}
+              buttonProps={{
+                onPress: () => router.push(`/[tab]/welcome/views`),
+              }}
+            >
+              <Text variant="eyebrow">four</Text>
+              <Text
+                weight={900}
+                style={{ fontSize: 30, lineHeight: 43, color: theme[11] }}
+              >
+                Open collections with{"\n"}our ten gorgeous views
+              </Text>
 
               <PlusButton />
             </Card>
           </View>
-          <Card>
-            <Text variant="eyebrow">four</Text>
-            <Text
-              weight={900}
-              style={{ fontSize: 30, lineHeight: 43, color: theme[11] }}
-            >
-              Open collections in our ten beautiful views
-            </Text>
 
-            <PlusButton />
-          </Card>
-
-          <Card style={{ marginTop: 100 }}>
+          <Card style={{ marginTop: 10 }} buttonProps={{ disabled: true }}>
             <Text
               weight={900}
               style={{ fontSize: 30, lineHeight: 43, color: theme[11] }}
