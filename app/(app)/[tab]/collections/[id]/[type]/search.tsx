@@ -231,7 +231,7 @@ function SearchList({ collection, inputRef, listRef, handleClose }) {
             >
               {filters.map((filter) => (
                 <Button
-                  dense
+                  style={{ paddingHorizontal: 15 }}
                   key={filter.label}
                   text={filter.label}
                   icon={
