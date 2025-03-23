@@ -37,8 +37,6 @@
     "@sentry/react-native": "~6.3.0",
     "@shopify/flash-list": "^1.7.3",
     "@simplewebauthn/typescript-types": "^8.3.4",
-    "@tiptap-pro/extension-drag-handle": "^2.16.1",
-    "@tiptap-pro/extension-node-range": "^2.16.1",
     "@tiptap/extension-character-count": "^2.10.3",
     "@tiptap/extension-collaboration": "^2.10.3",
     "@tiptap/extension-dropcursor": "^2.10.3",
@@ -156,3 +154,4 @@
   },
   "private": true
 }
+
