@@ -4,6 +4,7 @@ import CreateTask from "@/components/task/create";
 import { TaskDrawer } from "@/components/task/drawer";
 import { useResponsiveBreakpoints } from "@/helpers/useResponsiveBreakpoints";
 import { Avatar } from "@/ui/Avatar";
+import BottomSheet from "@/ui/BottomSheet";
 import { Button } from "@/ui/Button";
 import { addHslAlpha } from "@/ui/color";
 import { useColorTheme } from "@/ui/color/theme-provider";
@@ -12,11 +13,9 @@ import IconButton from "@/ui/IconButton";
 import { ListItemButton } from "@/ui/ListItemButton";
 import ListItemText from "@/ui/ListItemText";
 import MenuPopover from "@/ui/MenuPopover";
-import Modal from "@/ui/Modal";
 import RefreshControl from "@/ui/RefreshControl";
 import TextField from "@/ui/TextArea";
 import { BottomSheetFlashList } from "@gorhom/bottom-sheet";
-import { FlashList } from "@shopify/flash-list";
 import { LinearGradient } from "expo-linear-gradient";
 import { router, useLocalSearchParams } from "expo-router";
 import {
@@ -95,24 +94,13 @@ const icons = {
   clinic: "local_hospital",
 };
 
-export function LocationPickerModal({
-  children,
-  onLocationSelect,
-  hideSkip,
-  closeOnSelect,
+function Content({
   defaultQuery,
-}: {
-  children: any;
-  onLocationSelect: any;
-  hideSkip?: boolean;
-  closeOnSelect?: boolean;
-  defaultQuery?: string;
+  closeOnSelect,
+  inputRef,
+  onLocationSelect,
+  modalRef,
 }) {
-  const modalRef = useRef(null);
-  const trigger = cloneElement(children, {
-    onPress: () => modalRef.current.present(),
-  });
-
   const [loading, setLoading] = useState(false);
   const [data, setData] = useState(null);
   const [error, setError] = useState(null);
@@ -125,7 +113,7 @@ export function LocationPickerModal({
           query
         )}&format=json`
       ).then((res) => res.json());
-
+      console.log(res);
       setData(res);
     } catch (e) {
       console.error(e);
@@ -136,12 +124,17 @@ export function LocationPickerModal({
   };
 
   const [value, onChange] = useState("");
+
   const [debouncedValue] = useDebounce(value, 1000);
   useEffect(() => {
     if (debouncedValue) {
       handleSearch(debouncedValue);
     }
   }, [debouncedValue]);
+
+  useImperativeHandle(inputRef, () => ({
+    setValue: onChange,
+  }));
 
   useEffect(() => {
     if (defaultQuery) {
@@ -150,74 +143,124 @@ export function LocationPickerModal({
   }, [defaultQuery]);
 
   return (
+    <View style={{ padding: 10, height: "100%" }}>
+      <View style={{ flex: 1, marginTop: -15, position: "relative" }}>
+        {loading && (
+          <View
+            style={{
+              position: "absolute",
+              top: 10,
+              width: "100%",
+              height: 4,
+              paddingHorizontal: 20,
+            }}
+          >
+            <IndeterminateProgressBar height={4} />
+          </View>
+        )}
+        {error && <ErrorAlert />}
+        <BottomSheetFlashList
+          contentContainerStyle={{ paddingTop: 10 }}
+          data={data}
+          renderItem={({ item }: any) => (
+            <ListItemButton
+              onPress={() => {
+                onLocationSelect(item);
+                if (closeOnSelect) modalRef.current.forceClose();
+              }}
+            >
+              <Avatar icon={icons[item.type] || "location_on"} />
+              <ListItemText
+                primary={item.name || item.display_name}
+                secondary={
+                  item.name && item.display_name.split(", ").slice(2).join(", ")
+                }
+              />
+            </ListItemButton>
+          )}
+        />
+      </View>
+    </View>
+  );
+}
+
+export function LocationPickerModal({
+  children,
+  onLocationSelect,
+  hideSkip,
+  closeOnSelect,
+  defaultQuery,
+  onClose,
+  autoFocus,
+}: {
+  children: any;
+  onLocationSelect: any;
+  hideSkip?: boolean;
+  closeOnSelect?: boolean;
+  defaultQuery?: string;
+  onClose?: () => void;
+  autoFocus?: boolean;
+}) {
+  const modalRef = useRef(null);
+  const inputRef = useRef(null);
+
+  const trigger = cloneElement(children, {
+    onPress: () => modalRef.current.present(),
+  });
+
+  return (
     <>
       {trigger}
-      <Modal
-        sheetRef={modalRef}
-        animation="SCALE"
-        innerStyles={{ padding: 20, gap: 15, paddingBottom: 0 }}
-      >
-        <View style={{ flexDirection: "row" }}>
-          <Button
-            text="Cancel"
+      <BottomSheet sheetRef={modalRef} snapPoints={["90%"]} onClose={onClose}>
+        <View
+          style={{
+            flexDirection: "row",
+            marginBottom: 10,
+            gap: 10,
+            alignItems: "center",
+            paddingHorizontal: 10,
+          }}
+        >
+          <IconButton
+            size={50}
+            variant="filled"
+            icon="close"
             onPress={() => modalRef.current.forceClose()}
-            dense
           />
 
+          <TextField
+            placeholder="Find a location..."
+            variant="filled"
+            style={{
+              height: 50,
+              borderRadius: 999,
+              paddingHorizontal: 25,
+              flex: 1,
+            }}
+            weight={900}
+            onChangeText={inputRef.current?.setValue}
+            autoFocus={autoFocus}
+          />
           {!hideSkip && (
             <Button
               containerStyle={{ marginLeft: "auto" }}
-              text="Skip location"
+              text="Skip"
               onPress={() => onLocationSelect(null)}
               dense
+              variant="filled"
+              height={50}
+              style={{ paddingHorizontal: 20 }}
             />
           )}
         </View>
-        <TextField
-          placeholder="Find a location..."
-          variant="filled+outlined"
-          style={{ height: 50, borderRadius: 999, paddingHorizontal: 25 }}
-          weight={900}
-          onChangeText={onChange}
+        <Content
+          inputRef={inputRef}
+          defaultQuery={defaultQuery}
+          closeOnSelect={closeOnSelect}
+          onLocationSelect={onLocationSelect}
+          modalRef={modalRef}
         />
-        <View style={{ height: 350, marginTop: -15, position: "relative" }}>
-          {loading && (
-            <View
-              style={{
-                position: "absolute",
-                top: 10,
-                width: "100%",
-                height: 4,
-                paddingHorizontal: 20,
-              }}
-            >
-              <IndeterminateProgressBar height={4} />
-            </View>
-          )}
-          {error && <ErrorAlert />}
-          <BottomSheetFlashList
-            contentContainerStyle={{ paddingTop: 10 }}
-            data={data}
-            renderItem={({ item }: any) => (
-              <ListItemButton
-                onPress={() => {
-                  onLocationSelect(item);
-                  if (closeOnSelect) modalRef.current.forceClose();
-                }}
-              >
-                <Avatar icon={icons[item.type] || "location_on"} />
-                <ListItemText
-                  primary={item.name || item.display_name}
-                  secondary={
-                    item.name &&
-                    item.display_name.split(", ").slice(2).join(", ")
-                  }
-                />
-              </ListItemButton>
-            )}
-          />
-        </View>
-      </Modal>
+      </BottomSheet>
     </>
   );
 }
@@ -339,7 +382,8 @@ function TaskList({ tasks }) {
             marginTop: Platform.OS === "web" ? 0 : 50,
           }}
         />
-        <FlashList
+        <BottomSheetFlashList
+          keyboardShouldPersistTaps="handled"
           style={{ flex: 1 }}
           data={tasks}
           centerContent={tasks.length === 0}

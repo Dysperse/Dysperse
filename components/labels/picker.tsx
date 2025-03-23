@@ -64,6 +64,7 @@ const Search = ({ query, setQuery, autoFocus }) => {
         flex: 1,
         textAlign: "center",
         fontSize: 18,
+        width: "100%",
       }}
       weight={800}
       onKeyPress={({ nativeEvent }) => {
@@ -243,10 +244,7 @@ function LabelPickerContent({
             Select labels
           </Text>
 
-          <CloseButton
-            disabled={Array.isArray(label) && label.length === 0}
-            onClose={onClose}
-          />
+          <CloseButton onClose={onClose} />
         </View>
       )}
       <View style={[labelPickerStyles.searchBox]}>

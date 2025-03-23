@@ -46,7 +46,7 @@ import React, {
   useState,
 } from "react";
 import { Controller, useForm } from "react-hook-form";
-import { Linking, Platform, Pressable, View } from "react-native";
+import { Keyboard, Linking, Platform, Pressable, View } from "react-native";
 import { ScrollView } from "react-native-gesture-handler";
 import Animated, {
   useAnimatedStyle,
@@ -141,7 +141,6 @@ function Footer({
   const collectionId = watch("collectionId");
   const date = watch("date");
   const dateOnly = watch("dateOnly");
-  const name = watch("name");
   const parentTask = watch("parentTask");
 
   return (
@@ -204,6 +203,7 @@ function Footer({
           />
         )}
         <DateButton
+          nameRef={nameRef}
           watch={watch}
           setValue={setValue}
           defaultValues={defaultValues}
@@ -219,7 +219,7 @@ function Footer({
           labelMenuRef={labelMenuRef}
           onLabelPickerClose={() => nameRef?.current?.focus()}
         />
-        <LocationButton watch={watch} setValue={setValue} />
+        <LocationButton watch={watch} setValue={setValue} nameRef={nameRef} />
         <AiLabelSuggestion
           nameRef={nameRef}
           setValue={setValue}
@@ -990,7 +990,14 @@ const SubmitButton = forwardRef(({ onSubmit, watch }: any, ref) => {
   );
 });
 
-function DateButton({ watch, colors, dateRef, recurrenceRef, setValue }: any) {
+function DateButton({
+  watch,
+  colors,
+  dateRef,
+  recurrenceRef,
+  setValue,
+  nameRef,
+}: any) {
   const recurrenceRule = watch("recurrenceRule");
 
   const date = watch("date");
@@ -1008,6 +1015,8 @@ function DateButton({ watch, colors, dateRef, recurrenceRef, setValue }: any) {
         ref={dateRef}
         value={{ date, dateOnly, end }}
         setValue={setValue}
+        onOpen={Keyboard.dismiss}
+        onClose={() => nameRef.current.focus()}
       />
       <RecurrencePicker
         ref={recurrenceRef}
@@ -1205,40 +1214,43 @@ function SpeechRecognition({ setValue }) {
   );
 }
 
-function LocationButton({ watch, setValue }) {
+function LocationButton({ watch, setValue, nameRef }) {
   const theme = useColorTheme();
   const location = watch("location");
 
   return (
-    !location && (
-      <LocationPickerModal
-        onLocationSelect={(location) =>
-          setValue("location", {
-            placeId: location.place_id,
-            name: location.display_name,
-            coordinates: [location.lat, location.lon],
-          })
+    <LocationPickerModal
+      autoFocus={Platform.OS !== "web"}
+      hideSkip
+      onClose={() => nameRef.current.focus()}
+      onLocationSelect={(location) =>
+        setValue("location", {
+          placeId: location.place_id,
+          name: location.display_name,
+          coordinates: [location.lat, location.lon],
+        })
+      }
+    >
+      <Button
+        variant={location ? "filled" : "outlined"}
+        text={location?.name}
+        backgroundColors={
+          !location
+            ? undefined
+            : {
+                default: addHslAlpha(theme[9], 0.15),
+                hovered: addHslAlpha(theme[9], 0.25),
+                pressed: addHslAlpha(theme[9], 0.35),
+              }
         }
-      >
-        <Button
-          variant={location ? "filled" : "outlined"}
-          text={location?.name}
-          backgroundColors={
-            !location
-              ? undefined
-              : {
-                  default: addHslAlpha(theme[9], 0.15),
-                  hovered: addHslAlpha(theme[9], 0.25),
-                  pressed: addHslAlpha(theme[9], 0.35),
-                }
-          }
-          icon="near_me"
-          chip
-          large
-          iconStyle={{ transform: [{ scale: 1.1 }] }}
-        />
-      </LocationPickerModal>
-    )
+        icon="near_me"
+        chip
+        large
+        textStyle={{ maxWidth: 100 }}
+        iconStyle={{ transform: [{ scale: 1.1 }] }}
+        onDismiss={() => setValue("location", null)}
+      />
+    </LocationPickerModal>
   );
 }
 

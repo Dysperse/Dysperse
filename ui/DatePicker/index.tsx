@@ -213,7 +213,7 @@ function AllDaySwitch({ view, value, setValue }) {
       onPress={() => {
         setValue({ dateOnly: !value.dateOnly });
       }}
-      containerStyle={{ flex: 1 }}
+      containerStyle={{ flex: 1, marginTop: "auto" }}
       style={{ padding: 0 }}
       variant="outlined"
     >
@@ -234,6 +234,16 @@ function AllDaySwitch({ view, value, setValue }) {
   );
 }
 
+const OpenListener = ({ onOpen, onClose }) => {
+  useEffect(() => {
+    if (typeof onOpen === "function") onOpen();
+    return () => {
+      if (typeof onClose === "function") onClose();
+    };
+  }, [onOpen, onClose]);
+  return null;
+};
+
 export const DatePicker = forwardRef(
   (
     {
@@ -241,7 +251,16 @@ export const DatePicker = forwardRef(
       setValue,
       ignoreYear,
       ignoreTime,
-    }: { value: any; setValue: any; ignoreYear?: any; ignoreTime?: any },
+      onOpen,
+      onClose,
+    }: {
+      value: any;
+      setValue: any;
+      ignoreYear?: any;
+      ignoreTime?: any;
+      onOpen?: any;
+      onClose?: any;
+    },
     ref: any
   ) => {
     const [view, setView] = useState("start");
@@ -268,6 +287,7 @@ export const DatePicker = forwardRef(
 
     return (
       <Modal sheetRef={ref} animation="SCALE" maxWidth={400}>
+        <OpenListener onOpen={onOpen} onClose={onClose} />
         <View style={{ padding: 20, paddingTop: 15 }}>
           <View
             style={{
@@ -322,7 +342,7 @@ export const DatePicker = forwardRef(
               paddingTop: 10,
               gap: 10,
               minHeight:
-                Platform.OS === "web" ? undefined : value.date ? 410 : 310,
+                Platform.OS === "web" ? undefined : value.date ? 450 : 310,
             }}
           >
             {value.date && !ignoreTime && (
@@ -339,7 +359,7 @@ export const DatePicker = forwardRef(
                   disabled={!value?.date}
                   bold={view === "end"}
                   icon={value?.end ? undefined : "add"}
-                  text={value?.end ? "End" : "Add end time"}
+                  text={value?.end ? "End" : "Add end"}
                   iconPosition="end"
                   variant={view === "end" ? "filled" : "outlined"}
                   containerStyle={{ flex: 1 }}

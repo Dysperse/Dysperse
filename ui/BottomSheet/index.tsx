@@ -14,7 +14,7 @@ import { BottomSheetBackdropComponent } from "./BottomSheetBackdropComponent";
 
 export interface DBottomSheetProps extends BottomSheetProps {
   sheetRef: RefObject<BottomSheetModal>;
-  onClose: () => void;
+  onClose?: () => void;
   maxWidth?: number | string;
   stackBehavior?: "replace" | "push";
   appearsOnIndex?: number;
@@ -93,7 +93,7 @@ function BottomSheet(props: DBottomSheetProps) {
         />
       )}
       onChange={(e) => {
-        if (e === -1) props.onClose();
+        if (e === -1) props.onClose?.();
       }}
       containerStyle={[
         styles.container,
