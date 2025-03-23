@@ -217,43 +217,96 @@ export const normalizeRecurrenceRuleObject = (rule) => {
   });
 };
 function SubtaskList() {
-  const { task, updateTask, isReadOnly } = useTaskDrawerContext();
+  const { task, updateTask, isReadOnly, mutateList } = useTaskDrawerContext();
+  const theme = useColorTheme();
 
   return (
     <>
       {!isReadOnly && (
-        <CreateTask
-          mutate={() => {}}
-          onPress={() => {
-            if (Platform.OS === "web" && !localStorage.getItem("subtaskTip")) {
-              localStorage.setItem("subtaskTip", "true");
-              Toast.show({
-                type: "info",
-                text1: "Pro tip",
-                text2: "Tap twice on a task to open this popup",
-                visibilityTime: 5000,
+        <>
+          <CreateTask
+            mutate={(t) => {
+              updateTask({
+                subtasks: {
+                  ...task.subtasks,
+                  [t.id]: t,
+                },
               });
-            }
-          }}
-          defaultValues={{ parentTask: task }}
-        >
-          <Button
-            icon="prompt_suggestion"
-            dense
-            containerStyle={{
-              marginRight: "auto",
-              opacity: 0.6,
-              marginLeft: 5,
-              marginTop: 2,
             }}
-            style={{ gap: 10 }}
-            text={
-              Object.keys(task.subtasks || {}).length === 0
-                ? "Create subtask"
-                : `${Object.keys(task.subtasks || {}).length} subtasks`
-            }
-          />
-        </CreateTask>
+            onPress={() => {
+              if (
+                Platform.OS === "web" &&
+                !localStorage.getItem("subtaskTip")
+              ) {
+                localStorage.setItem("subtaskTip", "true");
+                Toast.show({
+                  type: "info",
+                  text1: "Pro tip",
+                  text2: "Tap twice on a task to open this popup",
+                  visibilityTime: 5000,
+                });
+              }
+            }}
+            defaultValues={{ parentTask: task }}
+          >
+            <Button
+              icon="prompt_suggestion"
+              dense
+              containerStyle={{
+                marginRight: "auto",
+                opacity: 0.6,
+                marginLeft: 5,
+                marginTop: 2,
+              }}
+              style={{ gap: 10 }}
+              text={
+                Object.keys(task.subtasks || {}).length === 0
+                  ? "Create subtask"
+                  : `${Object.keys(task.subtasks || {}).length} subtasks`
+              }
+            />
+          </CreateTask>
+          {Object.keys(task.subtasks || {}).length > 0 && (
+            <CreateTask
+              mutate={(t) =>
+                updateTask({
+                  subtasks: {
+                    ...task.subtasks,
+                    [t.id]: t,
+                  },
+                })
+              }
+              onPress={() => {
+                if (
+                  Platform.OS === "web" &&
+                  !localStorage.getItem("subtaskTip")
+                ) {
+                  localStorage.setItem("subtaskTip", "true");
+                  Toast.show({
+                    type: "info",
+                    text1: "Pro tip",
+                    text2: "Tap twice on a task to open this popup",
+                    visibilityTime: 5000,
+                  });
+                }
+              }}
+              defaultValues={{ parentTask: task }}
+            >
+              <ListItemButton
+                pressableStyle={{ gap: 10, paddingVertical: 10 }}
+                style={{ marginLeft: 15, marginBottom: -5 }}
+              >
+                <Icon size={35} style={{ color: theme[12], opacity: 0.5 }}>
+                  add_circle
+                </Icon>
+                <ListItemText
+                  primary="Create subtask"
+                  primaryProps={{ weight: 400 }}
+                />
+              </ListItemButton>
+            </CreateTask>
+          )}
+        </>
       )}
       <View
         style={{
@@ -261,25 +314,27 @@ function SubtaskList() {
         }}
       >
         {typeof task.subtasks === "object" &&
-          Object.values(task.subtasks).map((t: any) => (
-            <Entity
-              dense
-              isReadOnly={isReadOnly}
-              item={t}
-              onTaskUpdate={(newTask) => {
-                updateTask(
-                  {
-                    subtasks: {
-                      ...task.subtasks,
-                      [t.id]: newTask,
+          Object.values(task.subtasks)
+            .filter((t) => !t.trash)
+            .map((t: any) => (
+              <Entity
+                dense
+                isReadOnly={isReadOnly}
+                item={t}
+                onTaskUpdate={(newTask) => {
+                  updateTask(
+                    {
+                      subtasks: {
+                        ...task.subtasks,
+                        [t.id]: newTask,
+                      },
                     },
-                  },
-                  false
-                );
-              }}
-              key={t.id}
-            />
-          ))}
+                    false
+                  );
+                }}
+                key={t.id}
+              />
+            ))}
       </View>
     </>
   );

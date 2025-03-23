@@ -668,6 +668,7 @@ function SecondarySidebar() {
         paddingTop:
           insets.top + (!breakpoints.md || Platform.OS === "web" ? 30 : 0),
         backgroundColor: theme[2],
+        zIndex: 999,
       }}
     >
       <IconButton
