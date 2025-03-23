@@ -202,7 +202,7 @@ export default function Page() {
               <PlusButton />
             </Card>
             <Card
-              style={{ flex: 1.5 }}
+              style={{ flex: 1 }}
               buttonProps={{
                 onPress: () => router.push(`/[tab]/welcome/views`),
               }}
@@ -212,7 +212,7 @@ export default function Page() {
                 weight={900}
                 style={{ fontSize: 30, lineHeight: 43, color: theme[11] }}
               >
-                Open collections with{"\n"}our ten gorgeous views
+                Open tabs like your everyday browser
               </Text>
 
               <PlusButton />

@@ -42,7 +42,7 @@ export default function Page() {
             fontFamily: "serifText700",
           }}
         >
-          Ten beautiful views
+          Like your everyday{"\n"}web browser
         </Text>
         <Text
           style={{
@@ -53,7 +53,9 @@ export default function Page() {
             marginBottom: 10,
           }}
           weight={600}
-        ></Text>
+        >
+          Open tabs for your collections, drag 'em around, and find your flow
+        </Text>
 
         {[...Array(10)].map((_, i) => (
           <View
