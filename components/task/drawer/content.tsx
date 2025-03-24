@@ -867,13 +867,11 @@ export function TaskDrawerContent({
                       ) : task.label?.name ? (
                         <Emoji emoji={task.label.emoji} size={20} />
                       ) : (
-                        <Icon>new_label</Icon>
+                        <Icon>label</Icon>
                       )
                     }
                     large
-                    text={
-                      task?.label?.name || task?.collection?.name || "Add label"
-                    }
+                    text={task?.label?.name || task?.collection?.name}
                     variant="outlined"
                     backgroundColors={{
                       default: addHslAlpha(theme[11], 0),
@@ -911,3 +909,4 @@ export function TaskDrawerContent({
     </>
   );
 }
+
