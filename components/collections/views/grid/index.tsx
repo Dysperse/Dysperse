@@ -48,10 +48,6 @@ export default function Grid() {
       })
     );
 
-  // if (editOrderMode) {
-  //   return <ReorderingGrid labels={displayLabels} />;
-  // }
-
   const rowCount = 2;
   const itemsPerRow = displayLabels.length / rowCount;
   const rows = [];
@@ -179,16 +175,7 @@ export default function Grid() {
                     },
                   ]}
                 >
-                  {label.empty ? (
-                    !isReadOnly && (
-                      <IconButton
-                        onPress={openLabelPicker}
-                        size={40}
-                        icon="add"
-                        variant="filled"
-                      />
-                    )
-                  ) : label.other ? (
+                  {label.empty ? null : label.other ? (
                     <Column grid entities={data.entities || []} />
                   ) : (
                     <Column key={label.id} grid label={label} />
@@ -220,7 +207,6 @@ export default function Grid() {
                 currentColumn === "HOME"
                   ? (!breakpoints.md ? insets.bottom : 0) + 15
                   : 0,
-              flexDirection: "column",
             },
             !breakpoints.md &&
               !isMobileHome && {
@@ -245,16 +231,36 @@ export default function Grid() {
             },
           ]}
         >
-          {breakpoints.md ? (
-            rows
-          ) : currentColumn === "HOME" ? (
-            rows
-          ) : currentColumn === "OTHER" ? (
-            <Column grid entities={data.entities} />
-          ) : (
-            <Animated.View entering={FadeInDown}>
-              <Column grid label={displayLabels[currentColumn]} />
-            </Animated.View>
+          <View style={{ flex: 1, gap: 15 }}>
+            {breakpoints.md ? (
+              rows
+            ) : currentColumn === "HOME" ? (
+              rows
+            ) : currentColumn === "OTHER" ? (
+              <Column grid entities={data.entities} />
+            ) : (
+              <Animated.View entering={FadeInDown}>
+                <Column grid label={displayLabels[currentColumn]} />
+              </Animated.View>
+            )}
+          </View>
+          {(breakpoints.md || currentColumn === "HOME") && !isReadOnly && (
+            <View
+              style={{
+                height: "100%",
+                width: 100,
+                marginLeft: 15,
+                justifyContent: "center",
+                alignItems: "center",
+              }}
+            >
+              <IconButton
+                onPress={openLabelPicker}
+                size={50}
+                icon="add"
+                variant="outlined"
+              />
+            </View>
           )}
         </ScrollView>
       )}

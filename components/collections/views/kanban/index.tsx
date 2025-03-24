@@ -120,7 +120,7 @@ export default function Kanban() {
               <IconButton
                 icon="add"
                 variant="outlined"
-                size={40}
+                size={50}
                 onPress={openLabelPicker}
               />
             </View>
