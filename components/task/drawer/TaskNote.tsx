@@ -419,13 +419,11 @@ export const TaskNote = forwardRef(
     const { session } = useUser();
     const formatMenuRef = useRef(null);
     const breakpoints = useResponsiveBreakpoints();
-    const [hasClicked, setHasClicked] = useState(showEditorWhenEmpty || false);
-    const shouldShow = Boolean(task.note) || hasClicked;
-
     const isFocused = useSharedValue(0);
 
     const focusedStyles = useAnimatedStyle(() => ({
       borderRadius: 10,
+      marginLeft: 35,
       marginBottom: breakpoints.md ? 20 : 100,
       position: "relative",
       backgroundColor: interpolateColor(
@@ -449,88 +447,84 @@ export const TaskNote = forwardRef(
           session.user.betaTester && (
             <AISimplification id={task.id} updateTask={updateTask} />
           )}
-        {!shouldShow ? (
-          !isReadOnly && (
-            <Button
-              dense
-              onPress={() => setHasClicked(true)}
-              containerStyle={{
-                marginRight: "auto",
-                opacity: 0.6,
-                marginLeft: 5,
-              }}
-              style={{ gap: 10 }}
-            >
-              <Icon size={20} style={{ marginTop: -3 }}>
-                sticky_note_2
-              </Icon>
-              <Text style={{ color: theme[11] }}>Add note</Text>
-            </Button>
-          )
-        ) : (
-          <Animated.View
-            style={focusedStyles}
-            key={task.hasSimplifiedNote ? "simplified" : "normal"}
-          >
-            <NoteFormatMenu
-              formatMenuRef={formatMenuRef}
-              isFocused={isFocused}
-              editorRef={editorRef}
-            />
-            {isLoading && (
-              <SkeletonContainer style={{ marginTop: 10 }}>
-                <LinearSkeletonArray
-                  widths={[
-                    "100%",
-                    "96%",
-                    "58%",
-                    "72%",
-                    "84%",
-                    "90%",
-                    "42%",
-                    "38%",
-                    "64%",
-                    "80%",
-                    "90%",
-                    "100%",
-                  ]}
-                  height={20}
-                />
-              </SkeletonContainer>
-            )}
-            <TaskNoteEditor
-              openLink={(href) => Linking.openURL(href)}
-              onContainerFocus={onContainerFocus}
-              showEditorWhenEmpty={showEditorWhenEmpty}
-              ref={editorRef}
-              setSelectionState={(state) =>
-                formatMenuRef.current.setSelectionState(state)
-              }
-              updateTask={updateTask as any}
-              theme={theme}
-              dom={{
-                matchContents: true,
-                scrollEnabled: false,
+        <Button
+          dense
+          containerStyle={{
+            marginRight: "auto",
+            opacity: 0.6,
+            marginLeft: 5,
+          }}
+          style={{ gap: 10 }}
+        >
+          <Icon size={20} style={{ marginTop: -3 }}>
+            sticky_note_2
+          </Icon>
+          <Text style={{ color: theme[11], marginLeft: 5 }}>
+            {task.note ? "Note" : "Add note"}
+          </Text>
+          {task.note && <Icon>expand_more</Icon>}
+        </Button>
+        <Animated.View
+          style={focusedStyles}
+          key={task.hasSimplifiedNote ? "simplified" : "normal"}
+        >
+          <NoteFormatMenu
+            formatMenuRef={formatMenuRef}
+            isFocused={isFocused}
+            editorRef={editorRef}
+          />
+          {isLoading && (
+            <SkeletonContainer style={{ marginTop: 10 }}>
+              <LinearSkeletonArray
+                widths={[
+                  "100%",
+                  "96%",
+                  "58%",
+                  "72%",
+                  "84%",
+                  "90%",
+                  "42%",
+                  "38%",
+                  "64%",
+                  "80%",
+                  "90%",
+                  "100%",
+                ]}
+                height={20}
+              />
+            </SkeletonContainer>
+          )}
+          <TaskNoteEditor
+            openLink={(href) => Linking.openURL(href)}
+            onContainerFocus={onContainerFocus}
+            showEditorWhenEmpty={showEditorWhenEmpty}
+            ref={editorRef}
+            setSelectionState={(state) =>
+              formatMenuRef.current.setSelectionState(state)
+            }
+            updateTask={updateTask as any}
+            theme={theme}
+            dom={{
+              matchContents: true,
+              scrollEnabled: false,
 
-                // Set isLoaded to true after the webview has loaded
-                onLoadEnd: () => setIsLoading(false),
+              // Set isLoaded to true after the webview has loaded
+              onLoadEnd: () => setIsLoading(false),
 
-                // prevent navigating to another web page within the webview
-                onShouldStartLoadWithRequest: () => {
-                  if (hasLoaded) {
-                    return false;
-                  }
-                  setHasLoaded(true);
-                  return true;
-                },
-              }}
-              setFocused={(t) => (isFocused.value = withSpring(t ? 1 : 0))}
-              content={task.note?.replaceAll("] (http", "](http")?.trim()}
-            />
-          </Animated.View>
-        )}
+              // prevent navigating to another web page within the webview
+              onShouldStartLoadWithRequest: () => {
+                if (hasLoaded) {
+                  return false;
+                }
+                setHasLoaded(true);
+                return true;
+              },
+            }}
+            setFocused={(t) => (isFocused.value = withSpring(t ? 1 : 0))}
+            content={task.note?.replaceAll("] (http", "](http")?.trim()}
+          />
+        </Animated.View>
       </>
     );
   }
 );
-
