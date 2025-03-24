@@ -101,7 +101,14 @@ function CurrentTaskFooter({
   const insets = useSafeAreaInsets();
 
   return (
-    <View style={{ marginTop: "auto", marginBottom: insets.bottom, gap: 5 }}>
+    <View
+      style={{
+        marginTop: "auto",
+        marginBottom: insets.bottom,
+        gap: 5,
+        width: "100%",
+      }}
+    >
       <View style={[taskStyles.footer, { gap: 5 }]}>
         <TaskDatePicker
           setValue={(date) => handleEdit("start", date)}
@@ -206,7 +213,7 @@ function CurrentTaskFooter({
           >
             <Icon bold>done_outline</Icon>
             <Text
-              style={{ color: theme[11], lineHeight: 18 }}
+              style={{ color: theme[11], lineHeight: 18, textAlign: "center" }}
               weight={700}
               numberOfLines={2}
             >

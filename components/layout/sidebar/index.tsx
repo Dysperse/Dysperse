@@ -72,8 +72,11 @@ const styles = StyleSheet.create({
 });
 
 const HomeButton = memo(function HomeButton({ isHome }: { isHome: boolean }) {
+  const { session } = useUser();
   const { sidebarRef, desktopCollapsed } = useSidebarContext();
   const breakpoints = useResponsiveBreakpoints();
+
+  const hasCompleted = dayjs(session?.user?.profile?.lastPlanned).isToday();
 
   const handleHome = useCallback(() => {
     if (Platform.OS !== "web") impactAsync(ImpactFeedbackStyle.Light);
@@ -104,7 +107,22 @@ const HomeButton = memo(function HomeButton({ isHome }: { isHome: boolean }) {
       pressableStyle={{ flexDirection: "row", gap: 5 }}
     >
       <Icon filled={isHome}>home</Icon>
-      {/* <Text style={{ color: theme[11] }}>Home</Text> */}
+      {!hasCompleted && (
+        <View
+          style={[
+            {
+              backgroundColor: theme[9],
+              width: 7,
+              height: 7,
+              borderRadius: 99,
+              marginLeft: -10,
+              position: "absolute",
+              top: 12,
+              right: 33,
+            },
+          ]}
+        />
+      )}
     </IconButton>
   );
 });
