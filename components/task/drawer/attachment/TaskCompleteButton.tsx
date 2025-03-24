@@ -94,7 +94,7 @@ export function TaskCompleteButton() {
             opacity: disabled ? undefined : 1,
             marginLeft: 5,
             width: "auto",
-            borderRadius: 16,
+            borderRadius: 20,
             width: breakpoints.md ? 140 : 45,
           }}
           pressableStyle={{
@@ -114,6 +114,7 @@ export function TaskCompleteButton() {
           <Icon
             filled={isCompleted}
             size={27}
+            bold
             style={{
               color: isCompleted ? green[1] : theme[11],
             }}
@@ -122,6 +123,7 @@ export function TaskCompleteButton() {
           </Icon>
           {breakpoints.md && (
             <Text
+              weight={700}
               style={{
                 color: isCompleted ? green[1] : theme[11],
               }}

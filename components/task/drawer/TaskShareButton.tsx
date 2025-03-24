@@ -1,6 +1,7 @@
 import IconButton from "@/ui/IconButton";
 import MenuPopover from "@/ui/MenuPopover";
 import { setStringAsync } from "expo-clipboard";
+import { shareAsync } from "expo-sharing";
 import React, { useCallback } from "react";
 import Toast from "react-native-toast-message";
 import { useTaskDrawerContext } from "./context";
@@ -12,6 +13,7 @@ export function TaskShareButton() {
 
   const handleCopy = useCallback(async () => {
     setStringAsync(link);
+    shareAsync(link);
     Toast.show({
       type: "success",
       text1: "Copied link to clipboard!",

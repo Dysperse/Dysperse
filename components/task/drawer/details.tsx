@@ -588,6 +588,7 @@ function TaskLocationMenu() {
         opacity: 0.6,
         marginLeft: 14,
         marginTop: 7,
+        marginRight: "auto",
       }}
       style={{
         gap: 10,

@@ -33,7 +33,6 @@ import Animated, {
   withSpring,
 } from "react-native-reanimated";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
-import { useDebounce } from "use-debounce";
 import { useCollectionContext } from "../../context";
 import { ColumnEmptyComponent } from "../../emptyComponent";
 import { Entity } from "../../entity";
@@ -125,12 +124,11 @@ function Content({
 
   const [value, onChange] = useState("");
 
-  const [debouncedValue] = useDebounce(value, 1000);
   useEffect(() => {
-    if (debouncedValue) {
-      handleSearch(debouncedValue);
+    if (value) {
+      handleSearch(value);
     }
-  }, [debouncedValue]);
+  }, [value]);
 
   useImperativeHandle(inputRef, () => ({
     setValue: onChange,
