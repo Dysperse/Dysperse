@@ -103,10 +103,18 @@ function CalendarPreview({
   }, [value]);
 
   const onCalendarDayPress = (date) =>
-    setValue((t) => ({
-      ...t,
-      [view === "end" ? "end" : "date"]: dayjs(fromDateId(date).toISOString()),
-    }));
+    setValue((t) => {
+      const key = view === "end" ? "end" : "date";
+      const time = dayjs(t[key]);
+      return {
+        ...t,
+        [key]: dayjs(fromDateId(date))
+          .set("hour", time.hour())
+          .set("minute", time.minute())
+          .set("second", time.second())
+          .set("millisecond", time.millisecond()),
+      };
+    });
 
   return (
     <View
