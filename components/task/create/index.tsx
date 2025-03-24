@@ -1014,7 +1014,11 @@ function DateButton({
       <DatePicker
         ref={dateRef}
         value={{ date, dateOnly, end }}
-        setValue={setValue}
+        setValue={(t) => {
+          setValue("dateOnly", t.dateOnly);
+          setValue("date", t.date);
+          setValue("end", t.end);
+        }}
         onOpen={Keyboard.dismiss}
         onClose={() => nameRef.current.focus()}
       />
@@ -1621,4 +1625,3 @@ const CreateTask = forwardRef(
 );
 
 export default CreateTask;
-

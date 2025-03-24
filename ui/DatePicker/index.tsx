@@ -104,9 +104,10 @@ function CalendarPreview({
   }, [value]);
 
   const onCalendarDayPress = (date) =>
-    setValue({
+    setValue((t) => ({
+      ...t,
       [view === "end" ? "end" : "date"]: dayjs(fromDateId(date).toISOString()),
-    });
+    }));
 
   return (
     <View
@@ -211,7 +212,7 @@ function AllDaySwitch({ view, value, setValue }) {
   return !value?.date ? null : (
     <Button
       onPress={() => {
-        setValue({ dateOnly: !value.dateOnly });
+        setValue((t) => ({ ...t, dateOnly: !t.dateOnly }));
       }}
       containerStyle={{ flex: 1, marginTop: "auto" }}
       style={{ padding: 0 }}
@@ -264,25 +265,20 @@ export const DatePicker = forwardRef(
     ref: any
   ) => {
     const [view, setView] = useState("start");
+    const [localValue, setLocalValue] = useState(value);
 
     useEffect(() => {
-      if (view === "end" && !value?.date) {
+      if (localValue === "end" && !localValue?.date) {
         setView("start");
       }
-      // if (view === "end" && !value?.end) {
-      //   setValue("end", dayjs(value?.date).add(1, "hour"));
-      // }
-      // if (value?.end && !dayjs(value?.end).isValid()) {
-      //   setValue("end", null);
-      // }
-    }, [view, setValue, value]);
+    }, [view, setValue, localValue]);
 
-    const secondary = value?.end
-      ? `to ${dayjs(value?.end).format(
-          value.dateOnly ? "MMMM Do" : "MMM Do [@] h:mm A"
+    const secondary = localValue?.end
+      ? `to ${dayjs(localValue?.end).format(
+          localValue.dateOnly ? "MMMM Do" : "MMM Do [@] h:mm A"
         )}`
-      : !value?.dateOnly && value?.date
-      ? `at ${dayjs(value?.date).format("h:mm A")}`
+      : !localValue?.dateOnly && localValue?.date
+      ? `at ${dayjs(localValue?.date).format("h:mm A")}`
       : "";
 
     return (
@@ -298,7 +294,10 @@ export const DatePicker = forwardRef(
             <Button
               dense
               style={{
-                opacity: !value?.date && !value?.end && value?.dateOnly ? 0 : 1,
+                opacity:
+                  !localValue?.date && !localValue?.end && localValue?.dateOnly
+                    ? 0
+                    : 1,
               }}
               onPress={() => {
                 setValue({
@@ -313,9 +312,9 @@ export const DatePicker = forwardRef(
             </Button>
             <View style={{ flex: 1, height: 50, justifyContent: "center" }}>
               <Text weight={800} style={{ fontSize: 20, textAlign: "center" }}>
-                {value?.date
-                  ? dayjs(value?.date).format(
-                      value.dateOnly || !value.end
+                {localValue?.date
+                  ? dayjs(localValue?.date).format(
+                      localValue.dateOnly || !localValue.end
                         ? "MMMM Do"
                         : "MMM Do [@] h:mm A"
                     )
@@ -334,7 +333,10 @@ export const DatePicker = forwardRef(
               style={{ marginLeft: 20 }}
               size={40}
               variant="filled"
-              onPress={() => ref.current.close()}
+              onPress={() => {
+                ref.current.close();
+                setValue(localValue);
+              }}
             />
           </View>
           <View
@@ -342,10 +344,10 @@ export const DatePicker = forwardRef(
               paddingTop: 10,
               gap: 10,
               minHeight:
-                Platform.OS === "web" ? undefined : value.date ? 450 : 310,
+                Platform.OS === "web" ? undefined : localValue.date ? 450 : 310,
             }}
           >
-            {value.date && !ignoreTime && (
+            {localValue.date && !ignoreTime && (
               <View style={{ flexDirection: "row", gap: 10, paddingTop: 5 }}>
                 <Button
                   bold={view === "start"}
@@ -356,29 +358,36 @@ export const DatePicker = forwardRef(
                   onPress={() => setView("start")}
                 />
                 <Button
-                  disabled={!value?.date}
+                  disabled={!localValue?.date}
                   bold={view === "end"}
-                  icon={value?.end ? undefined : "add"}
-                  text={value?.end ? "End" : "Add end"}
+                  icon={localValue?.end ? undefined : "add"}
+                  text={localValue?.end ? "End" : "Add end"}
                   iconPosition="end"
                   variant={view === "end" ? "filled" : "outlined"}
                   containerStyle={{ flex: 1 }}
                   onPress={() => {
                     setView("end");
-                    if (!value?.end || !dayjs(value?.end).isValid())
-                      setValue({ end: dayjs(value?.date).add(1, "hour") });
+                    if (!localValue?.end || !dayjs(localValue?.end).isValid())
+                      setLocalValue((t) => ({
+                        ...t,
+                        end: dayjs(localValue?.date).add(1, "hour"),
+                      }));
                   }}
                 />
               </View>
             )}
             <CalendarPreview
               ignoreYear={ignoreYear}
-              value={value}
-              setValue={setValue}
+              value={localValue}
+              setValue={setLocalValue}
               view={view}
             />
             {!ignoreTime && (
-              <AllDaySwitch value={value} setValue={setValue} view={view} />
+              <AllDaySwitch
+                value={localValue}
+                setValue={setLocalValue}
+                view={view}
+              />
             )}
           </View>
         </View>
@@ -386,4 +395,3 @@ export const DatePicker = forwardRef(
     );
   }
 );
-
