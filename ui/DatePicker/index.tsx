@@ -66,12 +66,12 @@ export const TimeInput = forwardRef(
         inputRef={ref}
         variant="filled+outlined"
         style={[
+          style,
           {
             flex: 1,
             textAlign: "center",
-            height: 35,
+            height: 50,
           },
-          style,
         ]}
         placeholder="12:00"
         value={value}
@@ -215,18 +215,25 @@ function CalendarPreview({
 
 function AllDaySwitch({ view, value, setValue }) {
   const ref = useRef(null);
+  const theme = useColorTheme();
 
   return !value?.date ? null : (
     <Button
       onPress={() => {
         setValue((t) => ({ ...t, dateOnly: !t.dateOnly }));
       }}
-      containerStyle={{ flex: 1, marginTop: "auto" }}
+      containerStyle={{ flex: 1, marginTop: "auto", borderRadius: 20 }}
       style={{ padding: 0 }}
+      height={50}
       variant="outlined"
+      borderColors={{
+        default: addHslAlpha(theme[4], value.dateOnly ? 1 : 0),
+        hovered: theme[5],
+        pressed: theme[6],
+      }}
     >
       {value.dateOnly ? (
-        <ButtonText>All day</ButtonText>
+        <ButtonText weight={700}>All day</ButtonText>
       ) : (
         <Pressable onPress={(e) => e.stopPropagation()} style={{ flex: 1 }}>
           <TimeInput
@@ -237,7 +244,7 @@ function AllDaySwitch({ view, value, setValue }) {
           />
         </Pressable>
       )}
-      <Icon>toggle_{value.dateOnly ? "on" : "off"}</Icon>
+      <Icon size={35}>toggle_{value.dateOnly ? "on" : "off"}</Icon>
     </Button>
   );
 }
