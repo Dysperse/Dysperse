@@ -400,23 +400,26 @@ function Cancel({ setValue, style }) {
         setTimeout(() => setValue(null), 100);
       }}
     >
-      <ButtonText>Cancel</ButtonText>
+      <ButtonText>Clear</ButtonText>
     </Button>
   );
 }
 
 export const RecurrencePicker = forwardRef(
   ({ value, setValue }: { value: any; setValue: any }, ref: any) => {
+    const [localValue, setLocalValue] = useState(value);
+
     const handleEdit = (key, newValue) => {
-      setValue({
+      setLocalValue({
         ...value,
         [key]: newValue,
       });
     };
+
     return (
       <Modal sheetRef={ref} animation="SCALE" maxWidth={400}>
         <BottomSheetScrollView>
-          <SetValue value={value} setValue={setValue} />
+          <SetValue value={localValue} setValue={setLocalValue} />
           <View style={{ padding: 20, paddingTop: 15 }}>
             <View
               style={{
@@ -428,7 +431,7 @@ export const RecurrencePicker = forwardRef(
                 style={{
                   opacity: value ? 1 : 0,
                 }}
-                setValue={setValue}
+                setValue={setLocalValue}
               />
               <View style={{ flex: 1, justifyContent: "center" }}>
                 <Text
@@ -443,25 +446,27 @@ export const RecurrencePicker = forwardRef(
                 style={{ marginLeft: 20 }}
                 size={40}
                 variant="filled"
-                onPress={() => ref.current.close()}
+                onPress={() => {
+                  ref.current.close();
+                  setValue(localValue);
+                }}
               />
             </View>
-            {value && (
+            {localValue && (
               <View style={{ paddingTop: 10, gap: 10 }}>
-                <Every value={value} handleEdit={handleEdit} />
-                {value.freq !== 0 && (
-                  <On value={value} handleEdit={handleEdit} />
+                <Every value={localValue} handleEdit={handleEdit} />
+                {localValue.freq !== 0 && (
+                  <On value={localValue} handleEdit={handleEdit} />
                 )}
-                <Ends value={value} setValue={setValue} />
+                <Ends value={localValue} setValue={setLocalValue} />
               </View>
             )}
 
-            <AtTime value={value} setValue={setValue} />
-            <Preview value={value} />
+            <AtTime value={localValue} setValue={setLocalValue} />
+            <Preview value={localValue} />
           </View>
         </BottomSheetScrollView>
       </Modal>
     );
   }
 );
-
