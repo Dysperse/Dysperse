@@ -9,7 +9,6 @@ import convertTime from "convert-time";
 import dayjs, { Dayjs } from "dayjs";
 import { forwardRef, RefObject, useEffect, useRef, useState } from "react";
 import { Platform, Pressable, StyleProp, TextStyle, View } from "react-native";
-import Collapsible from "react-native-collapsible";
 import { TextInput } from "react-native-gesture-handler";
 import Toast from "react-native-toast-message";
 import { Button, ButtonText } from "../Button";
@@ -311,7 +310,14 @@ export const DatePicker = forwardRef(
               <ButtonText>Clear</ButtonText>
             </Button>
             <View style={{ flex: 1, height: 50, justifyContent: "center" }}>
-              <Text weight={800} style={{ fontSize: 20, textAlign: "center" }}>
+              <Text
+                weight={800}
+                style={{
+                  fontSize: 20,
+                  textAlign: "center",
+                  fontFamily: "serifText700",
+                }}
+              >
                 {localValue?.date
                   ? dayjs(localValue?.date).format(
                       localValue.dateOnly || !localValue.end
@@ -320,12 +326,10 @@ export const DatePicker = forwardRef(
                     )
                   : "Select a date"}
               </Text>
-              {!ignoreTime && (
-                <Collapsible collapsed={!secondary}>
-                  <Text style={{ opacity: 0.5, textAlign: "center" }}>
-                    {secondary}
-                  </Text>
-                </Collapsible>
+              {!ignoreTime && secondary && (
+                <Text style={{ opacity: 0.5, textAlign: "center" }}>
+                  {secondary}
+                </Text>
               )}
             </View>
             <IconButton
