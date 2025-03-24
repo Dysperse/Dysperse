@@ -1591,8 +1591,6 @@ const CreateTask = forwardRef(
           disablePan={breakpoints.md}
           maxWidth={breakpoints.md ? 700 : "100%"}
           sheetRef={ref}
-          keyboardBehavior="interactive"
-          transformCenter
           animation={breakpoints.md ? "SCALE" : "SLIDE"}
           innerStyles={{
             backgroundColor:

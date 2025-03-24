@@ -101,10 +101,12 @@ const Modal = (
       onClose={handleClose}
       handleComponent={() => null}
       animateOnMount={
-        props.animation === "BOTH" ||
-        props.animation === "SLIDE" ||
-        props.animation === "NONE" ||
-        !props.animation
+        Platform.OS === "web"
+          ? props.animation === "BOTH" ||
+            props.animation === "SLIDE" ||
+            props.animation === "NONE" ||
+            !props.animation
+          : undefined
       }
       {...((props.animation !== "SCALE" || Platform.OS === "web") && {
         animationConfigs,
