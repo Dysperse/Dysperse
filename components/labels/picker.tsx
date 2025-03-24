@@ -519,4 +519,3 @@ export default function LabelPicker({
     </>
   );
 }
-

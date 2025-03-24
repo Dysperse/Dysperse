@@ -145,7 +145,7 @@ export default function WeatherWidget({
         flex: 1,
       }}
     >
-      {data && (
+      {data ? (
         <>
           <Icon bold size={18}>
             {
@@ -173,6 +173,16 @@ export default function WeatherWidget({
             {Math.round(data.current_weather.temperature)}&deg;
           </Text>
         </>
+      ) : error || permissionStatus === "denied" ? (
+        <Text style={{ color: theme[11], fontSize: 12 }} weight={600}>
+          An error occured
+        </Text>
+      ) : (!location || isLoading) && permissionStatus !== "undetermined" ? (
+        <Spinner style={{ marginHorizontal: "auto" }} />
+      ) : (
+        <Text style={{ color: theme[11], fontSize: 12 }} weight={600}>
+          Tap and hold to enable
+        </Text>
       )}
     </View>
   ) : (
@@ -455,4 +465,3 @@ export default function WeatherWidget({
     </Pressable>
   );
 }
-
