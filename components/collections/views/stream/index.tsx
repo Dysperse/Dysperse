@@ -16,7 +16,7 @@ import dayjs from "dayjs";
 import { impactAsync, ImpactFeedbackStyle } from "expo-haptics";
 import { LinearGradient } from "expo-linear-gradient";
 import { router, useLocalSearchParams } from "expo-router";
-import { ScrollView, View } from "react-native";
+import { Platform, ScrollView, View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { ColumnEmptyComponent } from "../../emptyComponent";
 
@@ -131,7 +131,11 @@ function StreamColumn({ view, mutate, filteredTasks }) {
           zIndex: 99,
           height: 30,
           marginBottom: -30,
-          marginTop: -40,
+          marginTop: breakpoints.md
+            ? undefined
+            : Platform.OS === "web"
+            ? -100
+            : -40,
           pointerEvents: "none",
         }}
       />
@@ -176,10 +180,15 @@ function MobileHeader() {
         paddingBottom: 0,
         paddingLeft: 25,
         flexDirection: "row",
-        justifyContent: "space-between",
         alignItems: "center",
+        gap: 20,
       }}
     >
+      <Icon size={30} bold>
+        {streamViews.find(
+          (v) => v.value === (mobileStreamMode || "unscheduled")
+        )?.icon || "circle"}
+      </Icon>
       <Text
         style={{
           fontSize: 23,
@@ -190,7 +199,7 @@ function MobileHeader() {
         {capitalizeFirstLetter(mobileStreamMode || "unscheduled")}
       </Text>
 
-      <View style={{ flexDirection: "row" }}>
+      <View style={{ flexDirection: "row", marginLeft: "auto" }}>
         <IconButton
           icon="west"
           size={50}
