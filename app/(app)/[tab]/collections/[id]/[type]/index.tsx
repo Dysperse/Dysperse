@@ -17,6 +17,7 @@ import Planner from "@/components/collections/views/planner";
 import Skyline from "@/components/collections/views/skyline";
 import Stream from "@/components/collections/views/stream";
 import Workload from "@/components/collections/views/workload";
+import { COLLECTION_VIEWS } from "@/components/layout/command-palette/list";
 import ContentWrapper from "@/components/layout/content";
 import { FadeOnRender } from "@/components/layout/FadeOnRender";
 import CreateTask from "@/components/task/create";
@@ -505,6 +506,29 @@ function PasswordPrompt({ mutate }) {
   );
 }
 
+function TaskShortcutCreation() {
+  const createTaskRef = useRef(null);
+  const { data, mutate } = useCollectionContext();
+  const { type } = useLocalSearchParams();
+
+  useHotkeys("space", () => {
+    createTaskRef.current?.present();
+  });
+
+  return (
+    <CreateTask
+      ref={createTaskRef}
+      mutate={mutations.categoryBased.add(mutate)}
+      defaultValues={{
+        collectionId: data?.id,
+        ...(COLLECTION_VIEWS[type]?.type === "Time Based" && {
+          date: dayjs().startOf("day"),
+        }),
+      }}
+    />
+  );
+}
+
 export default function Page({ isPublic }: { isPublic: boolean }) {
   const { id, type }: any = useLocalSearchParams();
   const sheetRef = useRef(null);
@@ -593,12 +617,6 @@ export default function Page({ isPublic }: { isPublic: boolean }) {
   const panelRef = useRef(null);
   const collectionSidekickContextValue = useMemo(() => ({ panelRef }), []);
 
-  const createTaskRef = useRef(null);
-
-  useHotkeys("space", () => {
-    createTaskRef.current?.present();
-  });
-
   return (
     <SelectionContextProvider>
       <CollectionContext.Provider value={collectionContextValue}>
@@ -610,11 +628,7 @@ export default function Page({ isPublic }: { isPublic: boolean }) {
               <CollectionLabelMenu sheetRef={sheetRef}>
                 <Pressable />
               </CollectionLabelMenu>
-              <CreateTask
-                ref={createTaskRef}
-                mutate={mutations.categoryBased.add(mutate)}
-                defaultValues={{ collectionId: data?.id }}
-              />
+              <TaskShortcutCreation />
               {(data ? (
                 (data.pinCode || data.pinCodeError) &&
                 (!data.pinAuthorizationExpiresAt ||

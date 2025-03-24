@@ -52,6 +52,7 @@ export const KanbanHeader = memo(function KanbanHeader({
     <View
       style={[
         columnStyles.header,
+        { height: 70 },
         grid && {
           height: 60,
         },

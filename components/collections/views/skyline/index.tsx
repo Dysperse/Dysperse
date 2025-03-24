@@ -202,7 +202,10 @@ function Header({
           >
             <Button
               variant="filled"
-              containerStyle={{ flex: 1 }}
+              containerStyle={{
+                flex: 1,
+                marginTop: title === "Today" ? -10 : undefined,
+              }}
               large={!breakpoints.md}
               bold={!breakpoints.md}
               iconPosition="end"
@@ -437,3 +440,4 @@ export default function Skyline() {
     </SkylineContext.Provider>
   );
 }
+
