@@ -357,6 +357,7 @@ function WorkloadChip() {
   const theme = useColorTheme();
   const { task, isReadOnly, updateTask } = useTaskDrawerContext();
   const complexityScale = ["XS", "S", "M", "L", "XL"];
+  const legacyComplexityScale = [2, 4, 8, 16, 32];
   const menuRef = useRef(null);
 
   return (
@@ -366,7 +367,7 @@ function WorkloadChip() {
         containerStyle={{ width: 200 }}
         options={
           [
-            ...complexityScale.map((n) => ({
+            ...legacyComplexityScale.map((n) => ({
               renderer: () => (
                 <MenuItem
                   onPress={() => {
@@ -393,13 +394,17 @@ function WorkloadChip() {
                         color: theme[n === task.storyPoints ? 1 : 11],
                       }}
                     >
-                      {n}
+                      {
+                        complexityScale[
+                          legacyComplexityScale.findIndex((i) => i === n)
+                        ]
+                      }
                     </Text>
                   </View>
                   <Text variant="menuItem">
                     {
                       STORY_POINT_SCALE[
-                        complexityScale.findIndex((i) => i === n)
+                        legacyComplexityScale.findIndex((i) => i === n)
                       ]
                     }
                   </Text>
@@ -440,12 +445,12 @@ function WorkloadChip() {
             icon="exercise"
             text={
               STORY_POINT_SCALE[
-                complexityScale.findIndex((i) => i === task.storyPoints)
+                legacyComplexityScale.findIndex((i) => i === task.storyPoints)
               ]
             }
             large
             backgroundColors={{
-              default: addHslAlpha(theme[11], 0),
+              default: addHslAlpha(theme[11], task.storyPoints ? 0.1 : 0),
               hovered: addHslAlpha(theme[11], 0.1),
               pressed: addHslAlpha(theme[11], 0.2),
             }}
@@ -454,7 +459,7 @@ function WorkloadChip() {
               hovered: addHslAlpha(theme[11], 0.2),
               pressed: addHslAlpha(theme[11], 0.3),
             }}
-            variant="outlined"
+            variant={!task.storyPoints ? "outlined" : "filled"}
             iconStyle={{ marginTop: -3 }}
           />
         }
