@@ -605,12 +605,7 @@ const PrimarySidebar = memo(function PrimarySidebar({ progressValue }: any) {
       if (breakpoints.md) {
         setDesktopCollapsed(!desktopCollapsed);
         InteractionManager.runAfterInteractions(() => {
-          sidebarRef.current.closeDrawer();
-          if (desktopCollapsed) {
-            sidebarRef.current.openDrawer();
-          } else {
-            sidebarRef.current.closeDrawer();
-          }
+          sidebarRef.current[desktopCollapsed ? "openDrawer" : "closeDrawer"]();
         });
         AsyncStorage.setItem(
           "desktopCollapsed",

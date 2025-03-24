@@ -35,30 +35,24 @@ const AppContainer = memo(
       }
     }, [desktopCollapsed, sidebarRef]);
 
-    const borderStyle = useAnimatedStyle(
-      () => ({
-        top: 0,
-        left: 0,
-        right: 0,
-        bottom: 0,
-        zIndex: 99,
-        opacity: interpolate(progressValue.current?.value || 0, [0, 1], [0, 1]),
-        borderWidth: 2,
-        borderColor: theme[5],
-      }),
-      [theme, breakpoints, progressValue]
-    );
+    const borderStyle = useAnimatedStyle(() => ({
+      top: 0,
+      left: 0,
+      right: 0,
+      bottom: 0,
+      zIndex: 99,
+      opacity: interpolate(progressValue.current?.value || 0, [0, 1], [0, 1]),
+      borderWidth: 2,
+      borderColor: theme[5],
+    }));
 
-    const borderRadiusStyle = useAnimatedStyle(
-      () => ({
-        borderRadius: interpolate(
-          progressValue.current?.value || 0,
-          [0, 1],
-          [!breakpoints.md ? 0 : 20, 30]
-        ),
-      }),
-      [progressValue]
-    );
+    const borderRadiusStyle = useAnimatedStyle(() => ({
+      borderRadius: interpolate(
+        progressValue.current?.value || 0,
+        [0, 1],
+        [!breakpoints.md ? 0 : 20, 30]
+      ),
+    }));
 
     const marginTopStyle = useAnimatedStyle(() => ({
       marginTop: interpolate(

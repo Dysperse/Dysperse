@@ -280,7 +280,7 @@ export default function AppLayout() {
                                 <NotificationsModal />
                                 <TabFriendModal />
                                 <DrawerLayout
-                                  // minSwipeDistance={20}
+                                  key={desktopCollapsed.toString()}
                                   contentContainerStyle={{
                                     backgroundColor: "transparent",
                                     marginTop: -1,
@@ -293,7 +293,6 @@ export default function AppLayout() {
                                   onDrawerClose={() => {
                                     focusPanelFreezerRef.current?.freeze();
                                   }}
-                                  // keyboardDismissMode="on-drag"
                                   drawerLockMode={
                                     !desktopCollapsed && breakpoints.md
                                       ? 2
@@ -301,7 +300,6 @@ export default function AppLayout() {
                                       ? 1
                                       : 0
                                   }
-                                  // drawerPosition="LEFT"
                                   drawerType={
                                     breakpoints.md
                                       ? desktopCollapsed
@@ -342,10 +340,7 @@ export default function AppLayout() {
                                       dark: true,
                                     }}
                                   >
-                                    <AppContainer
-                                      progressValue={progressValue}
-                                      key={desktopCollapsed.toString()}
-                                    >
+                                    <AppContainer progressValue={progressValue}>
                                       <LastStateRestore />
                                       <SystemBars
                                         style={!isDark ? "dark" : "light"}

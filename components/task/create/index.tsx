@@ -1378,7 +1378,7 @@ const BottomSheetContent = forwardRef(
       >
         <BlurView
           style={{ flex: 1, padding: 25, gap: 20, flexDirection: "column" }}
-          intensity={Platform.OS === "android" ? 0 : 90}
+          intensity={Platform.OS === "android" ? 0 : 60}
           tint={
             Platform.OS === "ios"
               ? isDark
