@@ -872,7 +872,7 @@ export function TaskDrawerContent({
                       ) : task.label?.name ? (
                         <Emoji emoji={task.label.emoji} size={20} />
                       ) : (
-                        <Icon>label</Icon>
+                        <Icon>tag</Icon>
                       )
                     }
                     large
