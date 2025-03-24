@@ -14,7 +14,7 @@ import dayjs from "dayjs";
 import { impactAsync, ImpactFeedbackStyle } from "expo-haptics";
 import { LinearGradient } from "expo-linear-gradient";
 import React, { Dispatch, SetStateAction, useRef, useState } from "react";
-import { Pressable, StyleSheet, View } from "react-native";
+import { Platform, Pressable, StyleSheet, View } from "react-native";
 import { ScrollView } from "react-native-gesture-handler";
 import { useCollectionContext } from "../../context";
 import { ColumnEmptyComponent } from "../../emptyComponent";
@@ -62,16 +62,20 @@ function StoryPointShape({ selected, index, onPress }) {
       }}
     >
       <View
-        style={{
-          position: "absolute",
-          top: 0,
-          left: 0,
-          width: "100%",
-          height: "100%",
-          alignItems: "center",
-          justifyContent: "center",
-          transform: [{ scale: 1.2 }],
-        }}
+        style={
+          Platform.OS === "web"
+            ? { marginTop: -5 }
+            : {
+                position: "absolute",
+                top: 0,
+                left: 0,
+                width: "100%",
+                height: "100%",
+                alignItems: "center",
+                justifyContent: "center",
+                transform: [{ scale: 1.2 }],
+              }
+        }
       >
         <Icon
           size={50}
