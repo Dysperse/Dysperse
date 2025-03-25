@@ -12,7 +12,7 @@ import { Column } from "./Column";
 import { KanbanHeader } from "./Header";
 import { KanbanContext } from "./context";
 
-function ColumnSwitcher({ columns, setCurrentColumn }) {
+function ColumnSwitcher({ entities, columns, setCurrentColumn }) {
   const { width } = useWindowDimensions();
 
   const ref = React.useRef<ICarouselInstance>(null);
@@ -24,11 +24,15 @@ function ColumnSwitcher({ columns, setCurrentColumn }) {
         ref={ref}
         width={width}
         height={90}
-        data={columns}
+        data={
+          entities
+            ? [...columns, { id: "entities", name: "Unlabeled", entities }]
+            : columns
+        }
         onProgressChange={progress}
-        onSnapToItem={(index) => {
-          setCurrentColumn(index);
-        }}
+        onSnapToItem={(index) =>
+          setCurrentColumn(index === columns.length ? -1 : index)
+        }
         onScrollStart={() => impactAsync(ImpactFeedbackStyle.Light)}
         mode="parallax"
         loop={false}
@@ -38,6 +42,7 @@ function ColumnSwitcher({ columns, setCurrentColumn }) {
         }}
         renderItem={({ item }) => (
           <KanbanHeader
+            hasUnlabeled={!!entities}
             carouselRef={ref}
             label={{
               ...item,
@@ -56,7 +61,9 @@ export default function Kanban() {
   const breakpoints = useResponsiveBreakpoints();
   const { data, openLabelPicker, access, isPublic } = useCollectionContext();
 
-  const [currentColumn, setCurrentColumn] = useState(0);
+  const [currentColumn, setCurrentColumn] = useState(
+    data.labels.length === 0 ? -1 : 0
+  );
 
   const { hiddenLabels: rawHiddenLabels } = useLocalSearchParams();
   const hiddenLabels = rawHiddenLabels?.split(",") || [];
@@ -79,9 +86,14 @@ export default function Kanban() {
       }}
     >
       {!breakpoints.md && (
-        <ColumnSwitcher columns={columns} setCurrentColumn={setCurrentColumn} />
+        <ColumnSwitcher
+          columns={columns}
+          entities={Object.keys(data.entities || {}).length > 0}
+          setCurrentColumn={setCurrentColumn}
+        />
       )}
-      {data.labels.length === 0 ? (
+      {data.labels.length === 0 &&
+      Object.keys(data?.entities || {}).length === 0 ? (
         <CollectionEmpty />
       ) : (
         <ScrollView
@@ -101,9 +113,11 @@ export default function Kanban() {
             : columns[currentColumn] && (
                 <Column label={columns[currentColumn]} />
               )}
-          {data && Object.keys(data.entities)?.length > 0 && breakpoints.md && (
-            <Column entities={data.entities} />
-          )}
+          {data &&
+            Object.keys(data.entities)?.length > 0 &&
+            (breakpoints.md || currentColumn === -1) && (
+              <Column entities={data.entities} />
+            )}
           {breakpoints.md && !isReadOnly && (
             <View
               style={{

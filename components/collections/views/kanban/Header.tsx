@@ -23,6 +23,7 @@ export const KanbanHeader = memo(function KanbanHeader({
   hideNavigation,
   style,
   carouselRef,
+  hasUnlabeled,
 }: {
   grid?: boolean;
   list?: boolean;
@@ -34,6 +35,7 @@ export const KanbanHeader = memo(function KanbanHeader({
     name: string;
     entitiesLength: number;
   };
+  hasUnlabeled?: boolean;
   carouselRef?: any;
   style?: StyleProp<ViewStyle>;
 }) {
@@ -131,7 +133,7 @@ export const KanbanHeader = memo(function KanbanHeader({
       <View
         style={{ flexDirection: "row", marginRight: -15, alignItems: "center" }}
       >
-        {label?.id && !isReadOnly && session && (
+        {label?.id && !isReadOnly && session && label?.id !== "entities" && (
           <ColumnMenuTrigger label={label}>
             <IconButton
               size={40}
@@ -163,10 +165,15 @@ export const KanbanHeader = memo(function KanbanHeader({
             {!breakpoints.md && !hideNavigation && (
               <IconButton
                 size={40}
-                disabled={currentColumn === columnsLength - 1}
+                disabled={
+                  currentColumn === columnsLength - (hasUnlabeled ? 0 : 1) ||
+                  label.id === "entities"
+                }
                 onPress={() => {
                   carouselRef.current?.next?.();
-                  setCurrentColumn((d) => (d + 1) % columnsLength);
+                  setCurrentColumn(
+                    (d) => (d + (hasUnlabeled ? 2 : 1)) % columnsLength
+                  );
                 }}
                 icon="arrow_forward_ios"
                 style={{ height: 60 }}
