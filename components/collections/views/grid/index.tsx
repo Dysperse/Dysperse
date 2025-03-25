@@ -39,7 +39,8 @@ export default function Grid() {
     data.labels.find((l) => l.id === id)
   );
 
-  if (data.entities.length > 0) displayLabels.push({ other: true });
+  if (Object.keys(data.entities).length > 0)
+    displayLabels.push({ other: true });
   if (displayLabels.length % 2 !== 0) displayLabels.push({ empty: true });
   if (displayLabels.length < 4)
     displayLabels.push(
@@ -99,11 +100,13 @@ export default function Grid() {
                         padding: 20,
                       })}
                     >
-                      <Emoji
-                        emoji={label.emoji || "1f4ad"}
-                        size={50}
-                        style={{ marginBottom: 5 }}
-                      />
+                      {label.emoji && (
+                        <Emoji
+                          emoji={label.emoji}
+                          size={50}
+                          style={{ marginBottom: 5 }}
+                        />
+                      )}
                       <Text
                         numberOfLines={1}
                         style={{
@@ -112,22 +115,25 @@ export default function Grid() {
                           fontFamily: "serifText700",
                         }}
                       >
-                        {label.name || "Other"}
+                        {label.name || "Unlabeled"}
                       </Text>
-                      {label.entities && (
+                      {(label.entities || data.entities) && (
                         <Text
                           weight={300}
                           style={{ marginTop: 2, opacity: 0.7 }}
                         >
                           {
-                            Object.values(label.entities)?.filter?.(
+                            Object.values(
+                              label.entities || data.entities
+                            )?.filter?.(
                               (e) => e.completionInstances.length === 0
                             )?.length
                           }
                           {" item"}
-                          {Object.values(label.entities)?.filter?.(
-                            (e) => e.completionInstances.length === 0
-                          )?.length !== 1
+                          {Object.values(
+                            label.entities || data.entities
+                          )?.filter?.((e) => e.completionInstances.length === 0)
+                            ?.length !== 1
                             ? "s"
                             : ""}
                         </Text>
