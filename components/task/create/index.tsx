@@ -1430,11 +1430,11 @@ const BottomSheetContent = forwardRef(
                 nameRef={nameRef}
                 setValue={setValue}
               />
-              <TaskDescriptionInput
+              {/* <TaskDescriptionInput
                 nameRef={nameRef}
                 control={control}
                 ref={descriptionRef}
-              />
+              /> */}
             </View>
           </View>
           <TaskAttachments watch={watch} setValue={setValue} />

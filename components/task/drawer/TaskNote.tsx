@@ -505,8 +505,13 @@ export const TaskNote = forwardRef(
             updateTask={updateTask as any}
             theme={theme}
             dom={{
+              useWebKit: true,
               matchContents: true,
               scrollEnabled: false,
+              keyboardDisplayRequiresUserAction: false,
+              hideKeyboardAccessoryView: true,
+              dataDetectorTypes: "none",
+              setBuiltInZoomControls: false,
 
               // Set isLoaded to true after the webview has loaded
               onLoadEnd: () => setIsLoading(false),
