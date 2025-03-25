@@ -26,7 +26,7 @@ const extensions = [
   }),
   Image,
   Placeholder.configure({
-    placeholder: "Add a note…",
+    placeholder: "What's on your mind?",
   }),
 
   Dropcursor,
@@ -81,12 +81,6 @@ function CharacterCounter({ theme }) {
 
 function Focuser({ showEditorWhenEmpty, containerRef, openLink }) {
   const { editor } = useCurrentEditor();
-
-  useEffect(() => {
-    if (editor.isEmpty && !showEditorWhenEmpty) {
-      editor.commands.focus();
-    }
-  }, [editor]);
 
   useEffect(() => {
     const t = (event) => {
