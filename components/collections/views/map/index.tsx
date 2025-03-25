@@ -93,52 +93,50 @@ const icons = {
   clinic: "local_hospital",
 };
 
-function Content({
-  defaultQuery,
-  closeOnSelect,
-  inputRef,
-  onLocationSelect,
-  modalRef,
-}) {
+// --------------------------------------------------------------------
+// Content: Takes in a query prop and triggers the Nominatim search.
+// --------------------------------------------------------------------
+function Content({ query, onLocationSelect, closeOnSelect, modalRef }) {
   const [loading, setLoading] = useState(false);
-  const [data, setData] = useState(null);
+  const [data, setData] = useState([]);
   const [error, setError] = useState(null);
 
-  const handleSearch = async (query) => {
-    try {
-      setLoading(true);
-      const res = await fetch(
-        `https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(
-          query
-        )}&format=json`
-      ).then((res) => res.json());
-      console.log(res);
-      setData(res);
-    } catch (e) {
-      console.error(e);
-      setError(e);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const [value, onChange] = useState("");
-
   useEffect(() => {
-    if (value) {
-      handleSearch(value);
+    if (!query) {
+      setData([]); // Clear data if there's no query
+      return;
     }
-  }, [value]);
 
-  useImperativeHandle(inputRef, () => ({
-    setValue: onChange,
-  }));
+    const handleSearch = async (value) => {
+      try {
+        setLoading(true);
+        setError(null);
 
-  useEffect(() => {
-    if (defaultQuery) {
-      handleSearch(defaultQuery);
-    }
-  }, [defaultQuery]);
+        // If you have issues with certain Nominatim servers ignoring your request,
+        // add a "User-Agent" header:
+        const res = await fetch(
+          `https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(
+            value
+          )}&format=json`,
+          {
+            headers: {
+              "User-Agent": "MyApp/1.0.0",
+            },
+          }
+        ).then((r) => r.json());
+
+        console.log(res);
+        setData(res);
+      } catch (e) {
+        console.error(e);
+        setError(e);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    handleSearch(query);
+  }, [query]);
 
   return (
     <View style={{ padding: 10, height: "100%" }}>
@@ -160,18 +158,22 @@ function Content({
         <BottomSheetFlashList
           contentContainerStyle={{ paddingTop: 10 }}
           data={data}
-          renderItem={({ item }: any) => (
+          renderItem={({ item }) => (
             <ListItemButton
               onPress={() => {
                 onLocationSelect(item);
-                if (closeOnSelect) modalRef.current.forceClose();
+                if (closeOnSelect) {
+                  modalRef.current.forceClose();
+                }
               }}
             >
               <Avatar icon={icons[item.type] || "location_on"} />
               <ListItemText
                 primary={item.name || item.display_name}
                 secondary={
-                  item.name && item.display_name.split(", ").slice(2).join(", ")
+                  item.name
+                    ? item.display_name.split(", ").slice(2).join(", ")
+                    : undefined
                 }
               />
             </ListItemButton>
@@ -182,25 +184,23 @@ function Content({
   );
 }
 
+// --------------------------------------------------------------------
+// LocationPickerModal: Renders a trigger that opens a BottomSheet
+// containing our controlled text input and the Content list.
+// --------------------------------------------------------------------
 export function LocationPickerModal({
   children,
   onLocationSelect,
   hideSkip,
   closeOnSelect,
-  defaultQuery,
+  defaultQuery = "",
   onClose,
   autoFocus,
-}: {
-  children: any;
-  onLocationSelect: any;
-  hideSkip?: boolean;
-  closeOnSelect?: boolean;
-  defaultQuery?: string;
-  onClose?: () => void;
-  autoFocus?: boolean;
 }) {
   const modalRef = useRef(null);
-  const inputRef = useRef(null);
+
+  // This is the query we pass down to Content; typed by the user:
+  const [query, setQuery] = useState(defaultQuery);
 
   const trigger = cloneElement(children, {
     onPress: () => modalRef.current.present(),
@@ -236,9 +236,11 @@ export function LocationPickerModal({
               flex: 1,
             }}
             weight={900}
-            onChangeText={inputRef.current?.setValue}
+            onChangeText={(val) => setQuery(val)}
+            value={query}
             autoFocus={autoFocus}
           />
+
           {!hideSkip && (
             <Button
               containerStyle={{ marginLeft: "auto" }}
@@ -251,11 +253,12 @@ export function LocationPickerModal({
             />
           )}
         </View>
+
+        {/* We pass our query state here so Content can do the searching. */}
         <Content
-          inputRef={inputRef}
-          defaultQuery={defaultQuery}
-          closeOnSelect={closeOnSelect}
+          query={query}
           onLocationSelect={onLocationSelect}
+          closeOnSelect={closeOnSelect}
           modalRef={modalRef}
         />
       </BottomSheet>
@@ -263,6 +266,10 @@ export function LocationPickerModal({
   );
 }
 
+// --------------------------------------------------------------------
+// CreateTaskButton: Handles the "create task" flow, hooking into
+// the location picker and a <CreateTask> component.
+// --------------------------------------------------------------------
 function CreateTaskButton({ mutate }) {
   const breakpoints = useResponsiveBreakpoints();
   const createTaskRef = useRef(null);
@@ -272,14 +279,14 @@ function CreateTaskButton({ mutate }) {
       <LocationPickerModal
         onLocationSelect={(location) => {
           createTaskRef.current.present();
-
           setTimeout(() => {
-            if (location)
+            if (location) {
               createTaskRef.current.setValue("location", {
                 placeId: location.place_id,
                 name: location.display_name,
                 coordinates: [location.lat, location.lon],
               });
+            }
           }, 100);
         }}
       >
@@ -300,11 +307,14 @@ function CreateTaskButton({ mutate }) {
   );
 }
 
+// --------------------------------------------------------------------
+// TaskList: Shows either tasks with location or no location, depending
+// on the user’s chosen filter. Also renders the “Create Task” button.
+// --------------------------------------------------------------------
 function TaskList({ tasks }) {
   const { data, mutate } = useCollectionContext();
   const breakpoints = useResponsiveBreakpoints();
   const theme = useColorTheme();
-
   const insets = useSafeAreaInsets();
   const { locationMode } = useLocalSearchParams();
 
@@ -315,7 +325,6 @@ function TaskList({ tasks }) {
           {
             padding: 10,
             paddingHorizontal: breakpoints.md ? 10 : 20,
-            paddingTop: breakpoints.md ? undefined : 10,
             flexDirection: "row",
           },
         ]}
@@ -355,11 +364,13 @@ function TaskList({ tasks }) {
         />
         <View style={{ flex: 1 }} />
       </View>
+
       <View
         style={{ paddingHorizontal: breakpoints.md ? 10 : 20, zIndex: 999 }}
       >
         <CreateTaskButton mutate={mutations.categoryBased.add(mutate)} />
       </View>
+
       <View
         style={[
           { flex: 1, marginBottom: -10 },
@@ -413,9 +424,11 @@ function TaskList({ tasks }) {
   );
 }
 
+// --------------------------------------------------------------------
+// MapTaskDrawer: a <TaskDrawer> that we can open from the map pins.
+// --------------------------------------------------------------------
 const MapTaskDrawer = forwardRef((props: { mutate: any }, ref) => {
   const sheetRef = useRef(null);
-
   const [id, setId] = useState(null);
 
   useImperativeHandle(ref, () => ({
@@ -434,13 +447,16 @@ const MapTaskDrawer = forwardRef((props: { mutate: any }, ref) => {
   );
 });
 
+// --------------------------------------------------------------------
+// Main MapView screen: Shows the tasks on the left, map on the right
+// (if desktop) or bottom (if mobile). Renders the map with pins.
+// --------------------------------------------------------------------
 export default function MapView() {
   const theme = useColorTheme();
   const breakpoints = useResponsiveBreakpoints();
   const { data, mutate } = useCollectionContext();
 
   const flex = useSharedValue(breakpoints.md ? 2 : 0.3);
-
   const animatedFlexStyle = useAnimatedStyle(() => ({
     flex: withSpring(flex.value, {
       damping: 50,
@@ -452,20 +468,21 @@ export default function MapView() {
 
   const { locationMode } = useLocalSearchParams();
 
+  // Separate tasks with vs. without location:
   const tasksWithLocation = (data?.labels || [])
     .flatMap((label) =>
-      Object.values(label.entities || []).filter((task: any) => !!task.location)
+      Object.values(label.entities || []).filter((t: any) => !!t.location)
     )
     .concat(
-      Object.values(data?.entities || []).filter((task: any) => !!task.location)
+      Object.values(data?.entities || []).filter((t: any) => !!t.location)
     );
 
   const tasksWithoutLocation = (data?.labels || [])
     .flatMap((label) =>
-      Object.values(label.entities || []).filter((task: any) => !task.location)
+      Object.values(label.entities || []).filter((t: any) => !t.location)
     )
     .concat(
-      Object.values(data?.entities || []).filter((task: any) => !task.location)
+      Object.values(data?.entities || []).filter((t: any) => !t.location)
     );
 
   const tasks = taskSortAlgorithm(
@@ -473,7 +490,7 @@ export default function MapView() {
       ? tasksWithLocation
       : locationMode === "no-location"
       ? tasksWithoutLocation
-      : tasksWithLocation.concat(tasksWithoutLocation)
+      : [...tasksWithLocation, ...tasksWithoutLocation]
   );
 
   const mapTaskDrawerRef = useRef(null);
@@ -497,6 +514,7 @@ export default function MapView() {
       >
         <TaskList tasks={tasks} />
       </View>
+
       <Animated.View
         style={[
           animatedFlexStyle,
@@ -508,21 +526,26 @@ export default function MapView() {
           },
         ]}
       >
+        {/* Expand/collapse the map on mobile. */}
         {!breakpoints.md && (
           <IconButton
             style={{ position: "absolute", top: 10, right: 10, zIndex: 999 }}
             icon="fullscreen"
-            onPress={() =>
-              (flex.value =
+            onPress={() => {
+              flex.value =
                 flex.value === (breakpoints.md ? 2 : 4.5)
                   ? 0.3
                   : breakpoints.md
                   ? 2
-                  : 4.5)
-            }
+                  : 4.5;
+            }}
           />
         )}
+
         <MapTaskDrawer mutate={mutate} ref={mapTaskDrawerRef} />
+
+        {/* Render the actual map with pins here. 
+            This is your MapPreview component usage: */}
         <MapPreview
           tasks={tasksWithLocation}
           onLocationSelect={(task) => mapTaskDrawerRef.current.open(task)}
