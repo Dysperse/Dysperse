@@ -79,7 +79,7 @@ function CharacterCounter({ theme }) {
   );
 }
 
-function Focuser({ showEditorWhenEmpty, containerRef, openLink }) {
+function Focuser({ containerRef, openLink }) {
   const { editor } = useCurrentEditor();
 
   useEffect(() => {
@@ -173,7 +173,6 @@ export default forwardRef<any, object>(function TaskNoteEditor(
     setFocused,
     updateTask,
     setSelectionState,
-    showEditorWhenEmpty,
     onContainerFocus,
     openLink,
   }: any,
@@ -301,11 +300,7 @@ export default forwardRef<any, object>(function TaskNoteEditor(
         }}
       >
         <Saver updateTask={updateTask} />
-        <Focuser
-          openLink={openLink}
-          showEditorWhenEmpty={showEditorWhenEmpty}
-          containerRef={containerRef}
-        />
+        <Focuser openLink={openLink} containerRef={containerRef} />
         <EditorRef ref={editorRef} />
         <FormatMenuSetter setSelectionState={setSelectionState} />
       </EditorProvider>
