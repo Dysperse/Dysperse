@@ -167,7 +167,7 @@ export const KanbanHeader = memo(function KanbanHeader({
                 size={40}
                 disabled={
                   currentColumn === columnsLength - (hasUnlabeled ? 0 : 1) ||
-                  label.id === "entities"
+                  label?.id === "entities"
                 }
                 onPress={() => {
                   carouselRef.current?.next?.();
