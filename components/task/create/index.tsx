@@ -1116,7 +1116,7 @@ const TaskDescriptionInput = forwardRef(
     }));
 
     return (
-      <View style={{ marginHorizontal: -10 }}>
+      <View style={{ marginHorizontal: -10, height: 150 }}>
         <Controller
           control={control}
           name="note"
@@ -1126,7 +1126,7 @@ const TaskDescriptionInput = forwardRef(
               onContainerFocus={() => nameRef.current.focus()}
               showEditorWhenEmpty
               ref={editorRef}
-              task={{ value }}
+              task={{ note: "<p>hi</p>" }}
               updateTask={(_, t) => onChange(t)}
             />
           )}
@@ -1430,13 +1430,11 @@ const BottomSheetContent = forwardRef(
                 nameRef={nameRef}
                 setValue={setValue}
               />
-              {Platform.OS !== "ios" && (
-                <TaskDescriptionInput
-                  nameRef={nameRef}
-                  control={control}
-                  ref={descriptionRef}
-                />
-              )}
+              <TaskDescriptionInput
+                nameRef={nameRef}
+                control={control}
+                ref={descriptionRef}
+              />
             </View>
           </View>
           <TaskAttachments watch={watch} setValue={setValue} />
