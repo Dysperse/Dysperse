@@ -1,14 +1,12 @@
 import { useSession } from "@/context/AuthProvider";
 import { useUser } from "@/context/useUser";
 import { sendApiRequest } from "@/helpers/api";
-import { useResponsiveBreakpoints } from "@/helpers/useResponsiveBreakpoints";
 import { Button } from "@/ui/Button";
 import Icon from "@/ui/Icon";
 import IconButton from "@/ui/IconButton";
 import MenuPopover, { MenuItem } from "@/ui/MenuPopover";
 import Modal from "@/ui/Modal";
-import SkeletonContainer from "@/ui/Skeleton/container";
-import { LinearSkeletonArray } from "@/ui/Skeleton/linear";
+import Spinner from "@/ui/Spinner";
 import Text from "@/ui/Text";
 import TextField from "@/ui/TextArea";
 import { addHslAlpha } from "@/ui/color";
@@ -30,7 +28,6 @@ import Animated, {
 } from "react-native-reanimated";
 import Toast from "react-native-toast-message";
 import TaskNoteEditor from "./TaskNoteEditor";
-import { useTaskDrawerContext } from "./context";
 
 function LinkModal({ children, onSubmit }) {
   const modalRef = useRef(null);
@@ -124,6 +121,7 @@ function NoteInsertMenu({ isFocused, editorRef }) {
     right: 0,
     margin: 5,
     zIndex: 9999,
+    flexDirection: "row",
     position: "absolute",
   }));
 
@@ -174,13 +172,6 @@ function NoteInsertMenu({ isFocused, editorRef }) {
       <MenuPopover
         trigger={
           <Button
-            // onPress={() => editorRef.current.focus()}
-            // {...(Platform.OS === "web"
-            //   ? {
-            //       onMouseDown: () =>
-            //         setTimeout(() => editorRef.current.focus(), 0),
-            //     }
-            //   : {})}
             backgroundColors={{
               default: addHslAlpha(theme[5], 0.7),
               hovered: addHslAlpha(theme[5], 0.8),
@@ -194,20 +185,28 @@ function NoteInsertMenu({ isFocused, editorRef }) {
         }
         closeOnSelect
         menuProps={{
-          // onOpen: () => editorRef.current.focus(),
           onClose: () => editorRef.current.focus(),
         }}
         options={[
           {
             renderer: () => (
               <View style={{ flexDirection: "row" }}>
-                <MenuItem onPress={() => editorRef.current.insertHeading(1)}>
+                <MenuItem
+                  onPress={() => editorRef.current.insertHeading(1)}
+                  containerStyle={{ flex: 1, minWidth: 0 }}
+                >
                   <Icon>format_h1</Icon>
                 </MenuItem>
-                <MenuItem onPress={() => editorRef.current.insertHeading(2)}>
+                <MenuItem
+                  onPress={() => editorRef.current.insertHeading(2)}
+                  containerStyle={{ flex: 1, minWidth: 0 }}
+                >
                   <Icon>format_h2</Icon>
                 </MenuItem>
-                <MenuItem onPress={() => editorRef.current.insertHeading(3)}>
+                <MenuItem
+                  onPress={() => editorRef.current.insertHeading(3)}
+                  containerStyle={{ flex: 1, minWidth: 0 }}
+                >
                   <Icon>format_h3</Icon>
                 </MenuItem>
               </View>
@@ -248,6 +247,19 @@ function NoteInsertMenu({ isFocused, editorRef }) {
             callback: () => editorRef.current.setHorizontalRule(),
           },
         ]}
+      />
+      <Button
+        backgroundColors={{
+          default: addHslAlpha(theme[5], 0.7),
+          hovered: addHslAlpha(theme[5], 0.8),
+          pressed: addHslAlpha(theme[5], 0.9),
+        }}
+        iconPosition="end"
+        containerStyle={{ marginLeft: 5 }}
+        icon="check"
+        variant="filled"
+        dense
+        onPress={() => editorRef.current.blur()}
       />
     </Animated.View>
   );
@@ -418,13 +430,12 @@ export const TaskNote = forwardRef(
     const theme = useColorTheme();
     const { session } = useUser();
     const formatMenuRef = useRef(null);
-    const breakpoints = useResponsiveBreakpoints();
     const isFocused = useSharedValue(0);
+    const [collapsed, setCollapsed] = useState(true);
 
     const focusedStyles = useAnimatedStyle(() => ({
       borderRadius: 10,
       marginLeft: 35,
-      marginBottom: breakpoints.md ? 20 : 100,
       position: "relative",
       backgroundColor: interpolateColor(
         isFocused.value,
@@ -437,7 +448,6 @@ export const TaskNote = forwardRef(
     }));
     const [hasLoaded, setHasLoaded] = useState(false);
     const [isLoading, setIsLoading] = useState(Platform.OS !== "web");
-    const { isReadOnly } = useTaskDrawerContext() || {};
 
     return (
       <>
@@ -455,17 +465,28 @@ export const TaskNote = forwardRef(
             marginLeft: 5,
           }}
           style={{ gap: 10 }}
+          onPress={isLoading ? undefined : () => setCollapsed((c) => !c)}
         >
           <Icon size={20} style={{ marginTop: -3 }}>
             sticky_note_2
           </Icon>
           <Text style={{ color: theme[11], marginLeft: 5 }}>
-            {task.note ? "Note" : "Add note"}
+            {task.note ? (collapsed ? "Show note" : "Hide note") : "Add a note"}
           </Text>
-          {task.note && <Icon>expand_more</Icon>}
+          {isLoading ? (
+            <Spinner size={15} style={{ marginLeft: -3 }} />
+          ) : (
+            task.note && <Icon style={{ marginLeft: -5 }}>expand_more</Icon>
+          )}
         </Button>
         <Animated.View
-          style={focusedStyles}
+          style={[
+            focusedStyles,
+            collapsed && {
+              maxHeight: 0,
+              overflow: "hidden",
+            },
+          ]}
           key={task.hasSimplifiedNote ? "simplified" : "normal"}
         >
           <NoteFormatMenu
@@ -473,27 +494,6 @@ export const TaskNote = forwardRef(
             isFocused={isFocused}
             editorRef={editorRef}
           />
-          {isLoading && (
-            <SkeletonContainer style={{ marginTop: 10 }}>
-              <LinearSkeletonArray
-                widths={[
-                  "100%",
-                  "96%",
-                  "58%",
-                  "72%",
-                  "84%",
-                  "90%",
-                  "42%",
-                  "38%",
-                  "64%",
-                  "80%",
-                  "90%",
-                  "100%",
-                ]}
-                height={20}
-              />
-            </SkeletonContainer>
-          )}
           <TaskNoteEditor
             openLink={(href) => Linking.openURL(href)}
             onContainerFocus={onContainerFocus}
@@ -528,3 +528,4 @@ export const TaskNote = forwardRef(
     );
   }
 );
+

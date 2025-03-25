@@ -114,7 +114,6 @@ export function TaskCompleteButton() {
           <Icon
             filled={isCompleted}
             size={27}
-            bold
             style={{
               color: isCompleted ? green[1] : theme[11],
             }}
@@ -123,7 +122,6 @@ export function TaskCompleteButton() {
           </Icon>
           {breakpoints.md && (
             <Text
-              weight={700}
               style={{
                 color: isCompleted ? green[1] : theme[11],
               }}

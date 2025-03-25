@@ -661,10 +661,11 @@ function CanvasLiveInfo() {
     <SkeletonContainer
       style={{
         marginTop: 10,
-        marginBottom: 10,
         gap: 10,
-        paddingHorizontal: 5,
+        paddingVertical: 20,
+        paddingHorizontal: 10,
         position: "relative",
+        borderRadius: 30,
       }}
     >
       <View
@@ -876,11 +877,10 @@ export function TaskDetails() {
           <SubtaskList />
         </View>
       )}
-
-      {task.integration?.type === "NEW_CANVAS_LMS" && <CanvasLiveInfo />}
       <View>
         <TaskNote task={task} ref={editorRef} updateTask={updateTask} />
       </View>
+      {task.integration?.type === "NEW_CANVAS_LMS" && <CanvasLiveInfo />}
     </View>
   );
 }

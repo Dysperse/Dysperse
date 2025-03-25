@@ -340,7 +340,10 @@ export default function AppLayout() {
                                       dark: true,
                                     }}
                                   >
-                                    <AppContainer progressValue={progressValue}>
+                                    <AppContainer
+                                      key={desktopCollapsed.toString()}
+                                      progressValue={progressValue}
+                                    >
                                       <LastStateRestore />
                                       <SystemBars
                                         style={!isDark ? "dark" : "light"}

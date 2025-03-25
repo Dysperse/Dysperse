@@ -45,7 +45,8 @@ export default function DayTaskModal({ children, date, taskId }) {
 
   const tasksLength =
     data && column
-      ? Object.keys(column.entities).filter((t: any) => t.id !== taskId).length
+      ? Object.keys(column?.entities || {}).filter((t: any) => t.id !== taskId)
+          .length
       : 0;
 
   return (
@@ -96,7 +97,7 @@ export default function DayTaskModal({ children, date, taskId }) {
             <View style={{ flex: 1 }}>
               <BottomSheetFlashList
                 data={taskSortAlgorithm(
-                  Object.values(column.entities).filter(
+                  Object.values(column?.entities || {}).filter(
                     (t: any) => t.id !== taskId
                   )
                 )}
@@ -106,7 +107,7 @@ export default function DayTaskModal({ children, date, taskId }) {
                   paddingTop: 0,
                   paddingBottom: 40,
                 }}
-                centerContent={Object.keys(column.entities).length === 0}
+                centerContent={Object.keys(column?.entities || {}).length === 0}
                 ListEmptyComponent={() => (
                   <View style={{ marginVertical: "auto" }}>
                     <Text style={{ textAlign: "center" }}>

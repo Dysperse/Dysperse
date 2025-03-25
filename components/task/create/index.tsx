@@ -140,6 +140,7 @@ function Footer({
   const recurrenceRule = watch("recurrenceRule");
   const collectionId = watch("collectionId");
   const date = watch("date");
+  const end = watch("end");
   const dateOnly = watch("dateOnly");
   const parentTask = watch("parentTask");
 
@@ -197,7 +198,13 @@ function Footer({
               recurrenceRule
                 ? capitalizeFirstLetter(new RRule(recurrenceRule).toText())
                 : date
-                ? date.format(dateOnly ? "MMM Do" : "MMM Do [@] h:mm a")
+                ? end
+                  ? `${date.format(
+                      dateOnly ? "MMM Do" : "MMM Do [@] h:mm a"
+                    )} — ${end.format(
+                      dateOnly ? "MMM Do" : "MMM Do [@] h:mm a"
+                    )}`
+                  : date.format(dateOnly ? "MMM Do" : "MMM Do [@] h:mm a")
                 : undefined
             }
           />
@@ -1625,3 +1632,4 @@ const CreateTask = forwardRef(
 );
 
 export default CreateTask;
+

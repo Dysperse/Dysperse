@@ -35,61 +35,99 @@ const AppContainer = memo(
       }
     }, [desktopCollapsed, sidebarRef]);
 
-    const borderStyle = useAnimatedStyle(() => ({
-      top: 0,
-      left: 0,
-      right: 0,
-      bottom: 0,
-      zIndex: 99,
-      opacity: interpolate(progressValue.current?.value || 0, [0, 1], [0, 1]),
-      borderWidth: 2,
-      borderColor: theme[5],
-    }));
+    const borderStyle = useAnimatedStyle(
+      () => ({
+        top: 0,
+        left: 0,
+        right: 0,
+        bottom: 0,
+        zIndex: 99,
+        opacity: interpolate(progressValue.current?.value || 0, [0, 1], [0, 1]),
+        borderWidth: 2,
+        borderColor: theme[5],
+      }),
+      [progressValue]
+    );
 
-    const borderRadiusStyle = useAnimatedStyle(() => ({
-      borderRadius: interpolate(
-        progressValue.current?.value || 0,
-        [0, 1],
-        [!breakpoints.md ? 0 : 20, 30]
-      ),
-    }));
+    const borderRadiusStyle = useAnimatedStyle(
+      () => ({
+        borderRadius: interpolate(
+          progressValue.current?.value || 0,
+          [0, 1],
+          [!breakpoints.md ? 0 : 20, 30]
+        ),
+      }),
+      [progressValue]
+    );
 
-    const marginTopStyle = useAnimatedStyle(() => ({
-      marginTop: interpolate(
-        progressValue.current?.value || 0,
-        [0, 1],
-        [0, -insets.top]
-      ),
-    }));
+    const marginTopStyle = useAnimatedStyle(
+      () => ({
+        marginTop: interpolate(
+          progressValue.current?.value || 0,
+          [0, 1],
+          [0, -insets.top]
+        ),
+      }),
+      [progressValue]
+    );
 
-    const containerMarginBottomStyle = useAnimatedStyle(() => ({
-      marginBottom: interpolate(
-        progressValue.current?.value || 0,
-        [0, 1],
-        [0, insets.bottom]
-      ),
-    }));
+    const containerMarginBottomStyle = useAnimatedStyle(
+      () => ({
+        marginBottom: interpolate(
+          progressValue.current?.value || 0,
+          [0, 1],
+          [0, insets.bottom]
+        ),
+      }),
+      [progressValue]
+    );
 
-    const containerMarginTopStyle = useAnimatedStyle(() => ({
-      marginTop: interpolate(
-        progressValue.current?.value || 0,
-        [0, 1],
-        [0, insets.top]
-      ),
-    }));
+    const containerMarginTopStyle = useAnimatedStyle(
+      () => ({
+        marginTop: interpolate(
+          progressValue.current?.value || 0,
+          [0, 1],
+          [0, insets.top]
+        ),
+      }),
+      [progressValue]
+    );
 
-    const animatedStyle = useAnimatedStyle(() =>
-      breakpoints.md
-        ? desktopCollapsed
-          ? {
-              flex: 1,
-              width: "100%",
-              opacity: interpolate(
-                progressValue.current?.value || 0,
-                [0, 1],
-                [1, 0.6]
-              ),
-              marginBottom: 0,
+    const animatedStyle = useAnimatedStyle(
+      () =>
+        breakpoints.md
+          ? desktopCollapsed
+            ? {
+                flex: 1,
+                width: "100%",
+                opacity: interpolate(
+                  progressValue.current?.value || 0,
+                  [0, 1],
+                  [1, 0.6]
+                ),
+                marginBottom: 0,
+                transform: [
+                  {
+                    scale: interpolate(
+                      progressValue.current?.value || 0,
+                      [0, 1],
+                      [1, 0.98]
+                    ),
+                  },
+                ],
+              }
+            : {
+                flex: 1,
+                marginLeft: pathname.includes("settings")
+                  ? 0
+                  : pathname.includes("/everything")
+                  ? SECONDARY_SIDEBAR_WIDTH
+                  : ORIGINAL_SIDEBAR_WIDTH,
+                marginRight: 0,
+                marginBottom: 0,
+                zIndex: 9999,
+              }
+          : {
               transform: [
                 {
                   scale: interpolate(
@@ -99,29 +137,15 @@ const AppContainer = memo(
                   ),
                 },
               ],
-            }
-          : {
-              flex: 1,
-              marginLeft: pathname.includes("settings")
-                ? 0
-                : pathname.includes("/everything")
-                ? SECONDARY_SIDEBAR_WIDTH
-                : ORIGINAL_SIDEBAR_WIDTH,
-              marginRight: 0,
-              marginBottom: 0,
-              zIndex: 9999,
-            }
-        : {
-            transform: [
-              {
-                scale: interpolate(
-                  progressValue.current?.value || 0,
-                  [0, 1],
-                  [1, 0.98]
-                ),
-              },
-            ],
-          }
+            },
+      [
+        breakpoints.md,
+        desktopCollapsed,
+        pathname,
+        ORIGINAL_SIDEBAR_WIDTH,
+        SECONDARY_SIDEBAR_WIDTH,
+        progressValue,
+      ]
     );
 
     return (

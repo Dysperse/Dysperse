@@ -192,6 +192,7 @@ export default forwardRef<any, object>(function TaskNoteEditor(
     () => ({
       editor: editorRef.current.editor,
       focus: () => editorRef.current.editor.commands.focus(),
+      blur: () => editorRef.current.editor.commands.blur(),
       insertImage: (url) =>
         editorRef.current.editor
           .chain()
@@ -268,6 +269,7 @@ export default forwardRef<any, object>(function TaskNoteEditor(
         borderRadius: 10,
         overflow: "hidden",
         padding: "0 15px",
+        width: "100%",
       }}
       onMouseDown={() => editorRef.current.editor.commands.focus()}
       onClick={() => editorRef.current.editor.commands.focus()}
