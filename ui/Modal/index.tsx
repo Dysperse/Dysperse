@@ -100,14 +100,14 @@ const Modal = (
       sheetRef={props.sheetRef}
       onClose={handleClose}
       handleComponent={() => null}
-      animateOnMount={
-        Platform.OS === "web"
-          ? props.animation === "BOTH" ||
-            props.animation === "SLIDE" ||
-            props.animation === "NONE" ||
-            !props.animation
-          : undefined
-      }
+      // animateOnMount={
+      //   Platform.OS === "web"
+      //     ? props.animation === "BOTH" ||
+      //       props.animation === "SLIDE" ||
+      //       props.animation === "NONE" ||
+      //       !props.animation
+      //     : undefined
+      // }
       {...((props.animation !== "SCALE" || Platform.OS === "web") && {
         animationConfigs,
       })}
