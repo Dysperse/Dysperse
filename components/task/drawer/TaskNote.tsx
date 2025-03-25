@@ -482,10 +482,12 @@ export const TaskNote = forwardRef(
         <Animated.View
           style={[
             focusedStyles,
-            collapsed && {
-              maxHeight: 0,
-              overflow: "hidden",
-            },
+            collapsed &&
+              Platform.OS !== "web" && {
+                maxHeight: 0,
+                overflow: "hidden",
+              },
+            collapsed && Platform.OS === "web" && { display: "none" },
           ]}
           key={task.hasSimplifiedNote ? "simplified" : "normal"}
         >
