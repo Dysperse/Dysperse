@@ -15,7 +15,7 @@ import ListItemText from "@/ui/ListItemText";
 import MenuPopover from "@/ui/MenuPopover";
 import RefreshControl from "@/ui/RefreshControl";
 import TextField from "@/ui/TextArea";
-import { BottomSheetFlashList } from "@gorhom/bottom-sheet";
+import { FlashList } from "@shopify/flash-list";
 import { LinearGradient } from "expo-linear-gradient";
 import { router, useLocalSearchParams } from "expo-router";
 import {
@@ -155,7 +155,7 @@ function Content({ query, onLocationSelect, closeOnSelect, modalRef }) {
           </View>
         )}
         {error && <ErrorAlert />}
-        <BottomSheetFlashList
+        <FlashList
           contentContainerStyle={{ paddingTop: 10 }}
           data={data}
           renderItem={({ item }) => (
@@ -391,7 +391,7 @@ function TaskList({ tasks }) {
             marginTop: Platform.OS === "web" ? 0 : 50,
           }}
         />
-        <BottomSheetFlashList
+        <FlashList
           keyboardShouldPersistTaps="handled"
           style={{ flex: 1 }}
           data={tasks}
