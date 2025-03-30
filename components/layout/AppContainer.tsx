@@ -46,7 +46,7 @@ const AppContainer = memo(
         borderWidth: 2,
         borderColor: theme[5],
       }),
-      [progressValue]
+      [progressValue, theme]
     );
 
     const borderRadiusStyle = useAnimatedStyle(
