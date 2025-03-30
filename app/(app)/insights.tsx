@@ -322,7 +322,16 @@ function Insights({ year }) {
       <MemberSince />
     </View>
   ) : (
-    <View>{error ? <ErrorAlert /> : <Spinner />}</View>
+    <View
+      style={{
+        flex: 1,
+        height: "100%",
+        alignItems: "center",
+        justifyContent: "center",
+      }}
+    >
+      {error ? <ErrorAlert /> : <Spinner />}
+    </View>
   );
 }
 
@@ -371,3 +380,4 @@ export default function Page() {
     </View>
   );
 }
+
