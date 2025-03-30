@@ -154,6 +154,7 @@ export default function ChipInput({
         "&multiLine": {
           control: {
             fontFamily: "serifText800",
+            minHeight: 100,
           },
           highlighter: { ...paddingStyles, border: "1px solid transparent" },
           input: {
@@ -162,7 +163,6 @@ export default function ChipInput({
             boxShadow: "none",
             height,
             flex: 1,
-            minHeight: 130,
             ...inputStyles,
             overflow: "auto",
             color: theme[11],
