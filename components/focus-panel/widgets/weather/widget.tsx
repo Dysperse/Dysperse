@@ -157,7 +157,7 @@ export default function WeatherWidget({
           <Text
             style={{ color: theme[11], flex: 1, fontSize: 14, height: "100%" }}
             weight={700}
-            numberOfLines={2}
+            numberOfLines={1}
           >
             {weatherDescription?.description}
           </Text>
@@ -465,3 +465,4 @@ export default function WeatherWidget({
     </Pressable>
   );
 }
+

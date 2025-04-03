@@ -156,15 +156,14 @@ function Content({ query, onLocationSelect, closeOnSelect, modalRef }) {
         )}
         {error && <ErrorAlert />}
         <FlashList
+          keyboardShouldPersistTaps="handled"
           contentContainerStyle={{ paddingTop: 10 }}
           data={data}
           renderItem={({ item }) => (
             <ListItemButton
               onPress={() => {
                 onLocationSelect(item);
-                if (closeOnSelect) {
-                  modalRef.current.forceClose();
-                }
+                modalRef.current.forceClose();
               }}
             >
               <Avatar icon={icons[item.type] || "location_on"} />

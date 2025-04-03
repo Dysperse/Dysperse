@@ -94,7 +94,11 @@ export default function Page() {
       <MenuButton addInsets gradient />
       <ScrollView style={{ flex: 1 }}>
         <View
-          style={{ flexShrink: 0, paddingVertical: 50, marginTop: insets.top }}
+          style={{
+            flexShrink: 0,
+            paddingVertical: 50,
+            marginTop: insets.top + 50,
+          }}
         >
           <View
             style={{ alignItems: "center", marginBottom: 15 }}
@@ -151,13 +155,13 @@ export default function Page() {
               <Text
                 weight={900}
                 style={{
-                  fontSize: 30,
-                  lineHeight: 36,
+                  fontSize: breakpoints.md ? 30 : 20,
+                  lineHeight: breakpoints.md ? 36 : 25,
                   marginTop: 10,
                   color: theme[11],
                 }}
               >
-                It all starts with{"\n"}a task
+                It all starts with{breakpoints.md && "\n"}a task
               </Text>
 
               <PlusButton />
@@ -172,8 +176,8 @@ export default function Page() {
               <Text
                 weight={900}
                 style={{
-                  fontSize: 30,
-                  lineHeight: 36,
+                  fontSize: breakpoints.md ? 30 : 20,
+                  lineHeight: breakpoints.md ? 36 : 25,
                   marginTop: 10,
                   color: theme[11],
                 }}
@@ -195,7 +199,11 @@ export default function Page() {
               <Text variant="eyebrow">three</Text>
               <Text
                 weight={900}
-                style={{ fontSize: 30, lineHeight: 43, color: theme[11] }}
+                style={{
+                  fontSize: breakpoints.md ? 30 : 20,
+                  lineHeight: breakpoints.md ? 36 : 25,
+                  color: theme[11],
+                }}
               >
                 Sort labels into collections
               </Text>
@@ -210,7 +218,11 @@ export default function Page() {
               <Text variant="eyebrow">four</Text>
               <Text
                 weight={900}
-                style={{ fontSize: 30, lineHeight: 43, color: theme[11] }}
+                style={{
+                  fontSize: breakpoints.md ? 30 : 20,
+                  lineHeight: breakpoints.md ? 36 : 25,
+                  color: theme[11],
+                }}
               >
                 Open tabs like your everyday browser
               </Text>

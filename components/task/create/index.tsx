@@ -91,7 +91,10 @@ const PinTask = memo(function PinTask({ watch, control }: any) {
           icon="push_pin"
           size={50}
           style={breakpoints.md ? { marginLeft: "auto" } : { flex: 1 }}
-          onPress={() => onChange(!value)}
+          onPress={() => {
+            impactAsync(ImpactFeedbackStyle.Light);
+            onChange(!value);
+          }}
           variant="filled"
           iconProps={{ filled: value }}
           iconStyle={{
@@ -1170,6 +1173,7 @@ function SpeechRecognition({ setValue }) {
   useSpeechRecognitionEvent("error", (event) => {});
 
   const handleStart = async () => {
+    impactAsync(ImpactFeedbackStyle.Heavy);
     const result = await ExpoSpeechRecognitionModule.requestPermissionsAsync();
     if (!result.granted) {
       return;
@@ -1219,7 +1223,14 @@ function SpeechRecognition({ setValue }) {
               }
             : {}
         }
-        onPress={recognizing ? ExpoSpeechRecognitionModule.stop : handleStart}
+        onPress={
+          recognizing
+            ? () => {
+                ExpoSpeechRecognitionModule.stop();
+                impactAsync(ImpactFeedbackStyle.Heavy);
+              }
+            : handleStart
+        }
       />
     </>
   );

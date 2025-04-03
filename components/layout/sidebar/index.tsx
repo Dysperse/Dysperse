@@ -111,14 +111,14 @@ const HomeButton = memo(function HomeButton({ isHome }: { isHome: boolean }) {
         <View
           style={[
             {
-              backgroundColor: theme[9],
+              backgroundColor: theme[11],
               width: 7,
               height: 7,
               borderRadius: 99,
               marginLeft: -10,
               position: "absolute",
               top: 12,
-              right: 33,
+              right: breakpoints.md ? 33 : 45,
             },
           ]}
         />
