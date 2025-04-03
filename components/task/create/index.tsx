@@ -1036,6 +1036,7 @@ function DateButton({
         ref={recurrenceRef}
         value={recurrenceRule}
         setValue={(t: any) => setValue("recurrenceRule", t)}
+        onClose={() => nameRef.current.focus()}
       />
       <MenuPopover
         menuProps={{ rendererProps: { placement: "top" } }}

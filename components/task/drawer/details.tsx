@@ -91,7 +91,13 @@ function TaskRescheduleButton({ task, updateTask }) {
             callback: () => handleSelect("month", 1),
           },
         ].map(({ text, callback }) => (
-          <ListItemButton key={text} onPress={callback}>
+          <ListItemButton
+            key={text}
+            onPress={() => {
+              callback();
+              sheetRef.current.close();
+            }}
+          >
             <ListItemText primary={text} />
           </ListItemButton>
         ))}

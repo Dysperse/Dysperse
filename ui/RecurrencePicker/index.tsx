@@ -4,7 +4,7 @@ import { BottomSheetScrollView, useBottomSheet } from "@gorhom/bottom-sheet";
 import { Calendar, toDateId } from "@marceloterreiro/flash-calendar";
 import dayjs from "dayjs";
 import { forwardRef, useEffect, useRef, useState } from "react";
-import { View } from "react-native";
+import { Keyboard, View } from "react-native";
 import Toast from "react-native-toast-message";
 import { RRule } from "rrule";
 import { Button, ButtonText } from "../Button";
@@ -173,6 +173,10 @@ function On({ value, handleEdit }) {
 }
 
 const SetValue = ({ value, setValue }: { value: any; setValue: any }) => {
+  useEffect(() => {
+    Keyboard.dismiss();
+  }, []);
+
   useEffect(() => {
     if (!value) {
       setValue(
@@ -388,16 +392,16 @@ function AtTime({ value, setValue }) {
   );
 }
 
-function Cancel({ setValue, style }) {
+function Cancel({ setValue, onClose }) {
   const { forceClose } = useBottomSheet();
 
   return (
     <Button
-      style={style}
       dense
       onPress={() => {
         forceClose();
         setTimeout(() => setValue(null), 100);
+        setTimeout(() => onClose(), 100);
       }}
     >
       <ButtonText>Clear</ButtonText>
@@ -406,7 +410,14 @@ function Cancel({ setValue, style }) {
 }
 
 export const RecurrencePicker = forwardRef(
-  ({ value, setValue }: { value: any; setValue: any }, ref: any) => {
+  (
+    {
+      value,
+      setValue,
+      onClose = () => {},
+    }: { value: any; setValue: any; onClose?: any },
+    ref: any
+  ) => {
     const [localValue, setLocalValue] = useState(value);
 
     const handleEdit = (key, newValue) => {
@@ -417,8 +428,11 @@ export const RecurrencePicker = forwardRef(
     };
 
     return (
-      <Modal sheetRef={ref} animation="SCALE" maxWidth={400}>
-        <BottomSheetScrollView>
+      <Modal sheetRef={ref} animation="SCALE" maxWidth={400} onClose={onClose}>
+        <BottomSheetScrollView
+          keyboardShouldPersistTaps="handled"
+          onScroll={Keyboard.dismiss}
+        >
           <SetValue value={localValue} setValue={setLocalValue} />
           <View style={{ padding: 20, paddingTop: 15 }}>
             <View
@@ -427,12 +441,7 @@ export const RecurrencePicker = forwardRef(
                 alignItems: "center",
               }}
             >
-              <Cancel
-                style={{
-                  opacity: value ? 1 : 0,
-                }}
-                setValue={setLocalValue}
-              />
+              <Cancel setValue={setLocalValue} onClose={onClose} />
               <View style={{ flex: 1, justifyContent: "center" }}>
                 <Text
                   weight={800}
@@ -449,6 +458,7 @@ export const RecurrencePicker = forwardRef(
                 onPress={() => {
                   ref.current.close();
                   setValue(localValue);
+                  setTimeout(onClose, 100);
                 }}
               />
             </View>
@@ -470,3 +480,4 @@ export const RecurrencePicker = forwardRef(
     );
   }
 );
+
