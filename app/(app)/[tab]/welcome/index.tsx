@@ -5,8 +5,6 @@ import { Button, DButtonProps } from "@/ui/Button";
 import { addHslAlpha } from "@/ui/color";
 import { useColorTheme } from "@/ui/color/theme-provider";
 import Icon from "@/ui/Icon";
-import { ListItemButton } from "@/ui/ListItemButton";
-import ListItemText from "@/ui/ListItemText";
 import Logo from "@/ui/logo";
 import Text from "@/ui/Text";
 import { router } from "expo-router";
@@ -238,34 +236,6 @@ export default function Page() {
             >
               Getting started
             </Text>
-
-            {[
-              { icon: "palette", name: "Pick a theme color" },
-              { icon: "notifications", name: "Turn on notifications" },
-              { icon: "tag", name: "Create a label" },
-              { icon: "folder", name: "Create a collection" },
-              { icon: "tab", name: "Open a tab" },
-              { icon: "key", name: "Set up a passkey" },
-              { icon: "language", name: "Add our browser extension" },
-            ].map((t) => (
-              <ListItemButton
-                key={t.name}
-                style={{ marginHorizontal: -15 }}
-                pressableStyle={{ paddingVertical: 0, marginTop: 5 }}
-              >
-                <Icon size={35} bold>
-                  circle
-                </Icon>
-                <ListItemText
-                  primary={t.name}
-                  primaryProps={{
-                    style: { color: theme[11], fontSize: 20 },
-                    weight: 700,
-                  }}
-                />
-                <Icon bold>{t.icon}</Icon>
-              </ListItemButton>
-            ))}
           </Card>
         </View>
       </ScrollView>

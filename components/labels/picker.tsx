@@ -97,6 +97,7 @@ function CollectionChips({
       <BottomSheetFlatList
         horizontal
         ref={ref}
+        keyboardShouldPersistTaps="handled"
         onScrollToIndexFailed={(info) => {
           const wait = new Promise((resolve) => setTimeout(resolve, 500));
           wait.then(() => {
@@ -519,3 +520,4 @@ export default function LabelPicker({
     </>
   );
 }
+
