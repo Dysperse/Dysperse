@@ -635,7 +635,6 @@ const PrimarySidebar = memo(function PrimarySidebar({ progressValue }: any) {
 
   return (
     <OnboardingContainer
-      // debug
       id="SIDEBAR"
       onlyIf={() => pathname === "/home"}
       onStart={() => sidebarRef.current.openDrawer()}
@@ -648,7 +647,7 @@ const PrimarySidebar = memo(function PrimarySidebar({ progressValue }: any) {
         },
         {
           floatingProps: { placement: breakpoints.md ? "right" : "top" },
-          text: "Just like browser tabs — but for productivity. Use these to switch between your collections",
+          text: "Open tabs to view your collections",
         },
         {
           text: "You can open settings to explore themes, shortcuts, and more.",

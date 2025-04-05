@@ -535,28 +535,32 @@ function ResetHintsButton() {
   const { sessionToken, mutate } = useUser();
 
   const handleSave = () => {
-    sendApiRequest(
-      sessionToken,
-      "PUT",
-      "user/account",
-      {},
-      {
-        body: JSON.stringify({
-          hintsViewed: [],
+    try {
+      sendApiRequest(
+        sessionToken,
+        "PUT",
+        "user/account",
+        {},
+        {
+          body: JSON.stringify({
+            hintsViewed: [],
+          }),
+        }
+      );
+      Toast.show({ type: "success", text1: "Hints reset!" });
+      mutate(
+        (d) => ({
+          ...d,
+          user: {
+            ...d.user,
+            hintsViewed: [],
+          },
         }),
-      }
-    );
-    Toast.show({ type: "success", text1: "Hints reset!" });
-    mutate(
-      (d) => ({
-        ...d,
-        user: {
-          ...d.user,
-          hintsViewed: [],
-        },
-      }),
-      { revalidate: false }
-    );
+        { revalidate: false }
+      );
+    } catch (e) {
+      Toast.show({ type: "error" });
+    }
   };
 
   return (
