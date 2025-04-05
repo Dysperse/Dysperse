@@ -105,7 +105,7 @@ function CalendarPreview({
   const onCalendarDayPress = (date) =>
     setValue((t) => {
       const key = view === "end" ? "end" : "date";
-      const time = dayjs(t[key]);
+      const time = dayjs(t[key] || undefined);
       return {
         ...t,
         [key]: dayjs(fromDateId(date))
@@ -414,3 +414,4 @@ export const DatePicker = forwardRef(
     );
   }
 );
+
