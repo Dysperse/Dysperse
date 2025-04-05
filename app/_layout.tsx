@@ -140,6 +140,7 @@ function Root() {
     ? 220
     : Math.min(280, width - 40);
   const SIDEBAR_WIDTH = useSharedValue(ORIGINAL_SIDEBAR_WIDTH);
+  const sidebarState = useRef(false);
 
   const sidebarContextValue = useMemo(
     () => ({
@@ -149,6 +150,7 @@ function Root() {
       SIDEBAR_WIDTH,
       ORIGINAL_SIDEBAR_WIDTH,
       SECONDARY_SIDEBAR_WIDTH: 130,
+      sidebarState,
     }),
     [desktopCollapsed, SIDEBAR_WIDTH, ORIGINAL_SIDEBAR_WIDTH, breakpoints]
   );

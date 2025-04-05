@@ -29,6 +29,7 @@ import ReorderableList, {
   ReorderableListReorderEvent,
   reorderItems,
 } from "react-native-reorderable-list";
+import { AttachStep } from "react-native-spotlight-tour";
 import Toast from "react-native-toast-message";
 import useSWR from "swr";
 import PWAInstallerPrompt from "../PWAInstaller";
@@ -322,142 +323,144 @@ function OpenTabsList() {
   );
 
   return (
-    <View style={{ flex: 1 }}>
-      {data && Array.isArray(data) && data.length > 0 ? (
-        <View style={{ flex: 1, marginTop: -10 }}>
-          <LinearGradient
-            colors={[theme[2], addHslAlpha(theme[2], 0)]}
-            style={{
-              height: 10,
-              marginBottom: -10,
-              zIndex: 999,
-              pointerEvents: "none",
-            }}
-          />
-          <ReorderableList
-            onReorder={handleReorder}
-            showsVerticalScrollIndicator={false}
-            aria-label="Sidebar"
-            refreshControl={
-              <RefreshControl
-                refreshing={false}
-                onRefresh={() => {
-                  badgingRef.current.mutate().then((e) => setBadgeData(e));
-                  mutate();
-                }}
-              />
-            }
-            ListFooterComponentStyle={{ marginTop: "auto" }}
-            ListFooterComponent={() => (
-              <View style={{ padding: 1, paddingHorizontal: 10 }}>
-                {newTab}
-              </View>
-            )}
-            data={data}
-            style={{ marginHorizontal: -10 }}
-            getItemLayout={(_, index) => ({ length: 52, offset: 52, index })}
-            renderItem={({ item }) => (
-              <View style={{ padding: 1, paddingHorizontal: 10 }}>
-                <Tab
-                  tab={item}
-                  tabs={data}
-                  mutate={mutate}
-                  selected={tab === item.id}
-                  badgeData={badgeData}
+    <AttachStep index={2}>
+      <View style={{ flex: 1 }}>
+        {data && Array.isArray(data) && data.length > 0 ? (
+          <View style={{ flex: 1, marginTop: -10 }}>
+            <LinearGradient
+              colors={[theme[2], addHslAlpha(theme[2], 0)]}
+              style={{
+                height: 10,
+                marginBottom: -10,
+                zIndex: 999,
+                pointerEvents: "none",
+              }}
+            />
+            <ReorderableList
+              onReorder={handleReorder}
+              showsVerticalScrollIndicator={false}
+              aria-label="Sidebar"
+              refreshControl={
+                <RefreshControl
+                  refreshing={false}
+                  onRefresh={() => {
+                    badgingRef.current.mutate().then((e) => setBadgeData(e));
+                    mutate();
+                  }}
                 />
+              }
+              ListFooterComponentStyle={{ marginTop: "auto" }}
+              ListFooterComponent={() => (
+                <View style={{ padding: 1, paddingHorizontal: 10 }}>
+                  {newTab}
+                </View>
+              )}
+              data={data}
+              style={{ marginHorizontal: -10 }}
+              getItemLayout={(_, index) => ({ length: 52, offset: 52, index })}
+              renderItem={({ item }) => (
+                <View style={{ padding: 1, paddingHorizontal: 10 }}>
+                  <Tab
+                    tab={item}
+                    tabs={data}
+                    mutate={mutate}
+                    selected={tab === item.id}
+                    badgeData={badgeData}
+                  />
+                </View>
+              )}
+              contentContainerStyle={{
+                paddingVertical: 10,
+                paddingTop: 5,
+                paddingHorizontal: Platform.OS === "web" && 10,
+                minHeight: widgets.find((i) => i.pinned) ? undefined : "100%",
+              }}
+              keyExtractor={(item) => item.id}
+            />
+            <LinearGradient
+              colors={[addHslAlpha(theme[2], 0), theme[2]]}
+              style={{
+                height: 10,
+                marginTop: -10,
+                zIndex: 999,
+                pointerEvents: "none",
+              }}
+            />
+            {Platform.OS === "web" && <WebPWAInstallButton />}
+            <SpaceStorageAlert />
+            {/* {footer} */}
+          </View>
+        ) : (
+          <View
+            style={{
+              justifyContent: "center",
+              flex: 1,
+              width: "100%",
+            }}
+          >
+            {error ? (
+              <ErrorAlert />
+            ) : data && data.length === 0 ? (
+              <>
+                <View
+                  style={{
+                    alignItems: "center",
+                    padding: 20,
+                    justifyContent: "center",
+                    marginBottom: 10,
+                    flex: 1,
+                  }}
+                >
+                  <Text
+                    variant="eyebrow"
+                    style={{ marginTop: 10, fontSize: 13.5 }}
+                  >
+                    It's quiet here...
+                  </Text>
+                  <Text
+                    style={{
+                      color: theme[11],
+                      opacity: 0.5,
+                      textAlign: "center",
+                      fontSize: 13,
+                      marginTop: 5,
+                    }}
+                  >
+                    Try opening a view or one of your collections
+                  </Text>
+                  {newTab}
+                </View>
+              </>
+            ) : (
+              <View style={{ flex: 1, gap: 25, marginTop: 10, marginLeft: 5 }}>
+                {[...new Array(7)].map((_, i) => (
+                  <View
+                    key={i}
+                    style={{
+                      flexDirection: "row",
+                      gap: 10,
+                      alignItems: "center",
+                    }}
+                  >
+                    <CircularSkeleton size={35} />
+                    <View style={{ flex: 1, gap: 7 }}>
+                      <LinearSkeleton
+                        height={13}
+                        width={Platform.OS === "web" ? "85%" : "75%"}
+                      />
+                      <LinearSkeleton
+                        height={13}
+                        width={Platform.OS === "web" ? "50%" : "45%"}
+                      />
+                    </View>
+                  </View>
+                ))}
               </View>
             )}
-            contentContainerStyle={{
-              paddingVertical: 10,
-              paddingTop: 5,
-              paddingHorizontal: Platform.OS === "web" && 10,
-              minHeight: widgets.find((i) => i.pinned) ? undefined : "100%",
-            }}
-            keyExtractor={(item) => item.id}
-          />
-          <LinearGradient
-            colors={[addHslAlpha(theme[2], 0), theme[2]]}
-            style={{
-              height: 10,
-              marginTop: -10,
-              zIndex: 999,
-              pointerEvents: "none",
-            }}
-          />
-          {Platform.OS === "web" && <WebPWAInstallButton />}
-          <SpaceStorageAlert />
-          {/* {footer} */}
-        </View>
-      ) : (
-        <View
-          style={{
-            justifyContent: "center",
-            flex: 1,
-            width: "100%",
-          }}
-        >
-          {error ? (
-            <ErrorAlert />
-          ) : data && data.length === 0 ? (
-            <>
-              <View
-                style={{
-                  alignItems: "center",
-                  padding: 20,
-                  justifyContent: "center",
-                  marginBottom: 10,
-                  flex: 1,
-                }}
-              >
-                <Text
-                  variant="eyebrow"
-                  style={{ marginTop: 10, fontSize: 13.5 }}
-                >
-                  It's quiet here...
-                </Text>
-                <Text
-                  style={{
-                    color: theme[11],
-                    opacity: 0.5,
-                    textAlign: "center",
-                    fontSize: 13,
-                    marginTop: 5,
-                  }}
-                >
-                  Try opening a view or one of your collections
-                </Text>
-                {newTab}
-              </View>
-            </>
-          ) : (
-            <View style={{ flex: 1, gap: 25, marginTop: 10, marginLeft: 5 }}>
-              {[...new Array(7)].map((_, i) => (
-                <View
-                  key={i}
-                  style={{
-                    flexDirection: "row",
-                    gap: 10,
-                    alignItems: "center",
-                  }}
-                >
-                  <CircularSkeleton size={35} />
-                  <View style={{ flex: 1, gap: 7 }}>
-                    <LinearSkeleton
-                      height={13}
-                      width={Platform.OS === "web" ? "85%" : "75%"}
-                    />
-                    <LinearSkeleton
-                      height={13}
-                      width={Platform.OS === "web" ? "50%" : "45%"}
-                    />
-                  </View>
-                </View>
-              ))}
-            </View>
-          )}
-        </View>
-      )}
-    </View>
+          </View>
+        )}
+      </View>
+    </AttachStep>
   );
 }
 

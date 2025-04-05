@@ -531,6 +531,45 @@ function BetaTesterSection() {
   );
 }
 
+function ResetHintsButton() {
+  const { sessionToken, mutate } = useUser();
+
+  const handleSave = () => {
+    sendApiRequest(
+      sessionToken,
+      "PUT",
+      "user/account",
+      {},
+      {
+        body: JSON.stringify({
+          hintsViewed: [],
+        }),
+      }
+    );
+    Toast.show({ type: "success", text1: "Hints reset!" });
+    mutate(
+      (d) => ({
+        ...d,
+        user: {
+          ...d.user,
+          hintsViewed: [],
+        },
+      }),
+      { revalidate: false }
+    );
+  };
+
+  return (
+    <ListItemButton onPress={handleSave}>
+      <ListItemText
+        primary="Reset hints"
+        secondary="already forgot how to use dysperse? wow..."
+      />
+      <Icon>arrow_forward_ios</Icon>
+    </ListItemButton>
+  );
+}
+
 export default function Page() {
   const { session } = useUser();
   const { data, error } = useSWR(
@@ -549,6 +588,7 @@ export default function Page() {
           <PasskeysSection />
           <TwoFactorAuthSection />
           <BetaTesterSection />
+          <ResetHintsButton />
           <DeleteAccountSection />
         </>
       ) : error ? (

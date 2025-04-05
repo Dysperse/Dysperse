@@ -32,18 +32,18 @@ const styles = StyleSheet.create({
   },
   title: { marginHorizontal: "auto", fontSize: 20 },
   empty: {
+    opacity: 0.6,
+    flexDirection: "row",
     alignItems: "center",
     justifyContent: "center",
     padding: 20,
-    marginTop: -100,
+    gap: 15,
+    marginTop: -120,
   },
   emptyHeading: {
     fontSize: 40,
-    textAlign: "center",
-    marginTop: 5,
   },
   emptySubheading: {
-    textAlign: "center",
     opacity: 0.6,
     fontSize: 20,
   },
@@ -296,35 +296,20 @@ function SearchList({ collection, inputRef, listRef, handleClose }) {
                 ListEmptyComponent={
                   query.length > 2 ? (
                     <View style={styles.empty}>
-                      <Icon size={64}>heart_broken</Icon>
-                      <Text
-                        style={{
-                          fontSize: 20,
-                          marginTop: 10,
-                          color: theme[11],
-                          textAlign: "center",
-                          marginBottom: 60,
-                        }}
-                      >
+                      <Icon size={30}>heart_broken</Icon>
+                      <Text style={{ fontSize: 20, color: theme[11] }}>
                         Nothing matched your search
                       </Text>
                     </View>
                   ) : (
-                    <View style={styles.empty}>
-                      <Icon size={64}>search</Icon>
-                      <Text
-                        style={{
-                          fontSize: 20,
-                          marginTop: 10,
-                          color: theme[11],
-                          textAlign: "center",
-                        }}
-                      >
+                    <View style={[styles.empty, { marginTop: -80 }]}>
+                      <Icon size={30}>search</Icon>
+                      <Text style={{ fontSize: 20, color: theme[11] }}>
                         {query.length !== 0
                           ? `Type ${3 - query.length} more character${
                               query.length == 2 ? "" : "s"
                             }`
-                          : "Type something to start\nseeing search results"}
+                          : "Start typing to search"}
                       </Text>
                     </View>
                   )
@@ -347,6 +332,8 @@ export default function Page() {
     router.canGoBack() ? router.back() : router.navigate("/");
 
   const { id }: any = useLocalSearchParams();
+  const breakpoints = useResponsiveBreakpoints();
+
   const { data, mutate, error } = useSWR(
     id
       ? [
@@ -369,7 +356,7 @@ export default function Page() {
   return (
     <>
       <CollectionContext.Provider value={contextValue}>
-        <SystemBars style="light" />
+        {!breakpoints.md && <SystemBars style="light" />}
         {data && (
           <SearchList
             handleClose={handleClose}

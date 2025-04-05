@@ -1,5 +1,6 @@
 import { useSidebarContext } from "@/components/layout/sidebar/context";
 import { useSession } from "@/context/AuthProvider";
+import { OnboardingContainer } from "@/context/OnboardingProvider";
 import { useUser } from "@/context/useUser";
 import { sendApiRequest } from "@/helpers/api";
 import { useHotkeys } from "@/helpers/useHotKeys";
@@ -44,12 +45,13 @@ import Animated, {
   withSpring,
 } from "react-native-reanimated";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
+import { AttachStep } from "react-native-spotlight-tour";
 import Toast from "react-native-toast-message";
 import useSWR, { useSWRConfig } from "swr";
 import OpenTabsList from "../tabs/carousel";
 import FocusPanel from "./focus-panel";
 
-const styles = StyleSheet.create({
+export const styles = StyleSheet.create({
   header: {
     padding: 15,
     paddingBottom: 0,
@@ -97,7 +99,7 @@ const HomeButton = memo(function HomeButton({ isHome }: { isHome: boolean }) {
   return (
     <IconButton
       onPress={handleHome}
-      style={{ borderRadius: 15, flex: 1 }}
+      style={{ borderRadius: 15, width: "100%" }}
       backgroundColors={{
         default: theme[isHome ? 4 : 3],
         pressed: theme[5],
@@ -272,36 +274,38 @@ export const LogoButton = memo(function LogoButton({
         menuRef={menuRef}
         containerStyle={{ width: 190, marginLeft: 10, marginTop: -5 }}
         trigger={
-          <View style={{ borderRadius: 20, overflow: "hidden" }}>
-            <Button
-              onPress={() => menuRef.current.open()}
-              android_ripple={{ color: theme[4] }}
-              height={60}
-              style={[
-                {
-                  flexDirection: "row",
-                  alignItems: "center",
-                  paddingLeft: 3,
-                  gap: 0,
-                  paddingVertical: 10,
-                },
-                Platform.OS === "web" &&
-                  ({ WebkitAppRegion: "no-drag" } as any),
-              ]}
-              containerStyle={{ borderRadius: 20 }}
-              backgroundColors={{
-                default: theme[2],
-                pressed: theme[3],
-                hovered: theme[4],
-              }}
-            >
-              <Logo size={40} />
-              {session?.space?.space?._count?.integrations > 0 && (
-                <SyncButton syncRef={syncRef} />
-              )}
-              <Icon style={{ color: theme[11] }}>expand_more</Icon>
-            </Button>
-          </View>
+          <AttachStep index={3}>
+            <View style={{ borderRadius: 20, overflow: "hidden" }}>
+              <Button
+                onPress={() => menuRef.current.open()}
+                android_ripple={{ color: theme[4] }}
+                height={60}
+                style={[
+                  {
+                    flexDirection: "row",
+                    alignItems: "center",
+                    paddingLeft: 3,
+                    gap: 0,
+                    paddingVertical: 10,
+                  },
+                  Platform.OS === "web" &&
+                    ({ WebkitAppRegion: "no-drag" } as any),
+                ]}
+                containerStyle={{ borderRadius: 20 }}
+                backgroundColors={{
+                  default: theme[2],
+                  pressed: theme[3],
+                  hovered: theme[4],
+                }}
+              >
+                <Logo size={40} />
+                {session?.space?.space?._count?.integrations > 0 && (
+                  <SyncButton syncRef={syncRef} />
+                )}
+                <Icon style={{ color: theme[11] }}>expand_more</Icon>
+              </Button>
+            </View>
+          </AttachStep>
         }
         options={[
           session?.space?.space?._count?.integrations > 0 && {
@@ -456,7 +460,7 @@ export const TimeZoneModal = () => {
   );
 };
 
-const Header = memo(function Header() {
+export const Header = memo(function Header() {
   const { session } = useUser();
   const theme = useColorTheme();
   const isHome = usePathname() === "/home";
@@ -483,32 +487,40 @@ const Header = memo(function Header() {
           gap: 5,
         }}
       >
-        <HomeButton isHome={isHome} />
-        <IconButton
-          style={{ borderRadius: 15, marginRight: -10, flex: 1 }}
-          variant="filled"
-          size={45}
-          onPress={() => {
-            impactAsync(ImpactFeedbackStyle.Light);
-            router.replace("/everything");
-          }}
-        >
-          <Icon>home_storage</Icon>
-          {Array.isArray(hasUnread) && hasUnread?.length > 0 && (
-            <View
-              style={{
-                width: 10,
-                height: 10,
-                borderRadius: 99,
-                backgroundColor: theme[9],
-
-                position: "absolute",
-                top: 5,
-                right: 5,
+        <AttachStep index={0}>
+          <View style={{ flex: 1 }}>
+            <HomeButton isHome={isHome} />
+          </View>
+        </AttachStep>
+        <AttachStep index={1}>
+          <View style={{ flex: 1, marginRight: -10 }}>
+            <IconButton
+              style={{ borderRadius: 15, width: "100%" }}
+              variant="filled"
+              size={45}
+              onPress={() => {
+                impactAsync(ImpactFeedbackStyle.Light);
+                router.replace("/everything");
               }}
-            />
-          )}
-        </IconButton>
+            >
+              <Icon>home_storage</Icon>
+              {Array.isArray(hasUnread) && hasUnread?.length > 0 && (
+                <View
+                  style={{
+                    width: 10,
+                    height: 10,
+                    borderRadius: 99,
+                    backgroundColor: theme[9],
+
+                    position: "absolute",
+                    top: 5,
+                    right: 5,
+                  }}
+                />
+              )}
+            </IconButton>
+          </View>
+        </AttachStep>
       </View>
     </View>
   );
@@ -619,47 +631,75 @@ const PrimarySidebar = memo(function PrimarySidebar({ progressValue }: any) {
   );
 
   useHotkeys("`", toggleHidden, {});
+  const pathname = usePathname();
 
   return (
-    <Animated.View
-      style={[
-        opacityStyle,
-        transformStyle,
+    <OnboardingContainer
+      // debug
+      id="SIDEBAR"
+      onlyIf={() => pathname === "/home"}
+      onStart={() => sidebarRef.current.openDrawer()}
+      steps={[
         {
-          width: ORIGINAL_SIDEBAR_WIDTH + 10,
-          flex: 1,
-          flexDirection: "column",
-          borderRightWidth: breakpoints.md ? 2 : 5,
-          borderRightColor: "transparent",
-          backgroundColor: theme[2],
-          ...(Platform.OS === "web" &&
-            !desktopCollapsed &&
-            ({
-              paddingTop: "env(titlebar-area-height,0)",
-            } as any)),
+          text: "Pin widgets, plan your day, and get insights from the home page.",
+        },
+        {
+          text: "Here, you can find all your labels, collections, and deleted items.",
+        },
+        {
+          floatingProps: { placement: breakpoints.md ? "right" : "top" },
+          text: "Just like browser tabs — but for productivity. Use these to switch between your collections",
+        },
+        {
+          text: "You can open settings to explore themes, shortcuts, and more.",
         },
       ]}
     >
-      <View
-        style={[styles.header, !breakpoints.md && { marginTop: insets.top }]}
-      >
-        <LogoButton toggleHidden={toggleHidden} />
-        <Header />
-      </View>
-      <View
-        style={{
-          flex: 1,
-          paddingHorizontal: 15,
-          width: "100%",
-          marginBottom:
-            !breakpoints.md || Platform.OS === "web" ? insets.bottom : -8,
-          height: "100%",
-        }}
-      >
-        <OpenTabsList />
-        <FocusPanel />
-      </View>
-    </Animated.View>
+      {() => (
+        <Animated.View
+          style={[
+            opacityStyle,
+            transformStyle,
+            {
+              width: ORIGINAL_SIDEBAR_WIDTH + 10,
+              flex: 1,
+              flexDirection: "column",
+              borderRightWidth: breakpoints.md ? 2 : 5,
+              borderRightColor: "transparent",
+              backgroundColor: theme[2],
+              ...(Platform.OS === "web" &&
+                !desktopCollapsed &&
+                ({
+                  paddingTop: "env(titlebar-area-height,0)",
+                } as any)),
+            },
+          ]}
+        >
+          <View
+            style={[
+              styles.header,
+              !breakpoints.md && { marginTop: insets.top },
+            ]}
+          >
+            <LogoButton toggleHidden={toggleHidden} />
+            <Header />
+          </View>
+          <View
+            style={{
+              flex: 1,
+              paddingHorizontal: 15,
+              width: "100%",
+              marginBottom:
+                !breakpoints.md || Platform.OS === "web" ? insets.bottom : -8,
+              height: "100%",
+            }}
+          >
+            <OpenTabsList />
+            <FocusPanel />
+          </View>
+        </Animated.View>
+      )}
+    </OnboardingContainer>
   );
 });
 
@@ -864,58 +904,56 @@ const Sidebar = ({ progressValue }: { progressValue?: any }) => {
   }, [pathname]);
 
   return (
-    <>
-      <SafeView>
-        {Platform.OS === "web" && (
-          <MiniLogo
-            desktopSlide={desktopSlide}
-            onHoverIn={() => (desktopSlide.value = 0)}
-          />
-        )}
+    <SafeView>
+      {Platform.OS === "web" && (
+        <MiniLogo
+          desktopSlide={desktopSlide}
+          onHoverIn={() => (desktopSlide.value = 0)}
+        />
+      )}
+      <Animated.View
+        style={[
+          { flex: breakpoints.md ? undefined : 1 },
+          {
+            height: height - insets.top - insets.bottom,
+            zIndex: breakpoints.md ? 1 : 0,
+            flexDirection: "row",
+            backgroundColor: theme[2],
+            ["WebkitAppRegion" as any]: "no-drag",
+          },
+          pathname.includes("chrome-extension") && { display: "none" },
+        ]}
+      >
         <Animated.View
           style={[
-            { flex: breakpoints.md ? undefined : 1 },
+            widthStyle,
             {
-              height: height - insets.top - insets.bottom,
-              zIndex: breakpoints.md ? 1 : 0,
               flexDirection: "row",
-              backgroundColor: theme[2],
-              ["WebkitAppRegion" as any]: "no-drag",
+              maxWidth: pathname.includes("everything")
+                ? SECONDARY_SIDEBAR_WIDTH
+                : ORIGINAL_SIDEBAR_WIDTH,
+              overflow: "hidden",
             },
-            pathname.includes("chrome-extension") && { display: "none" },
           ]}
         >
+          <Animated.View style={primarySidebarStyles}>
+            <Freeze freeze={!freezePrimary}>
+              <PrimarySidebar progressValue={progressValue} />
+            </Freeze>
+          </Animated.View>
           <Animated.View
             style={[
-              widthStyle,
-              {
-                flexDirection: "row",
-                maxWidth: pathname.includes("everything")
-                  ? SECONDARY_SIDEBAR_WIDTH
-                  : ORIGINAL_SIDEBAR_WIDTH,
-                overflow: "hidden",
-              },
+              secondarySidebarStyles,
+              { height: "100%", width: SECONDARY_SIDEBAR_WIDTH },
             ]}
           >
-            <Animated.View style={primarySidebarStyles}>
-              <Freeze freeze={!freezePrimary}>
-                <PrimarySidebar progressValue={progressValue} />
-              </Freeze>
-            </Animated.View>
-            <Animated.View
-              style={[
-                secondarySidebarStyles,
-                { height: "100%", width: SECONDARY_SIDEBAR_WIDTH },
-              ]}
-            >
-              <Freeze freeze={freezePrimary}>
-                <SecondarySidebar />
-              </Freeze>
-            </Animated.View>
+            <Freeze freeze={freezePrimary}>
+              <SecondarySidebar />
+            </Freeze>
           </Animated.View>
         </Animated.View>
-      </SafeView>
-    </>
+      </Animated.View>
+    </SafeView>
   );
 };
 

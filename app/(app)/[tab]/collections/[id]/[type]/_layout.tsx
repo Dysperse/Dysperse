@@ -73,7 +73,7 @@ export default function Layout() {
               options={arcCard({
                 theme,
                 breakpoints,
-                maxWidth: 600,
+                maxWidth: 500,
                 padding: 0,
               })}
             />

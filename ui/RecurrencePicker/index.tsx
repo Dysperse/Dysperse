@@ -40,6 +40,7 @@ const Every = ({ value, handleEdit }: { value; handleEdit }) => {
           }}
           weight={800}
           variant="filled"
+          keyboardType="number-pad"
           defaultValue={value?.interval || 1}
           onChange={(e) => {
             const t = e.nativeEvent.text;
@@ -331,7 +332,7 @@ function Preview({ value }) {
   const [previewRange] = useState<Date>(new Date());
 
   return !value ? null : (
-    <View style={{ marginTop: 30 }}>
+    <View style={{ marginTop: 30, pointerEvents: "none" }}>
       <Text variant="eyebrow">Preview</Text>
       <View
         style={{
@@ -431,7 +432,7 @@ export const RecurrencePicker = forwardRef(
       <Modal sheetRef={ref} animation="SCALE" maxWidth={400} onClose={onClose}>
         <BottomSheetScrollView
           keyboardShouldPersistTaps="handled"
-          onScroll={Keyboard.dismiss}
+          onScrollBeginDrag={Keyboard.dismiss}
         >
           <SetValue value={localValue} setValue={setLocalValue} />
           <View style={{ padding: 20, paddingTop: 15 }}>

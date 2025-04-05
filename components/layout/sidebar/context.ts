@@ -9,6 +9,7 @@ import {
 export const SidebarContext = createContext<{
   sidebarRef: RefObject<any>;
   focusPanelRef?: RefObject<any>;
+  sidebarState?: any;
 
   desktopCollapsed: boolean;
   setDesktopCollapsed: Dispatch<SetStateAction<boolean>>;
