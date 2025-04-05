@@ -40,11 +40,13 @@ export const OnboardingTrigger = ({
   onlyIf,
   onStart,
   debug,
+  delay,
 }: {
   id: string;
   onlyIf?: any;
   debug?: boolean;
   onStart?: () => void;
+  delay?: number;
 }) => {
   const onboarding = useOnboardingState();
   const { start } = useSpotlightTour();
@@ -57,13 +59,15 @@ export const OnboardingTrigger = ({
           (debug || session.user.hintsViewed?.includes(id) === false) &&
           !isLoading
         ) {
-          onStart?.();
-          onboarding.setState(id);
-          try {
-            start();
-          } catch (e) {
-            console.error("Error starting onboarding:", e);
-          }
+          setTimeout(() => {
+            onStart?.();
+            onboarding.setState(id);
+            try {
+              start();
+            } catch (e) {
+              console.error("Error starting onboarding:", e);
+            }
+          }, delay || 0);
         }
       });
 
@@ -140,6 +144,7 @@ export function OnboardingContainer(
             debug={props.debug}
             onlyIf={props.onlyIf}
             onStart={props.onStart}
+            delay={props.delay}
           />
           {props.children(t)}
         </>

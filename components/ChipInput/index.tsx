@@ -260,7 +260,7 @@ export default function ChipInput({
       multiline
       {...(onSubmitEditing && { onSubmitEditing })}
       inputRef={inputRef}
-      placeholderTextColor={theme[5]}
+      placeholderTextColor={addHslAlpha(theme[11], 0.2)}
       cursorColor={theme[8]}
       selectionColor={theme[8]}
       partTypes={[

@@ -233,39 +233,39 @@ export default function AppLayout() {
             }}
             key={breakpoints.md ? "desktop" : "mobile"}
           >
-            <FocusPanelProvider
-              drawerRef={focusPanelRef}
-              focusPanelFreezerRef={focusPanelFreezerRef}
-            >
-              <BottomSheetModalProvider>
-                <MenuProvider
-                  skipInstanceCheck
-                  customStyles={{
-                    backdrop: {
-                      flex: 1,
-                      opacity: 1,
-                      ...(Platform.OS === "web" &&
-                        ({ WebkitAppRegion: "no-drag" } as any)),
-                    },
-                  }}
-                >
-                  <PortalProvider>
-                    <View
-                      style={[
-                        {
-                          flexDirection: "row",
-                          flex: 1,
-                          backgroundColor: theme[2],
-                        },
-                        Platform.OS === "web" &&
-                          ({ WebkitAppRegion: "drag" } as any),
-                      ]}
-                    >
-                      <GlobalTaskContextProvider>
-                        <CommandPaletteProvider>
-                          <ThemeProvider value={routerTheme}>
-                            <BadgingProvider>
-                              <OnboardingProvider>
+            <OnboardingProvider>
+              <FocusPanelProvider
+                drawerRef={focusPanelRef}
+                focusPanelFreezerRef={focusPanelFreezerRef}
+              >
+                <BottomSheetModalProvider>
+                  <MenuProvider
+                    skipInstanceCheck
+                    customStyles={{
+                      backdrop: {
+                        flex: 1,
+                        opacity: 1,
+                        ...(Platform.OS === "web" &&
+                          ({ WebkitAppRegion: "no-drag" } as any)),
+                      },
+                    }}
+                  >
+                    <PortalProvider>
+                      <View
+                        style={[
+                          {
+                            flexDirection: "row",
+                            flex: 1,
+                            backgroundColor: theme[2],
+                          },
+                          Platform.OS === "web" &&
+                            ({ WebkitAppRegion: "drag" } as any),
+                        ]}
+                      >
+                        <GlobalTaskContextProvider>
+                          <CommandPaletteProvider>
+                            <ThemeProvider value={routerTheme}>
+                              <BadgingProvider>
                                 <View
                                   style={[
                                     breakpoints.md
@@ -501,20 +501,20 @@ export default function AppLayout() {
                                     </ThemeProvider>
                                   </DrawerLayout>
                                 </View>
-                              </OnboardingProvider>
-                            </BadgingProvider>
-                          </ThemeProvider>
-                        </CommandPaletteProvider>
-                      </GlobalTaskContextProvider>
-                    </View>
-                  </PortalProvider>
-                </MenuProvider>
-                <Toast
-                  topOffset={insets.top + 15}
-                  config={toastConfig(theme)}
-                />
-              </BottomSheetModalProvider>
-            </FocusPanelProvider>
+                              </BadgingProvider>
+                            </ThemeProvider>
+                          </CommandPaletteProvider>
+                        </GlobalTaskContextProvider>
+                      </View>
+                    </PortalProvider>
+                  </MenuProvider>
+                  <Toast
+                    topOffset={insets.top + 15}
+                    config={toastConfig(theme)}
+                  />
+                </BottomSheetModalProvider>
+              </FocusPanelProvider>
+            </OnboardingProvider>
           </GestureHandlerRootView>
         </ColorThemeProvider>
       </StorageContextProvider>

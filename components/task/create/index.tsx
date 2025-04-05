@@ -5,6 +5,7 @@ import { useLabelColors } from "@/components/labels/useLabelColors";
 import { COLLECTION_VIEWS } from "@/components/layout/command-palette/list";
 import { useSession } from "@/context/AuthProvider";
 import { useBadgingService } from "@/context/BadgingProvider";
+import { OnboardingContainer } from "@/context/OnboardingProvider";
 import { useStorageContext } from "@/context/storageContext";
 import { useUser } from "@/context/useUser";
 import { sendApiRequest } from "@/helpers/api";
@@ -55,6 +56,7 @@ import Animated, {
   withSpring,
   withTiming,
 } from "react-native-reanimated";
+import { AttachStep } from "react-native-spotlight-tour";
 import Toast from "react-native-toast-message";
 import { RRule } from "rrule";
 import useSWR from "swr";
@@ -90,7 +92,7 @@ const PinTask = memo(function PinTask({ watch, control }: any) {
         <IconButton
           icon="push_pin"
           size={50}
-          style={breakpoints.md ? { marginLeft: "auto" } : { flex: 1 }}
+          style={breakpoints.md ? { marginLeft: "auto" } : { width: "100%" }}
           onPress={() => {
             impactAsync(ImpactFeedbackStyle.Light);
             onChange(!value);
@@ -212,24 +214,40 @@ function Footer({
             }
           />
         )}
-        <DateButton
-          nameRef={nameRef}
-          watch={watch}
-          setValue={setValue}
-          defaultValues={defaultValues}
-          dateRef={dateRef}
-          recurrenceRef={recurrenceRef}
-        />
-        <CreateTaskLabelInput
-          nameRef={nameRef}
-          setValue={setValue}
-          watch={watch}
-          collectionId={collectionId}
-          control={control}
-          labelMenuRef={labelMenuRef}
-          onLabelPickerClose={() => nameRef?.current?.focus()}
-        />
-        <LocationButton watch={watch} setValue={setValue} nameRef={nameRef} />
+        <AttachStep index={0}>
+          <View>
+            <DateButton
+              nameRef={nameRef}
+              watch={watch}
+              setValue={setValue}
+              defaultValues={defaultValues}
+              dateRef={dateRef}
+              recurrenceRef={recurrenceRef}
+            />
+          </View>
+        </AttachStep>
+        <AttachStep index={1}>
+          <View>
+            <CreateTaskLabelInput
+              nameRef={nameRef}
+              setValue={setValue}
+              watch={watch}
+              collectionId={collectionId}
+              control={control}
+              labelMenuRef={labelMenuRef}
+              onLabelPickerClose={() => nameRef?.current?.focus()}
+            />
+          </View>
+        </AttachStep>
+        <AttachStep index={2}>
+          <View>
+            <LocationButton
+              watch={watch}
+              setValue={setValue}
+              nameRef={nameRef}
+            />
+          </View>
+        </AttachStep>
         <AiLabelSuggestion
           nameRef={nameRef}
           setValue={setValue}
@@ -1201,7 +1219,7 @@ function SpeechRecognition({ setValue }) {
         variant="filled"
         icon={recognizing ? <VolumeBars /> : "mic"}
         size={50}
-        style={{ flex: breakpoints.md ? undefined : 1 }}
+        style={breakpoints.md ? undefined : { width: "100%" }}
         iconProps={{ filled: recognizing }}
         iconStyle={{
           color: recognizing ? red[2] : theme[11],
@@ -1324,9 +1342,11 @@ const BottomSheetContent = forwardRef(
 
     useImperativeHandle(formRef, () => ({ setValue }));
 
+    const { session } = useUser();
     useEffect(() => {
+      if (!session.user.hintsViewed.includes("CREATE_TASK")) return;
       nameRef.current.focus({ preventScroll: true });
-    }, [nameRef, breakpoints]);
+    }, [session, nameRef, breakpoints]);
 
     const onSubmit = async (data) => {
       try {
@@ -1457,8 +1477,18 @@ const BottomSheetContent = forwardRef(
               alignItems: "center",
             }}
           >
-            <SpeechRecognition setValue={setValue} />
-            <PinTask watch={watch} control={control} />
+            <AttachStep index={3}>
+              <View style={breakpoints.md ? undefined : { flex: 1 }}>
+                <SpeechRecognition setValue={setValue} />
+              </View>
+            </AttachStep>
+            <AttachStep index={4}>
+              <View
+                style={breakpoints.md ? { marginLeft: "auto" } : { flex: 1 }}
+              >
+                <PinTask watch={watch} control={control} />
+              </View>
+            </AttachStep>
             <SubmitButton
               watch={watch}
               ref={submitRef}
@@ -1629,12 +1659,37 @@ const CreateTask = forwardRef(
             }
           }
         >
-          <BottomSheetContent
-            ref={formRef}
-            hintRef={hintRef}
-            defaultValues={defaultValues}
-            mutateList={mutate}
-          />
+          <OnboardingContainer
+            delay={500}
+            id="CREATE_TASK"
+            onlyIf={() => true}
+            steps={[
+              {
+                text: "Set a due date or recurrence",
+              },
+              {
+                text: "Labels let you categorize similar tasks",
+              },
+              {
+                text: "Here, you can add a location to your task",
+              },
+              {
+                text: "Don't want to type? Use voice recognition!",
+              },
+              {
+                text: "Pinned tasks will always be on top",
+              },
+            ]}
+          >
+            {() => (
+              <BottomSheetContent
+                ref={formRef}
+                hintRef={hintRef}
+                defaultValues={defaultValues}
+                mutateList={mutate}
+              />
+            )}
+          </OnboardingContainer>
         </Modal>
       </>
     );
