@@ -549,7 +549,15 @@ export default function Matrix() {
         </>
       ) : (
         <Cell
-          cellIndex={0}
+          cellIndex={
+            currentColumn == "pinnedImportant"
+              ? 0
+              : currentColumn == "important"
+              ? 1
+              : currentColumn == "pinned"
+              ? 2
+              : 3
+          }
           name={
             currentColumn == "pinnedImportant"
               ? "Urgent & important"

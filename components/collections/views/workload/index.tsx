@@ -262,7 +262,11 @@ const StoryPoint = ({
               (task) =>
                 task.recurrenceRule ||
                 (!task.recurrenceRule && task.completionInstances.length === 0)
-            ) && <ColumnEmptyComponent />}
+            ) && (
+              <View style={{ height: 70, marginTop: 70 }}>
+                <ColumnEmptyComponent offset={index} />
+              </View>
+            )}
         </>
       )}
       <FlashList
@@ -288,7 +292,7 @@ const StoryPoint = ({
           paddingBottom: 50,
         }}
         centerContent={filteredTasks.length === 0}
-        ListEmptyComponent={() => <ColumnEmptyComponent />}
+        ListEmptyComponent={() => <ColumnEmptyComponent offset={index} />}
         renderItem={({ item }) => (
           <Entity
             showLabel

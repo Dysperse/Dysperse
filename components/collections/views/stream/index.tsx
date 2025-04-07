@@ -28,7 +28,7 @@ const streamViews = [
   { label: "Upcoming", value: "upcoming", icon: "east" },
 ];
 
-function StreamColumn({ view, mutate, filteredTasks }) {
+function StreamColumn({ view, mutate, filteredTasks, index }) {
   const theme = useColorTheme();
   const breakpoints = useResponsiveBreakpoints();
   const insets = useSafeAreaInsets();
@@ -144,7 +144,7 @@ function StreamColumn({ view, mutate, filteredTasks }) {
         refreshControl={
           <RefreshControl refreshing={false} onRefresh={() => mutate()} />
         }
-        ListEmptyComponent={ColumnEmptyComponent}
+        ListEmptyComponent={() => <ColumnEmptyComponent offset={index} />}
         centerContent={filteredTasks.length === 0}
         data={filteredTasks}
         estimatedItemSize={113}
@@ -338,8 +338,10 @@ export default function Stream() {
             gap: 15,
           }}
         >
-          {streamViews.map((view) => (
+          {streamViews.map((view, index) => (
             <StreamColumn
+              key={index}
+              index={index}
               view={view}
               mutate={mutate}
               filteredTasks={filteredTasks(view.value)}
@@ -350,6 +352,9 @@ export default function Stream() {
         <StreamColumn
           view={mobileStreamMode || "unscheduled"}
           mutate={mutate}
+          index={streamViews.findIndex(
+            (v) => v.value === (mobileStreamMode || "unscheduled")
+          )}
           filteredTasks={filteredTasks(mobileStreamMode || "unscheduled")}
         />
       )}
