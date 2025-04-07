@@ -328,7 +328,7 @@ function Content({ data, mutate }) {
           contentContainerStyle={{ padding: 20 }}
           data={taskSortAlgorithm(Object.values(data[1].entities))}
           centerContent={Object.keys(data[1].entities).length === 0}
-          ListEmptyComponent={() => <ColumnEmptyComponent />}
+          ListEmptyComponent={() => <ColumnEmptyComponent offset={1} />}
           renderItem={renderItem}
           refreshControl={refreshControl}
         />
@@ -343,7 +343,7 @@ function Content({ data, mutate }) {
           contentContainerStyle={{ padding: 20 }}
           data={taskSortAlgorithm(Object.values(data[2].entities))}
           centerContent={Object.keys(data[2].entities).length === 0}
-          ListEmptyComponent={() => <ColumnEmptyComponent />}
+          ListEmptyComponent={() => <ColumnEmptyComponent offset={2} />}
           renderItem={renderItem}
           refreshControl={refreshControl}
         />
@@ -358,7 +358,7 @@ function Content({ data, mutate }) {
           contentContainerStyle={{ padding: 20 }}
           data={taskSortAlgorithm(Object.values(data[3].entities))}
           centerContent={Object.keys(data[3].entities).length === 0}
-          ListEmptyComponent={() => <ColumnEmptyComponent />}
+          ListEmptyComponent={() => <ColumnEmptyComponent offset={3} />}
           renderItem={renderItem}
           refreshControl={refreshControl}
         />
@@ -391,7 +391,7 @@ function Content({ data, mutate }) {
           centerContent={
             Object.keys(data[selectedColumn].entities).length === 0
           }
-          ListEmptyComponent={() => <ColumnEmptyComponent />}
+          ListEmptyComponent={() => <ColumnEmptyComponent offset={4} />}
           renderItem={renderItem}
           refreshControl={refreshControl}
         />
