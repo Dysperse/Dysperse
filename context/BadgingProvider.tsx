@@ -15,7 +15,8 @@ export const BadgingProvider = ({
 
   const setBadge = async (count: number) => {
     if (Platform.OS === "web" && "setAppBadge" in navigator) {
-      navigator.setAppBadge(count);
+      if (count > 0) navigator.setAppBadge(count);
+      else navigator.clearAppBadge();
     } else if (Platform.OS !== "web") {
       setBadgeCountAsync(count);
     }
@@ -52,3 +53,4 @@ export const BadgingProvider = ({
     </BadgingContext.Provider>
   );
 };
+
