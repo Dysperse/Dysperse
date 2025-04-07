@@ -318,7 +318,11 @@ function OpenTabsList() {
       containerStyle={{
         borderRadius: 15,
       }}
-      style={{ justifyContent: "flex-start", columnGap: 15 }}
+      style={{
+        justifyContent: "flex-start",
+        columnGap: 18,
+        paddingLeft: 17.3,
+      }}
     />
   );
 

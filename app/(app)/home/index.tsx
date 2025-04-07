@@ -229,7 +229,7 @@ const Wrapper = memo((props) => {
   );
 });
 
-export function RenderWidget({ navigation, widget, index, small }) {
+export function RenderWidget({ widget, index, small }) {
   const { sessionToken } = useUser();
   const { data, mutate } = useSWR(["user/focus-panel"], null);
 
@@ -379,7 +379,6 @@ export function RenderWidget({ navigation, widget, index, small }) {
     case "clock":
       return (
         <Clock
-          navigation={navigation}
           setParam={setParam}
           menuActions={menuActions}
           widget={widget}
@@ -389,7 +388,6 @@ export function RenderWidget({ navigation, widget, index, small }) {
     case "top stocks":
       return (
         <TopStocks
-          navigation={navigation}
           handlePin={() => handlePin(widget)}
           widget={widget}
           key={index}
@@ -407,21 +405,11 @@ export function RenderWidget({ navigation, widget, index, small }) {
       );
     case "magic 8 ball":
       return (
-        <Magic8Ball
-          navigation={navigation}
-          menuActions={menuActions}
-          widget={widget}
-          key={index}
-        />
+        <Magic8Ball menuActions={menuActions} widget={widget} key={index} />
       );
     case "battery":
       return (
-        <BatteryWidget
-          navigation={navigation}
-          menuActions={menuActions}
-          widget={widget}
-          key={index}
-        />
+        <BatteryWidget menuActions={menuActions} widget={widget} key={index} />
       );
     case "recent activity":
       return <FriendActivity />;
@@ -430,8 +418,8 @@ export function RenderWidget({ navigation, widget, index, small }) {
         <Spotify
           setParam={setParam}
           widget={widget}
-          navigation={navigation}
-          menuActions={menuActions}
+          handlePin={() => handlePin(widget)}
+          small={small}
           key={index}
         />
       );
@@ -448,7 +436,6 @@ export function RenderWidget({ navigation, widget, index, small }) {
       return (
         <Randomizer
           setParam={setParam}
-          navigation={navigation}
           menuActions={menuActions}
           widget={widget}
           key={index}
@@ -492,12 +479,7 @@ export function Widgets() {
         return 0;
       })
       .map((widget, index) => (
-        <RenderWidget
-          // navigation={navigation}
-          key={index}
-          index={index}
-          widget={widget}
-        />
+        <RenderWidget key={index} index={index} widget={widget} />
       ))
   );
 }

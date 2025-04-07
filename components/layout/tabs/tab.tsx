@@ -25,6 +25,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     flexDirection: "row",
     columnGap: 15,
+    paddingLeft: 15,
   },
   text: { fontSize: 12, opacity: 0.6 },
   closeButton: {
