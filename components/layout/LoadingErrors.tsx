@@ -1,56 +1,42 @@
 import { useStorageContext } from "@/context/storageContext";
 import { useUser } from "@/context/useUser";
+import { useResponsiveBreakpoints } from "@/helpers/useResponsiveBreakpoints";
+import { Button } from "@/ui/Button";
 import Spinner from "@/ui/Spinner";
-import Text from "@/ui/Text";
-import { useColorTheme } from "@/ui/color/theme-provider";
-import { memo } from "react";
-import { View } from "react-native";
-import { SystemBars } from "react-native-edge-to-edge";
-import { useSafeAreaInsets } from "react-native-safe-area-context";
+import { memo, React, useEffect } from "react";
+import Toast from "react-native-toast-message";
 
 const LoadingErrors = memo(() => {
-  const theme = useColorTheme();
   const { error } = useUser();
+  const breakpoints = useResponsiveBreakpoints();
   const { error: storageError } = useStorageContext();
-  const insets = useSafeAreaInsets();
+
+  useEffect(() => {
+    if (!breakpoints.md && (error || storageError)) {
+      Toast.show({
+        type: "error",
+        text1: "You're offline",
+        text2: "Please check your connection",
+      });
+    }
+  }, [error, storageError, breakpoints]);
 
   return (
     <>
       {(error || storageError) && (
-        <View
-          style={[
-            {
-              backgroundColor: theme[6],
-              flexDirection: "row",
-              alignItems: "center",
-              justifyContent: "center",
-              height: 40 + insets.top,
-              marginBottom: -insets.top,
-              paddingTop: insets.top,
-              zIndex: 999,
-              gap: 20,
-            },
-          ]}
-        >
-          <SystemBars style="dark" />
-          {(error || storageError) && (
-            <View
-              style={{ flexDirection: "row", alignItems: "center", gap: 10 }}
-            >
-              <Spinner size={18} />
-              <Text style={{ fontSize: 12, marginBottom: -1 }} weight={700}>
-                {error
-                  ? error.message === "Failed to fetch"
-                    ? "You're offline"
-                    : "Offline"
-                  : "Offline"}
-              </Text>
-            </View>
-          )}
-        </View>
+        <Button
+          variant="outlined"
+          containerStyle={{ marginRight: -10, borderRadius: 10 }}
+          icon={<Spinner />}
+          height={45}
+          text="You're offline"
+          bold
+          textProps={{ weight: 700 }}
+        />
       )}
     </>
   );
 });
 
 export default LoadingErrors;
+

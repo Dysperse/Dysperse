@@ -58,7 +58,6 @@ import { MenuProvider } from "react-native-popup-menu";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import Toast from "react-native-toast-message";
 import "react-native-url-polyfill/auto";
-import LoadingErrors from "../../components/layout/LoadingErrors";
 
 dayjs.extend(customParseFormat);
 dayjs.extend(timezone);
@@ -278,7 +277,6 @@ export default function AppLayout() {
                                       : { width: "100%" },
                                   ]}
                                 >
-                                  <LoadingErrors />
                                   <NotificationsModal />
                                   <TabFriendModal />
                                   <DrawerLayout

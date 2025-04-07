@@ -48,6 +48,7 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { AttachStep } from "react-native-spotlight-tour";
 import Toast from "react-native-toast-message";
 import useSWR, { useSWRConfig } from "swr";
+import LoadingErrors from "../LoadingErrors";
 import OpenTabsList from "../tabs/carousel";
 import FocusPanel from "./focus-panel";
 
@@ -481,6 +482,7 @@ export const Header = memo(function Header() {
       }}
     >
       {isTimeZoneDifference && <TimeZoneModal />}
+      <LoadingErrors />
       <View
         style={{
           flexDirection: "row",
