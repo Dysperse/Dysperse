@@ -1,9 +1,9 @@
 import { useDarkMode } from "@/ui/color";
 import { useColorTheme } from "@/ui/color/theme-provider";
+import Text from "@/ui/Text";
 import { Image } from "expo-image";
-import { LinearGradient } from "expo-linear-gradient";
 import { useEffect } from "react";
-import { Pressable, View } from "react-native";
+import { Linking, Pressable, View } from "react-native";
 import Animated, {
   useAnimatedStyle,
   useSharedValue,
@@ -39,66 +39,73 @@ export const SpotifyPreview = ({ data, mutate }) => {
   });
 
   const isDark = useDarkMode();
-  const backgroundColors = [
-    (isDark ? colors?.darkVibrant : colors?.lightVibrant) || theme[2],
-    (isDark ? colors?.darkMuted : colors?.lightMuted) || theme[5],
-  ];
 
   return (
-    <Pressable>
-      {({ pressed, hovered }) => (
-        <LinearGradient
-          start={{ x: 0, y: 0 }}
-          end={{
-            x: 1,
-            y: 1,
-          }}
-          colors={backgroundColors}
+    <Pressable
+      style={{
+        backgroundColor: theme[2],
+        borderRadius: 20,
+        borderWidth: 1,
+        flexDirection: "row",
+        padding: 20,
+        gap: 20,
+        borderColor: theme[5],
+      }}
+      onPress={() => {
+        Linking.openURL(data.item.external_urls.spotify);
+      }}
+    >
+      <Image
+        source={{ uri: data.item.album.images[0].url }}
+        style={{ width: 70, height: 70, borderRadius: 3 }}
+      />
+      <View style={{ flex: 1 }}>
+        <View style={{ flex: 1 }}>
+          <Text
+            style={{
+              color: theme[11],
+              fontFamily: "serifText700",
+              fontSize: 20,
+              marginBottom: 3,
+            }}
+            numberOfLines={1}
+          >
+            {data.item.name}
+          </Text>
+          <Text
+            style={{
+              color: theme[11],
+              opacity: 0.6,
+              marginBottom: 3,
+            }}
+            weight={600}
+            numberOfLines={1}
+          >
+            {data.item.artists.map((artist) => artist.name).join(", ")}
+          </Text>
+        </View>
+        <View
           style={{
-            borderRadius: 20,
-            gap: 20,
-            opacity: pressed ? 0.8 : hovered ? 0.9 : 1,
-            alignItems: "center",
-            flexDirection: "row",
-            padding: 17,
-            backgroundColor: theme[3],
+            overflow: "hidden",
+            borderRadius: 5,
+            width: "100%",
+            height: 10,
+            marginTop: 2,
+            backgroundColor: theme[4],
           }}
         >
-          <Image
-            source={{ uri: data.item.album.images[0].url }}
-            style={{ width: 60, height: 60, borderRadius: 3 }}
-          />
-          <View
-            style={{
-              flex: 1,
-            }}
-          >
-            <View
-              style={{
-                overflow: "hidden",
+          <Animated.View
+            style={[
+              {
+                height: "100%",
                 borderRadius: 5,
-                width: "100%",
-                height: 4,
-                marginTop: 7,
-                backgroundColor: isDark
-                  ? "rgba(255, 255, 255, 0.1)"
-                  : "rgba(0, 0, 0, 0.1)",
-              }}
-            >
-              <Animated.View
-                style={[
-                  {
-                    height: "100%",
-                    borderRadius: 5,
-                    backgroundColor: isDark ? "#fff" : "#000",
-                  },
-                  animatedStyle,
-                ]}
-              />
-            </View>
-          </View>
-        </LinearGradient>
-      )}
+                backgroundColor: theme[7],
+              },
+              animatedStyle,
+            ]}
+          />
+        </View>
+      </View>
     </Pressable>
   );
 };

@@ -8,12 +8,10 @@ import { useColorTheme } from "@/ui/color/theme-provider";
 import { Image } from "expo-image";
 import { Linking, Pressable, View } from "react-native";
 import useSWR from "swr";
-import { useFocusPanelContext } from "../../context";
 import { SpotifyPreview } from "./SpotifyPreview";
 
 export default function Spotify({ setParam, widget, navigation }) {
   const theme = useColorTheme();
-  const { panelState } = useFocusPanelContext();
   const { data, mutate } = useSWR(["user/currently-playing"], {
     refreshInterval: 5000,
   });
@@ -71,7 +69,7 @@ export default function Spotify({ setParam, widget, navigation }) {
             justifyContent: "center",
             alignItems: "center",
             gap: 5,
-            aspectRatio: panelState === "COLLAPSED" ? 1 : undefined,
+            aspectRatio: 1,
           })}
         >
           <Image

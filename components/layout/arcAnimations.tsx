@@ -120,6 +120,7 @@ export const arcCard = ({ theme, breakpoints, maxWidth, padding = 15 }) =>
           borderRadius: 25,
           borderWidth: 2,
           borderColor: theme[5],
+          marginBottom: 0,
         }
       : undefined,
   } as any);

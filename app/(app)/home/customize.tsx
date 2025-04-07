@@ -99,10 +99,10 @@ function Widgets() {
             const widget = WIDGET_LIST.find((l) =>
               l.widgets.find((w) => w.key == t.type)
             )?.widgets.find((w) => w.key == t.type);
-            if (!widget) return null;
+            // if (!widget) return null;
             return {
               id: t.id,
-              name: widget.text,
+              name: widget?.text,
               icon: widget?.icon || "square",
               disabled: false,
               order: t.order,
