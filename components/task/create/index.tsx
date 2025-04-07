@@ -1668,7 +1668,6 @@ const CreateTask = forwardRef(
           }
         >
           <OnboardingContainer
-            debug
             delay={1000}
             id="CREATE_TASK"
             onlyIf={() => true}
