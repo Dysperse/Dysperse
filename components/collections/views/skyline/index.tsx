@@ -44,7 +44,7 @@ function ColumnSwitcher({ setCurrentColumn, currentColumn }) {
     <View
       style={{
         flexDirection: "row",
-        marginBottom: -10,
+        marginBottom: 0,
         padding: 2,
         marginTop: -5,
         backgroundColor: theme[3],

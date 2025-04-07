@@ -224,7 +224,7 @@ export function AgendaButtons({
           ) : (
             trigger
           )}
-          {
+          {(weekMode || breakpoints.md) && (
             <View
               style={{
                 flexDirection: "row",
@@ -243,7 +243,7 @@ export function AgendaButtons({
               )}
               <IconButton onPress={handleNext} icon="east" size={45} />
             </View>
-          }
+          )}
         </View>
       </View>
     </SafeView>
