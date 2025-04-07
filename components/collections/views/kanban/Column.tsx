@@ -245,7 +245,7 @@ export function Column(props: ColumnProps) {
                     zIndex: 999,
                     marginTop: hasItems && props.grid ? 20 : 5,
                     marginLeft: breakpoints.md
-                      ? !hasItems
+                      ? !hasItems && props.grid
                         ? 80
                         : "auto"
                       : "auto",
