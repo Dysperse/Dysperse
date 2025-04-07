@@ -157,6 +157,7 @@ export const ColumnEmptyComponent = function ColumnEmptyComponent({
           {
             gap: list || row ? 20 : 10,
             paddingHorizontal: 20,
+            pointerEvents: "none",
             paddingTop: Platform.OS === "android" ? 70 : undefined,
           },
           row && { flexDirection: "row", alignItems: "center" },

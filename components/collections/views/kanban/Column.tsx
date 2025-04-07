@@ -242,6 +242,7 @@ export function Column(props: ColumnProps) {
                   dense
                   containerStyle={{
                     marginRight: "auto",
+                    zIndex: 999,
                     marginTop: hasItems && props.grid ? 20 : 5,
                     marginLeft: breakpoints.md
                       ? !hasItems

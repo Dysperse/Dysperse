@@ -13,6 +13,7 @@ import { useColor } from "@/ui/color";
 import { useColorTheme } from "@/ui/color/theme-provider";
 import capitalizeFirstLetter from "@/utils/capitalizeFirstLetter";
 import dayjs from "dayjs";
+import { setUrlAsync } from "expo-clipboard";
 import { impactAsync, ImpactFeedbackStyle } from "expo-haptics";
 import React, { memo, useMemo } from "react";
 import { Linking, Platform, View } from "react-native";
@@ -189,6 +190,13 @@ function TaskNoteChips({ note }) {
               ) : (
                 link.icon
               ),
+              onLongPress: () => {
+                setUrlAsync(link.href);
+                Toast.show({
+                  type: "info",
+                  text1: "Copied link to clipboard",
+                });
+              },
               onPress: () => Linking.openURL(link.image || link.href),
             }))}
           trigger={
@@ -211,7 +219,15 @@ function TaskNoteChips({ note }) {
               <Button
                 chip
                 key={index}
+                textStyle={{ maxWidth: 180 }}
                 text={link.text}
+                onLongPress={() => {
+                  setUrlAsync(link.href);
+                  Toast.show({
+                    type: "info",
+                    text1: "Copied link to clipboard",
+                  });
+                }}
                 textProps={{ numberOfLines: 1 }}
                 onPress={() => Linking.openURL(link.image || link.href)}
                 icon={

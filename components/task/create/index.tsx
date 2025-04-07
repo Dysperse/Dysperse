@@ -669,6 +669,7 @@ function TaskNameInput({
   reset,
   submitRef,
   hintRef,
+  disabled,
   descriptionRef,
 }: {
   control: any;
@@ -677,6 +678,7 @@ function TaskNameInput({
   setValue: any;
   watch;
   reset;
+  disabled: boolean;
   submitRef;
   hintRef;
   descriptionRef;
@@ -729,7 +731,12 @@ function TaskNameInput({
             label={labelData}
             setValue={setValue}
           />
-          <View style={{ flex: 1 }}>
+          <View
+            style={[
+              { flex: 1 },
+              disabled && { pointerEvents: "auto", opacity: 0.5 },
+            ]}
+          >
             <TimeSuggestion
               isDirty={isDirty}
               watch={watch}
@@ -1452,6 +1459,7 @@ const BottomSheetContent = forwardRef(
             />
             <View style={Platform.OS !== "web" && { minHeight: 100 }}>
               <TaskNameInput
+                disabled={!session.user.hintsViewed.includes("CREATE_TASK")}
                 descriptionRef={descriptionRef}
                 hintRef={hintRef}
                 submitRef={submitRef}
@@ -1660,7 +1668,8 @@ const CreateTask = forwardRef(
           }
         >
           <OnboardingContainer
-            delay={500}
+            debug
+            delay={1000}
             id="CREATE_TASK"
             onlyIf={() => true}
             steps={[
