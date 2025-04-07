@@ -23,7 +23,7 @@ export const BadgingProvider = ({
   };
 
   useEffect(() => {
-    if (data?.count) {
+    if (typeof data?.count == "number") {
       setBadge(data.count);
     }
 
