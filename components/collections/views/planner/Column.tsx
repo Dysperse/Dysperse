@@ -22,9 +22,11 @@ import { usePlannerContext } from "./context";
 export function Column({
   mutate,
   column,
+  cellIndex,
 }: {
   mutate: KeyedMutator<any>;
   column: any;
+  cellIndex;
 }) {
   const columnRef = useRef(null);
   const theme = useColorTheme();
@@ -142,7 +144,7 @@ export function Column({
         centerContent={Object.keys(column.entities).length === 0}
         ListEmptyComponent={() => (
           <View style={{ marginVertical: "auto" }}>
-            <ColumnEmptyComponent />
+            <ColumnEmptyComponent offset={cellIndex} />
           </View>
         )}
         ListHeaderComponent={() => (
@@ -159,7 +161,7 @@ export function Column({
                       )
                     )
                   : task.completionInstances.length === 0
-              ) && <ColumnEmptyComponent row finished />}
+              ) && <ColumnEmptyComponent offset={cellIndex} row finished />}
           </View>
         )}
         renderItem={({ item }: any) => (

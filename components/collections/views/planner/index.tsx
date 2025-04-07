@@ -115,7 +115,9 @@ function Agenda() {
         ref={listRef}
         horizontal
         keyExtractor={(item) => item.start}
-        renderItem={({ item }) => <Column mutate={mutate} column={item} />}
+        renderItem={({ item, index }) => (
+          <Column cellIndex={index} mutate={mutate} column={item} />
+        )}
       />
     );
   }

@@ -1,5 +1,6 @@
 import { mutations } from "@/app/(app)/[tab]/collections/mutations";
 import CreateTask from "@/components/task/create";
+import { OnboardingContainer } from "@/context/OnboardingProvider";
 import { useResponsiveBreakpoints } from "@/helpers/useResponsiveBreakpoints";
 import { Button } from "@/ui/Button";
 import Icon from "@/ui/Icon";
@@ -12,7 +13,7 @@ import { FlashList } from "@shopify/flash-list";
 import dayjs from "dayjs";
 import { impactAsync, ImpactFeedbackStyle } from "expo-haptics";
 import { LinearGradient } from "expo-linear-gradient";
-import { useMemo, useRef, useState } from "react";
+import React, { useMemo, useRef, useState } from "react";
 import {
   Platform,
   Pressable,
@@ -27,6 +28,7 @@ import Animated, {
   withSpring,
 } from "react-native-reanimated";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
+import { AttachStep } from "react-native-spotlight-tour";
 import { useCollectionContext } from "../../context";
 import { ColumnEmptyComponent } from "../../emptyComponent";
 import { Entity } from "../../entity";
@@ -54,11 +56,13 @@ const Cell = ({
   tasks,
   defaultOptions,
   handleHome,
+  cellIndex,
 }: {
   name?: string;
   tasks: any;
   defaultOptions: any;
   handleHome?: any;
+  cellIndex?: number;
 }) => {
   const breakpoints = useResponsiveBreakpoints();
   const theme = useColorTheme();
@@ -124,10 +128,7 @@ const Cell = ({
                 {name}
               </Text>
             )}
-            <Text
-              weight={500}
-              style={{ color: theme[11], opacity: name ? 0.6 : 1 }}
-            >
+            <Text weight={500} style={{ color: theme[11], opacity: 0.6 }}>
               {remainingTasks.length} task{remainingTasks.length !== 1 && "s"}
             </Text>
           </View>
@@ -163,7 +164,9 @@ const Cell = ({
           paddingTop: breakpoints.md ? undefined : 5,
         }}
         keyExtractor={(i: any) => i.id}
-        ListEmptyComponent={() => <ColumnEmptyComponent row={breakpoints.md} />}
+        ListEmptyComponent={() => (
+          <ColumnEmptyComponent offset={cellIndex} row={breakpoints.md} />
+        )}
         renderItem={({ item }) => (
           <Entity
             showRelativeTime
@@ -423,67 +426,130 @@ export default function Matrix() {
             <Label size={900} x="Urgent" />
             <Label size={900} x="Less urgent" />
           </View>
-          <View style={[styles.row, { gap: breakpoints.md ? 20 : 10 }]}>
-            <Label size={100} y="Important" />
-            {breakpoints.md ? (
-              <Cell
-                onEntityCreate={mutations.categoryBased.add(mutate)}
-                onTaskUpdate={mutations.categoryBased.update(mutate)}
-                tasks={grid.pinnedImportant}
-                defaultOptions={{ pinned: true, due: dayjs().startOf("day") }}
-              />
-            ) : (
-              <Preview
-                onPress={() => setCurrentColumn("pinnedImportant")}
-                tasks={grid.pinnedImportant}
-              />
+          <OnboardingContainer
+            id="MATRIX_VIEW"
+            delay={500}
+            steps={[
+              {
+                text: "Urgent & important → These are your deadlines & emergencies.",
+              },
+              {
+                text: "Important but not urgent → Schedule it (e.g., planning).",
+              },
+              {
+                text: "Urgent but not important → Interruptions you'll work on later",
+              },
+              {
+                text: "Not urgent and not important → Delete it (e.g., distractions).",
+              },
+            ]}
+          >
+            {() => (
+              <>
+                <View style={[styles.row, { gap: breakpoints.md ? 20 : 10 }]}>
+                  <Label size={100} y="Important" />
+                  {breakpoints.md ? (
+                    <AttachStep index={0}>
+                      <View style={{ flex: 1 }}>
+                        <Cell
+                          cellIndex={0}
+                          onEntityCreate={mutations.categoryBased.add(mutate)}
+                          onTaskUpdate={mutations.categoryBased.update(mutate)}
+                          tasks={grid.pinnedImportant}
+                          defaultOptions={{
+                            pinned: true,
+                            due: dayjs().startOf("day"),
+                          }}
+                        />
+                      </View>
+                    </AttachStep>
+                  ) : (
+                    <AttachStep index={0}>
+                      <View style={{ flex: 1 }}>
+                        <Preview
+                          onPress={() => setCurrentColumn("pinnedImportant")}
+                          tasks={grid.pinnedImportant}
+                        />
+                      </View>
+                    </AttachStep>
+                  )}
+                  {breakpoints.md ? (
+                    <AttachStep index={1}>
+                      <View style={{ flex: 1 }}>
+                        <Cell
+                          cellIndex={1}
+                          onEntityCreate={mutations.categoryBased.add(mutate)}
+                          onTaskUpdate={mutations.categoryBased.update(mutate)}
+                          tasks={grid.important}
+                          defaultOptions={{ due: dayjs().startOf("day") }}
+                        />
+                      </View>
+                    </AttachStep>
+                  ) : (
+                    <AttachStep index={1}>
+                      <View style={{ flex: 1 }}>
+                        <Preview
+                          onPress={() => setCurrentColumn("important")}
+                          tasks={grid.important}
+                        />
+                      </View>
+                    </AttachStep>
+                  )}
+                </View>
+                <View style={[styles.row, { gap: breakpoints.md ? 20 : 10 }]}>
+                  <Label size={150} y="Less important" />
+                  {breakpoints.md ? (
+                    <AttachStep index={2}>
+                      <View style={{ flex: 1 }}>
+                        <Cell
+                          cellIndex={2}
+                          onEntityCreate={mutations.categoryBased.add(mutate)}
+                          onTaskUpdate={mutations.categoryBased.update(mutate)}
+                          tasks={grid.pinned}
+                          defaultOptions={{ pinned: true }}
+                        />
+                      </View>
+                    </AttachStep>
+                  ) : (
+                    <AttachStep index={2}>
+                      <View style={{ flex: 1 }}>
+                        <Preview
+                          onPress={() => setCurrentColumn("pinned")}
+                          tasks={grid.pinned}
+                        />
+                      </View>
+                    </AttachStep>
+                  )}
+                  {breakpoints.md ? (
+                    <AttachStep index={3}>
+                      <View style={{ flex: 1 }}>
+                        <Cell
+                          cellIndex={3}
+                          onEntityCreate={mutations.categoryBased.add(mutate)}
+                          onTaskUpdate={mutations.categoryBased.update(mutate)}
+                          tasks={grid.other}
+                          defaultOptions={{}}
+                        />
+                      </View>
+                    </AttachStep>
+                  ) : (
+                    <AttachStep index={3}>
+                      <View style={{ flex: 1 }}>
+                        <Preview
+                          onPress={() => setCurrentColumn("other")}
+                          tasks={grid.other}
+                        />
+                      </View>
+                    </AttachStep>
+                  )}
+                </View>
+              </>
             )}
-            {breakpoints.md ? (
-              <Cell
-                onEntityCreate={mutations.categoryBased.add(mutate)}
-                onTaskUpdate={mutations.categoryBased.update(mutate)}
-                tasks={grid.important}
-                defaultOptions={{ due: dayjs().startOf("day") }}
-              />
-            ) : (
-              <Preview
-                onPress={() => setCurrentColumn("important")}
-                tasks={grid.important}
-              />
-            )}
-          </View>
-          <View style={[styles.row, { gap: breakpoints.md ? 20 : 10 }]}>
-            <Label size={150} y="Less important" />
-            {breakpoints.md ? (
-              <Cell
-                onEntityCreate={mutations.categoryBased.add(mutate)}
-                onTaskUpdate={mutations.categoryBased.update(mutate)}
-                tasks={grid.pinned}
-                defaultOptions={{ pinned: true }}
-              />
-            ) : (
-              <Preview
-                onPress={() => setCurrentColumn("pinned")}
-                tasks={grid.pinned}
-              />
-            )}
-            {breakpoints.md ? (
-              <Cell
-                onEntityCreate={mutations.categoryBased.add(mutate)}
-                onTaskUpdate={mutations.categoryBased.update(mutate)}
-                tasks={grid.other}
-                defaultOptions={{}}
-              />
-            ) : (
-              <Preview
-                onPress={() => setCurrentColumn("other")}
-                tasks={grid.other}
-              />
-            )}
-          </View>
+          </OnboardingContainer>
         </>
       ) : (
         <Cell
+          cellIndex={0}
           name={
             currentColumn == "pinnedImportant"
               ? "Urgent & important"
@@ -503,3 +569,4 @@ export default function Matrix() {
     </View>
   );
 }
+

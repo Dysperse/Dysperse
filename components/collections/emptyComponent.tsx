@@ -124,20 +124,22 @@ export const ColumnEmptyComponent = function ColumnEmptyComponent({
   showInspireMe,
   labelId,
   finished,
+  offset = 0,
 }: {
   row?: boolean;
   list?: boolean;
   showInspireMe?: boolean;
   labelId?: string;
   finished?: boolean;
+  offset?: number;
 }) {
   const { session } = useUser();
   const theme = useColorTheme();
 
-  const message = useMemo(
-    () => messages[Math.floor(Math.random() * messages.length)],
-    []
-  );
+  const message = useMemo(() => {
+    const hour = new Date().getHours() + offset;
+    return messages[hour % messages.length];
+  }, [offset]);
 
   return (
     <View

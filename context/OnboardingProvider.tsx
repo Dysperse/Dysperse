@@ -86,7 +86,7 @@ export function OnboardingContainer(
     children: (t: SpotlightTour) => React.ReactNode;
     id: "SIDEBAR";
     debug?: boolean;
-    onlyIf: () => boolean;
+    onlyIf?: () => boolean;
     onStart?: () => void;
   }
 ) {
@@ -142,7 +142,9 @@ export function OnboardingContainer(
           <OnboardingTrigger
             id={props.id}
             debug={props.debug}
-            onlyIf={props.onlyIf}
+            onlyIf={
+              typeof props.onlyIf === "undefined" ? () => true : props.onlyIf
+            }
             onStart={props.onStart}
             delay={props.delay}
           />
