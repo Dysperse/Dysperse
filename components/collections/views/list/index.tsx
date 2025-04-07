@@ -17,14 +17,14 @@ import { CollectionEmpty } from "../CollectionEmpty";
 import { KanbanHeader } from "../kanban/Header";
 import { taskSortAlgorithm } from "../skyline";
 
-function ListItem({ d, data, item, listRef, mutate, onTaskUpdate }) {
+function ListItem({ d, data, item, listRef, mutate, onTaskUpdate, index }) {
   const theme = useColorTheme();
   const isDark = useDarkMode();
 
   if (item.empty) {
     return (
       <View>
-        <ColumnEmptyComponent list labelId={item.id} />
+        <ColumnEmptyComponent list labelId={item.id} offset={index} />
       </View>
     );
   } else if (item.create) {
@@ -188,7 +188,7 @@ export default function List() {
             <RefreshControl refreshing={false} onRefresh={() => mutate()} />
           }
           contentContainerStyle={{ paddingVertical: 30 }}
-          renderItem={({ item }) => (
+          renderItem={({ item, index }) => (
             <View
               style={{
                 width: 600,
@@ -200,6 +200,7 @@ export default function List() {
             >
               <ListItem
                 d={d}
+                index={index}
                 data={data}
                 onTaskUpdate={mutations.categoryBased.update(mutate)}
                 item={item}

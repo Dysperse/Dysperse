@@ -182,9 +182,9 @@ export default function Grid() {
                   ]}
                 >
                   {label.empty ? null : label.other ? (
-                    <Column grid entities={data.entities || []} />
+                    <Column grid entities={data.entities || []} index={i} />
                   ) : (
-                    <Column key={label.id} grid label={label} />
+                    <Column key={label.id} grid label={label} index={i} />
                   )}
                 </View>
               </View>

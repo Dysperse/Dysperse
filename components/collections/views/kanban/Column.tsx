@@ -24,11 +24,13 @@ export type ColumnProps =
       label?: any;
       entities?: never;
       grid?: boolean;
+      index?: number;
     }
   | {
       label?: never;
       entities?: any[];
       grid?: boolean;
+      index?: number;
     };
 
 export function Column(props: ColumnProps) {
@@ -215,6 +217,7 @@ export function Column(props: ColumnProps) {
           <View>
             {!(!hasNoTasks && hasItems) && (
               <ColumnEmptyComponent
+                offset={props.index}
                 showInspireMe={hasNoTasks}
                 labelId={props.label?.id}
                 row={props.grid}
@@ -243,14 +246,14 @@ export function Column(props: ColumnProps) {
                   containerStyle={{
                     marginRight: "auto",
                     zIndex: 999,
-                    marginTop: hasItems && props.grid ? 20 : 5,
+                    marginTop: hasItems && props.grid ? 20 : 10,
                     marginLeft: breakpoints.md
                       ? !hasItems && props.grid
                         ? 80
                         : "auto"
                       : "auto",
                   }}
-                  variant={props.grid ? "filled" : undefined}
+                  variant={"filled"}
                 >
                   <ButtonText weight={600}>
                     {showCompleted ? "Hide completed" : "See completed"}

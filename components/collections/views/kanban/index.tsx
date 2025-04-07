@@ -108,15 +108,16 @@ export default function Kanban() {
         >
           {breakpoints.md
             ? columns.map(
-                (label) => label && <Column key={label.id} label={label} />
+                (label, index) =>
+                  label && <Column key={label.id} label={label} index={index} />
               )
             : columns[currentColumn] && (
-                <Column label={columns[currentColumn]} />
+                <Column label={columns[currentColumn]} index={currentColumn} />
               )}
           {data &&
             Object.keys(data.entities)?.length > 0 &&
             (breakpoints.md || currentColumn === -1) && (
-              <Column entities={data.entities} />
+              <Column entities={data.entities} index={currentColumn} />
             )}
           {breakpoints.md && !isReadOnly && (
             <View
