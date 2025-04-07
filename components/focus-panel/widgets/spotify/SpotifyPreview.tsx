@@ -41,7 +41,7 @@ export const SpotifyPreview = ({ small, data, mutate }) => {
     <Wrapper
       style={
         small
-          ? { flexDirection: "row", gap: 7 }
+          ? { flexDirection: "row", gap: 10 }
           : {
               backgroundColor: theme[2],
               borderRadius: 20,
