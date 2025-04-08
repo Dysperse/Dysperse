@@ -18,6 +18,8 @@ const LoadingErrors = memo(() => {
         text1: "You're offline",
         text2: "Please check your connection",
       });
+    } else {
+      Toast.hide();
     }
   }, [error, storageError, breakpoints]);
 
@@ -39,4 +41,3 @@ const LoadingErrors = memo(() => {
 });
 
 export default LoadingErrors;
-
