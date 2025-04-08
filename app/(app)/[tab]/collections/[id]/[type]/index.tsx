@@ -511,7 +511,8 @@ function TaskShortcutCreation() {
   const { data, mutate } = useCollectionContext();
   const { type } = useLocalSearchParams();
 
-  useHotkeys("space", () => {
+  useHotkeys("space", (e) => {
+    e.preventDefault();
     createTaskRef.current?.present();
   });
 
@@ -659,4 +660,3 @@ export default function Page({ isPublic }: { isPublic: boolean }) {
     </SelectionContextProvider>
   );
 }
-

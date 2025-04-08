@@ -635,11 +635,6 @@ const TimeSuggestion = forwardRef(
                 text: 'Type "!" to mark as important',
                 icon: "emoji_objects",
               }
-            : !noteSuggestion && Platform.OS === "web"
-            ? {
-                text: "Hit shift+enter to add a note",
-                icon: "emoji_objects",
-              }
             : !tagSuggestion && Platform.OS === "web"
             ? {
                 text: "Type # to add a tag",
@@ -1647,6 +1642,7 @@ const CreateTask = forwardRef(
       <>
         {trigger}
         <Modal
+          transformCenter
           disablePan={breakpoints.md}
           maxWidth={breakpoints.md ? 700 : "100%"}
           sheetRef={ref}
