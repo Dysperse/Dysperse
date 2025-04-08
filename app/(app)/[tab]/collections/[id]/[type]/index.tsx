@@ -20,6 +20,7 @@ import Workload from "@/components/collections/views/workload";
 import { COLLECTION_VIEWS } from "@/components/layout/command-palette/list";
 import ContentWrapper from "@/components/layout/content";
 import { FadeOnRender } from "@/components/layout/FadeOnRender";
+import WindowTitle from "@/components/layout/WindowTitle";
 import CreateTask from "@/components/task/create";
 import { useSession } from "@/context/AuthProvider";
 import { SelectionContextProvider } from "@/context/SelectionContext";
@@ -630,6 +631,7 @@ export default function Page({ isPublic }: { isPublic: boolean }) {
                 <Pressable />
               </CollectionLabelMenu>
               <TaskShortcutCreation />
+              {data && <WindowTitle title={data?.name || "All tasks"} />}
               {(data ? (
                 (data.pinCode || data.pinCodeError) &&
                 (!data.pinAuthorizationExpiresAt ||

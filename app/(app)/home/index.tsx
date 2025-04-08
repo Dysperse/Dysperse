@@ -4,6 +4,7 @@ import { Greeting } from "@/components/home/greeting";
 import StreakGoal from "@/components/home/streaks";
 import { styles } from "@/components/home/styles";
 import { TodayText } from "@/components/home/today";
+import WindowTitle from "@/components/layout/WindowTitle";
 import ContentWrapper from "@/components/layout/content";
 import { useSidebarContext } from "@/components/layout/sidebar/context";
 import MenuIcon from "@/components/menuIcon";
@@ -490,6 +491,7 @@ function Page() {
 
   return (
     <ContentWrapper noPaddingTop>
+      <WindowTitle title="Home" />
       <Wrapper>
         <MenuButton gradient addInsets={!breakpoints.md} />
         <KeyboardAwareScrollView
@@ -546,4 +548,3 @@ function Page() {
 }
 
 export default memo(Page);
-
