@@ -37,7 +37,9 @@ const Every = ({ value, handleEdit }: { value; handleEdit }) => {
             borderRadius: 99,
             fontSize: 20,
             width: "100%",
+            textAlign: "center",
           }}
+          selectTextOnFocus
           weight={800}
           variant="filled"
           keyboardType="number-pad"
@@ -272,7 +274,7 @@ function Ends({ value, setValue }) {
           <TextField
             inputRef={endsInputDateRef}
             variant="outlined"
-            placeholder="Date"
+            placeholder="dd/mm"
             style={{
               padding: 5,
               paddingHorizontal: 20,
@@ -366,39 +368,52 @@ function Ends({ value, setValue }) {
 
 function Preview({ value }) {
   const theme = useColorTheme();
+  const [show, setShow] = useState(false);
   const [previewRange] = useState<Date>(new Date());
 
   return !value ? null : (
-    <View style={{ marginTop: 30, pointerEvents: "none" }}>
-      <Text variant="eyebrow">Preview</Text>
-      <View
-        style={{
-          marginTop: 10,
-          borderWidth: 1,
-          borderColor: theme[4],
-          borderRadius: 25,
-          padding: 15,
-        }}
+    <View style={{ marginTop: 30 }}>
+      <Button
+        onPress={() => setShow((t) => !t)}
+        containerStyle={{ marginLeft: -10 }}
       >
-        <Calendar
-          onCalendarDayPress={() => {}}
-          calendarMonthId={toDateId(previewRange)}
-          theme={dysperseCalendarTheme(theme)}
-          calendarActiveDateRanges={normalizeRecurrenceRuleObject(value)
-            .between(
-              dayjs(previewRange)
-                .startOf("month")
-                .subtract(1, "month")
-                .utc()
-                .toDate(),
-              dayjs(previewRange).utc().endOf("month").add(1, "month").toDate()
-            )
-            .map((date) => ({
-              startId: toDateId(date),
-              endId: toDateId(date),
-            }))}
-        />
-      </View>
+        <Text variant="eyebrow">Show preview</Text>
+        <Icon>expand_more</Icon>
+      </Button>
+      {show && (
+        <View
+          style={{
+            borderWidth: 1,
+            borderColor: theme[4],
+            borderRadius: 25,
+            pointerEvents: "none",
+            padding: 15,
+          }}
+        >
+          <Calendar
+            onCalendarDayPress={() => {}}
+            calendarMonthId={toDateId(previewRange)}
+            theme={dysperseCalendarTheme(theme)}
+            calendarActiveDateRanges={normalizeRecurrenceRuleObject(value)
+              .between(
+                dayjs(previewRange)
+                  .startOf("month")
+                  .subtract(1, "month")
+                  .utc()
+                  .toDate(),
+                dayjs(previewRange)
+                  .utc()
+                  .endOf("month")
+                  .add(1, "month")
+                  .toDate()
+              )
+              .map((date) => ({
+                startId: toDateId(date),
+                endId: toDateId(date),
+              }))}
+          />
+        </View>
+      )}
     </View>
   );
 }
@@ -482,8 +497,14 @@ export const RecurrencePicker = forwardRef(
         >
           <Cancel setValue={setLocalValue} onClose={onClose} />
           <View style={{ flex: 1, justifyContent: "center" }}>
-            <Text weight={800} style={{ fontSize: 20, textAlign: "center" }}>
-              Repeat
+            <Text
+              style={{
+                fontSize: 20,
+                textAlign: "center",
+                fontFamily: "serifText700",
+              }}
+            >
+              Repetition
             </Text>
           </View>
           <IconButton
