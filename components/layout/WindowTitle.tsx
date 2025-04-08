@@ -7,7 +7,7 @@ export default function WindowTitle({ title }) {
       document.title = `${title} • Dysperse`;
     }
     return () => {
-      document.title = "Dysperse";
+      if (Platform.OS === "web") document.title = "Dysperse";
     };
   });
   return null;
