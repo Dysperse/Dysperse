@@ -496,12 +496,12 @@ function TaskDateMenu() {
                     !task.start && [
                       {
                         icon: "loop",
-                        text: "Add recurrence",
+                        text: "Set repetition",
                         callback: () => addRecurrenceRef.current.present(),
                       },
                       {
                         icon: "calendar_today",
-                        text: "Add date",
+                        text: "Set due date",
                         callback: () => addDateRef.current.present(),
                       },
                     ]) ||
@@ -890,4 +890,3 @@ export function TaskDetails() {
     </View>
   );
 }
-

@@ -1067,7 +1067,7 @@ function DateButton({
         menuProps={{ rendererProps: { placement: "top" } }}
         options={[
           {
-            text: "Set recurrence",
+            text: "Set repetition",
             icon: "loop",
             callback: () => recurrenceRef.current.present(),
           },
@@ -1705,4 +1705,3 @@ const CreateTask = forwardRef(
 );
 
 export default CreateTask;
-

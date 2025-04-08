@@ -66,12 +66,12 @@ export const TimeInput = forwardRef(
         inputRef={ref}
         variant="filled+outlined"
         style={[
-          style,
           {
             flex: 1,
             textAlign: "center",
             height: 50,
           },
+          style,
         ]}
         placeholder="12:00"
         value={value}
@@ -414,4 +414,3 @@ export const DatePicker = forwardRef(
     );
   }
 );
-

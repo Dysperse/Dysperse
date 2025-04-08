@@ -28,7 +28,6 @@ import {
   useRef,
   useState,
 } from "react";
-import { Freeze } from "react-freeze";
 import {
   InteractionManager,
   Linking,
@@ -720,7 +719,7 @@ function SecondarySidebar() {
         paddingRight: 0,
         paddingBottom: breakpoints.md ? undefined : 90 + insets.bottom,
         paddingTop:
-          insets.top + (!breakpoints.md || Platform.OS === "web" ? 30 : 0),
+          insets.top + (!breakpoints.md || Platform.OS === "web" ? 20 : 0),
         backgroundColor: theme[2],
         zIndex: 999,
       }}
@@ -728,14 +727,17 @@ function SecondarySidebar() {
       <IconButton
         icon="west"
         onPress={() => {
+          router.dismissAll();
           router.replace("/");
           impactAsync(ImpactFeedbackStyle.Light);
           InteractionManager.runAfterInteractions(() => {
             sidebarRef?.current?.openDrawer?.();
           });
         }}
-        size={50}
+        size={40}
+        variant="filled"
         style={[
+          { marginLeft: 5 },
           Platform.OS === "web" && ({ WebkitAppRegion: "no-drag" } as any),
         ]}
       />
@@ -894,16 +896,6 @@ const Sidebar = ({ progressValue }: { progressValue?: any }) => {
 
   const insets = useSafeAreaInsets();
 
-  const [freezePrimary, setFreezePrimary] = useState(
-    !pathname.includes("everything")
-  );
-
-  useEffect(() => {
-    InteractionManager.runAfterInteractions(() => {
-      setFreezePrimary(!pathname.includes("everything"));
-    });
-  }, [pathname]);
-
   return (
     <SafeView>
       {Platform.OS === "web" && (
@@ -938,9 +930,7 @@ const Sidebar = ({ progressValue }: { progressValue?: any }) => {
           ]}
         >
           <Animated.View style={primarySidebarStyles}>
-            <Freeze freeze={!freezePrimary}>
-              <PrimarySidebar progressValue={progressValue} />
-            </Freeze>
+            <PrimarySidebar progressValue={progressValue} />
           </Animated.View>
           <Animated.View
             style={[
@@ -948,9 +938,7 @@ const Sidebar = ({ progressValue }: { progressValue?: any }) => {
               { height: "100%", width: SECONDARY_SIDEBAR_WIDTH },
             ]}
           >
-            <Freeze freeze={freezePrimary}>
-              <SecondarySidebar />
-            </Freeze>
+            <SecondarySidebar />
           </Animated.View>
         </Animated.View>
       </Animated.View>
@@ -959,4 +947,3 @@ const Sidebar = ({ progressValue }: { progressValue?: any }) => {
 };
 
 export default memo(Sidebar);
-

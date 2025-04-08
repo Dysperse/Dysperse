@@ -25,7 +25,7 @@ const Every = ({ value, handleEdit }: { value; handleEdit }) => {
 
   return (
     <View>
-      <Text variant="eyebrow" style={{ marginBottom: 5, marginTop: 20 }}>
+      <Text variant="eyebrow" style={{ marginBottom: 5, marginTop: 0 }}>
         Repeat every
       </Text>
       <View style={{ flexDirection: "row", gap: 10 }}>
@@ -66,7 +66,7 @@ const Every = ({ value, handleEdit }: { value; handleEdit }) => {
                 height={50}
                 text={["Days", "Weeks", "Months", "Years"][
                   3 - value?.freq
-                ].replace("s", interval === 1 ? "" : "s")}
+                ]?.replace("s", interval === 1 ? "" : "s")}
                 iconPosition="end"
                 icon="expand_more"
                 bold
@@ -79,96 +79,118 @@ const Every = ({ value, handleEdit }: { value; handleEdit }) => {
   );
 };
 
+const getWeekOfMonthOrdinal = (date) => {
+  const wom = date.week() - date.startOf("month").week() + 1;
+  return date.date(wom).format("Do");
+};
+
 function On({ value, handleEdit }) {
   const theme = useColorTheme();
   const isMonthly = value.freq === 1;
 
-  const l = isMonthly
-    ? [
-        { value: 1, text: "Jan" },
-        { value: 2, text: "Feb" },
-        { value: 3, text: "Mar" },
-        { value: 4, text: "Apr" },
-        { value: 5, text: "May" },
-        { value: 6, text: "Jun" },
-        { value: 7, text: "Jul" },
-        { value: 8, text: "Aug" },
-        { value: 9, text: "Sep" },
-        { value: 10, text: "Oct" },
-        { value: 11, text: "Nov" },
-        { value: 12, text: "Dec" },
-      ]
-    : [
-        { value: 6, text: "S" },
-        { value: 0, text: "M" },
-        { value: 1, text: "T" },
-        { value: 2, text: "W" },
-        { value: 3, text: "T" },
-        { value: 4, text: "F" },
-        { value: 5, text: "S" },
-      ];
+  const days = [
+    { value: 6, text: "S" },
+    { value: 0, text: "M" },
+    { value: 1, text: "T" },
+    { value: 2, text: "W" },
+    { value: 3, text: "T" },
+    { value: 4, text: "F" },
+    { value: 5, text: "S" },
+  ];
 
   return (
     <>
       <Text variant="eyebrow" style={{ marginTop: 20, marginBottom: -5 }}>
         ON
       </Text>
-      <View style={{ flexDirection: "row", gap: 5, flexWrap: "wrap" }}>
-        {l.map((e, index) => {
-          const t = value?.byweekday?.includes(e.value);
+      {isMonthly && (
+        <View style={{ flexDirection: "row", gap: 5, flexWrap: "wrap" }}>
+          <Button
+            containerStyle={{ flexGrow: 1 }}
+            variant="filled"
+            bold
+            large
+            text={`The ${dayjs().format("Do")} day`}
+            onPress={() => {
+              handleEdit(
+                "bymonth",
+                [...new Array(12)].map((e, i) => i)
+              );
+            }}
+          />
+          <Button
+            containerStyle={{ flexGrow: 1 }}
+            variant="filled"
+            bold
+            large
+            text={`The ${getWeekOfMonthOrdinal(dayjs())} ${dayjs().format(
+              "dddd"
+            )}`}
+          />
+        </View>
+      )}
+      {value.freq === 2 && (
+        <View style={{ flexDirection: "row", gap: 5, flexWrap: "wrap" }}>
+          {days.map((e, index) => {
+            const t = value?.byweekday?.includes(e.value);
 
-          return (
-            <IconButton
-              key={e.value + index}
-              style={
-                isMonthly
-                  ? {
-                      width: 340 / 4,
-                      height: 40,
-                    }
-                  : {
-                      flex: 1,
-                      aspectRatio: 1,
-                      height: "auto",
-                    }
-              }
-              variant="filled"
-              backgroundColors={{
-                default: theme[t ? 9 : 3],
-                pressed: theme[t ? 10 : 4],
-                hovered: theme[t ? 11 : 5],
-              }}
-              onPress={() => {
-                handleEdit(
-                  isMonthly ? "bymonth" : "byweekday",
-                  (value[isMonthly ? "bymonth" : "byweekday"]
-                    ? value[isMonthly ? "bymonth" : "byweekday"].includes(
-                        e.value
-                      )
-                      ? value[isMonthly ? "bymonth" : "byweekday"].filter(
-                          (day) => day !== e.value
+            return (
+              <IconButton
+                key={e.value + index}
+                style={
+                  isMonthly
+                    ? {
+                        width: 340 / 4,
+                        height: 40,
+                      }
+                    : {
+                        flex: 1,
+                        aspectRatio: 1,
+                        height: "auto",
+                      }
+                }
+                variant="filled"
+                backgroundColors={{
+                  default: theme[t ? 9 : 3],
+                  pressed: theme[t ? 10 : 4],
+                  hovered: theme[t ? 11 : 5],
+                }}
+                onPress={() => {
+                  handleEdit(
+                    isMonthly ? "bymonth" : "byweekday",
+                    (value[isMonthly ? "bymonth" : "byweekday"]
+                      ? value[isMonthly ? "bymonth" : "byweekday"].includes(
+                          e.value
                         )
-                      : [...value[isMonthly ? "bymonth" : "byweekday"], e.value]
-                    : [
-                        ...new Set(
-                          [
-                            ...(value?.[isMonthly ? "bymonth" : "byweekday"] ||
-                              []),
+                        ? value[isMonthly ? "bymonth" : "byweekday"].filter(
+                            (day) => day !== e.value
+                          )
+                        : [
+                            ...value[isMonthly ? "bymonth" : "byweekday"],
                             e.value,
-                          ].sort()
-                        ),
-                      ]
-                  ).sort()
-                );
-              }}
-            >
-              <Text weight={900} style={{ color: theme[t ? 1 : 11] }}>
-                {e.text}
-              </Text>
-            </IconButton>
-          );
-        })}
-      </View>
+                          ]
+                      : [
+                          ...new Set(
+                            [
+                              ...(value?.[
+                                isMonthly ? "bymonth" : "byweekday"
+                              ] || []),
+                              e.value,
+                            ].sort()
+                          ),
+                        ]
+                    ).sort()
+                  );
+                }}
+              >
+                <Text weight={900} style={{ color: theme[t ? 1 : 11] }}>
+                  {e.text}
+                </Text>
+              </IconButton>
+            );
+          })}
+        </View>
+      )}
     </>
   );
 }
@@ -194,12 +216,13 @@ const SetValue = ({ value, setValue }: { value: any; setValue: any }) => {
 };
 
 function Ends({ value, setValue }) {
+  const theme = useColorTheme();
   const endsInputDateRef = useRef(null);
   const endsInputCountRef = useRef(null);
 
   return (
     <>
-      <Text variant="eyebrow" style={{ marginTop: 20, marginBottom: 5 }}>
+      <Text variant="eyebrow" style={{ marginTop: 20 }}>
         Ends
       </Text>
       <View>
@@ -221,7 +244,11 @@ function Ends({ value, setValue }) {
               ? "radio_button_checked"
               : "radio_button_unchecked"}
           </Icon>
-          <ListItemText truncate primary="Never" />
+          <ListItemText
+            truncate
+            primary="Never"
+            primaryProps={{ style: { color: theme[11] } }}
+          />
         </ListItemButton>
         <ListItemButton
           style={{ height: 50, borderRadius: 99 }}
@@ -237,7 +264,11 @@ function Ends({ value, setValue }) {
               ? "radio_button_checked"
               : "radio_button_unchecked"}
           </Icon>
-          <ListItemText truncate primary="On" />
+          <ListItemText
+            truncate
+            primary="On"
+            primaryProps={{ style: { color: theme[11] } }}
+          />
           <TextField
             inputRef={endsInputDateRef}
             variant="outlined"
@@ -290,7 +321,11 @@ function Ends({ value, setValue }) {
               ? "radio_button_checked"
               : "radio_button_unchecked"}
           </Icon>
-          <ListItemText truncate primary="After" />
+          <ListItemText
+            truncate
+            primary="After"
+            primaryProps={{ style: { color: theme[11] } }}
+          />
           <TextField
             inputRef={endsInputCountRef}
             variant="outlined"
@@ -320,7 +355,9 @@ function Ends({ value, setValue }) {
               }
             }}
           />
-          <Text weight={600}>times</Text>
+          <Text weight={600} style={{ color: theme[11] }}>
+            times
+          </Text>
         </ListItemButton>
       </View>
     </>
@@ -388,6 +425,12 @@ function AtTime({ value, setValue }) {
             bysecond: [0],
           });
         }}
+        style={{
+          borderWidth: 0,
+          minHeight: 50,
+          borderRadius: 999,
+          fontFamily: "body_900",
+        }}
       />
     </View>
   );
@@ -423,46 +466,44 @@ export const RecurrencePicker = forwardRef(
 
     const handleEdit = (key, newValue) => {
       setLocalValue({
-        ...value,
+        ...localValue,
         [key]: newValue,
       });
     };
 
     return (
       <Modal sheetRef={ref} animation="SCALE" maxWidth={400} onClose={onClose}>
+        <View
+          style={{
+            padding: 20,
+            flexDirection: "row",
+            alignItems: "center",
+          }}
+        >
+          <Cancel setValue={setLocalValue} onClose={onClose} />
+          <View style={{ flex: 1, justifyContent: "center" }}>
+            <Text weight={800} style={{ fontSize: 20, textAlign: "center" }}>
+              Repeat
+            </Text>
+          </View>
+          <IconButton
+            icon="check"
+            style={{ marginLeft: 20 }}
+            size={40}
+            variant="filled"
+            onPress={() => {
+              ref.current.close();
+              setValue(localValue);
+              setTimeout(onClose, 100);
+            }}
+          />
+        </View>
         <BottomSheetScrollView
           keyboardShouldPersistTaps="handled"
           onScrollBeginDrag={Keyboard.dismiss}
         >
           <SetValue value={localValue} setValue={setLocalValue} />
-          <View style={{ padding: 20, paddingTop: 15 }}>
-            <View
-              style={{
-                flexDirection: "row",
-                alignItems: "center",
-              }}
-            >
-              <Cancel setValue={setLocalValue} onClose={onClose} />
-              <View style={{ flex: 1, justifyContent: "center" }}>
-                <Text
-                  weight={800}
-                  style={{ fontSize: 20, textAlign: "center" }}
-                >
-                  Repeat
-                </Text>
-              </View>
-              <IconButton
-                icon="check"
-                style={{ marginLeft: 20 }}
-                size={40}
-                variant="filled"
-                onPress={() => {
-                  ref.current.close();
-                  setValue(localValue);
-                  setTimeout(onClose, 100);
-                }}
-              />
-            </View>
+          <View style={{ padding: 20, paddingTop: 0 }}>
             {localValue && (
               <View style={{ paddingTop: 10, gap: 10 }}>
                 <Every value={localValue} handleEdit={handleEdit} />
@@ -481,4 +522,3 @@ export const RecurrencePicker = forwardRef(
     );
   }
 );
-

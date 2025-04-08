@@ -191,7 +191,10 @@ function TaskNoteChips({ note }) {
                 link.icon
               ),
               onLongPress: () => {
-                setUrlAsync(link.href);
+                impactAsync(ImpactFeedbackStyle.Light);
+                if (Platform.OS === "web")
+                  navigator.clipboard.writeText(link.href);
+                else setUrlAsync(link.href);
                 Toast.show({
                   type: "info",
                   text1: "Copied link to clipboard",
@@ -222,7 +225,10 @@ function TaskNoteChips({ note }) {
                 textStyle={{ maxWidth: 180 }}
                 text={link.text}
                 onLongPress={() => {
-                  setUrlAsync(link.href);
+                  impactAsync(ImpactFeedbackStyle.Light);
+                  if (Platform.OS === "web")
+                    navigator.clipboard.writeText(link.href);
+                  else setUrlAsync(link.href);
                   Toast.show({
                     type: "info",
                     text1: "Copied link to clipboard",
@@ -495,4 +501,3 @@ const Task = memo(function Task({
 });
 
 export default React.memo(Task);
-

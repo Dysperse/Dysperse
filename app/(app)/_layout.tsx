@@ -32,6 +32,7 @@ import isoWeek from "dayjs/plugin/isoWeek";
 import relativeTime from "dayjs/plugin/relativeTime";
 import timezone from "dayjs/plugin/timezone";
 import utc from "dayjs/plugin/utc";
+import weekOfYear from "dayjs/plugin/weekOfYear";
 import weekday from "dayjs/plugin/weekday";
 import * as NavigationBar from "expo-navigation-bar";
 import {
@@ -59,6 +60,7 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 import Toast from "react-native-toast-message";
 import "react-native-url-polyfill/auto";
 
+dayjs.extend(weekOfYear);
 dayjs.extend(customParseFormat);
 dayjs.extend(timezone);
 dayjs.extend(utc);
@@ -519,4 +521,3 @@ export default function AppLayout() {
     </WebAnimationComponent>
   );
 }
-
