@@ -703,7 +703,7 @@ const PrimarySidebar = memo(function PrimarySidebar({ progressValue }: any) {
   );
 });
 
-function SecondarySidebar() {
+function SecondarySidebar({ scrollRef }) {
   const { SECONDARY_SIDEBAR_WIDTH, sidebarRef, ORIGINAL_SIDEBAR_WIDTH } =
     useSidebarContext();
   const theme = useColorTheme();
@@ -731,12 +731,15 @@ function SecondarySidebar() {
       <IconButton
         icon="west"
         onPress={() => {
-          router.dismissAll();
-          router.replace("/");
-          impactAsync(ImpactFeedbackStyle.Light);
-          InteractionManager.runAfterInteractions(() => {
-            sidebarRef?.current?.openDrawer?.();
-          });
+          scrollRef.current.scrollTo({ x: 0 });
+          setTimeout(() => {
+            router.dismissAll();
+            router.replace("/");
+            if (Platform.OS !== "web") impactAsync(ImpactFeedbackStyle.Light);
+            InteractionManager.runAfterInteractions(() => {
+              sidebarRef?.current?.openDrawer?.();
+            });
+          }, 200);
         }}
         size={40}
         variant="filled"
@@ -760,7 +763,7 @@ function SecondarySidebar() {
           icon="tag"
           onPress={() => {
             router.push("/everything");
-            impactAsync(ImpactFeedbackStyle.Light);
+            if (Platform.OS !== "web") impactAsync(ImpactFeedbackStyle.Light);
             if (!breakpoints.md) sidebarRef.current?.closeDrawer?.();
           }}
           variant={pathname === "/everything" ? "filled" : "text"}
@@ -919,7 +922,10 @@ const Sidebar = ({ progressValue }: { progressValue?: any }) => {
 
   useEffect(() => {
     if (pathname.includes("everything"))
-      scrollRef.current.scrollTo({ x: 9999 });
+      scrollRef.current.scrollTo({
+        x: 9999,
+        animated: pathname === "/everything",
+      });
     else scrollRef.current.scrollTo({ x: 0 });
   }, [pathname]);
 
@@ -966,7 +972,7 @@ const Sidebar = ({ progressValue }: { progressValue?: any }) => {
           ]}
         >
           <PrimarySidebar progressValue={progressValue} />
-          <SecondarySidebar />
+          <SecondarySidebar scrollRef={scrollRef} />
         </Animated.ScrollView>
       </Animated.View>
     </SafeView>
