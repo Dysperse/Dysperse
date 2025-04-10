@@ -866,22 +866,6 @@ const Sidebar = ({ progressValue }: { progressValue?: any }) => {
   const insets = useSafeAreaInsets();
   const scrollRef = useRef<ScrollView>(null);
 
-  // useEffect(() => {
-  //   const t =
-  //     Platform.OS !== "web"
-  //       ? null
-  //       : scrollRef.current.addEventListener("scrollend", (e) => {
-  //           if (e.target.scrollLeft < 130 && pathname.includes("everything"))
-  //             router.replace("/");
-  //           else if (!pathname.includes("everything"))
-  //             router.replace("/everything");
-  //         });
-  //   return () => {
-  //     if (Platform.OS === "web")
-  //       scrollRef.current.removeEventListener("scrollend", t);
-  //   };
-  // });
-
   useEffect(() => {
     if (pathname.includes("everything"))
       scrollRef.current.scrollTo({
@@ -890,6 +874,17 @@ const Sidebar = ({ progressValue }: { progressValue?: any }) => {
       });
     else scrollRef.current.scrollTo({ x: 0 });
   }, [pathname]);
+
+  useEffect(() => {
+    setTimeout(() => {
+      if (pathname.includes("everything"))
+        scrollRef.current.scrollTo({
+          x: 9999,
+          animated: pathname === "/everything",
+        });
+      else scrollRef.current.scrollTo({ x: 0 });
+    }, 1000);
+  }, []);
 
   return (
     <SafeView>
@@ -916,13 +911,12 @@ const Sidebar = ({ progressValue }: { progressValue?: any }) => {
           horizontal
           decelerationRate={0}
           snapToInterval={150}
-          snapToAlignment={"center"}
+          snapToAlignment={"start"}
           showsHorizontalScrollIndicator={false}
           scrollEnabled={false}
           ref={scrollRef}
           style={[
             Platform.OS === "web" && {
-              scrollBehavior: "auto",
               scrollSnapType: "both mandatory",
             },
             widthStyle,
