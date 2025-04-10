@@ -833,44 +833,6 @@ const Sidebar = ({ progressValue }: { progressValue?: any }) => {
   const { height } = useWindowDimensions();
   const desktopSlide = useSharedValue(0);
 
-  const primarySidebarStyles = useAnimatedStyle(() => ({
-    pointerEvents:
-      SIDEBAR_WIDTH.value === SECONDARY_SIDEBAR_WIDTH ? "none" : "auto",
-    width: ORIGINAL_SIDEBAR_WIDTH,
-    transform: [
-      {
-        translateX: withSpring(
-          SIDEBAR_WIDTH.value === SECONDARY_SIDEBAR_WIDTH
-            ? -ORIGINAL_SIDEBAR_WIDTH - 20
-            : 0,
-          {
-            stiffness: 200,
-            damping: 40,
-          }
-        ),
-      },
-    ],
-  }));
-
-  const secondarySidebarStyles = useAnimatedStyle(() => ({
-    pointerEvents:
-      SIDEBAR_WIDTH.value === SECONDARY_SIDEBAR_WIDTH ? "auto" : "none",
-    marginLeft: -ORIGINAL_SIDEBAR_WIDTH - 3,
-    transform: [
-      {
-        translateX: withSpring(
-          SIDEBAR_WIDTH.value === ORIGINAL_SIDEBAR_WIDTH
-            ? ORIGINAL_SIDEBAR_WIDTH - 3
-            : 0,
-          {
-            stiffness: 200,
-            damping: 40,
-          }
-        ),
-      },
-    ],
-  }));
-
   useHotkeys("ctrl+comma", () => {
     if (pathname.includes("settings")) return;
     router.push("/settings");
