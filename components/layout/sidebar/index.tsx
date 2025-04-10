@@ -37,6 +37,7 @@ import {
   View,
   useWindowDimensions,
 } from "react-native";
+import { ScrollView } from "react-native-gesture-handler";
 import Animated, {
   interpolate,
   useAnimatedStyle,
@@ -605,11 +606,7 @@ const PrimarySidebar = memo(function PrimarySidebar({ progressValue }: any) {
   }));
 
   const transformStyle = useAnimatedStyle(() => ({
-    transform: [
-      {
-        scale: interpolate(progressValue.value, [0, 1], [0.9, 1]),
-      },
-    ],
+    transform: [{ scale: interpolate(progressValue.value, [0, 1], [0.9, 1]) }],
   }));
 
   const toggleHidden = useCallback(
@@ -660,9 +657,12 @@ const PrimarySidebar = memo(function PrimarySidebar({ progressValue }: any) {
           style={[
             opacityStyle,
             transformStyle,
+            Platform.OS === "web" && {
+              scrollSnapAlign: "start",
+            },
             {
+              flexShrink: 0,
               width: ORIGINAL_SIDEBAR_WIDTH + 10,
-              flex: 1,
               flexDirection: "column",
               borderRightWidth: breakpoints.md ? 2 : 5,
               borderRightColor: "transparent",
@@ -704,7 +704,8 @@ const PrimarySidebar = memo(function PrimarySidebar({ progressValue }: any) {
 });
 
 function SecondarySidebar() {
-  const { SECONDARY_SIDEBAR_WIDTH, sidebarRef } = useSidebarContext();
+  const { SECONDARY_SIDEBAR_WIDTH, sidebarRef, ORIGINAL_SIDEBAR_WIDTH } =
+    useSidebarContext();
   const theme = useColorTheme();
   const pathname = usePathname();
   const insets = useSafeAreaInsets();
@@ -712,17 +713,20 @@ function SecondarySidebar() {
 
   return (
     <View
-      style={{
-        flex: 1,
-        width: SECONDARY_SIDEBAR_WIDTH,
-        padding: 15,
-        paddingRight: 0,
-        paddingBottom: breakpoints.md ? undefined : 90 + insets.bottom,
-        paddingTop:
-          insets.top + (!breakpoints.md || Platform.OS === "web" ? 20 : 0),
-        backgroundColor: theme[2],
-        zIndex: 999,
-      }}
+      style={[
+        {
+          width: SECONDARY_SIDEBAR_WIDTH,
+          marginRight: ORIGINAL_SIDEBAR_WIDTH - SECONDARY_SIDEBAR_WIDTH,
+          padding: 15,
+          paddingRight: 0,
+          paddingBottom: breakpoints.md ? undefined : 90 + insets.bottom,
+          paddingTop:
+            insets.top + (!breakpoints.md || Platform.OS === "web" ? 20 : 0),
+          backgroundColor: theme[2],
+          zIndex: 999,
+        },
+        Platform.OS === "web" && { scrollSnapAlign: "end" },
+      ]}
     >
       <IconButton
         icon="west"
@@ -895,6 +899,29 @@ const Sidebar = ({ progressValue }: { progressValue?: any }) => {
   }, [pathname]);
 
   const insets = useSafeAreaInsets();
+  const scrollRef = useRef<ScrollView>(null);
+
+  // useEffect(() => {
+  //   const t =
+  //     Platform.OS !== "web"
+  //       ? null
+  //       : scrollRef.current.addEventListener("scrollend", (e) => {
+  //           if (e.target.scrollLeft < 130 && pathname.includes("everything"))
+  //             router.replace("/");
+  //           else if (!pathname.includes("everything"))
+  //             router.replace("/everything");
+  //         });
+  //   return () => {
+  //     if (Platform.OS === "web")
+  //       scrollRef.current.removeEventListener("scrollend", t);
+  //   };
+  // });
+
+  useEffect(() => {
+    if (pathname.includes("everything"))
+      scrollRef.current.scrollTo({ x: 9999 });
+    else scrollRef.current.scrollTo({ x: 0 });
+  }, [pathname]);
 
   return (
     <SafeView>
@@ -917,30 +944,30 @@ const Sidebar = ({ progressValue }: { progressValue?: any }) => {
           pathname.includes("chrome-extension") && { display: "none" },
         ]}
       >
-        <Animated.View
+        <Animated.ScrollView
+          horizontal
+          decelerationRate={0}
+          snapToInterval={150}
+          snapToAlignment={"center"}
+          showsHorizontalScrollIndicator={false}
+          scrollEnabled={false}
+          ref={scrollRef}
           style={[
+            Platform.OS === "web" && {
+              scrollBehavior: "auto",
+              scrollSnapType: "both mandatory",
+            },
             widthStyle,
             {
-              flexDirection: "row",
               maxWidth: pathname.includes("everything")
                 ? SECONDARY_SIDEBAR_WIDTH
                 : ORIGINAL_SIDEBAR_WIDTH,
-              overflow: "hidden",
             },
           ]}
         >
-          <Animated.View style={primarySidebarStyles}>
-            <PrimarySidebar progressValue={progressValue} />
-          </Animated.View>
-          <Animated.View
-            style={[
-              secondarySidebarStyles,
-              { height: "100%", width: SECONDARY_SIDEBAR_WIDTH },
-            ]}
-          >
-            <SecondarySidebar />
-          </Animated.View>
-        </Animated.View>
+          <PrimarySidebar progressValue={progressValue} />
+          <SecondarySidebar />
+        </Animated.ScrollView>
       </Animated.View>
     </SafeView>
   );
