@@ -105,6 +105,8 @@ export function LastStateRestore() {
       } else {
         router.replace("/home");
       }
+    } else {
+      router.replace("/home");
     }
   }, []);
 
