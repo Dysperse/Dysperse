@@ -450,7 +450,7 @@ export default function Matrix() {
                   <Label size={100} y="Important" />
                   {breakpoints.md ? (
                     <AttachStep index={0}>
-                      <View style={{ flex: 1 }}>
+                      <View style={{ flex: 1, height: "100%" }}>
                         <Cell
                           cellIndex={0}
                           onEntityCreate={mutations.categoryBased.add(mutate)}
@@ -475,7 +475,7 @@ export default function Matrix() {
                   )}
                   {breakpoints.md ? (
                     <AttachStep index={1}>
-                      <View style={{ flex: 1 }}>
+                      <View style={{ flex: 1, height: "100%" }}>
                         <Cell
                           cellIndex={1}
                           onEntityCreate={mutations.categoryBased.add(mutate)}
@@ -500,7 +500,7 @@ export default function Matrix() {
                   <Label size={150} y="Less important" />
                   {breakpoints.md ? (
                     <AttachStep index={2}>
-                      <View style={{ flex: 1 }}>
+                      <View style={{ flex: 1, height: "100%" }}>
                         <Cell
                           cellIndex={2}
                           onEntityCreate={mutations.categoryBased.add(mutate)}
@@ -522,7 +522,7 @@ export default function Matrix() {
                   )}
                   {breakpoints.md ? (
                     <AttachStep index={3}>
-                      <View style={{ flex: 1 }}>
+                      <View style={{ flex: 1, height: "100%" }}>
                         <Cell
                           cellIndex={3}
                           onEntityCreate={mutations.categoryBased.add(mutate)}
@@ -577,4 +577,3 @@ export default function Matrix() {
     </View>
   );
 }
-
