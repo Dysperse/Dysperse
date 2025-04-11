@@ -29,11 +29,10 @@ const LoadingErrors = memo(() => {
         <Button
           variant="outlined"
           containerStyle={{ marginRight: -10, borderRadius: 10 }}
-          icon={<Spinner />}
+          icon={<Spinner size={18} />}
           height={45}
           text="You're offline"
-          bold
-          textProps={{ weight: 700 }}
+          textProps={{ weight: 500 }}
         />
       )}
     </>
