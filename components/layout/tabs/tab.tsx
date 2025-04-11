@@ -12,6 +12,7 @@ import Text from "@/ui/Text";
 import { addHslAlpha } from "@/ui/color";
 import { useColorTheme } from "@/ui/color/theme-provider";
 import capitalizeFirstLetter from "@/utils/capitalizeFirstLetter";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import * as Haptics from "expo-haptics";
 import { router } from "expo-router";
 import React, { memo, useCallback, useMemo, useState } from "react";
@@ -240,6 +241,7 @@ function Tab({
   const handlePress = useCallback(() => {
     if (Platform.OS !== "web")
       Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Soft);
+    AsyncStorage.setItem("lastViewedTab", tab.id);
     router.replace({
       pathname: tab.slug,
       params: {
@@ -323,4 +325,3 @@ function Tab({
 }
 
 export default memo(Tab);
-

@@ -59,6 +59,7 @@ import { MenuProvider } from "react-native-popup-menu";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import Toast from "react-native-toast-message";
 import "react-native-url-polyfill/auto";
+import useSWR from "swr";
 
 dayjs.extend(weekOfYear);
 dayjs.extend(customParseFormat);
@@ -85,27 +86,28 @@ const WebAnimationComponent = ({ children }) => {
 };
 
 function LastStateRestore() {
-  const pathname = usePathname();
-  const { fullscreen } = useGlobalSearchParams();
+  const { data } = useSWR(["user/tabs"]);
+  const { fullscreen, tab: currentTab } = useGlobalSearchParams();
 
   const setCurrentPage = useCallback(async () => {
-    const lastViewedRoute = await AsyncStorage.getItem("lastViewedRoute");
-    if (
-      lastViewedRoute &&
-      lastViewedRoute !== "/" &&
-      pathname !== lastViewedRoute
-    )
-      router.replace(lastViewedRoute);
+    const lastViewedTab = await AsyncStorage.getItem("lastViewedTab");
+
+    if (lastViewedTab && currentTab !== lastViewedTab) {
+      const tab = data.find((t) => t.id === lastViewedTab);
+      if (tab) {
+        router.replace({
+          pathname: tab.slug,
+          params: {
+            ...tab.params,
+            tab: tab.id,
+          },
+        });
+      }
+    }
   }, []);
 
   useEffect(() => {
-    if (
-      pathname !== "/" &&
-      !pathname.includes("chrome-extension") &&
-      !fullscreen
-    ) {
-      setCurrentPage();
-    }
+    if (!fullscreen) setCurrentPage();
   }, []);
 
   return null;
