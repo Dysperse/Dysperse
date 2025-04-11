@@ -37,6 +37,7 @@ import Animated, {
 } from "react-native-reanimated";
 import Toast from "react-native-toast-message";
 import useSWR from "swr";
+import { useDebounce } from "use-debounce";
 import { useLabelColors } from "../../labels/useLabelColors";
 import { AiLabelSuggestion } from "../create";
 import { TaskShareButton } from "./TaskShareButton";
@@ -314,19 +315,28 @@ function TaskNameInput() {
   const GrowingTextInput =
     Platform.OS === "ios" ? AutoGrowingTextInput : AutoSizeTextArea;
 
+  const [debouncedName] = useDebounce(name, 300);
+
+  const handleSave = () => {
+    if (name === task.name) return;
+    console.log("saved");
+    setName(name.replaceAll("\n", ""));
+    updateTask({ name: name.replaceAll("\n", "") });
+  };
+  useEffect(() => {
+    // growing text input has a weird bug
+    if (Platform.OS !== "ios") handleSave();
+  }, [debouncedName]);
+
   return (
     <>
       <GrowingTextInput
         selectionColor={theme[11]}
         ref={inputRef}
-        onBlur={() => {
-          if (name === task.name) return;
-          setName(name.replaceAll("\n", ""));
-          updateTask({ name: name.replaceAll("\n", "") });
-        }}
+        onBlur={handleSave}
         onChangeText={(text) => setName(text)}
         enterKeyHint="done"
-        value={name}
+        value={name?.trim()}
         bounces={false}
         onKeyPress={(e) => {
           if (e.nativeEvent.key === "Enter" || e.nativeEvent.key === "Escape") {
@@ -912,4 +922,3 @@ export function TaskDrawerContent({
     </>
   );
 }
-
