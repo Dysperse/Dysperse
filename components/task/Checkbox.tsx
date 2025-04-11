@@ -45,7 +45,7 @@ function TaskCheckbox({
   const isCompleted = getTaskCompletionStatus(task, task.recurrenceDay);
 
   const handlePress = async () => {
-    impactAsync(ImpactFeedbackStyle.Heavy);
+    if (Platform.OS !== "web") impactAsync(ImpactFeedbackStyle.Heavy);
     let newArr = isCompleted ? [] : [...task.completionInstances, true];
     let iteration = null;
     if (task.recurrenceRule) {
@@ -198,4 +198,3 @@ function TaskCheckbox({
 }
 
 export default memo(TaskCheckbox);
-

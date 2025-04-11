@@ -102,6 +102,8 @@ export function LastStateRestore() {
             tab: tab.id,
           },
         });
+      } else {
+        router.replace("/home");
       }
     }
   }, []);
