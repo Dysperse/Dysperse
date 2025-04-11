@@ -82,6 +82,7 @@ const HomeButton = memo(function HomeButton({ isHome }: { isHome: boolean }) {
   const hasCompleted = dayjs(session?.user?.profile?.lastPlanned).isToday();
 
   const handleHome = useCallback(() => {
+    AsyncStorage.removeItem("lastViewedTab");
     if (Platform.OS !== "web") impactAsync(ImpactFeedbackStyle.Light);
     if (router.canDismiss()) router.dismissAll();
     router.replace("/home");
