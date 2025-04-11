@@ -85,7 +85,7 @@ const WebAnimationComponent = ({ children }) => {
   } else return children;
 };
 
-function LastStateRestore() {
+export function LastStateRestore() {
   const { data } = useSWR(["user/tabs"]);
   const { fullscreen, tab: currentTab } = useGlobalSearchParams();
 
