@@ -501,7 +501,8 @@ export const Header = memo(function Header() {
               variant="filled"
               size={45}
               onPress={() => {
-                impactAsync(ImpactFeedbackStyle.Light);
+                if (Platform.OS !== "web")
+                  impactAsync(ImpactFeedbackStyle.Light);
                 router.replace("/everything");
               }}
             >
