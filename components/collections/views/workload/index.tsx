@@ -158,7 +158,7 @@ const StoryPointHeader = ({
             fontFamily: "serifText700",
           }}
         >
-          {STORY_POINT_SCALE[index]}
+          {STORY_POINT_SCALE[index] || "Unmarked"}
         </Text>
       </Pressable>
     </LinearGradient>
@@ -187,7 +187,11 @@ const StoryPoint = ({
       []
     ),
   ]
-    .filter((t) => (t.storyPoints === scale || scale === -1) && !t.trash)
+    .filter(
+      (t) =>
+        (t.storyPoints === scale || (scale === -1 && !t.storyPoints)) &&
+        !t.trash
+    )
     .slice()
     .sort((a, b) => {
       const agendaOrderComparison = a.agendaOrder
@@ -315,6 +319,7 @@ export default function Workload() {
 
   return breakpoints.md ? (
     <ScrollView horizontal contentContainerStyle={{ padding: 15, gap: 15 }}>
+      <StoryPoint scale={-1} index={-1} setSelectedScale={setSelectedScale} />
       {scale.map((s, i) => (
         <StoryPoint
           key={s}
@@ -337,7 +342,7 @@ export default function Workload() {
             }}
           >
             {selectedScale == -1
-              ? "All tasks"
+              ? "Unmarked tasks"
               : STORY_POINT_SCALE[selectedScale]}
           </Text>
           <View
@@ -371,4 +376,3 @@ export default function Workload() {
     </>
   );
 }
-
