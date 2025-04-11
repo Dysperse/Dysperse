@@ -64,37 +64,23 @@ import { useDebouncedCallback } from "use-debounce";
 import { TaskNote } from "../drawer/TaskNote";
 import VolumeBars from "./speech-recognition";
 
-const PinTask = memo(function PinTask({ watch, control }: any) {
+function PinTask({ control }: any) {
   const orange = useColor("orange");
-  const pinned = watch("pinned");
   const breakpoints = useResponsiveBreakpoints();
 
-  const rotate = useSharedValue(0);
-
-  useEffect(() => {
-    rotate.value = withSpring(pinned ? -35 : 0, {
-      mass: 1,
-      damping: 10,
-      stiffness: 200,
-      overshootClamping: false,
-      restDisplacementThreshold: 0.01,
-      restSpeedThreshold: 2,
-    });
-  });
   const theme = useColorTheme();
 
   return (
     <Controller
       control={control}
       name="pinned"
-      defaultValue={false}
       render={({ field: { onChange, value } }) => (
         <IconButton
           icon="push_pin"
           size={50}
           style={breakpoints.md ? { marginLeft: "auto" } : { width: "100%" }}
           onPress={() => {
-            impactAsync(ImpactFeedbackStyle.Light);
+            if (Platform.OS !== "web") impactAsync(ImpactFeedbackStyle.Light);
             onChange(!value);
           }}
           variant="filled"
@@ -120,7 +106,7 @@ const PinTask = memo(function PinTask({ watch, control }: any) {
       )}
     />
   );
-});
+}
 
 function Footer({
   nameRef,
@@ -1352,7 +1338,7 @@ const BottomSheetContent = forwardRef(
 
     const onSubmit = async (data) => {
       try {
-        impactAsync(ImpactFeedbackStyle.Heavy);
+        if (Platform.OS !== "web") impactAsync(ImpactFeedbackStyle.Heavy);
         sendApiRequest(
           sessionToken,
           "POST",
@@ -1374,7 +1360,7 @@ const BottomSheetContent = forwardRef(
           }
         )
           .then((e) => addedTasks.current.push(e))
-          .then(() => badgingService.current.mutate());
+          .then(() => badgingService?.current?.mutate());
 
         reset(defaultValues);
 
@@ -1489,7 +1475,7 @@ const BottomSheetContent = forwardRef(
               <View
                 style={breakpoints.md ? { marginLeft: "auto" } : { flex: 1 }}
               >
-                <PinTask watch={watch} control={control} />
+                <PinTask control={control} />
               </View>
             </AttachStep>
             <SubmitButton
