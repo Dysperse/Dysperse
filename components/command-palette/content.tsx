@@ -339,11 +339,9 @@ const PaletteHeader = memo(function PaletteHeader({
             Cancel
           </Text>
         ) : (
-          !query && (
-            <Icon bold style={{ transform: [{ translateX: 10 }] }}>
-              close
-            </Icon>
-          )
+          <Icon bold style={{ transform: [{ translateX: 10 }] }}>
+            close
+          </Icon>
         )}
       </TouchableOpacity>
     ),
@@ -377,7 +375,9 @@ const PaletteHeader = memo(function PaletteHeader({
           borderColor: theme[5],
         }}
       >
-        <Icon size={breakpoints.md ? 30 : 24}>search</Icon>
+        <Icon size={breakpoints.md ? 30 : 24} style={{ flexShrink: 0 }}>
+          search
+        </Icon>
         <TextField
           inputRef={ref}
           style={{
@@ -742,4 +742,3 @@ export default function CommandPaletteContent({ handleClose, defaultFilter }) {
     </View>
   );
 }
-
