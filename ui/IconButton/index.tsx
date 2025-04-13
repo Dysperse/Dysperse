@@ -67,6 +67,7 @@ const IconButton = forwardRef<typeof Pressable, IconButtonProps>(
       props.backgroundColors?.pressed || theme[5],
     ];
     const transparent = addHslAlpha(theme[3], 0);
+
     const borderColors = [
       props.borderColors?.default ||
         (props.variant === "outlined" ? theme[5] : transparent),
