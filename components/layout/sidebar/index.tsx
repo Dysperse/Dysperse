@@ -17,9 +17,10 @@ import { useColorTheme } from "@/ui/color/theme-provider";
 import Logo from "@/ui/logo";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import dayjs from "dayjs";
-import * as BackgroundTask from "expo-background-task";
+import * as BackgroundFetch from "expo-background-fetch";
 import { ImpactFeedbackStyle, impactAsync } from "expo-haptics";
 import { router, useGlobalSearchParams, usePathname } from "expo-router";
+import * as SecureStore from "expo-secure-store";
 import * as TaskManager from "expo-task-manager";
 import {
   default as React,
@@ -137,19 +138,41 @@ const BACKGROUND_TASK_IDENTIFIER = "integration-sync";
 TaskManager.defineTask(BACKGROUND_TASK_IDENTIFIER, async () => {
   try {
     const now = Date.now();
-    console.log(
-      `Got background task call at date: ${new Date(now).toISOString()}`
+
+    const token = await SecureStore.getItemAsync("session");
+    if (!token) throw new Error("No session token found");
+
+    const res = await fetch(
+      `https://api.dysperse.com/space/integrations/sync`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      }
     );
+
+    if (!res) {
+      throw new Error(`Sync failed with status ${res.status}`);
+    }
+
+    console.log(`✅ Synced integrations at ${new Date(now).toISOString()}`);
+    return BackgroundFetch.BackgroundFetchResult.NewData;
   } catch (error) {
-    console.error("Failed to execute the background task:", error);
-    return BackgroundTask.BackgroundTaskResult.Failed;
+    console.error("❌ Failed to sync integrations: ", error);
+    return BackgroundFetch.BackgroundFetchResult.Failed;
   }
-  return BackgroundTask.BackgroundTaskResult.Success;
 });
 
-async function registerBackgroundTaskAsync() {
-  return BackgroundTask.registerTaskAsync(BACKGROUND_TASK_IDENTIFIER);
+async function registerBackgroundFetchAsync() {
+  return BackgroundFetch.registerTaskAsync(BACKGROUND_TASK_IDENTIFIER, {
+    minimumInterval: 60 * 15, // 15 minutes
+    stopOnTerminate: false, // android only,
+    startOnBoot: true, // android only
+  });
 }
+
 const SyncButton = memo(function SyncButton({ syncRef }: any) {
   const theme = useColorTheme();
   const { session } = useSession();
@@ -158,7 +181,7 @@ const SyncButton = memo(function SyncButton({ syncRef }: any) {
 
   useEffect(() => {
     // Register the background task
-    registerBackgroundTaskAsync()
+    registerBackgroundFetchAsync()
       .then(() => {
         console.log("Background task registered successfully");
       })
