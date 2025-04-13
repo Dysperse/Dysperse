@@ -5,6 +5,7 @@ import { impactAsync, ImpactFeedbackStyle } from "expo-haptics";
 import { shareAsync } from "expo-sharing";
 import React, { useCallback } from "react";
 import { Platform } from "react-native";
+import { AttachStep } from "react-native-spotlight-tour";
 import Toast from "react-native-toast-message";
 import { useTaskDrawerContext } from "./context";
 
@@ -40,16 +41,18 @@ export function TaskShareButton() {
     <>
       <MenuPopover
         trigger={
-          <IconButton
-            onLongPress={() => {
-              impactAsync(ImpactFeedbackStyle.Heavy);
-              updateTask({ published: true });
-              handleCopy();
-            }}
-            size={45}
-            icon="ios_share"
-            iconStyle={{ marginTop: -3 }}
-          />
+          <AttachStep index={0}>
+            <IconButton
+              onLongPress={() => {
+                impactAsync(ImpactFeedbackStyle.Heavy);
+                updateTask({ published: true });
+                handleCopy();
+              }}
+              size={45}
+              icon="ios_share"
+              iconStyle={{ marginTop: -3 }}
+            />
+          </AttachStep>
         }
         containerStyle={{ width: 200 }}
         options={[

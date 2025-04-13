@@ -12,6 +12,7 @@ import { useBottomSheet } from "@gorhom/bottom-sheet";
 import dayjs from "dayjs";
 import { impactAsync, ImpactFeedbackStyle } from "expo-haptics";
 import React from "react";
+import { AttachStep } from "react-native-spotlight-tour";
 import Toast from "react-native-toast-message";
 import { useTaskDrawerContext } from "../context";
 
@@ -86,7 +87,7 @@ export function TaskCompleteButton() {
 
   return (
     !isReadOnly && (
-      <>
+      <AttachStep index={1}>
         <IconButton
           disabled={disabled}
           style={{
@@ -130,7 +131,7 @@ export function TaskCompleteButton() {
             </Text>
           )}
         </IconButton>
-      </>
+      </AttachStep>
     )
   );
 }

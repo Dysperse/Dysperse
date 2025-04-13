@@ -1,6 +1,7 @@
 import MarkdownRenderer from "@/components/MarkdownRenderer";
 import LabelPicker from "@/components/labels/picker";
 import { STORY_POINT_SCALE } from "@/constants/workload";
+import { OnboardingContainer } from "@/context/OnboardingProvider";
 import { useUser } from "@/context/useUser";
 import { sendApiRequest } from "@/helpers/api";
 import { useHotkeys } from "@/helpers/useHotKeys";
@@ -728,188 +729,215 @@ export function TaskDrawerContent({
 
   return (
     <>
-      <View
-        style={{
-          flexDirection: "row",
-          paddingHorizontal: 20,
-          left: 0,
-          paddingTop: breakpoints.md ? 0 : 10,
-        }}
+      <OnboardingContainer
+        delay={1000}
+        id="TASK_DRAWER"
+        onlyIf={() => true}
+        steps={[
+          {
+            text: "Tap and hold to instantly share your task",
+          },
+          {
+            text: "Mark your task as done",
+          },
+          {
+            text: "You can also double-tap on any task to quickly create a subtask",
+          },
+        ]}
       >
-        <View
-          style={{
-            paddingTop: isReadOnly ? 10 : breakpoints.md ? 20 : 10,
-            flexDirection: "row",
-            gap: 10,
-            width: "100%",
-            alignItems: "center",
-          }}
-        >
-          {forceClose && (
-            <IconButton
-              onPress={() => {
-                handleClose();
-                forceClose(
-                  breakpoints.md
-                    ? undefined
-                    : { overshootClamping: true, stiffness: 400 }
-                );
+        {() => (
+          <>
+            <View
+              style={{
+                flexDirection: "row",
+                paddingHorizontal: 20,
+                left: 0,
+                paddingTop: breakpoints.md ? 0 : 10,
               }}
-              size={breakpoints.md ? 45 : 40}
-              variant="outlined"
-              icon="close"
-              borderColors={{
-                default: addHslAlpha(theme[11], 0.1),
-                hovered: addHslAlpha(theme[11], 0.2),
-                pressed: addHslAlpha(theme[11], 0.3),
-              }}
-            />
-          )}
-          <View
-            style={{
-              flex: 1,
-              flexDirection: "row",
-              justifyContent: "flex-end",
-            }}
-          >
-            {!isReadOnly && <TaskMoreMenu handleDelete={handleDelete} />}
-            {session?.user?.betaTester && !isReadOnly && <TaskSidekickMenu />}
-            {!task.parentTaskId && <TaskShareButton />}
-            {!isReadOnly && <TaskCompleteButton />}
-          </View>
-        </View>
-      </View>
-      <KeyboardAvoidingView behavior="height">
-        <SafeScrollView
-          showsHorizontalScrollIndicator={false}
-          style={{
-            maxHeight: Dimensions.get("window").height - 200,
-          }}
-          onScrollBeginDrag={Keyboard.dismiss}
-        >
-          <View
-            style={{
-              padding: breakpoints.md ? 30 : 20,
-              paddingBottom: breakpoints.md ? 30 : 25,
-            }}
-          >
-            <ScrollView
-              horizontal
-              contentContainerStyle={{
-                gap: 10,
-                paddingHorizontal: breakpoints.md ? 45 : 40,
-              }}
-              style={{ marginHorizontal: -30 }}
-              showsHorizontalScrollIndicator={false}
             >
-              <Button
-                chip
-                large
-                variant="outlined"
-                disabled={isReadOnly}
-                onPress={handlePriorityChange}
-                icon={
-                  <Animated.View style={rotateStyle}>
-                    <Icon
-                      filled={task.pinned}
-                      style={{
-                        marginTop: -3,
-                        ...(task.pinned
-                          ? { color: labelColors.orange[3] }
-                          : {}),
-                      }}
-                    >
-                      push_pin
-                    </Icon>
-                  </Animated.View>
-                }
-                backgroundColors={
-                  task.pinned
-                    ? {
-                        default: labelColors.orange[11],
-                        hovered: labelColors.orange[11],
-                        pressed: labelColors.orange[12],
-                      }
-                    : {
-                        default: addHslAlpha(theme[11], 0),
-                        hovered: addHslAlpha(theme[11], 0.1),
-                        pressed: addHslAlpha(theme[11], 0.2),
-                      }
-                }
-                borderColors={
-                  task.pinned
-                    ? {
-                        default: addHslAlpha(labelColors.orange[11], 0),
-                        hovered: addHslAlpha(labelColors.orange[11], 0.1),
-                        pressed: addHslAlpha(labelColors.orange[11], 0.2),
-                      }
-                    : {
-                        default: addHslAlpha(theme[11], 0.1),
-                        hovered: addHslAlpha(theme[11], 0.2),
-                        pressed: addHslAlpha(theme[11], 0.3),
-                      }
-                }
-                style={task.pinned && { borderColor: labelColors.orange[11] }}
-              />
-              {task && !task.parentTaskId && (
-                <LabelPicker
-                  label={task?.label || undefined}
-                  setLabel={(e: any) => {
-                    updateTask({ labelId: e.id, label: e });
-                  }}
-                  onClose={() => {}}
-                  sheetProps={{ sheetRef: labelPickerRef }}
-                  defaultCollection={collectionId as any}
-                >
-                  <Button
-                    chip
-                    disabled={isReadOnly}
-                    icon={
-                      task.label?.emoji || task.collection?.emoji ? (
-                        <Emoji
-                          emoji={task?.label?.emoji || task.collection.emoji}
-                          size={20}
-                        />
-                      ) : (
-                        <Icon>tag</Icon>
-                      )
-                    }
-                    large
-                    text={task?.label?.name || task?.collection?.name}
-                    variant="outlined"
-                    backgroundColors={{
-                      default: addHslAlpha(theme[11], 0),
-                      hovered: addHslAlpha(theme[11], 0.1),
-                      pressed: addHslAlpha(theme[11], 0.2),
+              <View
+                style={{
+                  paddingTop: isReadOnly ? 10 : breakpoints.md ? 20 : 10,
+                  flexDirection: "row",
+                  gap: 10,
+                  width: "100%",
+                  alignItems: "center",
+                }}
+              >
+                {forceClose && (
+                  <IconButton
+                    onPress={() => {
+                      handleClose();
+                      forceClose(
+                        breakpoints.md
+                          ? undefined
+                          : { overshootClamping: true, stiffness: 400 }
+                      );
                     }}
-                    textStyle={{ fontSize: 15 }}
+                    size={breakpoints.md ? 45 : 40}
+                    variant="outlined"
+                    icon="close"
+                    borderColors={{
+                      default: addHslAlpha(theme[11], 0.1),
+                      hovered: addHslAlpha(theme[11], 0.2),
+                      pressed: addHslAlpha(theme[11], 0.3),
+                    }}
                   />
-                </LabelPicker>
-              )}
-              {!task.parentTaskId && <WorkloadChip />}
-
-              {task && !task.label && task.collectionId && (
-                <AiLabelSuggestion
-                  watch={(key) => task[key]}
-                  setValue={(key, value) => {
-                    if (key === "label")
-                      updateTask({ label: value, labelId: value.id });
-                  }}
+                )}
+                <View
                   style={{
-                    borderColor: addHslAlpha(theme[11], 0.2),
-                    borderWidth: 2,
-                    margin: -0.5,
-                    marginLeft: 1,
-                    borderRadius: 10,
+                    flex: 1,
+                    flexDirection: "row",
+                    justifyContent: "flex-end",
                   }}
-                />
-              )}
-            </ScrollView>
-            <TaskNameInput />
-            <TaskDetails />
-          </View>
-        </SafeScrollView>
-      </KeyboardAvoidingView>
+                >
+                  {!isReadOnly && <TaskMoreMenu handleDelete={handleDelete} />}
+                  {session?.user?.betaTester && !isReadOnly && (
+                    <TaskSidekickMenu />
+                  )}
+                  {!task.parentTaskId && <TaskShareButton />}
+                  {!isReadOnly && <TaskCompleteButton />}
+                </View>
+              </View>
+            </View>
+            <KeyboardAvoidingView behavior="height">
+              <SafeScrollView
+                showsHorizontalScrollIndicator={false}
+                style={{
+                  maxHeight: Dimensions.get("window").height - 200,
+                }}
+                onScrollBeginDrag={Keyboard.dismiss}
+              >
+                <View
+                  style={{
+                    padding: breakpoints.md ? 30 : 20,
+                    paddingBottom: breakpoints.md ? 30 : 25,
+                  }}
+                >
+                  <ScrollView
+                    horizontal
+                    contentContainerStyle={{
+                      gap: 10,
+                      paddingHorizontal: breakpoints.md ? 45 : 40,
+                    }}
+                    style={{ marginHorizontal: -30 }}
+                    showsHorizontalScrollIndicator={false}
+                  >
+                    <Button
+                      chip
+                      large
+                      variant="outlined"
+                      disabled={isReadOnly}
+                      onPress={handlePriorityChange}
+                      icon={
+                        <Animated.View style={rotateStyle}>
+                          <Icon
+                            filled={task.pinned}
+                            style={{
+                              marginTop: -3,
+                              ...(task.pinned
+                                ? { color: labelColors.orange[3] }
+                                : {}),
+                            }}
+                          >
+                            push_pin
+                          </Icon>
+                        </Animated.View>
+                      }
+                      backgroundColors={
+                        task.pinned
+                          ? {
+                              default: labelColors.orange[11],
+                              hovered: labelColors.orange[11],
+                              pressed: labelColors.orange[12],
+                            }
+                          : {
+                              default: addHslAlpha(theme[11], 0),
+                              hovered: addHslAlpha(theme[11], 0.1),
+                              pressed: addHslAlpha(theme[11], 0.2),
+                            }
+                      }
+                      borderColors={
+                        task.pinned
+                          ? {
+                              default: addHslAlpha(labelColors.orange[11], 0),
+                              hovered: addHslAlpha(labelColors.orange[11], 0.1),
+                              pressed: addHslAlpha(labelColors.orange[11], 0.2),
+                            }
+                          : {
+                              default: addHslAlpha(theme[11], 0.1),
+                              hovered: addHslAlpha(theme[11], 0.2),
+                              pressed: addHslAlpha(theme[11], 0.3),
+                            }
+                      }
+                      style={
+                        task.pinned && { borderColor: labelColors.orange[11] }
+                      }
+                    />
+                    {task && !task.parentTaskId && (
+                      <LabelPicker
+                        label={task?.label || undefined}
+                        setLabel={(e: any) => {
+                          updateTask({ labelId: e.id, label: e });
+                        }}
+                        onClose={() => {}}
+                        sheetProps={{ sheetRef: labelPickerRef }}
+                        defaultCollection={collectionId as any}
+                      >
+                        <Button
+                          chip
+                          disabled={isReadOnly}
+                          icon={
+                            task.label?.emoji || task.collection?.emoji ? (
+                              <Emoji
+                                emoji={
+                                  task?.label?.emoji || task.collection.emoji
+                                }
+                                size={20}
+                              />
+                            ) : (
+                              <Icon>tag</Icon>
+                            )
+                          }
+                          large
+                          text={task?.label?.name || task?.collection?.name}
+                          variant="outlined"
+                          backgroundColors={{
+                            default: addHslAlpha(theme[11], 0),
+                            hovered: addHslAlpha(theme[11], 0.1),
+                            pressed: addHslAlpha(theme[11], 0.2),
+                          }}
+                          textStyle={{ fontSize: 15 }}
+                        />
+                      </LabelPicker>
+                    )}
+                    {!task.parentTaskId && <WorkloadChip />}
+
+                    {task && !task.label && task.collectionId && (
+                      <AiLabelSuggestion
+                        watch={(key) => task[key]}
+                        setValue={(key, value) => {
+                          if (key === "label")
+                            updateTask({ label: value, labelId: value.id });
+                        }}
+                        style={{
+                          borderColor: addHslAlpha(theme[11], 0.2),
+                          borderWidth: 2,
+                          margin: -0.5,
+                          marginLeft: 1,
+                          borderRadius: 10,
+                        }}
+                      />
+                    )}
+                  </ScrollView>
+                  <TaskNameInput />
+                  <TaskDetails />
+                </View>
+              </SafeScrollView>
+            </KeyboardAvoidingView>
+          </>
+        )}
+      </OnboardingContainer>
     </>
   );
 }

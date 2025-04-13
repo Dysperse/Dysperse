@@ -22,6 +22,7 @@ import dayjs from "dayjs";
 import { LinearGradient } from "expo-linear-gradient";
 import React, { useRef } from "react";
 import { Linking, Platform, View } from "react-native";
+import { AttachStep } from "react-native-spotlight-tour";
 import Toast from "react-native-toast-message";
 import { RRule } from "rrule";
 import useSWR from "swr";
@@ -230,48 +231,54 @@ function SubtaskList() {
     <>
       {!isReadOnly && (
         <>
-          <CreateTask
-            mutate={(t) => {
-              updateTask({
-                subtasks: {
-                  ...task.subtasks,
-                  [t.id]: t,
-                },
-              });
-            }}
-            onPress={() => {
-              if (
-                Platform.OS === "web" &&
-                !localStorage.getItem("subtaskTip")
-              ) {
-                localStorage.setItem("subtaskTip", "true");
-                Toast.show({
-                  type: "info",
-                  text1: "Pro tip",
-                  text2: "Tap twice on a task to open this popup",
-                  visibilityTime: 5000,
-                });
-              }
-            }}
-            defaultValues={{ parentTask: task }}
-          >
-            <Button
-              icon="prompt_suggestion"
-              dense
-              containerStyle={{
-                marginRight: "auto",
-                opacity: 0.6,
-                marginLeft: 5,
-                marginTop: 2,
-              }}
-              style={{ gap: 10 }}
-              text={
-                Object.keys(task.subtasks || {}).length === 0
-                  ? "Create subtask"
-                  : `${Object.keys(task.subtasks || {}).length} subtasks`
-              }
-            />
-          </CreateTask>
+          <AttachStep index={2}>
+            <View>
+              <CreateTask
+                mutate={(t) => {
+                  updateTask({
+                    subtasks: {
+                      ...task.subtasks,
+                      [t.id]: t,
+                    },
+                  });
+                }}
+                onPress={() => {
+                  if (
+                    Platform.OS === "web" &&
+                    !localStorage.getItem("subtaskTip")
+                  ) {
+                    localStorage.setItem("subtaskTip", "true");
+                    Toast.show({
+                      type: "info",
+                      text1: "Pro tip",
+                      text2: "Tap twice on a task to open this popup",
+                      visibilityTime: 5000,
+                    });
+                  }
+                }}
+                defaultValues={{ parentTask: task }}
+              >
+                <Button
+                  icon="prompt_suggestion"
+                  dense
+                  containerStyle={{
+                    marginRight: "auto",
+                    opacity: 0.6,
+                    marginLeft: 5,
+                    marginTop: 2,
+                  }}
+                  style={{ gap: 10 }}
+                  text={
+                    Object.keys(task.subtasks || {}).length === 0
+                      ? "Create subtask"
+                      : `${Object.keys(task.subtasks || {}).length} subtask${
+                          Object.keys(task.subtasks || {}).length > 1 ? "s" : ""
+                        }`
+                  }
+                />
+              </CreateTask>
+            </View>
+          </AttachStep>
           {Object.keys(task.subtasks || {}).length > 0 && (
             <CreateTask
               mutate={(t) =>
@@ -890,3 +897,4 @@ export function TaskDetails() {
     </View>
   );
 }
+
