@@ -386,7 +386,9 @@ function LabelPickerContent({
                       setLabel([...label, item.id]);
                     }
                   } else {
-                    setLabel(item.id === (label as any)?.id ? null : item);
+                    setLabel(
+                      label && item.id === (label as any)?.id ? null : item
+                    );
                     setTimeout(handleClose, 0);
                   }
                 }}
