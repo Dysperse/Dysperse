@@ -74,7 +74,7 @@ function SearchList({ collection, inputRef, listRef, handleClose }) {
   }));
 
   const titleStyles = useAnimatedStyle(() => ({
-    marginTop: withSpring(interpolate(titleValue.value, [1, 0], [0, -40]), {
+    marginTop: withSpring(interpolate(titleValue.value, [1, 0], [10, -40]), {
       stiffness: 400,
       damping: 30,
     }),
@@ -180,7 +180,7 @@ function SearchList({ collection, inputRef, listRef, handleClose }) {
         style={{
           gap: 10,
           paddingHorizontal: 20,
-          paddingTop: query.length > 2 ? 50 : 40,
+          paddingTop: 40,
           flex: 1,
           backgroundColor: addHslAlpha(
             theme[1],
@@ -264,7 +264,7 @@ function SearchList({ collection, inputRef, listRef, handleClose }) {
                 gap: 10,
                 paddingHorizontal: 20,
               }}
-              style={{ marginTop: 20, marginBottom: 5, marginHorizontal: -20 }}
+              style={{ marginTop: 10, marginBottom: 5, marginHorizontal: -20 }}
               showsHorizontalScrollIndicator={false}
               keyboardShouldPersistTaps="handled"
             >
