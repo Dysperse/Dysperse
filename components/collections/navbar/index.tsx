@@ -17,6 +17,7 @@ import { openBrowserAsync } from "expo-web-browser";
 import { memo, useMemo, useRef } from "react";
 import { Platform, View } from "react-native";
 import { Menu } from "react-native-popup-menu";
+import Toast from "react-native-toast-message";
 import useSWR from "swr";
 import { CollectionContext, useCollectionContext } from "../context";
 import { useCollectionSidekickContext } from "../sidekickContext";
@@ -202,6 +203,18 @@ const CollectionNavbar = memo(function CollectionNavbar({
         icon: "upload",
         text: "Import tasks",
         callback: () => router.push(pathname + "/upload"),
+      },
+    session &&
+      userSession.user.betaTester &&
+      !isReadOnly && {
+        icon: "printer",
+        text: "Print",
+        callback: () =>
+          Toast.show({
+            type: "info",
+            text1: "oh, look at you...",
+            text2: "you found a secret feature that's coming soon. stay tuned!",
+          }),
       },
     Platform.OS === "web" &&
       !fullscreen &&
