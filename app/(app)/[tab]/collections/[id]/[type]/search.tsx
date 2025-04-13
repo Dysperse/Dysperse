@@ -19,6 +19,12 @@ import { Keyboard, Platform, StyleSheet, View } from "react-native";
 import { SystemBars } from "react-native-edge-to-edge";
 import { ScrollView } from "react-native-gesture-handler";
 import { KeyboardAvoidingView } from "react-native-keyboard-controller";
+import Animated, {
+  interpolate,
+  useAnimatedStyle,
+  useSharedValue,
+  withSpring,
+} from "react-native-reanimated";
 import useSWR from "swr";
 import { mutations } from "../../mutations";
 
@@ -54,6 +60,38 @@ function SearchList({ collection, inputRef, listRef, handleClose }) {
   const { data, mutate } = collection;
   const [query, setQuery] = useState("");
   const [activeFilters, setActiveFilters] = useState([]);
+
+  const clearValue = useSharedValue(0);
+  const titleValue = useSharedValue(0);
+
+  const clearStyles = useAnimatedStyle(() => ({
+    opacity: withSpring(clearValue.value),
+    width: 100,
+    marginRight: withSpring(interpolate(clearValue.value, [1, 0], [0, -100]), {
+      stiffness: 400,
+      damping: 30,
+    }),
+  }));
+
+  const titleStyles = useAnimatedStyle(() => ({
+    marginTop: withSpring(interpolate(titleValue.value, [1, 0], [0, -40]), {
+      stiffness: 400,
+      damping: 30,
+    }),
+    overflow: "hidden",
+    opacity: withSpring(interpolate(titleValue.value, [1, 0], [1, 0]), {
+      stiffness: 400,
+      damping: 30,
+    }),
+  }));
+
+  useEffect(() => {
+    clearValue.value = query || activeFilters.length > 0 ? 1 : 0;
+  }, [query, activeFilters]);
+
+  useEffect(() => {
+    titleValue.value = query.length > 2 ? 1 : 0;
+  }, [query]);
 
   const filters = [
     { label: "Important", icon: "push_pin", filter: (item) => item.pinned },
@@ -159,18 +197,19 @@ function SearchList({ collection, inputRef, listRef, handleClose }) {
           }}
         >
           <View>
-            <Text
-              style={{
-                fontFamily: "serifText700",
-                opacity: query.length > 2 ? 1 : 0,
-                fontSize: 30,
-                marginLeft: 5,
-                marginTop: query.length > 2 ? 30 : 0,
-                marginBottom: query.length > 2 ? 20 : 0,
-              }}
-            >
-              {filtered.length} result{filtered.length !== 1 && "s"}
-            </Text>
+            <Animated.View style={titleStyles}>
+              <Text
+                style={{
+                  fontFamily: "serifText700",
+                  fontSize: 30,
+                  marginLeft: 5,
+                  marginTop: 30,
+                  marginBottom: 20,
+                }}
+              >
+                {filtered.length} result{filtered.length !== 1 && "s"}
+              </Text>
+            </Animated.View>
             <View
               style={{
                 flexDirection: "row",
@@ -203,7 +242,7 @@ function SearchList({ collection, inputRef, listRef, handleClose }) {
                   borderRadius: 999,
                 }}
               />
-              {(query || activeFilters.length > 0) && (
+              <Animated.View style={clearStyles}>
                 <Button
                   variant="outlined"
                   onPress={() => {
@@ -211,13 +250,13 @@ function SearchList({ collection, inputRef, listRef, handleClose }) {
                     setActiveFilters([]);
                   }}
                   height={60}
-                  containerStyle={{ maxWidth: 120 }}
+                  containerStyle={{ flex: 1 }}
                 >
                   <Text weight={900} style={{ color: theme[11] }}>
                     Clear
                   </Text>
                 </Button>
-              )}
+              </Animated.View>
             </View>
             <ScrollView
               horizontal

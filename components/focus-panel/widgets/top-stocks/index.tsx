@@ -8,12 +8,7 @@ import { useColorTheme } from "@/ui/color/theme-provider";
 import { Image } from "expo-image";
 import { useEffect, useState } from "react";
 import { Linking, Pressable, View } from "react-native";
-import Animated, {
-  FadeInDown,
-  FadeInRight,
-  FadeOutLeft,
-  FadeOutUp,
-} from "react-native-reanimated";
+import Animated, { FadeInRight, FadeOutLeft } from "react-native-reanimated";
 import useSWR from "swr";
 
 function StockChange({
@@ -56,6 +51,7 @@ function StockChange({
           fontFamily: "mono",
           color: number > 0 ? green[small ? 9 : 5] : red[small ? 9 : 5],
           opacity: 1,
+          marginLeft: small ? -5 : 0,
         }}
       >
         {Math.abs(number)}%
@@ -72,14 +68,9 @@ export function StockItem({ small, stock }: { small?: boolean; stock: any }) {
       key={stock.ticker}
       style={[
         {
+          paddingHorizontal: small ? undefined : 15,
           paddingVertical: small ? undefined : 20,
-          flex: 1,
-          paddingHorizontal: small ? undefined : 20,
           alignItems: "center",
-        },
-        small && {
-          width: "100%",
-          flexDirection: "row",
         },
       ]}
       onPress={
@@ -100,17 +91,16 @@ export function StockItem({ small, stock }: { small?: boolean; stock: any }) {
           )}.webp`,
         }}
         style={{
-          width: small ? 13 : 24,
-          height: small ? 13 : 24,
-          marginRight: small ? 10 : undefined,
+          width: small ? 0 : 24,
+          height: small ? 0 : 24,
           marginBottom: small ? undefined : 10,
         }}
       />
       <ButtonText
         weight={900}
         style={{
-          fontSize: small ? 11 : undefined,
-          lineHeight: small ? 13 : undefined,
+          fontSize: small ? 12 : undefined,
+          lineHeight: small ? 14 : undefined,
         }}
       >
         {stock.ticker}
@@ -124,8 +114,7 @@ export function StockItem({ small, stock }: { small?: boolean; stock: any }) {
         style={{
           flexDirection: "row",
           alignItems: "center",
-          gap: 10,
-          marginLeft: small ? "auto" : undefined,
+          marginLeft: small ? -4 : undefined,
           marginTop: small ? undefined : 10,
         }}
       >
@@ -160,17 +149,12 @@ export default function Widget({ small, handlePin, navigation, widget }) {
   }
 
   return small ? (
-    <View style={{ flex: 1, gap: 1 }}>
+    <View style={{ flex: 1, gap: 1, flexDirection: "row" }}>
       {data &&
         data
           .slice(currentPage * PER_PAGE, currentPage * PER_PAGE + PER_PAGE)
           ?.map((stock) => (
-            <Animated.View
-              key={stock.ticker}
-              entering={small ? FadeInDown : FadeInRight}
-              exiting={small ? FadeOutUp : FadeOutLeft}
-              style={{ flex: 1 }}
-            >
+            <View key={stock.ticker} style={{ flex: 1 }}>
               <StockItem
                 small
                 widget={widget}
@@ -178,7 +162,7 @@ export default function Widget({ small, handlePin, navigation, widget }) {
                 stock={stock}
                 navigation={navigation}
               />
-            </Animated.View>
+            </View>
           ))}
     </View>
   ) : (

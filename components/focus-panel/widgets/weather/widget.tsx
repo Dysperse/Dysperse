@@ -180,8 +180,16 @@ export default function WeatherWidget({
       ) : (!location || isLoading) && permissionStatus !== "undetermined" ? (
         <Spinner style={{ marginHorizontal: "auto" }} />
       ) : (
-        <Text style={{ color: theme[11], fontSize: 12 }} weight={600}>
-          Tap and hold to enable
+        <Text
+          style={{
+            color: theme[11],
+            opacity: 0.6,
+            fontSize: 13,
+            marginHorizontal: "auto",
+          }}
+          weight={600}
+        >
+          Tap & hold to enable weather
         </Text>
       )}
     </View>

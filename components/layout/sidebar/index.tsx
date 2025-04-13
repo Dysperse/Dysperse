@@ -764,6 +764,9 @@ function SecondarySidebar({ scrollRef }) {
           style={{ flexDirection: "column" }}
           icon="tag"
           onPress={() => {
+            InteractionManager.runAfterInteractions(() =>
+              scrollRef.current.scrollTo({ x: ORIGINAL_SIDEBAR_WIDTH + 15 })
+            );
             router.push("/everything");
             if (Platform.OS !== "web") impactAsync(ImpactFeedbackStyle.Light);
             if (!breakpoints.md) sidebarRef.current?.closeDrawer?.();
@@ -781,6 +784,9 @@ function SecondarySidebar({ scrollRef }) {
           style={{ flexDirection: "column" }}
           icon="stack"
           onPress={() => {
+            InteractionManager.runAfterInteractions(() =>
+              scrollRef.current.scrollTo({ x: ORIGINAL_SIDEBAR_WIDTH + 15 })
+            );
             router.push("/everything/collections");
             impactAsync(ImpactFeedbackStyle.Light);
             if (!breakpoints.md) sidebarRef.current?.closeDrawer?.();
@@ -792,6 +798,9 @@ function SecondarySidebar({ scrollRef }) {
           height={100}
           text="Trash"
           onPress={() => {
+            InteractionManager.runAfterInteractions(() =>
+              scrollRef.current.scrollTo({ x: ORIGINAL_SIDEBAR_WIDTH + 15 })
+            );
             router.push("/everything/trash");
             impactAsync(ImpactFeedbackStyle.Light);
             if (!breakpoints.md) sidebarRef.current?.closeDrawer?.();
@@ -809,6 +818,9 @@ function SecondarySidebar({ scrollRef }) {
           height={100}
           text="Storage"
           onPress={() => {
+            InteractionManager.runAfterInteractions(() =>
+              scrollRef.current.scrollTo({ x: ORIGINAL_SIDEBAR_WIDTH + 15 })
+            );
             router.push("/everything/storage");
             impactAsync(ImpactFeedbackStyle.Light);
             if (!breakpoints.md) sidebarRef.current?.closeDrawer?.();
@@ -871,21 +883,24 @@ const Sidebar = ({ progressValue }: { progressValue?: any }) => {
   useEffect(() => {
     if (pathname.includes("everything"))
       scrollRef.current.scrollTo({
-        x: 9999,
+        x: ORIGINAL_SIDEBAR_WIDTH + 15,
         animated: pathname === "/everything",
       });
     else scrollRef.current.scrollTo({ x: 0 });
   }, [pathname]);
 
   useEffect(() => {
-    setTimeout(() => {
-      if (pathname.includes("everything"))
-        scrollRef.current.scrollTo({
-          x: 9999,
-          animated: pathname === "/everything",
-        });
-      else scrollRef.current.scrollTo({ x: 0 });
-    }, 1000);
+    setTimeout(
+      () => {
+        if (pathname.includes("everything"))
+          scrollRef.current.scrollTo({
+            x: 9999,
+            animated: pathname === "/everything",
+          });
+        else scrollRef.current.scrollTo({ x: 0 });
+      },
+      Platform.OS === "web" ? 1000 : 0
+    );
   }, []);
 
   return (
@@ -938,3 +953,4 @@ const Sidebar = ({ progressValue }: { progressValue?: any }) => {
 };
 
 export default memo(Sidebar);
+
