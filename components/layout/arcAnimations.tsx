@@ -105,7 +105,7 @@ export const arcCard = ({ theme, breakpoints, maxWidth, padding = 15 }) =>
     detachPreviousScreen: false,
     freezeOnBlur: true,
     animationEnabled: true,
-    gestureEnabled: false,
+    gestureEnabled: true,
     ...TransitionPresets.ModalPresentationIOS,
     ...(breakpoints.md && {
       cardStyleInterpolator: arcAnimation,

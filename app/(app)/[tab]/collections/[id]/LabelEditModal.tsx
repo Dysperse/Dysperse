@@ -86,7 +86,14 @@ export const LabelEditModal = memo(function LabelEditModal({
             gap: 20,
           }}
         >
-          <Text weight={900} style={{ fontSize: 20, flex: 1, paddingLeft: 10 }}>
+          <Text
+            style={{
+              fontSize: 20,
+              flex: 1,
+              paddingLeft: 10,
+              fontFamily: "serifText700",
+            }}
+          >
             Create label
           </Text>
           <IconButton variant="filled" onPress={() => menuRef.current.close()}>

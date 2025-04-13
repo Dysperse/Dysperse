@@ -24,7 +24,6 @@ import { addHslAlpha } from "@/ui/color";
 import { useColorTheme } from "@/ui/color/theme-provider";
 import { BottomSheetScrollView } from "@gorhom/bottom-sheet";
 import { impactAsync, ImpactFeedbackStyle } from "expo-haptics";
-import { LinearGradient } from "expo-linear-gradient";
 import { useGlobalSearchParams } from "expo-router";
 import React, { useCallback, useEffect, useRef, useState } from "react";
 import { Dimensions, Keyboard, Platform, View } from "react-native";
@@ -732,7 +731,6 @@ export function TaskDrawerContent({
       <View
         style={{
           flexDirection: "row",
-          backgroundColor: theme[2],
           paddingHorizontal: 20,
           left: 0,
           paddingTop: breakpoints.md ? 0 : 10,
@@ -744,6 +742,7 @@ export function TaskDrawerContent({
             flexDirection: "row",
             gap: 10,
             width: "100%",
+            alignItems: "center",
           }}
         >
           {forceClose && (
@@ -756,9 +755,14 @@ export function TaskDrawerContent({
                     : { overshootClamping: true, stiffness: 400 }
                 );
               }}
-              size={45}
-              variant={breakpoints.md ? "outlined" : "text"}
-              icon={breakpoints.md ? "close" : "west"}
+              size={breakpoints.md ? 45 : 40}
+              variant="outlined"
+              icon="close"
+              borderColors={{
+                default: addHslAlpha(theme[11], 0.1),
+                hovered: addHslAlpha(theme[11], 0.2),
+                pressed: addHslAlpha(theme[11], 0.3),
+              }}
             />
           )}
           <View
@@ -775,15 +779,6 @@ export function TaskDrawerContent({
           </View>
         </View>
       </View>
-      <LinearGradient
-        colors={[theme[2], addHslAlpha(theme[2], 0)]}
-        style={{
-          height: 40,
-          width: "100%",
-          marginBottom: -28,
-          zIndex: 1,
-        }}
-      />
       <KeyboardAvoidingView behavior="height">
         <SafeScrollView
           showsHorizontalScrollIndicator={false}
@@ -794,14 +789,15 @@ export function TaskDrawerContent({
         >
           <View
             style={{
-              padding: 30,
+              padding: breakpoints.md ? 30 : 20,
+              paddingBottom: breakpoints.md ? 30 : 25,
             }}
           >
             <ScrollView
               horizontal
               contentContainerStyle={{
                 gap: 10,
-                paddingHorizontal: 45,
+                paddingHorizontal: breakpoints.md ? 45 : 40,
               }}
               style={{ marginHorizontal: -30 }}
               showsHorizontalScrollIndicator={false}

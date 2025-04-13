@@ -6,7 +6,7 @@ import { useResponsiveBreakpoints } from "@/helpers/useResponsiveBreakpoints";
 import Icon from "@/ui/Icon";
 import IconButton from "@/ui/IconButton";
 import Text from "@/ui/Text";
-import { useColor } from "@/ui/color";
+import { addHslAlpha, useColor } from "@/ui/color";
 import { useColorTheme } from "@/ui/color/theme-provider";
 import { useBottomSheet } from "@gorhom/bottom-sheet";
 import dayjs from "dayjs";
@@ -95,7 +95,7 @@ export function TaskCompleteButton() {
             marginLeft: 5,
             width: "auto",
             borderRadius: 20,
-            width: breakpoints.md ? 140 : 45,
+            width: breakpoints.md ? 140 : 70,
           }}
           pressableStyle={{
             flexDirection: "row",
@@ -104,9 +104,9 @@ export function TaskCompleteButton() {
             paddingRight: breakpoints.md ? 14 : undefined,
           }}
           backgroundColors={{
-            default: isCompleted ? green[9] : theme[3],
-            hovered: isCompleted ? green[10] : theme[4],
-            pressed: isCompleted ? green[11] : theme[5],
+            default: isCompleted ? green[9] : addHslAlpha(theme[11], 0.1),
+            hovered: isCompleted ? green[10] : addHslAlpha(theme[11], 0.2),
+            pressed: isCompleted ? green[11] : addHslAlpha(theme[11], 0.3),
           }}
           size={45}
           onPress={handlePress}

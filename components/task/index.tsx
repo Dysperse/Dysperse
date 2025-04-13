@@ -15,6 +15,7 @@ import capitalizeFirstLetter from "@/utils/capitalizeFirstLetter";
 import dayjs from "dayjs";
 import { setUrlAsync } from "expo-clipboard";
 import { impactAsync, ImpactFeedbackStyle } from "expo-haptics";
+import { router } from "expo-router";
 import React, { memo, useMemo } from "react";
 import { Linking, Platform, View } from "react-native";
 import Animated, {
@@ -95,6 +96,7 @@ export const TaskLabelChip = ({
         hovered: theme[4],
         pressed: theme[5],
       }}
+      onPress={() => router.push(`/everything/labels/${task.label.id}`)}
       icon={<Emoji size={large ? 23 : 17} emoji={task.label.emoji} />}
       textStyle={{ color: theme[11] }}
     />
@@ -195,10 +197,11 @@ function TaskNoteChips({ note }) {
                 if (Platform.OS === "web")
                   navigator.clipboard.writeText(link.href);
                 else setUrlAsync(link.href);
-                Toast.show({
-                  type: "info",
-                  text1: "Copied link to clipboard",
-                });
+                if (Platform.OS === "web")
+                  Toast.show({
+                    type: "info",
+                    text1: "Copied link to clipboard",
+                  });
               },
               onPress: () => Linking.openURL(link.image || link.href),
             }))}
@@ -501,3 +504,4 @@ const Task = memo(function Task({
 });
 
 export default React.memo(Task);
+

@@ -11,7 +11,8 @@ export function sendApiRequest(
   const url = `${etc.host}/${path}${
     Object.keys(params).length > 0 ? "?" : ""
   }${new URLSearchParams(params)}`;
-  
+
+  if (process.env.NODE_ENV === "development") console.log(`[${method}] ${url}`);
 
   return fetch(url, {
     ...options,

@@ -1,8 +1,10 @@
 import IconButton from "@/ui/IconButton";
 import MenuPopover from "@/ui/MenuPopover";
 import { setStringAsync } from "expo-clipboard";
+import { impactAsync, ImpactFeedbackStyle } from "expo-haptics";
 import { shareAsync } from "expo-sharing";
 import React, { useCallback } from "react";
+import { Platform } from "react-native";
 import Toast from "react-native-toast-message";
 import { useTaskDrawerContext } from "./context";
 
@@ -13,11 +15,12 @@ export function TaskShareButton() {
 
   const handleCopy = useCallback(async () => {
     setStringAsync(link);
-    shareAsync(link);
-    Toast.show({
-      type: "success",
-      text1: "Copied link to clipboard!",
-    });
+    shareAsync(link, { dialogTitle: "Dysperse" });
+    if (Platform.OS === "web")
+      Toast.show({
+        type: "success",
+        text1: "Copied link to clipboard!",
+      });
   }, [link]);
 
   const handleShare = useCallback(async () => {
@@ -38,6 +41,11 @@ export function TaskShareButton() {
       <MenuPopover
         trigger={
           <IconButton
+            onLongPress={() => {
+              impactAsync(ImpactFeedbackStyle.Heavy);
+              updateTask({ published: true });
+              handleCopy();
+            }}
             size={45}
             icon="ios_share"
             iconStyle={{ marginTop: -3 }}

@@ -1,10 +1,11 @@
-import { Button, ButtonText } from "@/ui/Button";
+import { useResponsiveBreakpoints } from "@/helpers/useResponsiveBreakpoints";
+import { Button } from "@/ui/Button";
 import { useColorTheme } from "@/ui/color/theme-provider";
-import Icon from "@/ui/Icon";
 import Text from "@/ui/Text";
 import { useState } from "react";
 import { Pressable, View } from "react-native";
 import Animated, {
+  runOnJS,
   useAnimatedStyle,
   useSharedValue,
   withRepeat,
@@ -12,7 +13,6 @@ import Animated, {
   withSpring,
 } from "react-native-reanimated";
 import Svg, { Path } from "react-native-svg";
-import Toast from "react-native-toast-message";
 
 const messages = [
   "It is certain",
@@ -38,6 +38,7 @@ const messages = [
 ];
 
 export default function Magic8Ball() {
+  const breakpoints = useResponsiveBreakpoints();
   const theme = useColorTheme();
   const [message, setMessage] = useState("");
 
@@ -69,18 +70,18 @@ export default function Magic8Ball() {
         <View
           style={{
             transform: [{ scale: 0.4 }],
-            marginVertical: -70,
+            marginVertical: breakpoints.md ? -70 : -110,
           }}
         >
           <Animated.View
             style={[
               {
                 backgroundColor: "#000",
-                width: 200,
-                height: 200,
+                width: breakpoints.md ? 200 : 400,
+                height: breakpoints.md ? 200 : 400,
                 position: "relative",
                 alignItems: "center",
-                borderRadius: 99,
+                borderRadius: 999,
                 justifyContent: "center",
                 paddingTop: 35,
               },
@@ -88,8 +89,8 @@ export default function Magic8Ball() {
             ]}
           >
             <Svg
-              width="150"
-              height="150"
+              width={breakpoints.md ? "150" : "300"}
+              height={breakpoints.md ? "150" : "300"}
               viewBox="0 0 24 24"
               fill="#0035e1"
               transform={[{ scale: -1 }]}
@@ -99,8 +100,8 @@ export default function Magic8Ball() {
             <View
               style={{
                 position: "absolute",
-                top: 65,
-                width: 65,
+                top: breakpoints.md ? 65 : 100,
+                width: breakpoints.md ? 65 : 180,
                 alignItems: "center",
                 justifyContent: "center",
                 borderRadius: 99,
@@ -112,7 +113,7 @@ export default function Magic8Ball() {
                   {
                     color: "#fff",
                     textAlign: "center",
-                    fontSize: 16,
+                    fontSize: breakpoints.md ? 16 : 30,
                     fontFamily: "body_500",
                   },
                   textStyle,
@@ -126,13 +127,12 @@ export default function Magic8Ball() {
         <Button
           height={40}
           dense
-          variant="text"
+          large
+          variant="filled"
           containerStyle={{
             borderWidth: 0,
             marginTop: 10,
-            marginBottom: -10,
           }}
-          icon="casino"
           onPress={() => {
             offset.value = withRepeat(
               withSequence(
@@ -144,18 +144,17 @@ export default function Magic8Ball() {
               () => {
                 offset.value = withSpring(0, { damping: 30, stiffness: 400 });
                 const t = messages[Math.floor(Math.random() * messages.length)];
-                setMessage(t);
-                setTimeout(() => {
-                  Toast.show({ type: "info", text1: t });
-                }, 1000);
+                runOnJS(setMessage)(t);
               }
             );
           }}
-        >
-          <Icon size={20}>casino</Icon>
-          <ButtonText>Shake</ButtonText>
-        </Button>
+          icon="casino"
+          text="Shake"
+          textProps={{ weight: 600, style: { marginLeft: 3 } }}
+          iconStyle={{ fontFamily: "symbols_bold_outlined" }}
+        />
       </Pressable>
     </View>
   );
 }
+

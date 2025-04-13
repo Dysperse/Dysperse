@@ -11,7 +11,8 @@ import { useColorTheme } from "@/ui/color/theme-provider";
 import { useBottomSheet } from "@gorhom/bottom-sheet";
 import { BlurView } from "expo-blur";
 import { useLocalSearchParams, usePathname } from "expo-router";
-import React, {
+import {
+  default as React,
   cloneElement,
   forwardRef,
   useCallback,
@@ -31,7 +32,7 @@ const SafeBlurView = (props) => {
   ) : (
     <BlurView
       // style={{ flex: 1 }}
-      intensity={50}
+      intensity={60}
       tint={
         Platform.OS === "ios"
           ? isDark

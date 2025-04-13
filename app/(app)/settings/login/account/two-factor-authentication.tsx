@@ -96,18 +96,12 @@ export default function Page() {
           {error ? <ErrorAlert /> : <Spinner />}
         </View>
       ) : (
-        <View
-          style={[
-            { marginTop: 30 },
-            !breakpoints.md && { padding: 20, paddingTop: 0 },
-          ]}
-        >
+        <View>
           <Text style={settingStyles.title}>Two-factor authentication</Text>
           <Text
             style={{
               marginTop: 5,
               opacity: 0.6,
-              fontSize: 20,
               marginBottom: 20,
             }}
           >
@@ -126,7 +120,7 @@ export default function Page() {
             <View>
               <View
                 style={{
-                  backgroundColor: theme[5],
+                  backgroundColor: theme[3],
                   padding: 10,
                   borderRadius: 20,
                 }}
@@ -135,7 +129,7 @@ export default function Page() {
                   size={220}
                   logoSize={50}
                   color={theme[11]}
-                  backgroundColor={theme[5]}
+                  backgroundColor={theme[3]}
                   value={
                     `otpauth://totp/Dysperse:${session.user.profile.name}?` +
                     new URLSearchParams({

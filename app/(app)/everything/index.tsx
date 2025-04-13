@@ -113,7 +113,7 @@ export const LabelDetails = ({
               width: "100%",
               flexDirection: "row",
               backgroundColor: labelTheme[3],
-              padding: 15,
+              padding: breakpoints.md ? 15 : 20,
               gap: 10,
               justifyContent: "flex-end",
             }}
@@ -169,8 +169,8 @@ export const LabelDetails = ({
                 gap: 25,
               },
               !breakpoints.md && {
-                paddingTop: 100,
-                height: 350,
+                paddingTop: 50,
+                height: 200,
               },
             ]}
             colors={[labelTheme[3], labelTheme[2], labelTheme[1]]}
@@ -205,7 +205,6 @@ export const LabelDetails = ({
                   },
                   !breakpoints.md && { textAlign: "center" },
                 ]}
-                weight={300}
               >
                 {label._count.entities} item
                 {label._count.entities !== 1 ? "s" : ""}
@@ -222,8 +221,8 @@ export const LabelDetails = ({
             <View
               style={{
                 padding: 20,
-                gap: 10,
-                flexDirection: "row",
+                gap: breakpoints.md ? 10 : 20,
+                flexDirection: breakpoints.md ? "row" : undefined,
                 backgroundColor: labelTheme[2],
                 borderWidth: 1,
                 borderColor: labelTheme[5],
@@ -254,7 +253,10 @@ export const LabelDetails = ({
               </View>
               {label.integration && (
                 <View style={{ flex: 1, gap: 5 }}>
-                  <Text variant="eyebrow" style={{ marginBottom: 5 }}>
+                  <Text
+                    variant="eyebrow"
+                    style={{ marginBottom: breakpoints.md ? 5 : 0 }}
+                  >
                     Connected to
                   </Text>
                   <View

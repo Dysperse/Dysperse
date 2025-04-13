@@ -414,7 +414,7 @@ export default function AppLayout() {
                                             options={{
                                               presentation: "modal",
                                               animation: "default",
-                                              gestureEnabled: false,
+                                              gestureEnabled: true,
                                               ...TransitionPresets.ModalPresentationIOS,
                                             }}
                                           />
@@ -494,6 +494,8 @@ export default function AppLayout() {
                                             name="settings"
                                             options={{
                                               cardStyle: { padding: 0 },
+                                              gestureEnabled: true,
+                                              gestureResponseDistance: 9999,
                                               ...(!breakpoints.md && {
                                                 presentation: "modal",
                                                 animation: "default",
@@ -527,3 +529,4 @@ export default function AppLayout() {
     </WebAnimationComponent>
   );
 }
+

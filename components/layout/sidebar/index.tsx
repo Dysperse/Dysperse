@@ -17,8 +17,10 @@ import { useColorTheme } from "@/ui/color/theme-provider";
 import Logo from "@/ui/logo";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import dayjs from "dayjs";
+import * as BackgroundTask from "expo-background-task";
 import { ImpactFeedbackStyle, impactAsync } from "expo-haptics";
 import { router, useGlobalSearchParams, usePathname } from "expo-router";
+import * as TaskManager from "expo-task-manager";
 import {
   default as React,
   memo,
@@ -83,7 +85,7 @@ const HomeButton = memo(function HomeButton({ isHome }: { isHome: boolean }) {
 
   const handleHome = useCallback(() => {
     AsyncStorage.removeItem("lastViewedTab");
-    if (Platform.OS !== "web") impactAsync(ImpactFeedbackStyle.Light);
+    if (Platform.OS !== "web") impactAsync(ImpactFeedbackStyle.Soft);
     if (router.canDismiss()) router.dismissAll();
     router.replace("/home");
     InteractionManager.runAfterInteractions(() => {
@@ -131,11 +133,39 @@ const HomeButton = memo(function HomeButton({ isHome }: { isHome: boolean }) {
   );
 });
 
+const BACKGROUND_TASK_IDENTIFIER = "integration-sync";
+TaskManager.defineTask(BACKGROUND_TASK_IDENTIFIER, async () => {
+  try {
+    const now = Date.now();
+    console.log(
+      `Got background task call at date: ${new Date(now).toISOString()}`
+    );
+  } catch (error) {
+    console.error("Failed to execute the background task:", error);
+    return BackgroundTask.BackgroundTaskResult.Failed;
+  }
+  return BackgroundTask.BackgroundTaskResult.Success;
+});
+
+async function registerBackgroundTaskAsync() {
+  return BackgroundTask.registerTaskAsync(BACKGROUND_TASK_IDENTIFIER);
+}
 const SyncButton = memo(function SyncButton({ syncRef }: any) {
   const theme = useColorTheme();
   const { session } = useSession();
   const [isLoading, setIsLoading] = useState(false);
   const checkOpacity = useSharedValue(0);
+
+  useEffect(() => {
+    // Register the background task
+    registerBackgroundTaskAsync()
+      .then(() => {
+        console.log("Background task registered successfully");
+      })
+      .catch((error) => {
+        console.error("Failed to register background task:", error);
+      });
+  }, []);
 
   const { mutate } = useSWRConfig();
 
@@ -503,7 +533,7 @@ export const Header = memo(function Header() {
               size={45}
               onPress={() => {
                 if (Platform.OS !== "web")
-                  impactAsync(ImpactFeedbackStyle.Light);
+                  impactAsync(ImpactFeedbackStyle.Soft);
                 router.replace("/everything");
               }}
             >
@@ -737,7 +767,7 @@ function SecondarySidebar({ scrollRef }) {
           setTimeout(() => {
             router.dismissAll();
             router.replace("/");
-            if (Platform.OS !== "web") impactAsync(ImpactFeedbackStyle.Light);
+            if (Platform.OS !== "web") impactAsync(ImpactFeedbackStyle.Soft);
             InteractionManager.runAfterInteractions(() => {
               sidebarRef?.current?.openDrawer?.();
             });
@@ -768,7 +798,7 @@ function SecondarySidebar({ scrollRef }) {
               scrollRef.current.scrollTo({ x: ORIGINAL_SIDEBAR_WIDTH + 15 })
             );
             router.push("/everything");
-            if (Platform.OS !== "web") impactAsync(ImpactFeedbackStyle.Light);
+            if (Platform.OS !== "web") impactAsync(ImpactFeedbackStyle.Soft);
             if (!breakpoints.md) sidebarRef.current?.closeDrawer?.();
           }}
           variant={pathname === "/everything" ? "filled" : "text"}
@@ -788,7 +818,7 @@ function SecondarySidebar({ scrollRef }) {
               scrollRef.current.scrollTo({ x: ORIGINAL_SIDEBAR_WIDTH + 15 })
             );
             router.push("/everything/collections");
-            impactAsync(ImpactFeedbackStyle.Light);
+            impactAsync(ImpactFeedbackStyle.Soft);
             if (!breakpoints.md) sidebarRef.current?.closeDrawer?.();
           }}
           variant={pathname === "/everything/collections" ? "filled" : "text"}
@@ -802,7 +832,7 @@ function SecondarySidebar({ scrollRef }) {
               scrollRef.current.scrollTo({ x: ORIGINAL_SIDEBAR_WIDTH + 15 })
             );
             router.push("/everything/trash");
-            impactAsync(ImpactFeedbackStyle.Light);
+            impactAsync(ImpactFeedbackStyle.Soft);
             if (!breakpoints.md) sidebarRef.current?.closeDrawer?.();
           }}
           containerStyle={[
@@ -822,7 +852,7 @@ function SecondarySidebar({ scrollRef }) {
               scrollRef.current.scrollTo({ x: ORIGINAL_SIDEBAR_WIDTH + 15 })
             );
             router.push("/everything/storage");
-            impactAsync(ImpactFeedbackStyle.Light);
+            impactAsync(ImpactFeedbackStyle.Soft);
             if (!breakpoints.md) sidebarRef.current?.closeDrawer?.();
           }}
           containerStyle={[
