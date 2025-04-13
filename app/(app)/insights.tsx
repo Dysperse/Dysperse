@@ -345,7 +345,6 @@ export default function Page() {
       <MenuButton gradient back />
       <ArcSystemBar />
       <ScrollView
-        bounces={false}
         contentContainerStyle={{ paddingTop: 50, backgroundColor: theme[2] }}
       >
         <Text
