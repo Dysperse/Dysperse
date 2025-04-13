@@ -857,15 +857,9 @@ export function TaskDrawerContent({
               />
               {task && !task.parentTaskId && (
                 <LabelPicker
-                  label={task?.label}
+                  label={task?.label || undefined}
                   setLabel={(e: any) => {
-                    updateTask(
-                      {
-                        labelId: e.id,
-                        label: e,
-                      },
-                      false
-                    );
+                    updateTask({ labelId: e.id, label: e });
                   }}
                   onClose={() => {}}
                   sheetProps={{ sheetRef: labelPickerRef }}
@@ -875,10 +869,11 @@ export function TaskDrawerContent({
                     chip
                     disabled={isReadOnly}
                     icon={
-                      task?.collection?.emoji ? (
-                        <Emoji emoji={task?.collection?.emoji} size={20} />
-                      ) : task.label?.name ? (
-                        <Emoji emoji={task.label.emoji} size={20} />
+                      task.label?.emoji || task.collection?.emoji ? (
+                        <Emoji
+                          emoji={task?.label?.emoji || task.collection.emoji}
+                          size={20}
+                        />
                       ) : (
                         <Icon>tag</Icon>
                       )
@@ -922,3 +917,4 @@ export function TaskDrawerContent({
     </>
   );
 }
+
