@@ -56,8 +56,8 @@ export const SpotifyPreview = ({ small, data, mutate }) => {
       <Image
         source={{ uri: data.item.album.images[0].url }}
         style={{
-          width: small ? 30 : 70,
-          height: small ? 30 : 70,
+          width: small ? 34 : 70,
+          height: small ? 34 : 70,
           borderRadius: 3,
         }}
       />
@@ -68,7 +68,7 @@ export const SpotifyPreview = ({ small, data, mutate }) => {
               color: theme[11],
               fontFamily: small ? "body_900" : "serifText700",
               fontSize: small ? 12 : 20,
-              marginBottom: small ? -3 : 3,
+              marginBottom: small ? -1 : 3,
               marginTop: small ? -3 : 0,
             }}
             numberOfLines={1}
@@ -79,7 +79,7 @@ export const SpotifyPreview = ({ small, data, mutate }) => {
             style={{
               color: theme[11],
               opacity: 0.6,
-              marginBottom: 3,
+              marginBottom: small ? -1 : 3,
               fontSize: small ? 10 : undefined,
             }}
             weight={600}
@@ -94,7 +94,7 @@ export const SpotifyPreview = ({ small, data, mutate }) => {
             borderRadius: 5,
             width: "100%",
             height: small ? 2 : 10,
-            marginTop: 2,
+            marginTop: 4,
             backgroundColor: theme[small ? 5 : 4],
           }}
         >
