@@ -541,14 +541,14 @@ function Protection() {
   const theme = useColorTheme();
 
   useEffect(() => {
-    const update = () => {
-      document.documentElement.style.backgroundColor = theme[2];
+    document.documentElement.style.backgroundColor = theme[2];
 
+    const update = () => {
       const isInactive = document.hidden || !document.hasFocus();
       document.body.classList[isInactive ? "add" : "remove"]("protected");
     };
 
-    update(); // run on mount
+    update();
 
     window.addEventListener("focus", update);
     window.addEventListener("blur", update);

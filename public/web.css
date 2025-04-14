@@ -78,7 +78,7 @@ html {
   scroll-behavior: smooth;
   -webkit-text-size-adjust: 100%;
   height: calc(100% + env(safe-area-inset-top));
-  background: var(--theme-2)
+  background: var(--theme-2);
 }
 
 *::selection {
@@ -99,6 +99,8 @@ body {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   -ms-overflow-style: scrollbar;
+  filter: blur(0px);
+  transform: scale(1);
 }
 
 ::-webkit-scrollbar {
