@@ -418,6 +418,7 @@ export const LogoButton = memo(function LogoButton({
             icon="dock_to_left"
             style={{ opacity: 0.9 }}
             onPress={toggleHidden}
+            variant={desktopCollapsed ? "filled" : undefined}
           />
         )}
       </View>
