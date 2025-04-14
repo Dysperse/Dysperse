@@ -986,9 +986,10 @@ const Sidebar = ({ progressValue }: { progressValue?: any }) => {
           scrollEnabled={false}
           ref={scrollRef}
           style={[
-            Platform.OS === "web" && {
-              scrollSnapType: "both mandatory",
-            },
+            Platform.OS === "web" &&
+              {
+                // scrollSnapType: "both mandatory",
+              },
             widthStyle,
             {
               maxWidth: pathname.includes("everything")
@@ -1006,4 +1007,3 @@ const Sidebar = ({ progressValue }: { progressValue?: any }) => {
 };
 
 export default memo(Sidebar);
-
