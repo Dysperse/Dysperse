@@ -800,7 +800,10 @@ function SecondarySidebar({ scrollRef }) {
         size={40}
         variant="filled"
         style={[
-          { marginLeft: 5 },
+          {
+            marginLeft: 5,
+            marginTop: "env(titlebar-area-height,0)",
+          },
           Platform.OS === "web" && ({ WebkitAppRegion: "no-drag" } as any),
         ]}
       />
