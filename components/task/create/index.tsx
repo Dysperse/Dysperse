@@ -158,60 +158,65 @@ function Footer({
         showsHorizontalScrollIndicator={false}
         keyboardShouldPersistTaps="handled"
       >
-        {(date || recurrenceRule) && !parentTask && (
-          <Button
-            chip
-            large
-            icon={recurrenceRule ? "loop" : "calendar_today"}
-            onDismiss={
-              (recurrenceRule || date) &&
-              (() => {
-                setValue("date", null);
-                setValue("recurrenceRule", null);
-              })
-            }
-            onPress={() => {
-              if (date) dateRef.current.present();
-              else if (recurrenceRule) recurrenceRef.current.present();
-            }}
-            variant="outlined"
-            borderColors={{
-              default: addHslAlpha(theme[9], 0.1),
-              hovered: addHslAlpha(theme[9], 0.2),
-              pressed: addHslAlpha(theme[9], 0.3),
-            }}
-            backgroundColors={{
-              default: addHslAlpha(theme[9], 0),
-              hovered: addHslAlpha(theme[9], 0.1),
-              pressed: addHslAlpha(theme[9], 0.15),
-            }}
-            text={
-              recurrenceRule
-                ? capitalizeFirstLetter(new RRule(recurrenceRule).toText())
-                : date
-                ? end
-                  ? `${date.format(
-                      dateOnly ? "MMM Do" : "MMM Do [@] h:mm a"
-                    )} — ${end.format(
-                      dateOnly ? "MMM Do" : "MMM Do [@] h:mm a"
-                    )}`
-                  : date.format(dateOnly ? "MMM Do" : "MMM Do [@] h:mm a")
-                : undefined
-            }
-          />
+        {!parentTask && (
+          <AttachStep index={0}>
+            <View>
+              {(date || recurrenceRule) && (
+                <Button
+                  chip
+                  large
+                  icon={recurrenceRule ? "loop" : "calendar_today"}
+                  onDismiss={
+                    (recurrenceRule || date) &&
+                    (() => {
+                      setValue("date", null);
+                      setValue("recurrenceRule", null);
+                    })
+                  }
+                  onPress={() => {
+                    if (date) dateRef.current.present();
+                    else if (recurrenceRule) recurrenceRef.current.present();
+                  }}
+                  variant="outlined"
+                  borderColors={{
+                    default: addHslAlpha(theme[9], 0.1),
+                    hovered: addHslAlpha(theme[9], 0.2),
+                    pressed: addHslAlpha(theme[9], 0.3),
+                  }}
+                  backgroundColors={{
+                    default: addHslAlpha(theme[9], 0),
+                    hovered: addHslAlpha(theme[9], 0.1),
+                    pressed: addHslAlpha(theme[9], 0.15),
+                  }}
+                  text={
+                    recurrenceRule
+                      ? capitalizeFirstLetter(
+                          new RRule(recurrenceRule).toText()
+                        )
+                      : date
+                      ? end
+                        ? `${date.format(
+                            dateOnly ? "MMM Do" : "MMM Do [@] h:mm a"
+                          )} — ${end.format(
+                            dateOnly ? "MMM Do" : "MMM Do [@] h:mm a"
+                          )}`
+                        : date.format(dateOnly ? "MMM Do" : "MMM Do [@] h:mm a")
+                      : undefined
+                  }
+                />
+              )}
+              <DateButton
+                nameRef={nameRef}
+                watch={watch}
+                setValue={setValue}
+                defaultValues={defaultValues}
+                dateRef={dateRef}
+                recurrenceRef={recurrenceRef}
+              />
+            </View>
+          </AttachStep>
         )}
-        <AttachStep index={0}>
-          <View>
-            <DateButton
-              nameRef={nameRef}
-              watch={watch}
-              setValue={setValue}
-              defaultValues={defaultValues}
-              dateRef={dateRef}
-              recurrenceRef={recurrenceRef}
-            />
-          </View>
-        </AttachStep>
+
         <AttachStep index={1}>
           <View>
             <CreateTaskLabelInput
@@ -1650,9 +1655,9 @@ const CreateTask = forwardRef(
           }
         >
           <OnboardingContainer
-            delay={1000}
+            delay={Platform.OS === "web" ? 500 : 1000}
             id="CREATE_TASK"
-            onlyIf={() => true}
+            onlyIf={() => !defaultValues.parentTask}
             steps={[
               {
                 text: "Set a due date or recurrence",
