@@ -332,7 +332,11 @@ export const LogoButton = memo(function LogoButton({
           <AttachStep index={3}>
             <View style={{ borderRadius: 20, overflow: "hidden" }}>
               <Button
-                onPress={() => menuRef.current.open()}
+                onPress={() => {
+                  menuRef.current.open();
+                  if (Platform.OS !== "web")
+                    impactAsync(ImpactFeedbackStyle.Soft);
+                }}
                 android_ripple={{ color: theme[4] }}
                 height={60}
                 style={[
