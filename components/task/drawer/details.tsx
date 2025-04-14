@@ -678,6 +678,7 @@ function CanvasLiveInfo() {
         paddingVertical: 20,
         paddingHorizontal: 10,
         position: "relative",
+        marginBottom: 15,
         borderRadius: 30,
       }}
     >
@@ -897,4 +898,3 @@ export function TaskDetails() {
     </View>
   );
 }
-

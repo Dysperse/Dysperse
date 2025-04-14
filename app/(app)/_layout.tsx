@@ -400,13 +400,11 @@ export default function AppLayout() {
                                             <JsStack.Screen
                                               key={d}
                                               name={d}
-                                              options={{
-                                                detachPreviousScreen:
-                                                  breakpoints.md,
-                                                presentation: "modal",
-                                                animation: "default",
-                                                ...TransitionPresets.ModalPresentationIOS,
-                                              }}
+                                              options={arcCard({
+                                                theme,
+                                                breakpoints,
+                                                maxWidth: 500,
+                                              })}
                                             />
                                           ))}
                                           <JsStack.Screen
@@ -529,4 +527,3 @@ export default function AppLayout() {
     </WebAnimationComponent>
   );
 }
-

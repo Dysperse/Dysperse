@@ -21,7 +21,7 @@ export default function Spotify({ small, handlePin, setParam, widget }) {
     Linking.openURL(url);
   };
 
-  if (widget.params.hideWhenEmpty && !data?.is_playing) return null;
+  if (widget.params.hideWhenEmpty && !data?.is_playing && !small) return null;
 
   return (
     <Pressable
@@ -153,4 +153,3 @@ export default function Spotify({ small, handlePin, setParam, widget }) {
     </Pressable>
   );
 }
-

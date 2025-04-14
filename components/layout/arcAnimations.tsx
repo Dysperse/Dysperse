@@ -5,7 +5,7 @@ import {
   StackCardInterpolationProps,
   TransitionPresets,
 } from "@react-navigation/stack";
-import { Animated } from "react-native";
+import { Animated, Platform } from "react-native";
 import { SystemBars } from "react-native-edge-to-edge";
 
 const { add, multiply } = Animated;
@@ -120,7 +120,7 @@ export const arcCard = ({ theme, breakpoints, maxWidth, padding = 15 }) =>
           borderRadius: 25,
           borderWidth: 2,
           borderColor: theme[5],
-          marginBottom: 0,
+          marginBottom: Platform.OS === "web" ? undefined : 0,
         }
       : undefined,
   } as any);
@@ -131,4 +131,3 @@ export const ArcSystemBar = () => {
 
   return <SystemBars style={!breakpoints.md || isDark ? "light" : "dark"} />;
 };
-

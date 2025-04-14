@@ -149,7 +149,7 @@ export default function Widget({ small, handlePin, navigation, widget }) {
   }
 
   return small ? (
-    <View style={{ flex: 1, gap: 1, flexDirection: "row" }}>
+    <View style={{ flex: 1, gap: 10, flexDirection: "row" }}>
       {data &&
         data
           .slice(currentPage * PER_PAGE, currentPage * PER_PAGE + PER_PAGE)
@@ -230,4 +230,3 @@ export default function Widget({ small, handlePin, navigation, widget }) {
     </View>
   );
 }
-
