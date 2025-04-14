@@ -5,6 +5,7 @@ import SelectionNavbar from "@/components/layout/SelectionNavbar";
 import { useSidebarContext } from "@/components/layout/sidebar/context";
 import MenuIcon from "@/components/menuIcon";
 import { useSession } from "@/context/AuthProvider";
+import { OnboardingContainer } from "@/context/OnboardingProvider";
 import { useUser } from "@/context/useUser";
 import { sendApiRequest } from "@/helpers/api";
 import { useHotkeys } from "@/helpers/useHotKeys";
@@ -17,6 +18,7 @@ import { openBrowserAsync } from "expo-web-browser";
 import { memo, useMemo, useRef } from "react";
 import { Platform, View } from "react-native";
 import { Menu } from "react-native-popup-menu";
+import { AttachStep } from "react-native-spotlight-tour";
 import Toast from "react-native-toast-message";
 import useSWR from "swr";
 import { CollectionContext, useCollectionContext } from "../context";
@@ -192,11 +194,12 @@ const CollectionNavbar = memo(function CollectionNavbar({
           selected: e.text && e.id === mode,
         }))
       : []),
-    session && {
-      icon: "edit",
-      text: "Edit",
-      callback: () => router.push(pathname + "/customize"),
-    },
+    session &&
+      !isAll && {
+        icon: "edit",
+        text: "Edit",
+        callback: () => router.push(pathname + "/customize"),
+      },
     session &&
       userSession.user.betaTester &&
       !isReadOnly && {
@@ -254,69 +257,103 @@ const CollectionNavbar = memo(function CollectionNavbar({
   );
 
   return (
-    <>
-      <>
-        <SelectionNavbar />
-        <NavbarGradient>
-          {menu}
-          <View
-            style={{
-              marginRight: "auto",
-              maxWidth: "100%",
-              width: breakpoints.md ? 220 : undefined,
-              minWidth: 0,
-              flex: breakpoints.md ? undefined : 1,
-            }}
-          >
-            <ViewPicker isLoading={isLoading} />
-          </View>
-          {!isLoading &&
-            (type === "planner" || type === "skyline" || type === "calendar") &&
-            breakpoints.md && <AgendaButtons weekMode={type === "planner"} />}
-          <View
-            style={{
-              width: breakpoints.md ? 220 : undefined,
-              flexDirection: "row",
-              alignItems: "center",
-              justifyContent: "flex-end",
-            }}
-          >
-            {/* {!isLoading && COLLECTION_VIEWS[type].type === "Category Based" && (
+    <OnboardingContainer
+      id="COLLECTION"
+      onlyIf={() => type !== "matrix"}
+      delay={500}
+      steps={[
+        {
+          text: "Tap here to switch between views",
+        },
+        {
+          text: "Find the tasks you need by hitting ⌘ F",
+        },
+        {
+          text: "Edit, print, and import tasks to your collection",
+        },
+        {
+          text: "Share or publish your collection as a template",
+        },
+      ]}
+    >
+      {() => (
+        <>
+          <SelectionNavbar />
+          <NavbarGradient>
+            {menu}
+            <View
+              style={{
+                marginRight: "auto",
+                maxWidth: "100%",
+                width: breakpoints.md ? 220 : undefined,
+                minWidth: 0,
+                flex: breakpoints.md ? undefined : 1,
+              }}
+            >
+              <ViewPicker isLoading={isLoading} />
+            </View>
+            {!isLoading &&
+              (type === "planner" ||
+                type === "skyline" ||
+                type === "calendar") &&
+              breakpoints.md && <AgendaButtons weekMode={type === "planner"} />}
+            <View
+              style={{
+                width: breakpoints.md ? 220 : undefined,
+                flexDirection: "row",
+                alignItems: "center",
+                justifyContent: "flex-end",
+              }}
+            >
+              {/* {!isLoading && COLLECTION_VIEWS[type].type === "Category Based" && (
               <CategoryLabelButtons />
             )} */}
-            <CollectionContext.Provider value={contextValue}>
-              <CollectionSidekick />
-              {session && <CollectionSearch />}
-              {!isLoading && !isReadOnly && !isAll && (
-                <MenuPopover
-                  menuRef={menuRef}
-                  closeOnSelect
-                  {...(isReadOnly && { menuProps: { opened: false } })}
-                  containerStyle={{ width: 175, marginLeft: isAll ? -10 : 0 }}
-                  menuProps={{
-                    rendererProps: { placement: "bottom" },
-                  }}
-                  trigger={
-                    <IconButton
-                      icon="pending"
-                      size={40}
+              <CollectionContext.Provider value={contextValue}>
+                <CollectionSidekick />
+                {session && (
+                  <AttachStep index={1}>
+                    <CollectionSearch />
+                  </AttachStep>
+                )}
+                {!isLoading && !isReadOnly && (
+                  <AttachStep index={2}>
+                    <View
                       style={breakpoints.md && !isAll && { marginRight: 10 }}
-                    />
-                  }
-                  options={(isReadOnly ? [] : collectionMenuOptions) as any}
-                />
-              )}
-              {breakpoints.md && session && !isReadOnly && (
-                <CollectionShareMenu ref={shareMenuRef} />
-              )}
-            </CollectionContext.Provider>
-          </View>
-        </NavbarGradient>
-        <LoadingIndicator />
-      </>
-    </>
+                    >
+                      <MenuPopover
+                        menuRef={menuRef}
+                        closeOnSelect
+                        {...(isReadOnly && { menuProps: { opened: false } })}
+                        containerStyle={{
+                          width: 175,
+                          marginLeft: isAll ? -10 : 0,
+                        }}
+                        menuProps={{
+                          rendererProps: { placement: "bottom" },
+                        }}
+                        trigger={<IconButton icon="pending" size={40} />}
+                        options={
+                          (isReadOnly ? [] : collectionMenuOptions) as any
+                        }
+                      />
+                    </View>
+                  </AttachStep>
+                )}
+                {breakpoints.md && session && !isReadOnly && (
+                  <AttachStep index={3}>
+                    <View>
+                      <CollectionShareMenu ref={shareMenuRef} />
+                    </View>
+                  </AttachStep>
+                )}
+              </CollectionContext.Provider>
+            </View>
+          </NavbarGradient>
+          <LoadingIndicator />
+        </>
+      )}
+    </OnboardingContainer>
   );
 });
 
 export default CollectionNavbar;
-

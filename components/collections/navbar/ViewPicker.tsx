@@ -16,6 +16,7 @@ import { impactAsync, ImpactFeedbackStyle } from "expo-haptics";
 import { router, useGlobalSearchParams } from "expo-router";
 import { memo, useEffect, useRef } from "react";
 import { Platform, View } from "react-native";
+import { AttachStep } from "react-native-spotlight-tour";
 import Toast from "react-native-toast-message";
 import { groupedViews } from ".";
 import { useCollectionContext } from "../context";
@@ -79,60 +80,66 @@ export const ViewPicker = memo(({ isLoading }: { isLoading: any }) => {
 
   return (
     <>
-      <Button
-        onPress={() => {
-          impactAsync(ImpactFeedbackStyle.Light);
-          ref.current?.present();
-          if (Platform.OS === "web" && breakpoints.md) {
-            const t = localStorage.getItem("shiftShiftTip");
-            if (t !== "true") {
-              Toast.show({
-                type: "info",
-                text1: "Pro tip",
-                text2: "Press shift twice to open this dialog!",
-              });
-              localStorage.setItem("shiftShiftTip", "true");
+      <AttachStep index={0}>
+        <Button
+          onPress={() => {
+            impactAsync(ImpactFeedbackStyle.Light);
+            ref.current?.present();
+            if (Platform.OS === "web" && breakpoints.md) {
+              const t = localStorage.getItem("shiftShiftTip");
+              if (t !== "true") {
+                Toast.show({
+                  type: "info",
+                  text1: "Pro tip",
+                  text2: "Press shift twice to open this dialog!",
+                });
+                localStorage.setItem("shiftShiftTip", "true");
+              }
             }
-          }
-        }}
-        android_ripple={{ color: theme[5] }}
-        containerStyle={{
-          padding: 0,
-          transformOrigin: breakpoints.md ? "left bottom" : undefined,
-          maxWidth: breakpoints.md ? 240 : "100%",
-          borderRadius: 10,
-        }}
-        style={() => ({
-          flexDirection: "row",
-          alignItems: "center",
-          justifyContent: "flex-start",
-          gap: 13,
-          paddingLeft: 10,
-          minWidth: 0,
-        })}
-      >
-        {data?.emoji && (
-          <NavbarIcon isAll={isAll} emoji={data.emoji} isLoading={isLoading} />
-        )}
-        <View style={{ minWidth: 0, flexShrink: 1 }}>
-          <NavbarEyebrow name={type} />
-          {isLoading ? (
-            <View
-              style={{
-                width: 60,
-                height: 17,
-                borderRadius: 20,
-                backgroundColor: theme[4],
-              }}
+          }}
+          android_ripple={{ color: theme[5] }}
+          containerStyle={{
+            padding: 0,
+            transformOrigin: breakpoints.md ? "left bottom" : undefined,
+            maxWidth: breakpoints.md ? 240 : "100%",
+            borderRadius: 10,
+          }}
+          style={() => ({
+            flexDirection: "row",
+            alignItems: "center",
+            justifyContent: "flex-start",
+            gap: 13,
+            paddingLeft: 10,
+            minWidth: 0,
+          })}
+        >
+          {data?.emoji && (
+            <NavbarIcon
+              isAll={isAll}
+              emoji={data.emoji}
+              isLoading={isLoading}
             />
-          ) : (
-            <NavbarTitle name={data.name || "All tasks"} />
           )}
-        </View>
-        <Icon size={30} style={{ marginLeft: -5 }}>
-          expand_more
-        </Icon>
-      </Button>
+          <View style={{ minWidth: 0, flexShrink: 1 }}>
+            <NavbarEyebrow name={type} />
+            {isLoading ? (
+              <View
+                style={{
+                  width: 60,
+                  height: 17,
+                  borderRadius: 20,
+                  backgroundColor: theme[4],
+                }}
+              />
+            ) : (
+              <NavbarTitle name={data.name || "All tasks"} />
+            )}
+          </View>
+          <Icon size={30} style={{ marginLeft: -5 }}>
+            expand_more
+          </Icon>
+        </Button>
+      </AttachStep>
 
       <Modal
         transformCenter
@@ -233,4 +240,3 @@ export const ViewPicker = memo(({ isLoading }: { isLoading: any }) => {
     </>
   );
 });
-

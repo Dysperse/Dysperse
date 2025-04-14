@@ -60,10 +60,12 @@ export const OnboardingTrigger = ({
           !isLoading
         ) {
           setTimeout(() => {
+            onboarding.state = id;
             onStart?.();
             onboarding.setState(id);
             try {
               start();
+              onboarding.state = id;
             } catch (e) {
               console.error("Error starting onboarding:", e);
             }
@@ -92,6 +94,7 @@ export function OnboardingContainer(
 ) {
   const theme = useColorTheme();
   const { session, mutate, sessionToken } = useUser();
+  const onboardingState = useOnboardingState();
 
   return (
     <SpotlightTourProvider
@@ -105,6 +108,7 @@ export function OnboardingContainer(
       {...props}
       onStop={async (value) => {
         if (value.isLast) {
+          onboardingState.current = null;
           const t = await sendApiRequest(
             sessionToken,
             "PUT",

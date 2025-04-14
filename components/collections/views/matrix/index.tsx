@@ -428,7 +428,7 @@ export default function Matrix() {
           </View>
           <OnboardingContainer
             id="MATRIX_VIEW"
-            delay={500}
+            delay={700}
             steps={[
               {
                 text: "Urgent & important → These are your deadlines & emergencies.",
