@@ -208,7 +208,6 @@ const CollectionNavbar = memo(function CollectionNavbar({
         callback: () => router.push(pathname + "/upload"),
       },
     session &&
-      userSession.user.betaTester &&
       !isReadOnly && {
         icon: "printer",
         text: "Print",
