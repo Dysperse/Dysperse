@@ -38,21 +38,19 @@ export function TaskShareButton() {
   }, [task, updateTask, handleCopy]);
 
   return isReadOnly ? null : (
-    <>
+    <AttachStep index={0}>
       <MenuPopover
         trigger={
-          <AttachStep index={0}>
-            <IconButton
-              onLongPress={() => {
-                impactAsync(ImpactFeedbackStyle.Heavy);
-                updateTask({ published: true });
-                handleCopy();
-              }}
-              size={45}
-              icon="ios_share"
-              iconStyle={{ marginTop: -3 }}
-            />
-          </AttachStep>
+          <IconButton
+            onLongPress={() => {
+              impactAsync(ImpactFeedbackStyle.Heavy);
+              updateTask({ published: true });
+              handleCopy();
+            }}
+            size={45}
+            icon="ios_share"
+            iconStyle={{ marginTop: -3 }}
+          />
         }
         containerStyle={{ width: 200 }}
         options={[
@@ -68,7 +66,6 @@ export function TaskShareButton() {
           },
         ]}
       />
-    </>
+    </AttachStep>
   );
 }
-
