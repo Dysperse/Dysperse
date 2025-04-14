@@ -786,7 +786,7 @@ function SecondarySidebar({ scrollRef }) {
       <IconButton
         icon="west"
         onPress={() => {
-          scrollRef.current.scrollTo({ x: 0 });
+          scrollRef.current?.scrollTo({ x: 0 });
           setTimeout(() => {
             router.dismissAll();
             router.replace("/");
@@ -818,7 +818,7 @@ function SecondarySidebar({ scrollRef }) {
           icon="tag"
           onPress={() => {
             InteractionManager.runAfterInteractions(() =>
-              scrollRef.current.scrollTo({ x: ORIGINAL_SIDEBAR_WIDTH + 15 })
+              scrollRef.current?.scrollTo({ x: ORIGINAL_SIDEBAR_WIDTH + 15 })
             );
             router.push("/everything");
             if (Platform.OS !== "web") impactAsync(ImpactFeedbackStyle.Soft);
@@ -838,7 +838,7 @@ function SecondarySidebar({ scrollRef }) {
           icon="stack"
           onPress={() => {
             InteractionManager.runAfterInteractions(() =>
-              scrollRef.current.scrollTo({ x: ORIGINAL_SIDEBAR_WIDTH + 15 })
+              scrollRef.current?.scrollTo({ x: ORIGINAL_SIDEBAR_WIDTH + 15 })
             );
             router.push("/everything/collections");
             impactAsync(ImpactFeedbackStyle.Soft);
@@ -852,7 +852,7 @@ function SecondarySidebar({ scrollRef }) {
           text="Trash"
           onPress={() => {
             InteractionManager.runAfterInteractions(() =>
-              scrollRef.current.scrollTo({ x: ORIGINAL_SIDEBAR_WIDTH + 15 })
+              scrollRef.current?.scrollTo({ x: ORIGINAL_SIDEBAR_WIDTH + 15 })
             );
             router.push("/everything/trash");
             impactAsync(ImpactFeedbackStyle.Soft);
@@ -872,7 +872,7 @@ function SecondarySidebar({ scrollRef }) {
           text="Storage"
           onPress={() => {
             InteractionManager.runAfterInteractions(() =>
-              scrollRef.current.scrollTo({ x: ORIGINAL_SIDEBAR_WIDTH + 15 })
+              scrollRef.current?.scrollTo({ x: ORIGINAL_SIDEBAR_WIDTH + 15 })
             );
             router.push("/everything/storage");
             impactAsync(ImpactFeedbackStyle.Soft);
@@ -935,22 +935,22 @@ const Sidebar = ({ progressValue }: { progressValue?: any }) => {
 
   useEffect(() => {
     if (pathname.includes("everything"))
-      scrollRef.current.scrollTo({
+      scrollRef.current?.scrollTo({
         x: ORIGINAL_SIDEBAR_WIDTH + 15,
         animated: pathname === "/everything",
       });
-    else scrollRef.current.scrollTo({ x: 0 });
+    else scrollRef.current?.scrollTo({ x: 0 });
   }, [pathname]);
 
   useEffect(() => {
     setTimeout(
       () => {
         if (pathname.includes("everything"))
-          scrollRef.current.scrollTo({
+          scrollRef.current?.scrollTo({
             x: 9999,
             animated: pathname === "/everything",
           });
-        else scrollRef.current.scrollTo({ x: 0 });
+        else scrollRef.current?.scrollTo({ x: 0 });
       },
       Platform.OS === "web" ? 1000 : 0
     );
