@@ -78,6 +78,7 @@ html {
   scroll-behavior: smooth;
   -webkit-text-size-adjust: 100%;
   height: calc(100% + env(safe-area-inset-top));
+  background: var(--theme-2)
 }
 
 *::selection {
@@ -164,6 +165,17 @@ input::-webkit-scrollbar {
 
 [aria-valuetext="web-app-animation"] {
   animation: appAnimation 2s cubic-bezier(0.85, 0, 0.15, 1);
+}
+
+body {
+  transition: filter 0.2s, transform 0.2s;
+}
+
+.protected {
+  filter: blur(10px);
+  transform: scale(0.98);
+  pointer-events: none;
+  display: block;
 }
 
 @keyframes appAnimation {

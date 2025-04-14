@@ -38,7 +38,13 @@ import { useDidUpdate } from "@/utils/useDidUpdate";
 import dayjs from "dayjs";
 import { router, useLocalSearchParams, usePathname } from "expo-router";
 import { useEffect, useMemo, useRef, useState } from "react";
-import { InteractionManager, Pressable, StyleSheet, View } from "react-native";
+import {
+  InteractionManager,
+  Platform,
+  Pressable,
+  StyleSheet,
+  View,
+} from "react-native";
 import { KeyboardAvoidingView } from "react-native-keyboard-controller";
 import Animated, {
   useAnimatedStyle,
@@ -531,6 +537,32 @@ function TaskShortcutCreation() {
   );
 }
 
+function Protection() {
+  const theme = useColorTheme();
+
+  useEffect(() => {
+    const update = () => {
+      const isInactive = document.hidden || !document.hasFocus();
+      document.documentElement.style.backgroundColor = theme[2];
+      document.body.classList[isInactive ? "add" : "remove"]("protected");
+    };
+
+    update(); // run on mount
+
+    window.addEventListener("focus", update);
+    window.addEventListener("blur", update);
+    document.addEventListener("visibilitychange", update);
+
+    return () => {
+      window.removeEventListener("focus", update);
+      window.removeEventListener("blur", update);
+      document.removeEventListener("visibilitychange", update);
+    };
+  }, []);
+
+  return null;
+}
+
 export default function Page({ isPublic }: { isPublic: boolean }) {
   const { id, type }: any = useLocalSearchParams();
   const sheetRef = useRef(null);
@@ -632,6 +664,7 @@ export default function Page({ isPublic }: { isPublic: boolean }) {
               </CollectionLabelMenu>
               <TaskShortcutCreation />
               {data && <WindowTitle title={data?.name || "All tasks"} />}
+              {data.pinCode && Platform.OS === "web" && <Protection />}
               {(data ? (
                 (data.pinCode || data.pinCodeError) &&
                 (!data.pinAuthorizationExpiresAt ||
