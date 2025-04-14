@@ -197,11 +197,10 @@ function TaskNoteChips({ note }) {
                 if (Platform.OS === "web")
                   navigator.clipboard.writeText(link.href);
                 else setUrlAsync(link.href);
-                if (Platform.OS === "web")
-                  Toast.show({
-                    type: "info",
-                    text1: "Copied link to clipboard",
-                  });
+                Toast.show({
+                  type: "info",
+                  text1: "Copied link to clipboard",
+                });
               },
               onPress: () => Linking.openURL(link.image || link.href),
             }))}
@@ -504,4 +503,3 @@ const Task = memo(function Task({
 });
 
 export default React.memo(Task);
-

@@ -70,15 +70,15 @@ export default function Magic8Ball() {
         <View
           style={{
             transform: [{ scale: 0.4 }],
-            marginVertical: breakpoints.md ? -70 : -110,
+            marginVertical: -110,
           }}
         >
           <Animated.View
             style={[
               {
                 backgroundColor: "#000",
-                width: breakpoints.md ? 200 : 400,
-                height: breakpoints.md ? 200 : 400,
+                width: 400,
+                height: 400,
                 position: "relative",
                 alignItems: "center",
                 borderRadius: 999,
@@ -89,8 +89,8 @@ export default function Magic8Ball() {
             ]}
           >
             <Svg
-              width={breakpoints.md ? "150" : "300"}
-              height={breakpoints.md ? "150" : "300"}
+              width="300"
+              height="300"
               viewBox="0 0 24 24"
               fill="#0035e1"
               transform={[{ scale: -1 }]}
@@ -100,8 +100,8 @@ export default function Magic8Ball() {
             <View
               style={{
                 position: "absolute",
-                top: breakpoints.md ? 65 : 100,
-                width: breakpoints.md ? 65 : 180,
+                top: 100,
+                width: 180,
                 alignItems: "center",
                 justifyContent: "center",
                 borderRadius: 99,
@@ -113,7 +113,7 @@ export default function Magic8Ball() {
                   {
                     color: "#fff",
                     textAlign: "center",
-                    fontSize: breakpoints.md ? 16 : 30,
+                    fontSize: 30,
                     fontFamily: "body_500",
                   },
                   textStyle,
@@ -157,4 +157,3 @@ export default function Magic8Ball() {
     </View>
   );
 }
-
