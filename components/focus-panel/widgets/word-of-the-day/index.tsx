@@ -34,7 +34,7 @@ export default function WordOfTheDay({ small, handlePin, widget }) {
           </Text>
         </View>
         <Text style={{ color: theme[11], marginLeft: "auto" }}>
-          {data.partOfSpeech}
+          {data.partOfSpeech.replace("plural", "").trim()}
         </Text>
       </View>
     )

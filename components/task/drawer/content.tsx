@@ -741,7 +741,7 @@ export function TaskDrawerContent({
             text: "Mark your task as done",
           },
           {
-            text: "You can also double-tap on any task to quickly create a subtask",
+            text: "Double-tap on any task to quickly create a subtask",
           },
         ]}
       >

@@ -4,7 +4,7 @@ import { setStringAsync } from "expo-clipboard";
 import { impactAsync, ImpactFeedbackStyle } from "expo-haptics";
 import { shareAsync } from "expo-sharing";
 import React, { useCallback } from "react";
-import { Platform } from "react-native";
+import { Platform, View } from "react-native";
 import { AttachStep } from "react-native-spotlight-tour";
 import Toast from "react-native-toast-message";
 import { useTaskDrawerContext } from "./context";
@@ -39,33 +39,35 @@ export function TaskShareButton() {
 
   return isReadOnly ? null : (
     <AttachStep index={0}>
-      <MenuPopover
-        trigger={
-          <IconButton
-            onLongPress={() => {
-              impactAsync(ImpactFeedbackStyle.Heavy);
-              updateTask({ published: true });
-              handleCopy();
-            }}
-            size={45}
-            icon="ios_share"
-            iconStyle={{ marginTop: -3 }}
-          />
-        }
-        containerStyle={{ width: 200 }}
-        options={[
-          {
-            icon: `toggle_${task.published ? "on" : "off"}`,
-            text: `Sharing ${task.published ? "enabled" : "disabled"}`,
-            callback: handleShare,
-          },
-          task.published && {
-            icon: "content_copy",
-            text: "Copy link",
-            callback: handleCopy,
-          },
-        ]}
-      />
+      <View>
+        <MenuPopover
+          trigger={
+            <IconButton
+              onLongPress={() => {
+                impactAsync(ImpactFeedbackStyle.Heavy);
+                updateTask({ published: true });
+                handleCopy();
+              }}
+              size={45}
+              icon="ios_share"
+              iconStyle={{ marginTop: -3 }}
+            />
+          }
+          containerStyle={{ width: 200 }}
+          options={[
+            {
+              icon: `toggle_${task.published ? "on" : "off"}`,
+              text: `Sharing ${task.published ? "enabled" : "disabled"}`,
+              callback: handleShare,
+            },
+            task.published && {
+              icon: "content_copy",
+              text: "Copy link",
+              callback: handleCopy,
+            },
+          ]}
+        />
+      </View>
     </AttachStep>
   );
 }
