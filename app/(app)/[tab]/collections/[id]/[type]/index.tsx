@@ -538,11 +538,7 @@ function TaskShortcutCreation() {
 }
 
 function Protection() {
-  const theme = useColorTheme();
-
   useEffect(() => {
-    document.documentElement.style.backgroundColor = theme[2];
-
     const update = () => {
       const isInactive = document.hidden || !document.hasFocus();
       document.body.classList[isInactive ? "add" : "remove"]("protected");
