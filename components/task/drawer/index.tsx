@@ -19,7 +19,13 @@ import {
   useImperativeHandle,
   useRef,
 } from "react";
-import { Platform, Pressable, View, useWindowDimensions } from "react-native";
+import {
+  Keyboard,
+  Platform,
+  Pressable,
+  View,
+  useWindowDimensions,
+} from "react-native";
 import Toast from "react-native-toast-message";
 import useSWR from "swr";
 import { TaskDrawerContent } from "./content";
@@ -227,7 +233,10 @@ export const TaskDrawer = forwardRef(function TaskDrawer(
   const { height } = useWindowDimensions();
 
   // callbacks
-  const handleOpen = useCallback(() => sheetRef.current.present(), []);
+  const handleOpen = useCallback(() => {
+    sheetRef.current.present();
+    Keyboard.dismiss();
+  }, []);
   const breakpoints = useResponsiveBreakpoints();
 
   useImperativeHandle(ref, () => ({
@@ -297,4 +306,3 @@ export const TaskDrawer = forwardRef(function TaskDrawer(
     </>
   );
 });
-
