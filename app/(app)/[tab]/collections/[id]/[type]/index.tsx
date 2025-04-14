@@ -542,8 +542,9 @@ function Protection() {
 
   useEffect(() => {
     const update = () => {
-      const isInactive = document.hidden || !document.hasFocus();
       document.documentElement.style.backgroundColor = theme[2];
+
+      const isInactive = document.hidden || !document.hasFocus();
       document.body.classList[isInactive ? "add" : "remove"]("protected");
     };
 
