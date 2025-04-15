@@ -661,7 +661,7 @@ export default function Page({ isPublic }: { isPublic: boolean }) {
               </CollectionLabelMenu>
               <TaskShortcutCreation />
               {data && <WindowTitle title={data?.name || "All tasks"} />}
-              {data.pinCode && Platform.OS === "web" && <Protection />}
+              {data?.pinCode && Platform.OS === "web" && <Protection />}
               {(data ? (
                 (data.pinCode || data.pinCodeError) &&
                 (!data.pinAuthorizationExpiresAt ||
