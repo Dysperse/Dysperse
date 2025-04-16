@@ -835,7 +835,7 @@ function TaskNameInput({
                   if (e.key === "Backspace" && value === "") {
                     reset();
                     if (hintRef.current.message === "Hit [backspace] to reset")
-                      hintRef?..current?.setMessage?.(false);
+                      hintRef?.current?.setMessage?.(false);
                   }
                   if (Platform.OS === "web") {
                     if (value.includes("!")) {
@@ -1692,3 +1692,4 @@ const CreateTask = forwardRef(
 );
 
 export default CreateTask;
+
