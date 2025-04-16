@@ -584,7 +584,7 @@ const TimeSuggestion = forwardRef(
         const tagSuggestion = await AsyncStorage.getItem("tagSuggestion");
         const tmwSuggestion = await AsyncStorage.getItem("tmwSuggestion");
 
-        hintRef.current.setMessage(
+        hintRef?.current?.setMessage?.(
           value.match(regex) && !value.includes("](time-prediction)") && date
             ? {
                 text: "Typing a date? Hit [space] to confirm",
@@ -835,12 +835,12 @@ function TaskNameInput({
                   if (e.key === "Backspace" && value === "") {
                     reset();
                     if (hintRef.current.message === "Hit [backspace] to reset")
-                      hintRef.current.setMessage(false);
+                      hintRef?..current?.setMessage?.(false);
                   }
                   if (Platform.OS === "web") {
                     if (value.includes("!")) {
                       localStorage.setItem("importantSuggestion", "true");
-                      hintRef.current.setMessage(false);
+                      hintRef?.current?.setMessage?.(false);
                     }
                     if (value.includes("tmw")) {
                       AsyncStorage.setItem("tmwSuggestion", "true");
