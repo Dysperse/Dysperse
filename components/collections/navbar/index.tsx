@@ -19,7 +19,6 @@ import { memo, useMemo, useRef } from "react";
 import { Platform, View } from "react-native";
 import { Menu } from "react-native-popup-menu";
 import { AttachStep } from "react-native-spotlight-tour";
-import Toast from "react-native-toast-message";
 import useSWR from "swr";
 import { CollectionContext, useCollectionContext } from "../context";
 import { useCollectionSidekickContext } from "../sidekickContext";
@@ -211,12 +210,7 @@ const CollectionNavbar = memo(function CollectionNavbar({
       !isReadOnly && {
         icon: "printer",
         text: "Print",
-        callback: () =>
-          Toast.show({
-            type: "info",
-            text1: "oh, look at you...",
-            text2: "you found a secret feature that's coming soon. stay tuned!",
-          }),
+        callback: () => {},
       },
     Platform.OS === "web" &&
       !fullscreen &&
@@ -356,3 +350,4 @@ const CollectionNavbar = memo(function CollectionNavbar({
 });
 
 export default CollectionNavbar;
+

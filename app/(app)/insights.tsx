@@ -7,12 +7,15 @@ import { addHslAlpha } from "@/ui/color";
 import { useColorTheme } from "@/ui/color/theme-provider";
 import ErrorAlert from "@/ui/Error";
 import Icon from "@/ui/Icon";
+import Logo from "@/ui/logo";
 import MenuPopover from "@/ui/MenuPopover";
 import Spinner from "@/ui/Spinner";
 import Text from "@/ui/Text";
-import { useState } from "react";
-import { View } from "react-native";
+import { shareAsync } from "expo-sharing";
+import { useRef, useState } from "react";
+import { Platform, View } from "react-native";
 import { ScrollView } from "react-native-gesture-handler";
+import ViewShot from "react-native-view-shot";
 import useSWR from "swr";
 import { MenuButton } from "./home";
 
@@ -335,10 +338,44 @@ function Insights({ year }) {
   );
 }
 
+function ShareInsights({ shotRef, setBanner }) {
+  return (
+    <>
+      <Button
+        icon="ios_share"
+        height={50}
+        text="Share"
+        iconPosition="end"
+        variant="outlined"
+        large
+        textStyle={{ marginBottom: -3 }}
+        style={{ paddingHorizontal: 20 }}
+        containerStyle={{ zIndex: 1000 }}
+        onPress={() => {
+          setBanner(true);
+
+          setTimeout(() => {
+            shotRef.current?.capture().then((uri) => {
+              shareAsync(uri, {
+                dialogTitle: "Share your insights",
+                mimeType: "image/png",
+                UTI: "public.png",
+              });
+              setBanner(false);
+            });
+          }, 10);
+        }}
+      />
+    </>
+  );
+}
+
 export default function Page() {
   const { data, error } = useSWR(["user/insights/years"]);
   const [year, setYear] = useState(new Date().getFullYear());
   const theme = useColorTheme();
+  const shotRef = useRef(null);
+  const [banner, setBanner] = useState(false);
 
   return data ? (
     <>
@@ -347,21 +384,90 @@ export default function Page() {
       <ScrollView
         contentContainerStyle={{ paddingTop: 50, backgroundColor: theme[2] }}
       >
-        <Text
+        <View
           style={{
-            fontFamily: "serifText700",
-            fontSize: 30,
             marginTop: 30,
             marginBottom: -20,
+            flexDirection: "row",
             paddingHorizontal: 20,
+            zIndex: 99,
+            alignItems: "center",
+            justifyContent: "space-between",
           }}
         >
-          Insights
-        </Text>
-        {data.years.length > 0 && (
-          <YearSelector years={data.years} year={year} setYear={setYear} />
-        )}
-        <Insights year={year} />
+          <Text
+            style={{
+              fontFamily: "serifText700",
+              fontSize: 30,
+            }}
+          >
+            Insights
+          </Text>
+          {Platform.OS !== "web" && (
+            <ShareInsights setBanner={setBanner} shotRef={shotRef} />
+          )}
+        </View>
+        <View style={{ opacity: banner ? 0 : 1 }}>
+          <ViewShot
+            ref={shotRef}
+            options={{
+              fileName: "My Dysperse Insights",
+              format: "png",
+              quality: 1,
+            }}
+          >
+            <View
+              style={[
+                { borderRadius: 20, backgroundColor: theme[2] },
+                banner && { borderWidth: 2, borderColor: theme[5] },
+              ]}
+            >
+              {banner && (
+                <View
+                  style={{
+                    gap: 10,
+                    flexDirection: "column",
+                    alignItems: "center",
+                    marginTop: 50,
+                  }}
+                >
+                  <Logo size={40} />
+                  <View>
+                    <Text
+                      style={{
+                        fontSize: 24,
+                        color: theme[11],
+                        fontFamily: "serifText700",
+                        textAlign: "center",
+                      }}
+                    >
+                      My productivity insights
+                    </Text>
+                    <Text
+                      style={{
+                        fontSize: 15,
+                        color: theme[11],
+                        fontFamily: "body_700",
+                        opacity: 0.6,
+                        textAlign: "center",
+                      }}
+                    >
+                      {year} &bull; Made with dysperse.com
+                    </Text>
+                  </View>
+                </View>
+              )}
+              {data.years.length > 0 && (
+                <YearSelector
+                  years={data.years}
+                  year={year}
+                  setYear={setYear}
+                />
+              )}
+              <Insights year={year} />
+            </View>
+          </ViewShot>
+        </View>
       </ScrollView>
     </>
   ) : (
