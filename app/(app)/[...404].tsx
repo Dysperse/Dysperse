@@ -1,6 +1,8 @@
 import ContentWrapper from "@/components/layout/content";
+import { Button } from "@/ui/Button";
 import Emoji from "@/ui/Emoji";
 import Text from "@/ui/Text";
+import { router } from "expo-router";
 import { StyleSheet } from "react-native";
 
 const styles = StyleSheet.create({
@@ -19,8 +21,14 @@ export default function Page() {
         Oh no!
       </Text>
       <Text style={{ fontSize: 20, opacity: 0.5 }} weight={500}>
-        404 | This page does not exist
+        404 &bull; This page does not exist
       </Text>
+      <Button
+        text="Return home"
+        icon="home"
+        onPress={() => router.replace("/home")}
+      />
     </ContentWrapper>
   );
 }
+
