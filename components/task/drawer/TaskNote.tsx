@@ -451,12 +451,6 @@ export const TaskNote = forwardRef(
 
     return (
       <>
-        {task.note &&
-          countWords(task.note) > 100 &&
-          !task.hasSimplifiedNote &&
-          session.user.betaTester && (
-            <AISimplification id={task.id} updateTask={updateTask} />
-          )}
         <Button
           dense
           containerStyle={{
@@ -491,6 +485,12 @@ export const TaskNote = forwardRef(
           ]}
           key={task.hasSimplifiedNote ? "simplified" : "normal"}
         >
+          {task.note &&
+            countWords(task.note) > 100 &&
+            !task.hasSimplifiedNote &&
+            session.user.betaTester && (
+              <AISimplification id={task.id} updateTask={updateTask} />
+            )}
           <NoteFormatMenu
             formatMenuRef={formatMenuRef}
             isFocused={isFocused}
