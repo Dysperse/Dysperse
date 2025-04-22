@@ -176,12 +176,8 @@ body {
 .protected {
   filter: blur(10px);
   transform: scale(0.98);
-  pointer-events: none !important;
+  pointer-events: none;
   display: block;
-}
-
-.protected * {
-  pointer-events: none !important;
 }
 
 @keyframes appAnimation {

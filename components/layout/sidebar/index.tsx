@@ -887,7 +887,7 @@ function SecondarySidebar({ scrollRef }) {
             if (!breakpoints.md) sidebarRef.current?.closeDrawer?.();
           }}
           containerStyle={[
-            { borderRadius: 20 },
+            { borderRadius: 20, flexShrink: 0 },
             Platform.OS === "web" && ({ WebkitAppRegion: "no-drag" } as any),
           ]}
           style={{ flexDirection: "column" }}
