@@ -7,16 +7,23 @@ import ErrorAlert from "@/ui/Error";
 import Icon from "@/ui/Icon";
 import { ListItemButton } from "@/ui/ListItemButton";
 import ListItemText from "@/ui/ListItemText";
+import Logo from "@/ui/logo";
 import Modal from "@/ui/Modal";
 import ModalContent from "@/ui/Modal/content";
 import ModalHeader from "@/ui/ModalHeader";
 import SkeletonContainer from "@/ui/Skeleton/container";
 import { LinearSkeletonArray } from "@/ui/Skeleton/linear";
 import Text from "@/ui/Text";
-import React, { useMemo, useRef } from "react";
+import dayjs from "dayjs";
+import { impactAsync, ImpactFeedbackStyle } from "expo-haptics";
+import { shareAsync } from "expo-sharing";
+import React, { useMemo, useRef, useState } from "react";
 import { Platform, View } from "react-native";
 import { ScrollView } from "react-native-gesture-handler";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
+import ViewShot from "react-native-view-shot";
 import useSWR from "swr";
+import Streaks from "../home/streaks";
 import { useCollectionContext } from "./context";
 
 function InspireMe({ row, labelId }) {
@@ -121,6 +128,26 @@ const messages = [
 function ShareProgress() {
   const theme = useColorTheme();
   const ref = useRef(null);
+  const insets = useSafeAreaInsets();
+  const [size, setSize] = useState("LARGE");
+  const [capture, setCapture] = useState(false);
+
+  const shotRef = useRef(null);
+
+  const handleCapture = () => {
+    setCapture(true);
+
+    setTimeout(() => {
+      shotRef.current?.capture().then((uri) => {
+        shareAsync(uri, {
+          dialogTitle: "Share your insights",
+          mimeType: "image/png",
+          UTI: "public.png",
+        });
+        setCapture(false);
+      });
+    }, 10);
+  };
 
   return (
     <>
@@ -136,8 +163,199 @@ function ShareProgress() {
           pressed: theme[6],
         }}
       />
-      <BottomSheet sheetRef={ref} snapPoints={["90%"]}>
-        <Text>Coming soon!</Text>
+      <BottomSheet sheetRef={ref} snapPoints={[size === "SMALL" ? 470 : 680]}>
+        <View style={{ height: "100%" }}>
+          <ModalHeader title="Share" noPaddingTop />
+          <View
+            style={{
+              alignItems: "center",
+              justifyContent: "center",
+              flex: 1,
+              opacity: capture ? 0 : 1,
+            }}
+          >
+            <ViewShot
+              ref={shotRef}
+              options={{
+                fileName: "My Dysperse Insights",
+                format: "png",
+                quality: 1,
+              }}
+            >
+              <View
+                style={[
+                  {
+                    aspectRatio: size === "SMALL" ? "5 / 4" : "9 / 16",
+                    width: 220,
+                    backgroundColor: theme[3],
+                    padding: 20,
+                    alignItems: "center",
+                    justifyContent: "center",
+                  },
+                  (size === "SMALL" || !capture) && {
+                    borderWidth: 1,
+                    borderRadius: 10,
+                    borderColor: theme[6],
+                  },
+                  !capture && {
+                    shadowColor: theme[9],
+                    shadowRadius: 20,
+                    shadowOffset: { height: 10, width: 10 },
+                    shadowOpacity: 0.2,
+                  },
+                ]}
+              >
+                {size === "SMALL" ? (
+                  <Logo size={30} />
+                ) : (
+                  <View
+                    style={{
+                      flexDirection: "row",
+                      alignItems: "center",
+                      gap: 5,
+                      paddingTop: 20,
+                      marginBottom: "auto",
+                      width: "100%",
+                    }}
+                  >
+                    <Logo size={24} />
+                    <Text
+                      style={{ color: theme[11], fontSize: 12 }}
+                      weight={800}
+                    >
+                      #dysperse
+                    </Text>
+                  </View>
+                )}
+                {size === "LARGE" && <View style={{ flex: 1 }} />}
+                <Text
+                  style={{
+                    fontFamily: "serifText700",
+                    fontSize: size === "SMALL" ? 20 : 25,
+                    marginTop: 10,
+                    marginBottom: 5,
+                    textAlign: "center",
+                    color: theme[11],
+                    alignItems: "center",
+                    justifyContent: "center",
+                  }}
+                >
+                  I completed{"\n"}
+                  <View
+                    style={{
+                      backgroundColor: theme[9],
+                      verticalAlign: "middle",
+                      borderRadius: 5,
+                      paddingHorizontal: 4,
+                      marginBottom: -3,
+                    }}
+                  >
+                    <Text
+                      style={{
+                        fontFamily: "serifText700",
+                        fontSize: size === "SMALL" ? 20 : 25,
+                        color: theme[2],
+                      }}
+                    >
+                      7 tasks
+                    </Text>
+                  </View>{" "}
+                  today
+                </Text>
+                {size === "LARGE" && <Streaks dense />}
+                <View style={{ flexDirection: "row", gap: 5 }}>
+                  <Button
+                    chip
+                    text={dayjs().format("MMMM Do")}
+                    backgroundColors={
+                      {
+                        default: theme[4],
+                      } as any
+                    }
+                    height={size === "SMALL" ? undefined : 25}
+                    style={{
+                      paddingHorizontal: size === "SMALL" ? 13 : 12,
+                    }}
+                    containerStyle={{
+                      marginTop: 5,
+                      borderRadius: 10,
+                    }}
+                    textStyle={{ fontSize: 10 }}
+                    iconSize={20}
+                    disabled
+                  />
+                  <Button
+                    chip
+                    text="7"
+                    icon="local_fire_department"
+                    backgroundColors={
+                      {
+                        default: theme[4],
+                      } as any
+                    }
+                    iconStyle={{ marginTop: -3 }}
+                    height={size === "SMALL" ? undefined : 25}
+                    style={{
+                      paddingRight: size === "SMALL" ? 13 : 12,
+                      paddingLeft: size === "SMALL" ? undefined : 7,
+                    }}
+                    textStyle={{ fontSize: 10 }}
+                    iconSize={20}
+                    containerStyle={{
+                      marginTop: 5,
+                      borderRadius: 10,
+                    }}
+                    disabled
+                  />
+                </View>
+
+                {size === "LARGE" && <View style={{ flex: 1 }} />}
+              </View>
+            </ViewShot>
+          </View>
+          <View
+            style={{
+              flexDirection: "row",
+              justifyContent: "center",
+              marginTop: 20,
+            }}
+          >
+            <Button
+              text="Small"
+              backgroundColors={{
+                default: theme[size === "SMALL" ? 4 : 2],
+                hovered: theme[5],
+                pressed: theme[6],
+              }}
+              onPress={() => {
+                setSize("SMALL");
+                impactAsync(ImpactFeedbackStyle.Medium);
+              }}
+            />
+            <Button
+              text="Large"
+              backgroundColors={{
+                default: theme[size === "LARGE" ? 4 : 2],
+                hovered: theme[5],
+                pressed: theme[6],
+              }}
+              onPress={() => {
+                setSize("LARGE");
+                impactAsync(ImpactFeedbackStyle.Medium);
+              }}
+            />
+          </View>
+          <View style={{ padding: 20, paddingBottom: 10 + insets.bottom }}>
+            <Button
+              text="Share"
+              icon="ios_share"
+              onPress={handleCapture}
+              large
+              bold
+              variant="filled"
+            />
+          </View>
+        </View>
       </BottomSheet>
     </>
   );
@@ -175,7 +393,7 @@ export const ColumnEmptyComponent = function ColumnEmptyComponent({
           marginTop: 5,
           paddingTop: 60,
           marginBottom: 10,
-          paddingBottom: 20,
+          paddingBottom: 15,
           borderRadius: 20,
           backgroundColor: theme[3],
         },
@@ -230,7 +448,10 @@ export const ColumnEmptyComponent = function ColumnEmptyComponent({
           marginTop: 5,
         }}
       >
-        {plannerFinished && Platform.OS !== "web" && <ShareProgress />}
+        {plannerFinished &&
+          (Platform.OS !== "web" || process.env.NODE_ENV == "development") && (
+            <ShareProgress />
+          )}
         {session?.user?.betaTester && showInspireMe && labelId && (
           <InspireMe row={row} labelId={labelId} />
         )}
