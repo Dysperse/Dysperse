@@ -165,7 +165,7 @@ function ShareProgress() {
       />
       <BottomSheet sheetRef={ref} snapPoints={[size === "SMALL" ? 470 : 680]}>
         <View style={{ height: "100%" }}>
-          <ModalHeader title="Share" noPaddingTop />
+          <ModalHeader title="Share" noPaddingTop subtitle="Coming soon!" />
           <View
             style={{
               alignItems: "center",
