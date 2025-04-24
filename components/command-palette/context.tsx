@@ -111,14 +111,21 @@ function IOSSpotlightSearch() {
     sidebarRef.current?.closeDrawer();
 
     // Find the section that matches the domain
-    const section = sections.find(
-      (section) => section.title.toUpperCase().replaceAll(" ", "_") === domain
-    );
-    if (!section) Toast.show({ type: "error", text1: "Item not found" });
-    const item = section.items.find((item) => item.key === key);
-    if (!item) Toast.show({ type: "error", text1: "Item not found" });
+    if (domain === "LABELS") {
+      router.push(`/everything/labels/${key}`);
+    } else {
+      const section = sections
+        .filter((t) => t.title)
+        .find(
+          (section) =>
+            section.title.toUpperCase().replaceAll(" ", "_") === domain
+        );
+      if (!section) Toast.show({ type: "error", text1: "Item not found" });
+      const item = section.items.find((item) => item.key === key);
+      if (!item) Toast.show({ type: "error", text1: "Item not found" });
 
-    createTab(sessionToken, item);
+      createTab(sessionToken, item);
+    }
   };
 
   useEffect(() => {
