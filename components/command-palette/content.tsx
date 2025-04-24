@@ -742,3 +742,4 @@ export default function CommandPaletteContent({ handleClose, defaultFilter }) {
     </View>
   );
 }
+

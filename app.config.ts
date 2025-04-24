@@ -171,6 +171,7 @@ export default ({ config }: ConfigContext): ExpoConfig =>
             },
           ],
         ],
+        "react-native-spotlight-search",
         "react-native-edge-to-edge",
         [
           "expo-splash-screen",

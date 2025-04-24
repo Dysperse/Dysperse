@@ -10,6 +10,7 @@ import * as Updates from "expo-updates";
 import React from "react";
 import { Platform, View, useWindowDimensions } from "react-native";
 import "react-native-gesture-handler";
+import SpotlightSearch from "react-native-spotlight-search";
 
 export function ErrorBoundaryComponent() {
   const theme = useColor("mint");
@@ -99,6 +100,7 @@ export function ErrorBoundaryComponent() {
                   window.location.reload();
                 }
                 signOut();
+                SpotlightSearch.deleteAllItems();
               }}
               variant="filled"
               containerStyle={{ marginTop: 10 }}
@@ -112,3 +114,4 @@ export function ErrorBoundaryComponent() {
     </ColorThemeProvider>
   );
 }
+

@@ -806,7 +806,8 @@ function SecondarySidebar({ scrollRef }) {
         style={[
           {
             marginLeft: 5,
-            marginTop: "env(titlebar-area-height,0)",
+            marginTop:
+              Platform.OS === "web" ? "env(titlebar-area-height,0)" : undefined,
           },
           Platform.OS === "web" && ({ WebkitAppRegion: "no-drag" } as any),
         ]}
@@ -1015,3 +1016,4 @@ const Sidebar = ({ progressValue }: { progressValue?: any }) => {
 };
 
 export default memo(Sidebar);
+

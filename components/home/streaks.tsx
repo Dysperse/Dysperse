@@ -117,7 +117,7 @@ function StreakGoal() {
               gap: 20,
             }}
           >
-            {data ? (
+            {data && process.env.NODE_ENV === "production" ? (
               <>
                 <GoalIndicator
                   name="Today"
