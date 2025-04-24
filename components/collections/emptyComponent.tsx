@@ -1,5 +1,6 @@
 import { useUser } from "@/context/useUser";
 import { useResponsiveBreakpoints } from "@/helpers/useResponsiveBreakpoints";
+import BottomSheet from "@/ui/BottomSheet";
 import { Button } from "@/ui/Button";
 import { useColorTheme } from "@/ui/color/theme-provider";
 import ErrorAlert from "@/ui/Error";
@@ -49,7 +50,6 @@ function InspireMe({ row, labelId }) {
         containerStyle={{
           marginRight: "auto",
           marginTop: 10,
-          marginLeft: row ? 80 : "auto",
           zIndex: 99,
         }}
         iconPosition="end"
@@ -118,6 +118,31 @@ const messages = [
   ["celebration", "Look at yourself", "You're beautiful."],
 ];
 
+function ShareProgress() {
+  const theme = useColorTheme();
+  const ref = useRef(null);
+
+  return (
+    <>
+      <Button
+        dense
+        icon="ios_share"
+        text="Share"
+        variant="filled"
+        onPress={() => ref.current.present()}
+        backgroundColors={{
+          default: theme[4],
+          hovered: theme[5],
+          pressed: theme[6],
+        }}
+      />
+      <BottomSheet sheetRef={ref} snapPoints={["90%"]}>
+        <Text>Coming soon!</Text>
+      </BottomSheet>
+    </>
+  );
+}
+
 export const ColumnEmptyComponent = function ColumnEmptyComponent({
   row,
   list,
@@ -125,6 +150,7 @@ export const ColumnEmptyComponent = function ColumnEmptyComponent({
   labelId,
   finished,
   offset = 0,
+  plannerFinished,
 }: {
   row?: boolean;
   list?: boolean;
@@ -132,6 +158,7 @@ export const ColumnEmptyComponent = function ColumnEmptyComponent({
   labelId?: string;
   finished?: boolean;
   offset?: number;
+  plannerFinished?: boolean;
 }) {
   const { session } = useUser();
   const theme = useColorTheme();
@@ -195,10 +222,19 @@ export const ColumnEmptyComponent = function ColumnEmptyComponent({
           </Text>
         </View>
       </View>
-      {session?.user?.betaTester && showInspireMe && labelId && (
-        <InspireMe row={row} labelId={labelId} />
-      )}
+      <View
+        style={{
+          flexDirection: "row",
+          marginLeft: row ? 80 : "auto",
+          gap: 10,
+          marginTop: 5,
+        }}
+      >
+        {plannerFinished && Platform.OS !== "web" && <ShareProgress />}
+        {session?.user?.betaTester && showInspireMe && labelId && (
+          <InspireMe row={row} labelId={labelId} />
+        )}
+      </View>
     </View>
   );
 };
-

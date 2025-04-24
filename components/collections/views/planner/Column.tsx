@@ -161,7 +161,14 @@ export function Column({
                       )
                     )
                   : task.completionInstances.length === 0
-              ) && <ColumnEmptyComponent offset={cellIndex} row finished />}
+              ) && (
+                <ColumnEmptyComponent
+                  plannerFinished
+                  offset={cellIndex}
+                  row
+                  finished
+                />
+              )}
           </View>
         )}
         renderItem={({ item }: any) => (
@@ -178,4 +185,3 @@ export function Column({
     </View>
   );
 }
-

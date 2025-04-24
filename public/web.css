@@ -173,6 +173,11 @@ body {
   transition: filter 0.2s, transform 0.2s;
 }
 
+html,
+body {
+  overflow: hidden;
+}
+
 .protected {
   filter: blur(10px);
   transform: scale(0.98);
