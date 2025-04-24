@@ -1,3 +1,4 @@
+import { useUser } from "@/context/useUser";
 import { useResponsiveBreakpoints } from "@/helpers/useResponsiveBreakpoints";
 import { BottomSheetModal } from "@gorhom/bottom-sheet";
 import { router } from "expo-router";
@@ -13,8 +14,10 @@ import {
 } from "react";
 import { Platform } from "react-native";
 import SpotlightSearch from "react-native-spotlight-search";
+import Toast from "react-native-toast-message";
 import useSWR from "swr";
 import { paletteItems } from "../layout/command-palette/list";
+import { createTab } from "../layout/openTab";
 import { useSidebarContext } from "../layout/sidebar/context";
 import CommandPalette from "./palette";
 interface CommandPaletteContext {
@@ -51,6 +54,7 @@ function IOSSpotlightSearch() {
   const { data: labels } = useSWR(["space/labels"]);
   const { data: sharedCollections } = useSWR(["user/collectionAccess"]);
   const { sidebarRef } = useSidebarContext();
+  const { sessionToken } = useUser();
 
   const sections = paletteItems(collections, sharedCollections, labels);
 
@@ -78,6 +82,7 @@ function IOSSpotlightSearch() {
                   contentDescription: `${section.title}`,
                   uniqueIdentifier: `<${domain}:${item.key}>`,
                   thumbnailData: emoji,
+                  keywords: ["Dysperse", section.title],
                 };
               });
             })
@@ -105,15 +110,15 @@ function IOSSpotlightSearch() {
 
     sidebarRef.current?.closeDrawer();
 
-    switch (domain) {
-      case "LABELS":
-        router.push(`/everything/labels/${key}`);
-        break;
-      case "COLLECTIONS":
-        router.push(`/everything/collections/${key}`);
-        break;
-      // add more cases if needed
-    }
+    // Find the section that matches the domain
+    const section = sections.find(
+      (section) => section.title.toUpperCase().replaceAll(" ", "_") === domain
+    );
+    if (!section) Toast.show({ type: "error", text1: "Item not found" });
+    const item = section.items.find((item) => item.key === key);
+    if (!item) Toast.show({ type: "error", text1: "Item not found" });
+
+    createTab(sessionToken, item);
   };
 
   useEffect(() => {
