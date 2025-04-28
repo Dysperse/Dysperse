@@ -336,7 +336,7 @@ function TaskNameInput() {
         onBlur={handleSave}
         onChangeText={(text) => setName(text)}
         enterKeyHint="done"
-        value={name?.trim()}
+        value={name}
         bounces={false}
         onKeyPress={(e) => {
           if (e.nativeEvent.key === "Enter" || e.nativeEvent.key === "Escape") {
