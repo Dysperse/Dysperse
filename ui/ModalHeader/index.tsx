@@ -7,6 +7,7 @@ import Text from "../Text";
 interface ModalHeaderProps {
   title: string;
   subtitle?: string;
+  noPaddingTop?: boolean;
 }
 
 export default function ModalHeader(props: ModalHeaderProps) {
@@ -19,6 +20,7 @@ export default function ModalHeader(props: ModalHeaderProps) {
         flexDirection: "row",
         justifyContent: "space-between",
         padding: 20,
+        paddingTop: props.noPaddingTop ? 10 : 20,
         alignItems: "center",
       }}
     >

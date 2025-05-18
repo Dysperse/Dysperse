@@ -12,42 +12,46 @@ import { View } from "react-native";
 import { AnimatedCircularProgress } from "react-native-circular-progress";
 import useSWR from "swr";
 
-const GoalIndicator = ({ completed, goal, name }) => {
+const GoalIndicator = ({ dense, completed, goal, name }) => {
   const theme = useColorTheme();
 
   return (
     <View
-      style={{
-        flexDirection: "row",
-        alignItems: "center",
-        gap: 20,
-        flex: 1,
-      }}
+      style={[
+        {
+          flexDirection: "row",
+          alignItems: "center",
+          gap: dense ? 8 : 20,
+          flex: dense ? undefined : 1,
+        },
+      ]}
     >
       <View
         style={{
-          width: 30,
-          height: 30,
+          width: dense ? 20 : 30,
+          height: dense ? 20 : 30,
           transform:
-            completed >= goal ? null : [{ rotate: "90deg" }, { scaleX: -1 }],
+            completed >= goal ? [] : [{ rotate: "90deg" }, { scaleX: -1 }],
         }}
       >
+        {/* weird bug */}
         {completed >= goal ? (
           <Avatar
             disabled
             icon="check"
-            size={30}
+            size={dense ? 20 : 30}
             style={{
               backgroundColor: theme[10],
             }}
             iconProps={{
               bold: true,
-              style: { color: theme[1] },
+              size: dense ? 15 : undefined,
+              style: { color: theme[1], marginTop: dense ? -3 : undefined },
             }}
           />
         ) : (
           <AnimatedCircularProgress
-            size={30}
+            size={dense ? 20 : 30}
             width={2}
             fill={(completed / goal) * 100}
             tintColor={theme[10]}
@@ -56,10 +60,15 @@ const GoalIndicator = ({ completed, goal, name }) => {
         )}
       </View>
       <View>
-        <Text weight={900} style={{ color: theme[11] }}>
+        <Text
+          weight={900}
+          style={[{ color: theme[11] }, dense && { fontSize: 10 }]}
+        >
           {name}
         </Text>
-        <Text style={{ color: theme[11], opacity: 0.6 }}>
+        <Text
+          style={[{ color: theme[11], opacity: 0.6 }, dense && { fontSize: 8 }]}
+        >
           {completed}/{goal} tasks
         </Text>
       </View>
@@ -67,7 +76,7 @@ const GoalIndicator = ({ completed, goal, name }) => {
   );
 };
 
-function StreakGoal() {
+function StreakGoal({ dense }: { dense?: boolean }) {
   const theme = useColorTheme();
 
   const { data, error } = useSWR([
@@ -84,48 +93,61 @@ function StreakGoal() {
         <ErrorAlert />
       ) : (
         <>
-          <MenuPopover
-            menuProps={{ style: { marginRight: "auto", marginLeft: -10 } }}
-            options={[
-              {
-                icon: "settings",
-                text: "Edit goal",
-                callback: () => router.push("/settings/tasks"),
-              },
-            ]}
-            trigger={
-              <Button
-                dense
-                textProps={{ variant: "eyebrow" }}
-                text="Streaks"
-                icon="expand_more"
-                iconPosition="end"
-                containerStyle={{ marginBottom: 5 }}
-                iconStyle={{ opacity: 0.6 }}
-              />
-            }
-          />
+          {!dense && (
+            <MenuPopover
+              menuProps={{ style: { marginRight: "auto", marginLeft: -10 } }}
+              options={[
+                {
+                  icon: "settings",
+                  text: "Edit goal",
+                  callback: () => router.push("/settings/tasks"),
+                },
+              ]}
+              trigger={
+                <Button
+                  dense
+                  textProps={{ variant: "eyebrow" }}
+                  text="Streaks"
+                  icon="expand_more"
+                  iconPosition="end"
+                  containerStyle={{ marginBottom: 5 }}
+                  iconStyle={{ opacity: 0.6 }}
+                />
+              }
+            />
+          )}
           <View
-            style={{
-              backgroundColor: theme[2],
-              borderRadius: 20,
-              borderWidth: 1,
-              borderColor: theme[5],
-              padding: 20,
-              flexDirection: "row",
-              alignItems: "center",
-              gap: 20,
-            }}
+            style={[
+              !dense
+                ? {
+                    backgroundColor: theme[2],
+                    borderRadius: 20,
+                    borderWidth: 1,
+                    borderColor: theme[5],
+                    padding: 20,
+                    flexDirection: "row",
+                    alignItems: "center",
+                    gap: 20,
+                  }
+                : {
+                    marginTop: 10,
+                    marginBottom: 10,
+                    gap: 25,
+                    flexDirection: "row",
+                  },
+            ]}
           >
-            {data && process.env.NODE_ENV === "production" ? (
+            {data && process.env.NODE_ENV !== "production" ? (
               <>
                 <GoalIndicator
+                  dense={dense}
                   name="Today"
                   completed={data.dayTasks || 0}
                   goal={data.user?.dailyStreakGoal || 5}
                 />
                 <GoalIndicator
-                  name="This week"
+                  dense={dense}
+                  name={dense ? "Week" : "This week"}
                   completed={data.weekTasks || 0}
                   goal={data.user?.weeklyStreakGoal || 5}
                 />
@@ -141,4 +163,3 @@ function StreakGoal() {
 }
 
 export default memo(StreakGoal);
-

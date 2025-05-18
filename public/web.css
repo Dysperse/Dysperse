@@ -173,6 +173,11 @@ body {
   transition: filter 0.2s, transform 0.2s;
 }
 
+html,
+body {
+  overflow: hidden;
+}
+
 .protected {
   filter: blur(10px);
   transform: scale(0.98);
@@ -182,9 +187,11 @@ body {
 
 @keyframes appAnimation {
   from {
+    transform: scale(1.2);
     filter: blur(20px);
   }
   to {
+    transform: scale(1);
     filter: blur(0px);
   }
 }
