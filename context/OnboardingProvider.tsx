@@ -149,7 +149,7 @@ export const OnboardingTrigger = ({
 
 // Temporary fix
 export function OnboardingContainer({ children }) {
-  return children;
+  return children();
 }
 
 export function AttachStep({ children }) {
