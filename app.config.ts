@@ -1,6 +1,5 @@
 import { withSentry } from "@sentry/react-native/expo";
 import { ConfigContext, ExpoConfig } from "expo/config";
-// import * as themeColors from "./themes.js";
 
 export function hslToHex(h, s, l) {
   l /= 100;
@@ -142,7 +141,6 @@ export default ({ config }: ConfigContext): ExpoConfig =>
                 backgroundColor: "#fff",
               },
             })),
-
             ...themes.map((key) => ({
               name: `${key}Light`,
               ios: `./assets/icons/${key}Light.png`,
@@ -229,7 +227,12 @@ export default ({ config }: ConfigContext): ExpoConfig =>
             defaultChannel: "default",
           },
         ],
-        "expo-router",
+        [
+          "expo-router",
+          {
+            sitemap: process.env.NODE_ENV === "development",
+          },
+        ],
         "expo-secure-store",
         [
           "expo-location",
