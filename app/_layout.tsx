@@ -24,13 +24,7 @@ import { ErrorBoundary } from "@sentry/react-native";
 import { useFonts } from "expo-font";
 import * as NavigationBar from "expo-navigation-bar";
 import * as SplashScreen from "expo-splash-screen";
-import React, {
-  useCallback,
-  useEffect,
-  useMemo,
-  useRef,
-  useState,
-} from "react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 import { Platform, StatusBar, useWindowDimensions } from "react-native";
 import { SystemBars } from "react-native-edge-to-edge";
 import "react-native-gesture-handler";
@@ -142,18 +136,15 @@ function Root() {
   const SIDEBAR_WIDTH = useSharedValue(ORIGINAL_SIDEBAR_WIDTH);
   const sidebarState = useRef(false);
 
-  const sidebarContextValue = useMemo(
-    () => ({
-      sidebarRef: sidebarRef,
-      desktopCollapsed: breakpoints.md ? desktopCollapsed : false,
-      setDesktopCollapsed,
-      SIDEBAR_WIDTH,
-      ORIGINAL_SIDEBAR_WIDTH,
-      SECONDARY_SIDEBAR_WIDTH: 130,
-      sidebarState,
-    }),
-    [desktopCollapsed, SIDEBAR_WIDTH, ORIGINAL_SIDEBAR_WIDTH, breakpoints]
-  );
+  const sidebarContextValue = {
+    sidebarRef: sidebarRef,
+    desktopCollapsed: breakpoints.md ? desktopCollapsed : false,
+    setDesktopCollapsed,
+    SIDEBAR_WIDTH,
+    ORIGINAL_SIDEBAR_WIDTH,
+    SECONDARY_SIDEBAR_WIDTH: 130,
+    sidebarState,
+  };
 
   if (Platform.OS !== "web" && !fontsLoaded && !fontsError) return null;
   StatusBar.setBackgroundColor("transparent");
