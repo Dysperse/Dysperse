@@ -1,11 +1,10 @@
-import ChipInput from "@/components/ChipInput";
 import { LocationPickerModal } from "@/components/collections/views/map";
 import LabelPicker from "@/components/labels/picker";
 import { useLabelColors } from "@/components/labels/useLabelColors";
 import { COLLECTION_VIEWS } from "@/components/layout/command-palette/list";
 import { useSession } from "@/context/AuthProvider";
 import { useBadgingService } from "@/context/BadgingProvider";
-import { OnboardingContainer } from "@/context/OnboardingProvider";
+import { AttachStep, OnboardingContainer } from "@/context/OnboardingProvider";
 import { useStorageContext } from "@/context/storageContext";
 import { useUser } from "@/context/useUser";
 import { sendApiRequest } from "@/helpers/api";
@@ -56,7 +55,6 @@ import Animated, {
   withSpring,
   withTiming,
 } from "react-native-reanimated";
-import { AttachStep } from "react-native-spotlight-tour";
 import Toast from "react-native-toast-message";
 import { RRule } from "rrule";
 import useSWR from "swr";
@@ -287,7 +285,7 @@ export const AiLabelSuggestion = ({ watch, setValue, nameRef, style }: any) => {
         icon="add"
         onPress={() => {
           setValue("label", result);
-          nameRef.current.focus();
+          nameRef.current?.focus();
         }}
         style={[{ borderStyle: "dashed", borderWidth: 1 }, style]}
       />
@@ -334,7 +332,7 @@ const CreateTaskLabelInput = memo(function CreateTaskLabelInput({
             setLabel={onChange}
             defaultCollection={collectionId}
             sheetProps={{ sheetRef: labelMenuRef }}
-            onClose={() => nameRef.current.focus()}
+            onClose={() => nameRef.current?.focus()}
             autoFocus
           >
             {!label?.id && collectionId ? (
@@ -729,7 +727,7 @@ function TaskNameInput({
               value={value}
               hintRef={hintRef}
             />
-            <ChipInput
+            {/* <ChipInput
               placeholder="What's on your mind?"
               onSubmitEditing={() => handleSubmitButtonClick()}
               inputProps={{
@@ -871,7 +869,7 @@ function TaskNameInput({
               ]}
               value={value}
               setValue={onChange}
-            />
+            /> */}
           </View>
         </>
       )}
@@ -1041,13 +1039,13 @@ function DateButton({
           setValue("end", t.end);
         }}
         onOpen={Keyboard.dismiss}
-        onClose={() => nameRef.current.focus()}
+        onClose={() => nameRef.current?.focus()}
       />
       <RecurrencePicker
         ref={recurrenceRef}
         value={recurrenceRule}
         setValue={(t: any) => setValue("recurrenceRule", t)}
-        onClose={() => nameRef.current.focus()}
+        onClose={() => nameRef.current?.focus()}
       />
       <MenuPopover
         menuProps={{ rendererProps: { placement: "top" } }}
@@ -1138,7 +1136,7 @@ const TaskDescriptionInput = forwardRef(
           render={({ field: { onChange, value } }) => (
             <TaskNote
               openLink={(url) => Linking.openURL(url)}
-              onContainerFocus={() => nameRef.current.focus()}
+              onContainerFocus={() => nameRef.current?.focus()}
               showEditorWhenEmpty
               ref={editorRef}
               task={{ note: "<p>hi</p>" }}
@@ -1256,7 +1254,7 @@ function LocationButton({ watch, setValue, nameRef }) {
     <LocationPickerModal
       autoFocus={Platform.OS !== "web"}
       hideSkip
-      onClose={() => nameRef.current.focus()}
+      onClose={() => nameRef.current?.focus()}
       onLocationSelect={(location) =>
         setValue("location", {
           placeId: location.place_id,
@@ -1338,7 +1336,7 @@ const BottomSheetContent = forwardRef(
     const { session } = useUser();
     useEffect(() => {
       if (!session.user.hintsViewed.includes("CREATE_TASK")) return;
-      nameRef.current.focus({ preventScroll: true });
+      nameRef.current?.focus({ preventScroll: true });
     }, [session, nameRef, breakpoints]);
 
     const onSubmit = async (data) => {
@@ -1373,7 +1371,7 @@ const BottomSheetContent = forwardRef(
           type: "success",
           text1: "Created task!",
         });
-        nameRef.current.focus();
+        nameRef.current?.focus();
       } catch (e) {
         Toast.show({
           type: "error",

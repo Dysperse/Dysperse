@@ -1,4 +1,5 @@
 import { useBadgingService } from "@/context/BadgingProvider";
+import { AttachStep } from "@/context/OnboardingProvider";
 import { useUser } from "@/context/useUser";
 import { sendApiRequest } from "@/helpers/api";
 import { getTaskCompletionStatus } from "@/helpers/getTaskCompletionStatus";
@@ -12,7 +13,6 @@ import { useBottomSheet } from "@gorhom/bottom-sheet";
 import dayjs from "dayjs";
 import { impactAsync, ImpactFeedbackStyle } from "expo-haptics";
 import React from "react";
-import { AttachStep } from "react-native-spotlight-tour";
 import Toast from "react-native-toast-message";
 import { useTaskDrawerContext } from "../context";
 

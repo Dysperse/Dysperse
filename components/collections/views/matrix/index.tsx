@@ -1,6 +1,6 @@
 import { mutations } from "@/app/(app)/[tab]/collections/mutations";
 import CreateTask from "@/components/task/create";
-import { OnboardingContainer } from "@/context/OnboardingProvider";
+import { AttachStep, OnboardingContainer } from "@/context/OnboardingProvider";
 import { useResponsiveBreakpoints } from "@/helpers/useResponsiveBreakpoints";
 import { Button } from "@/ui/Button";
 import Icon from "@/ui/Icon";
@@ -28,7 +28,6 @@ import Animated, {
   withSpring,
 } from "react-native-reanimated";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
-import { AttachStep } from "react-native-spotlight-tour";
 import { useCollectionContext } from "../../context";
 import { ColumnEmptyComponent } from "../../emptyComponent";
 import { Entity } from "../../entity";
@@ -577,3 +576,4 @@ export default function Matrix() {
     </View>
   );
 }
+

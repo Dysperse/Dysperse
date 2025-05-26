@@ -1,6 +1,6 @@
 import { useSidebarContext } from "@/components/layout/sidebar/context";
 import { useSession } from "@/context/AuthProvider";
-import { OnboardingContainer } from "@/context/OnboardingProvider";
+import { AttachStep, OnboardingContainer } from "@/context/OnboardingProvider";
 import { useUser } from "@/context/useUser";
 import { sendApiRequest } from "@/helpers/api";
 import { useHotkeys } from "@/helpers/useHotKeys";
@@ -48,7 +48,6 @@ import Animated, {
   withSpring,
 } from "react-native-reanimated";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
-import { AttachStep } from "react-native-spotlight-tour";
 import Toast from "react-native-toast-message";
 import useSWR, { useSWRConfig } from "swr";
 import LoadingErrors from "../LoadingErrors";
