@@ -89,7 +89,10 @@ export function Actions() {
       <PlanDayPrompt />
       <TouchableOpacity
         style={actionStyles.item}
-        onPress={() => router.push("/insights")}
+        onPress={() => {
+          router.dismissAll();
+          router.push("/insights");
+        }}
       >
         <Icon>emoji_objects</Icon>
         <Text style={{ color: theme[11] }} numberOfLines={1}>
@@ -98,7 +101,10 @@ export function Actions() {
       </TouchableOpacity>
       <TouchableOpacity
         style={actionStyles.item}
-        onPress={() => router.push("/friends")}
+        onPress={() => {
+          router.dismissAll();
+          router.push("/friends");
+        }}
       >
         <Icon>group</Icon>
         <Text style={{ color: theme[11] }} numberOfLines={1}>
@@ -108,4 +114,3 @@ export function Actions() {
     </View>
   );
 }
-

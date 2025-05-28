@@ -147,7 +147,7 @@ export const MenuButton = ({
             top: 0,
             left: 0,
             zIndex: 10,
-            height: 150,
+            height: Platform.OS === "web" ? 100 : 150,
             overflow: "visible",
             width: "100%",
             pointerEvents: "box-none",
@@ -548,4 +548,3 @@ function Page() {
 }
 
 export default memo(Page);
-
