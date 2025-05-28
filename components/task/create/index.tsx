@@ -1679,7 +1679,15 @@ const CreateTask = forwardRef(
             {() => (
               <ErrorBoundary
                 fallback={
-                  <Text>Something went wrong, please try again later</Text>
+                  <Text
+                    style={{
+                      backgroundColor: theme[2],
+                      padding: 20,
+                      textAlign: "center",
+                    }}
+                  >
+                    Something went wrong, please try again later
+                  </Text>
                 }
               >
                 <BottomSheetContent
