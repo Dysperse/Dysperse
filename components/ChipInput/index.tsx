@@ -1,11 +1,11 @@
+import AutoSizeTextArea from "@/ui/AutoSizeTextArea";
 import { addHslAlpha, useDarkMode } from "@/ui/color";
 import { useColorTheme } from "@/ui/color/theme-provider";
 import Text from "@/ui/Text";
 import { Portal } from "@gorhom/portal";
 import { BlurView } from "expo-blur";
 import React, { FC, useEffect, useState } from "react";
-import { Mention, MentionsInput } from "react-mentions";
-import { Dimensions, Keyboard, Platform, Pressable, View } from "react-native";
+import { Dimensions, Keyboard, Platform, Pressable } from "react-native";
 import {
   MentionInput,
   MentionSuggestionsProps,
@@ -138,110 +138,27 @@ export default function ChipInput({
   };
 
   return Platform.OS === "web" ? (
-    <MentionsInput
+    <AutoSizeTextArea
       inputRef={inputRef}
       value={value}
       placeholder={placeholder}
-      onChange={(e) => {
-        setValue(e.target.value);
+      onChangeText={(e) => {
+        setValue(e);
       }}
       {...inputProps}
+      placeholderTextColor={addHslAlpha(theme[11], 0.5)}
       style={{
-        control: {
-          fontSize: 35,
-          flex: 1,
-        },
-        "&multiLine": {
-          control: {
-            fontFamily: "serifText800",
-            minHeight: 100,
-          },
-          highlighter: { ...paddingStyles, border: "1px solid transparent" },
-          input: {
-            ...paddingStyles,
-            border: "none",
-            boxShadow: "none",
-            height,
-            flex: 1,
-            ...inputStyles,
-            overflow: "auto",
-            color: theme[11],
-          },
-        },
-
-        suggestions: {
-          background: addHslAlpha(theme[6], 0.4),
-          boxShadow:
-            "0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1)",
-          borderRadius: 25,
-          list: {
-            fontSize: 20,
-            overflow: "hidden",
-            borderRadius: 15,
-          },
-          item: {
-            borderRadius: 15,
-            "&focused": {
-              backgroundColor: addHslAlpha(theme[6], 0.4),
-            },
-          },
-        },
+        ...paddingStyles,
+        border: "none",
+        boxShadow: "none",
+        height,
+        flex: 1,
+        overflow: "auto",
+        fontSize: 35,
+        fontFamily: "serifText800",
+        color: theme[11],
       }}
-      customSuggestionsContainer={(children) => (
-        <View
-          style={{
-            borderRadius: 25,
-            overflow: "hidden",
-            maxHeight: 155,
-            width: 200,
-            backgroundColor: theme[5],
-          }}
-        >
-          <ScrollView
-            contentContainerStyle={{ padding: 5 }}
-            showsVerticalScrollIndicator={false}
-          >
-            {children}
-          </ScrollView>
-        </View>
-      )}
-    >
-      {suggestions.map((item) => (
-        <Mention
-          key={item.key}
-          trigger={item.key}
-          data={item.suggestions.map((d) => ({
-            id: d.id,
-            display: d.name,
-            icon: d.icon,
-          }))}
-          className="animate-chip"
-          style={{
-            backgroundColor: theme[6],
-            padding: 2,
-            borderRadius: 10,
-            marginLeft: -2,
-          }}
-          {...(item.onAdd && { onAdd: item.onAdd })}
-          renderSuggestion={({ display, icon }: any) => (
-            <View
-              style={{
-                flexDirection: "row",
-                gap: 10,
-                alignItems: "center",
-                paddingHorizontal: 15,
-                paddingVertical: 10,
-              }}
-            >
-              {icon}
-              <Text numberOfLines={1} variant="menuItem">
-                {display}
-              </Text>
-            </View>
-          )}
-        />
-      ))}
-    </MentionsInput>
+    />
   ) : (
     // cursed code LMAO 💀💀💀
     <MentionInput

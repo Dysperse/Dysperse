@@ -1,3 +1,4 @@
+import ChipInput from "@/components/ChipInput";
 import { LocationPickerModal } from "@/components/collections/views/map";
 import LabelPicker from "@/components/labels/picker";
 import { useLabelColors } from "@/components/labels/useLabelColors";
@@ -727,7 +728,7 @@ function TaskNameInput({
               value={value}
               hintRef={hintRef}
             />
-            {/* <ChipInput
+            <ChipInput
               placeholder="What's on your mind?"
               onSubmitEditing={() => handleSubmitButtonClick()}
               inputProps={{
@@ -869,7 +870,7 @@ function TaskNameInput({
               ]}
               value={value}
               setValue={onChange}
-            /> */}
+            />
           </View>
         </>
       )}
