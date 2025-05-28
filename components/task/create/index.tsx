@@ -26,6 +26,7 @@ import Text from "@/ui/Text";
 import capitalizeFirstLetter from "@/utils/capitalizeFirstLetter";
 import { BottomSheetModal, useBottomSheet } from "@gorhom/bottom-sheet";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { ErrorBoundary } from "@sentry/react-native";
 import dayjs, { Dayjs } from "dayjs";
 import { BlurView } from "expo-blur";
 import { impactAsync, ImpactFeedbackStyle } from "expo-haptics";
@@ -1676,12 +1677,18 @@ const CreateTask = forwardRef(
             ]}
           >
             {() => (
-              <BottomSheetContent
-                ref={formRef}
-                hintRef={hintRef}
-                defaultValues={defaultValues}
-                mutateList={mutate}
-              />
+              <ErrorBoundary
+                fallback={
+                  <Text>Something went wrong, please try again later</Text>
+                }
+              >
+                <BottomSheetContent
+                  ref={formRef}
+                  hintRef={hintRef}
+                  defaultValues={defaultValues}
+                  mutateList={mutate}
+                />
+              </ErrorBoundary>
             )}
           </OnboardingContainer>
         </Modal>
@@ -1691,4 +1698,3 @@ const CreateTask = forwardRef(
 );
 
 export default CreateTask;
-

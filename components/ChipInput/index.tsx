@@ -142,9 +142,7 @@ export default function ChipInput({
       inputRef={inputRef}
       value={value}
       placeholder={placeholder}
-      onChange={(e) => {
-        setValue(e.target.value);
-      }}
+      onChange={(e) => setValue(e.target.value)}
       {...inputProps}
       style={{
         control: {
@@ -281,4 +279,3 @@ export default function ChipInput({
     />
   );
 }
-
