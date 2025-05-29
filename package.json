@@ -21,7 +21,6 @@
   },
   "dependencies": {
     "@eslint/compat": "^1.1.0",
-    "@expensify/react-native-live-markdown": "^0.1.255",
     "@expo-google-fonts/jetbrains-mono": "^0.3.0",
     "@expo-google-fonts/jost": "^0.3.0",
     "@expo/metro-runtime": "~5.0.4",
@@ -54,7 +53,6 @@
     "dayjs": "^1.11.13",
     "eas": "^0.1.0",
     "esbuild": "^0.20.0",
-    "expensify-common": "^2.0.127",
     "expo": "53.0.9",
     "expo-alternate-app-icons": "^1.3.2",
     "expo-application": "~6.1.4",
