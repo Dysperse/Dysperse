@@ -1,5 +1,6 @@
 import { Entity } from "@/components/collections/entity";
 import { LocationPickerModal } from "@/components/collections/views/map";
+import { AttachStep } from "@/context/OnboardingProvider";
 import { useUser } from "@/context/useUser";
 import { useResponsiveBreakpoints } from "@/helpers/useResponsiveBreakpoints";
 import { Button, ButtonText } from "@/ui/Button";
@@ -22,7 +23,6 @@ import dayjs from "dayjs";
 import { LinearGradient } from "expo-linear-gradient";
 import React, { useRef } from "react";
 import { Linking, Platform, View } from "react-native";
-import { AttachStep } from "react-native-spotlight-tour";
 import Toast from "react-native-toast-message";
 import { RRule } from "rrule";
 import useSWR from "swr";
@@ -898,3 +898,4 @@ export function TaskDetails() {
     </View>
   );
 }
+

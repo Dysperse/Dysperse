@@ -1,6 +1,7 @@
 import { useCommandPaletteContext } from "@/components/command-palette/context";
 import { useFocusPanelContext } from "@/components/focus-panel/context";
 import { useBadgingService } from "@/context/BadgingProvider";
+import { AttachStep } from "@/context/OnboardingProvider";
 import { useStorageContext } from "@/context/storageContext";
 import { useUser } from "@/context/useUser";
 import { sendApiRequest } from "@/helpers/api";
@@ -29,7 +30,6 @@ import ReorderableList, {
   ReorderableListReorderEvent,
   reorderItems,
 } from "react-native-reorderable-list";
-import { AttachStep } from "react-native-spotlight-tour";
 import Toast from "react-native-toast-message";
 import useSWR from "swr";
 import PWAInstallerPrompt from "../PWAInstaller";
@@ -481,3 +481,4 @@ function OpenTabsList() {
 }
 
 export default memo(OpenTabsList);
+

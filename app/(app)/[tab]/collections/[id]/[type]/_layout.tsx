@@ -51,7 +51,7 @@ export default function Layout() {
           id={undefined}
           screenOptions={{
             header: () => null,
-            freezeOnBlur: true,
+            // freezeOnBlur: true,
             gestureEnabled: true,
             detachPreviousScreen: false,
             animation: "none",

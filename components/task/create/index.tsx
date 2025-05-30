@@ -5,7 +5,7 @@ import { useLabelColors } from "@/components/labels/useLabelColors";
 import { COLLECTION_VIEWS } from "@/components/layout/command-palette/list";
 import { useSession } from "@/context/AuthProvider";
 import { useBadgingService } from "@/context/BadgingProvider";
-import { OnboardingContainer } from "@/context/OnboardingProvider";
+import { AttachStep, OnboardingContainer } from "@/context/OnboardingProvider";
 import { useStorageContext } from "@/context/storageContext";
 import { useUser } from "@/context/useUser";
 import { sendApiRequest } from "@/helpers/api";
@@ -26,6 +26,7 @@ import Text from "@/ui/Text";
 import capitalizeFirstLetter from "@/utils/capitalizeFirstLetter";
 import { BottomSheetModal, useBottomSheet } from "@gorhom/bottom-sheet";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { ErrorBoundary } from "@sentry/react-native";
 import dayjs, { Dayjs } from "dayjs";
 import { BlurView } from "expo-blur";
 import { impactAsync, ImpactFeedbackStyle } from "expo-haptics";
@@ -56,7 +57,6 @@ import Animated, {
   withSpring,
   withTiming,
 } from "react-native-reanimated";
-import { AttachStep } from "react-native-spotlight-tour";
 import Toast from "react-native-toast-message";
 import { RRule } from "rrule";
 import useSWR from "swr";
@@ -287,7 +287,7 @@ export const AiLabelSuggestion = ({ watch, setValue, nameRef, style }: any) => {
         icon="add"
         onPress={() => {
           setValue("label", result);
-          nameRef.current.focus();
+          nameRef.current?.focus();
         }}
         style={[{ borderStyle: "dashed", borderWidth: 1 }, style]}
       />
@@ -334,7 +334,7 @@ const CreateTaskLabelInput = memo(function CreateTaskLabelInput({
             setLabel={onChange}
             defaultCollection={collectionId}
             sheetProps={{ sheetRef: labelMenuRef }}
-            onClose={() => nameRef.current.focus()}
+            onClose={() => nameRef.current?.focus()}
             autoFocus
           >
             {!label?.id && collectionId ? (
@@ -1041,13 +1041,13 @@ function DateButton({
           setValue("end", t.end);
         }}
         onOpen={Keyboard.dismiss}
-        onClose={() => nameRef.current.focus()}
+        onClose={() => nameRef.current?.focus()}
       />
       <RecurrencePicker
         ref={recurrenceRef}
         value={recurrenceRule}
         setValue={(t: any) => setValue("recurrenceRule", t)}
-        onClose={() => nameRef.current.focus()}
+        onClose={() => nameRef.current?.focus()}
       />
       <MenuPopover
         menuProps={{ rendererProps: { placement: "top" } }}
@@ -1138,7 +1138,7 @@ const TaskDescriptionInput = forwardRef(
           render={({ field: { onChange, value } }) => (
             <TaskNote
               openLink={(url) => Linking.openURL(url)}
-              onContainerFocus={() => nameRef.current.focus()}
+              onContainerFocus={() => nameRef.current?.focus()}
               showEditorWhenEmpty
               ref={editorRef}
               task={{ note: "<p>hi</p>" }}
@@ -1256,7 +1256,7 @@ function LocationButton({ watch, setValue, nameRef }) {
     <LocationPickerModal
       autoFocus={Platform.OS !== "web"}
       hideSkip
-      onClose={() => nameRef.current.focus()}
+      onClose={() => nameRef.current?.focus()}
       onLocationSelect={(location) =>
         setValue("location", {
           placeId: location.place_id,
@@ -1338,7 +1338,7 @@ const BottomSheetContent = forwardRef(
     const { session } = useUser();
     useEffect(() => {
       if (!session.user.hintsViewed.includes("CREATE_TASK")) return;
-      nameRef.current.focus({ preventScroll: true });
+      nameRef.current?.focus({ preventScroll: true });
     }, [session, nameRef, breakpoints]);
 
     const onSubmit = async (data) => {
@@ -1373,7 +1373,7 @@ const BottomSheetContent = forwardRef(
           type: "success",
           text1: "Created task!",
         });
-        nameRef.current.focus();
+        nameRef.current?.focus();
       } catch (e) {
         Toast.show({
           type: "error",
@@ -1677,12 +1677,26 @@ const CreateTask = forwardRef(
             ]}
           >
             {() => (
-              <BottomSheetContent
-                ref={formRef}
-                hintRef={hintRef}
-                defaultValues={defaultValues}
-                mutateList={mutate}
-              />
+              <ErrorBoundary
+                fallback={
+                  <Text
+                    style={{
+                      backgroundColor: theme[2],
+                      padding: 20,
+                      textAlign: "center",
+                    }}
+                  >
+                    Something went wrong, please try again later
+                  </Text>
+                }
+              >
+                <BottomSheetContent
+                  ref={formRef}
+                  hintRef={hintRef}
+                  defaultValues={defaultValues}
+                  mutateList={mutate}
+                />
+              </ErrorBoundary>
             )}
           </OnboardingContainer>
         </Modal>
@@ -1692,4 +1706,3 @@ const CreateTask = forwardRef(
 );
 
 export default CreateTask;
-

@@ -1,3 +1,4 @@
+import { AttachStep } from "@/context/OnboardingProvider";
 import IconButton from "@/ui/IconButton";
 import MenuPopover from "@/ui/MenuPopover";
 import { setStringAsync } from "expo-clipboard";
@@ -5,7 +6,6 @@ import { impactAsync, ImpactFeedbackStyle } from "expo-haptics";
 import { shareAsync } from "expo-sharing";
 import React, { useCallback } from "react";
 import { Platform, View } from "react-native";
-import { AttachStep } from "react-native-spotlight-tour";
 import Toast from "react-native-toast-message";
 import { useTaskDrawerContext } from "./context";
 
@@ -71,3 +71,4 @@ export function TaskShareButton() {
     </AttachStep>
   );
 }
+

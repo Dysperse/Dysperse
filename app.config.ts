@@ -72,7 +72,7 @@ export default ({ config }: ConfigContext): ExpoConfig =>
       assetBundlePatterns: ["**/*"],
       ios: {
         infoPlist: {
-          UIBackgroundModes: ["fetch"],
+          UIBackgroundModes: ["processing"],
         },
         config: {
           usesNonExemptEncryption: false,

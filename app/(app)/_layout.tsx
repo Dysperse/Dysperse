@@ -43,7 +43,7 @@ import {
   usePathname,
 } from "expo-router";
 import * as SystemUI from "expo-system-ui";
-import { useCallback, useEffect, useMemo, useRef } from "react";
+import { useCallback, useEffect, useRef } from "react";
 import {
   InteractionManager,
   Keyboard,
@@ -166,13 +166,8 @@ export default function AppLayout() {
     }
   }, [theme, breakpoints.md]);
 
-  const sidebarWidth = useMemo(
-    () =>
-      !pathname.includes("settings/") && !pathname.includes("create")
-        ? width
-        : 0,
-    [pathname, width]
-  );
+  const sidebarWidth =
+    !pathname.includes("settings/") && !pathname.includes("create") ? width : 0;
 
   useEffect(() => {
     if (session && !isUserLoading && !sessionData?.user) {
@@ -363,7 +358,7 @@ export default function AppLayout() {
                                             headerTransparent: true,
                                             gestureResponseDistance: width,
                                             gestureEnabled: false,
-                                            freezeOnBlur: true,
+                                            // freezeOnBlur: true,
                                             presentation: "transparentModal",
                                             cardStyle: {
                                               height,
@@ -388,7 +383,6 @@ export default function AppLayout() {
                                                 } as any)),
                                             },
                                             animation: "none",
-                                            cardOverlayEnabled: true,
                                             gestureVelocityImpact: 0.5,
                                           }}
                                         >
@@ -527,3 +521,4 @@ export default function AppLayout() {
     </WebAnimationComponent>
   );
 }
+

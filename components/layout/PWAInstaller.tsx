@@ -1,10 +1,14 @@
-/**
- * @source https://github.com/shnaveen25/react-pwa-installer-prompt/blob/main/src/index.js
- */
-import PropTypes from "prop-types";
 import { useCallback, useEffect, useState } from "react";
 
-const PWAInstallerPrompt = ({ render: InstallButton, callback }): any => {
+interface PWAInstallerPromptProps {
+  render(...args: unknown[]): unknown;
+  callback?(...args: unknown[]): unknown;
+}
+
+const PWAInstallerPrompt = ({
+  render: InstallButton,
+  callback
+}: PWAInstallerPromptProps): any => {
   const createStatus = (object) => {
     return {
       isInstallAllowed: Object.prototype.hasOwnProperty.call(
@@ -129,11 +133,6 @@ const PWAInstallerPrompt = ({ render: InstallButton, callback }): any => {
   }
 
   return <InstallButton onClick={handleOnInstall} />;
-};
-
-PWAInstallerPrompt.propTypes = {
-  render: PropTypes.func.isRequired,
-  callback: PropTypes.func,
 };
 
 export default PWAInstallerPrompt;

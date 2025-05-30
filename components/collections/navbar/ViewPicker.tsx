@@ -1,4 +1,5 @@
 import { COLLECTION_VIEWS } from "@/components/layout/command-palette/list";
+import { AttachStep } from "@/context/OnboardingProvider";
 import { useResponsiveBreakpoints } from "@/helpers/useResponsiveBreakpoints";
 import { Button } from "@/ui/Button";
 import { addHslAlpha, useDarkMode } from "@/ui/color";
@@ -16,7 +17,6 @@ import { impactAsync, ImpactFeedbackStyle } from "expo-haptics";
 import { router, useGlobalSearchParams } from "expo-router";
 import { memo, useEffect, useRef } from "react";
 import { Platform, View } from "react-native";
-import { AttachStep } from "react-native-spotlight-tour";
 import Toast from "react-native-toast-message";
 import { groupedViews } from ".";
 import { useCollectionContext } from "../context";
@@ -240,3 +240,4 @@ export const ViewPicker = memo(({ isLoading }: { isLoading: any }) => {
     </>
   );
 });
+

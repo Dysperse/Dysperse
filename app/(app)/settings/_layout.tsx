@@ -236,7 +236,7 @@ export default function Layout() {
                       <MenuButton back gradient left icon="west" />
                     ),
                   headerMode: "screen",
-                  freezeOnBlur: true,
+                  // freezeOnBlur: true,
                   gestureResponseDistance: width,
                 }}
               >

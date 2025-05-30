@@ -459,7 +459,14 @@ export const TaskNote = forwardRef(
             marginLeft: 5,
           }}
           style={{ gap: 10 }}
-          onPress={isLoading ? undefined : () => setCollapsed((c) => !c)}
+          onPress={
+            isLoading
+              ? undefined
+              : () => {
+                  setCollapsed((c) => !c);
+                  if (!task.note) editorRef.current.focus();
+                }
+          }
         >
           <Icon size={20} style={{ marginTop: -3 }}>
             sticky_note_2
@@ -535,4 +542,3 @@ export const TaskNote = forwardRef(
     );
   }
 );
-

@@ -1,15 +1,16 @@
 import { LinearGradient } from "expo-linear-gradient";
 import { View } from "react-native";
-import { RenderProps } from "react-native-spotlight-tour";
+// import { RenderProps } from "react-native-spotlight-tour";
 import { useColorTheme } from "../color/theme-provider";
 import Icon from "../Icon";
 import IconButton from "../IconButton";
 import Text from "../Text";
 
 export default function TourPopover(
-  props: RenderProps & {
-    description: string;
-  }
+  props: any
+  //  RenderProps & {
+  //   description: string;
+  // }
 ) {
   const theme = useColorTheme();
 
