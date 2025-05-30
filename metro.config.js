@@ -2,13 +2,13 @@
 // This replaces `const { getDefaultConfig } = require('expo/metro-config');`
 
 if (process.env.NODE_ENV === 'development') {
+    // eslint-disable-next-line @typescript-eslint/no-require-imports
     const { getDefaultConfig } = require('expo/metro-config');
     module.exports = getDefaultConfig(__dirname);
 }
 else {
+    // eslint-disable-next-line @typescript-eslint/no-require-imports
     const { getSentryExpoConfig } = require("@sentry/react-native/metro");
-
-    // This replaces `const config = getDefaultConfig(__dirname);`
     const config = getSentryExpoConfig(__dirname, { annotateReactComponents: true });
 
     config.transformer.minifierConfig = {

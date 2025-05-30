@@ -21,6 +21,7 @@
   },
   "dependencies": {
     "@eslint/compat": "^1.1.0",
+    "@expo-google-fonts/bricolage-grotesque": "^0.4.0",
     "@expo-google-fonts/jetbrains-mono": "^0.3.0",
     "@expo-google-fonts/jost": "^0.3.0",
     "@expo/metro-runtime": "~5.0.4",
@@ -34,8 +35,8 @@
     "@react-native-google-signin/google-signin": "^12.2.1",
     "@react-navigation/native": "^7.0.0",
     "@react-navigation/stack": "^7.0.2",
-    "@sentry/react-native": "~6.10.0",
-    "@shopify/flash-list": "^1.8.0",
+    "@sentry/react-native": "~6.14.0",
+    "@shopify/flash-list": "1.7.6",
     "@simplewebauthn/typescript-types": "^8.3.4",
     "@tiptap/extension-character-count": "^2.12.0",
     "@tiptap/extension-collaboration": "^2.12.0",
@@ -58,6 +59,7 @@
     "expo-application": "~6.1.4",
     "expo-av": "~15.1.4",
     "expo-background-fetch": "~13.1.5",
+    "expo-background-task": "~0.2.7",
     "expo-battery": "~9.1.4",
     "expo-blur": "~14.1.4",
     "expo-build-properties": "~0.14.6",
@@ -159,4 +161,3 @@
   },
   "private": true
 }
-

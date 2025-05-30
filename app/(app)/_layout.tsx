@@ -358,7 +358,7 @@ export default function AppLayout() {
                                             headerTransparent: true,
                                             gestureResponseDistance: width,
                                             gestureEnabled: false,
-                                            freezeOnBlur: true,
+                                            // freezeOnBlur: true,
                                             presentation: "transparentModal",
                                             cardStyle: {
                                               height,
@@ -383,7 +383,6 @@ export default function AppLayout() {
                                                 } as any)),
                                             },
                                             animation: "none",
-                                            cardOverlayEnabled: true,
                                             gestureVelocityImpact: 0.5,
                                           }}
                                         >

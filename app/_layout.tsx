@@ -6,6 +6,10 @@ import { ModalStackProvider } from "@/context/modal-stack";
 import { useResponsiveBreakpoints } from "@/helpers/useResponsiveBreakpoints";
 import { useColor } from "@/ui/color";
 import { ColorThemeProvider } from "@/ui/color/theme-provider";
+import {
+  BricolageGrotesque_300Light,
+  BricolageGrotesque_700Bold,
+} from "@expo-google-fonts/bricolage-grotesque";
 import { JetBrainsMono_500Medium } from "@expo-google-fonts/jetbrains-mono";
 import {
   Jost_200ExtraLight,
@@ -24,7 +28,7 @@ import { ErrorBoundary } from "@sentry/react-native";
 import { useFonts } from "expo-font";
 import * as NavigationBar from "expo-navigation-bar";
 import * as SplashScreen from "expo-splash-screen";
-import React, { useCallback, useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { Platform, StatusBar, useWindowDimensions } from "react-native";
 import { SystemBars } from "react-native-edge-to-edge";
 import "react-native-gesture-handler";
@@ -98,12 +102,10 @@ function Root() {
       : false
   );
 
-  const setCollapsed = useCallback(() => {
-    async () => {
-      const _desktopCollapsed = await AsyncStorage.getItem("desktopCollapsed");
-      setDesktopCollapsed(_desktopCollapsed === "true");
-    };
-  }, []);
+  const setCollapsed = async () => {
+    const _desktopCollapsed = await AsyncStorage.getItem("desktopCollapsed");
+    setDesktopCollapsed(_desktopCollapsed === "true");
+  };
 
   useEffect(() => {
     setCollapsed();
@@ -120,8 +122,8 @@ function Root() {
     body_700: Jost_700Bold,
     body_800: Jost_800ExtraBold,
     body_900: Jost_900Black,
-    serifText700: require("../assets/fonts/BricolageGrotesque-Bold.ttf"),
-    serifText800: require("../assets/fonts/BricolageGrotesque-Light.ttf"),
+    serifText700: BricolageGrotesque_700Bold,
+    serifText800: BricolageGrotesque_300Light,
     mono: JetBrainsMono_500Medium,
     symbols_outlined: require("../assets/fonts/symbols/outlined.ttf"),
     symbols_filled: require("../assets/fonts/symbols/filled.ttf"),
@@ -176,7 +178,7 @@ function Root() {
                       screenOptions={{
                         header: () => null,
                         cardShadowEnabled: false,
-                        freezeOnBlur: true,
+                        // freezeOnBlur: true,
                         animation: "none",
                       }}
                     />

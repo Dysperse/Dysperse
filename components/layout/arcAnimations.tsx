@@ -103,7 +103,7 @@ export const arcCard = ({ theme, breakpoints, maxWidth, padding = 15 }) =>
     animation: "default",
     presentation: "modal",
     detachPreviousScreen: false,
-    freezeOnBlur: true,
+    // freezeOnBlur: true,
     animationEnabled: true,
     gestureEnabled: true,
     ...TransitionPresets.ModalPresentationIOS,
@@ -131,3 +131,4 @@ export const ArcSystemBar = () => {
 
   return <SystemBars style={!breakpoints.md || isDark ? "light" : "dark"} />;
 };
+
