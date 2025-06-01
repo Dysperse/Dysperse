@@ -134,6 +134,7 @@ const HomeButton = memo(function HomeButton({ isHome }: { isHome: boolean }) {
 });
 
 const BACKGROUND_TASK_IDENTIFIER = "integration-sync";
+
 TaskManager.defineTask(BACKGROUND_TASK_IDENTIFIER, async () => {
   try {
     const now = Date.now();

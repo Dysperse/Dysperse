@@ -73,6 +73,7 @@ export default ({ config }: ConfigContext): ExpoConfig =>
       ios: {
         infoPlist: {
           UIBackgroundModes: ["processing"],
+          BGTaskSchedulerPermittedIdentifiers: ["integration-sync"],
         },
         config: {
           usesNonExemptEncryption: false,
@@ -228,6 +229,7 @@ export default ({ config }: ConfigContext): ExpoConfig =>
             icon: "./assets/notification.png",
             color: "#ffffff",
             defaultChannel: "default",
+            enableBackgroundRemoteNotifications: true,
           },
         ],
         [
