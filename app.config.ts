@@ -78,7 +78,7 @@ export default ({ config }: ConfigContext): ExpoConfig =>
           usesNonExemptEncryption: false,
         },
         associatedDomains: ["webcredentials:app.dysperse.com"],
-        bundleIdentifier: IS_DEV ? "com.dysperse.dev" : "com.dysperse.app",
+        bundleIdentifier: IS_DEV ? "com.dysperse.preview" : "com.dysperse.prod",
         supportsTablet: true,
         googleServicesFile: IS_DEV
           ? process.env.GOOGLE_SERVICE_PLIST_DEV
@@ -108,7 +108,7 @@ export default ({ config }: ConfigContext): ExpoConfig =>
           monochromeImage: "./assets/android-icons/monochrome.png",
         },
         softwareKeyboardLayoutMode: "pan",
-        package: IS_DEV ? "com.dysperse.dev" : "com.dysperse.app",
+        package: IS_DEV ? "com.dysperse.preview" : "com.dysperse.prod",
       },
       web: {
         name: "Dysperse",
