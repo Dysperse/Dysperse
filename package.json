@@ -104,7 +104,7 @@
     "react-hook-form": "^7.56.4",
     "react-hotkeys-hook": "^5.1.0",
     "react-leaflet": "^5.0.0",
-    "react-mentions": "^4.4.10",
+    "react-mentions": "github:moxylabs/react-mentions#v4.6.0",
     "react-native": "0.79.2",
     "react-native-autogrow-textinput": "^5.4.0",
     "react-native-big-calendar": "^4.17.1",
@@ -161,3 +161,4 @@
   },
   "private": true
 }
+

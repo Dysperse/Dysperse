@@ -31,7 +31,7 @@
         "buildType": "apk"
       },
       "env": {
-        "EXPO_PUBLIC_API_URL": "https://api.dysperse.com"
+        "APP_VARIANT": "production"
       },
       "channel": "production",
       "autoIncrement": true
