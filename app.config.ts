@@ -72,7 +72,7 @@ export default ({ config }: ConfigContext): ExpoConfig =>
       assetBundlePatterns: ["**/*"],
       ios: {
         infoPlist: {
-          UIBackgroundModes: ["processing"],
+          UIBackgroundModes: ["processing", "remote-notification"],
           BGTaskSchedulerPermittedIdentifiers: ["integration-sync"],
         },
         config: {
