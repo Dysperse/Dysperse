@@ -77,7 +77,10 @@ export default ({ config }: ConfigContext): ExpoConfig =>
         config: {
           usesNonExemptEncryption: false,
         },
-        associatedDomains: ["webcredentials:app.dysperse.com"],
+        associatedDomains: [
+          "webcredentials:app.dysperse.com",
+          "applinks:app.dysperse.com",
+        ],
         bundleIdentifier: IS_DEV ? "com.dysperse.preview" : "com.dysperse.prod",
         supportsTablet: true,
         googleServicesFile: IS_DEV
