@@ -268,6 +268,7 @@ export function SettingsSidebar({ forceShow }: { forceShow?: boolean }) {
 
   return !breakpoints.md && !forceShow ? null : (
     <ScrollView
+      contentInset={{ top: Math.random() * 0.01 }}
       onScrollBeginDrag={Keyboard.dismiss}
       style={{
         maxHeight: breakpoints.md
