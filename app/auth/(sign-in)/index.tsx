@@ -8,6 +8,7 @@ import Modal from "@/ui/Modal";
 import Spinner from "@/ui/Spinner";
 import Text from "@/ui/Text";
 import { BottomSheetModal } from "@gorhom/bottom-sheet";
+import * as AppleAuthentication from "expo-apple-authentication";
 import { router } from "expo-router";
 import { cloneElement, useEffect, useRef, useState } from "react";
 import { Platform, View } from "react-native";
@@ -167,6 +168,30 @@ export default function SignIn() {
       >
         Pick a method to sign in
       </Text>
+      <AppleAuthentication.AppleAuthenticationButton
+        buttonType={AppleAuthentication.AppleAuthenticationButtonType.SIGN_IN}
+        buttonStyle={AppleAuthentication.AppleAuthenticationButtonStyle.BLACK}
+        cornerRadius={5}
+        onPress={async () => {
+          try {
+            const credential = await AppleAuthentication.signInAsync({
+              requestedScopes: [
+                AppleAuthentication.AppleAuthenticationScope.FULL_NAME,
+                AppleAuthentication.AppleAuthenticationScope.EMAIL,
+              ],
+            });
+            // signed in
+            alert(JSON.stringify(credential));
+          } catch (e) {
+            if (e.code === "ERR_REQUEST_CANCELED") {
+              // handle that the user canceled the sign-in flow
+            } else {
+              // handle other errors
+            }
+          }
+        }}
+      />
+
       <View style={{ flexDirection: "row", gap: 10 }}>
         <GoogleAuth
           onNewAccount={(d) => {
