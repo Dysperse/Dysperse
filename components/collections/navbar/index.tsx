@@ -225,11 +225,12 @@ const CollectionNavbar = memo(function CollectionNavbar({
         callback: openPopOut,
       },
 
-    !breakpoints.md && {
-      icon: "ios_share",
-      text: "Share",
-      callback: () => router.push(pathname + "/share"),
-    },
+    !breakpoints.md &&
+      !isAll && {
+        icon: "ios_share",
+        text: "Share",
+        callback: () => router.push(pathname + "/share"),
+      },
 
     data?.pinCode && {
       icon: "lock",
@@ -337,7 +338,7 @@ const CollectionNavbar = memo(function CollectionNavbar({
                     </View>
                   </AttachStep>
                 )}
-                {breakpoints.md && session && !isReadOnly && (
+                {breakpoints.md && session && !isReadOnly && !isAll && (
                   <AttachStep index={3}>
                     <View>
                       <CollectionShareMenu ref={shareMenuRef} />

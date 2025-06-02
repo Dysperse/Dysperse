@@ -17,7 +17,7 @@ const OtpInput = (
 
   return (
     <OriginalOTPInput
-      ref={ref}
+      ref={props.ref}
       numberOfDigits={6}
       focusColor={theme[9]}
       type="numeric"

@@ -1446,7 +1446,7 @@ const BottomSheetContent = ({
           />
           <View style={Platform.OS !== "web" && { minHeight: 100 }}>
             <TaskNameInput
-              disabled={!session.user.hintsViewed.includes("CREATE_TASK")}
+              // disabled={!session.user.hintsViewed.includes("CREATE_TASK")}
               descriptionRef={descriptionRef}
               hintRef={hintRef}
               submitRef={submitRef}

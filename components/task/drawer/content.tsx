@@ -912,7 +912,6 @@ export function TaskDrawerContent({
                       </LabelPicker>
                     )}
                     {!task.parentTaskId && <WorkloadChip />}
-
                     {task && !task.label && task.collectionId && (
                       <AiLabelSuggestion
                         watch={(key) => task[key]}

@@ -140,21 +140,40 @@ export const MenuButton = ({
 
   const Wrapper = gradient
     ? ({ children }) => (
-        <LinearGradient
-          colors={gradientColors || [theme[2], addHslAlpha(theme[2], 0)]}
+        <View
           style={{
             position: "absolute",
             top: 0,
             left: 0,
             zIndex: 10,
-            height: Platform.OS === "web" ? 100 : 150,
+            height: 150,
             overflow: "visible",
             width: "100%",
             pointerEvents: "box-none",
           }}
         >
+          <LinearGradient
+            colors={
+              gradientColors || [
+                theme[2],
+                addHslAlpha(theme[2], 0.7),
+                addHslAlpha(theme[2], 0),
+              ]
+            }
+            style={{
+              position: "absolute",
+              top: 0,
+              left: 0,
+              zIndex: 10,
+              height: addInsets ? 140 : 60,
+              overflow: "visible",
+              width: "100%",
+              pointerEvents: "box-none",
+              zIndex: -1,
+            }}
+          />
           {children}
-        </LinearGradient>
+        </View>
       )
     : Fragment;
 
@@ -174,7 +193,7 @@ export const MenuButton = ({
           icon={icon || (back ? "close" : <MenuIcon />)}
           iconStyle={iconColor ? { color: iconColor } : undefined}
           size={45}
-          variant={back && !left ? "filled" : undefined}
+          variant={back ? "filled" : undefined}
           pressableStyle={{ pointerEvents: "auto" }}
           onPress={() => {
             if (back) {
@@ -548,3 +567,4 @@ function Page() {
 }
 
 export default memo(Page);
+

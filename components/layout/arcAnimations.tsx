@@ -103,7 +103,6 @@ export const arcCard = ({ theme, breakpoints, maxWidth, padding = 15 }) =>
     animation: "default",
     presentation: "modal",
     detachPreviousScreen: false,
-    // freezeOnBlur: true,
     animationEnabled: true,
     gestureEnabled: true,
     ...TransitionPresets.ModalPresentationIOS,

@@ -12,7 +12,7 @@ import type {
   StackCardInterpolationProps,
 } from "@react-navigation/stack";
 import { TransitionPresets } from "@react-navigation/stack";
-import { router } from "expo-router";
+import { router, usePathname } from "expo-router";
 import {
   Animated,
   Easing,
@@ -170,6 +170,7 @@ export function forFade({ current, next }) {
 
 export default function Layout() {
   const theme = useColorTheme();
+  const pathname = usePathname();
   const breakpoints = useResponsiveBreakpoints();
   const { height, width } = useWindowDimensions();
 
@@ -227,14 +228,27 @@ export default function Layout() {
               }}
             >
               {!breakpoints.md && <SystemBars style="light" />}
-              {!breakpoints.md && <MenuButton back gradient left icon="west" />}
+              {!breakpoints.md && (
+                <MenuButton
+                  back
+                  gradient
+                  gradientColors={
+                    pathname.includes("scan")
+                      ? ["rgba(0,0,0,0.5)", "transparent"]
+                      : undefined
+                  }
+                  iconColor={pathname.includes("scan") ? "#fff" : null}
+                  left={pathname !== "/settings"}
+                  icon={pathname === "/settings" ? "close" : "west"}
+                />
+              )}
               <JsStack
                 initialRouteName={breakpoints.md ? "account/index" : "index"}
                 id={undefined}
                 screenOptions={{
                   headerShown: false,
                   headerMode: "screen",
-                  // freezeOnBlur: true,
+                  cardOverlayEnabled: true,
                   gestureResponseDistance: width,
                 }}
               >
@@ -264,21 +278,6 @@ export default function Layout() {
                         d !== "settings/index" &&
                         !d.includes("/integrations/[name]"),
                       headerTitle: d !== "settings/index" && "Settings",
-                      header: () =>
-                        breakpoints.md ? null : (
-                          <MenuButton
-                            back
-                            gradient
-                            gradientColors={
-                              d.includes("scan")
-                                ? ["rgba(0,0,0,0.5)", "transparent"]
-                                : undefined
-                            }
-                            iconColor={d.includes("scan") ? "#fff" : null}
-                            left
-                            icon="west"
-                          />
-                        ),
                       animationEnabled: true,
                       detachPreviousScreen: true,
                       ...(breakpoints.md

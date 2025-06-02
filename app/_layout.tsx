@@ -178,8 +178,9 @@ function Root() {
                       screenOptions={{
                         header: () => null,
                         cardShadowEnabled: false,
-                        // freezeOnBlur: true,
                         animation: "none",
+                        cardOverlayEnabled: true,
+                        detachPreviousScreen: true,
                       }}
                     />
                   </SWRWrapper>
