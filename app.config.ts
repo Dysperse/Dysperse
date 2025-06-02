@@ -58,7 +58,6 @@ export default ({ config }: ConfigContext): ExpoConfig =>
       description: "The new standard for productivity",
       slug: "Dysperse",
       scheme: "dysperse",
-      // version: "1.0.0",
       orientation: "portrait",
       icon: "./assets/icon.png",
       userInterfaceStyle: "automatic",
@@ -72,13 +71,17 @@ export default ({ config }: ConfigContext): ExpoConfig =>
       assetBundlePatterns: ["**/*"],
       ios: {
         infoPlist: {
-          UIBackgroundModes: ["fetch"],
+          UIBackgroundModes: ["processing", "remote-notification"],
+          BGTaskSchedulerPermittedIdentifiers: ["integration-sync"],
         },
         config: {
           usesNonExemptEncryption: false,
         },
-        associatedDomains: ["webcredentials:app.dysperse.com"],
-        bundleIdentifier: IS_DEV ? "com.dysperse.dev" : "com.dysperse.app",
+        associatedDomains: [
+          "webcredentials:app.dysperse.com",
+          "applinks:app.dysperse.com",
+        ],
+        bundleIdentifier: IS_DEV ? "com.dysperse.preview" : "com.dysperse.prod",
         supportsTablet: true,
         googleServicesFile: IS_DEV
           ? process.env.GOOGLE_SERVICE_PLIST_DEV
@@ -108,7 +111,7 @@ export default ({ config }: ConfigContext): ExpoConfig =>
           monochromeImage: "./assets/android-icons/monochrome.png",
         },
         softwareKeyboardLayoutMode: "pan",
-        package: IS_DEV ? "com.dysperse.dev" : "com.dysperse.app",
+        package: IS_DEV ? "com.dysperse.preview" : "com.dysperse.prod",
       },
       web: {
         name: "Dysperse",
@@ -225,6 +228,7 @@ export default ({ config }: ConfigContext): ExpoConfig =>
             icon: "./assets/notification.png",
             color: "#ffffff",
             defaultChannel: "default",
+            enableBackgroundRemoteNotifications: true,
           },
         ],
         [

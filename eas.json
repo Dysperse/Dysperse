@@ -1,8 +1,7 @@
 {
   "cli": {
     "version": ">= 5.9.1",
-    "appVersionSource": "remote",
-    "promptToConfigurePushNotifications": false
+    "appVersionSource": "remote"
   },
   "build": {
     "development": {
@@ -32,7 +31,7 @@
         "buildType": "apk"
       },
       "env": {
-        "EXPO_PUBLIC_API_URL": "https://api.dysperse.com"
+        "APP_VARIANT": "production"
       },
       "channel": "production",
       "autoIncrement": true
@@ -41,8 +40,9 @@
   "submit": {
     "production": {
       "ios": {
-        "bundleIdentifier": "com.dysperse.app"
+        "bundleIdentifier": "com.dysperse.prod"
       }
     }
   }
 }
+

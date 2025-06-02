@@ -1,4 +1,4 @@
-import { forwardRef, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import {
   Keyboard,
   Platform,
@@ -6,6 +6,7 @@ import {
   TextInput,
   TextInputProps,
 } from "react-native";
+import { useColorTheme } from "../color/theme-provider";
 
 interface DTextAreaProps extends TextInputProps {
   inputClassName?: string;
@@ -15,20 +16,21 @@ interface DTextAreaProps extends TextInputProps {
   disabled?: boolean;
 }
 
-const AutoSizeTextArea = forwardRef((props: DTextAreaProps, ref: any) => {
+const AutoSizeTextArea = (props: DTextAreaProps) => {
+  const theme = useColorTheme();
   const [layoutHeight, setLayoutHeight] = useState(0);
 
   useEffect(() => {
     Keyboard.addListener("keyboardDidHide", () => {
-      ref?.current?.blur();
+      props.ref?.current?.blur();
     });
-  }, [ref]);
+  }, [props.ref]);
 
   const SafeTextInput = TextInput;
 
   return (
     <SafeTextInput
-      ref={ref}
+      ref={props.ref}
       defaultValue={props.inputDefaultValue}
       multiline
       {...props}
@@ -41,6 +43,8 @@ const AutoSizeTextArea = forwardRef((props: DTextAreaProps, ref: any) => {
         },
         props.style,
       ]}
+      selectionColor={theme[8]}
+      cursorColor={theme[8]}
       onContentSizeChange={(event) => {
         const contentHeight = event.nativeEvent.contentSize.height;
         setLayoutHeight(Math.max(layoutHeight, contentHeight));
@@ -55,7 +59,7 @@ const AutoSizeTextArea = forwardRef((props: DTextAreaProps, ref: any) => {
       }}
     />
   );
-});
+};
 
 export default AutoSizeTextArea;
 

@@ -336,7 +336,7 @@ function TaskNameInput() {
         onBlur={handleSave}
         onChangeText={(text) => setName(text)}
         enterKeyHint="done"
-        value={name}
+        defaultValue={name}
         bounces={false}
         onKeyPress={(e) => {
           if (e.nativeEvent.key === "Enter" || e.nativeEvent.key === "Escape") {
@@ -912,7 +912,6 @@ export function TaskDrawerContent({
                       </LabelPicker>
                     )}
                     {!task.parentTaskId && <WorkloadChip />}
-
                     {task && !task.label && task.collectionId && (
                       <AiLabelSuggestion
                         watch={(key) => task[key]}
@@ -941,3 +940,4 @@ export function TaskDrawerContent({
     </>
   );
 }
+

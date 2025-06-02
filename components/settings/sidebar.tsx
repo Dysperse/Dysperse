@@ -9,10 +9,11 @@ import ListItemText from "@/ui/ListItemText";
 import Text from "@/ui/Text";
 import TextField from "@/ui/TextArea";
 import { useColorTheme } from "@/ui/color/theme-provider";
+import { TEMPORARY_CONTENT_INSET_FIX } from "@/utils/temporary-scrolling-bug-fix";
 import { cacheDirectory, deleteAsync } from "expo-file-system";
 import { router, usePathname } from "expo-router";
 import * as Updates from "expo-updates";
-import { useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import {
   Keyboard,
   Linking,
@@ -268,6 +269,7 @@ export function SettingsSidebar({ forceShow }: { forceShow?: boolean }) {
 
   return !breakpoints.md && !forceShow ? null : (
     <ScrollView
+      contentInset={TEMPORARY_CONTENT_INSET_FIX}
       onScrollBeginDrag={Keyboard.dismiss}
       style={{
         maxHeight: breakpoints.md

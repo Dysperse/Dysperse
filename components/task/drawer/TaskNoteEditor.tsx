@@ -107,7 +107,7 @@ function Focuser({ containerRef, openLink }) {
   return null;
 }
 
-const EditorRef = forwardRef((_, ref) => {
+const EditorRef = ({ ref }) => {
   const { editor } = useCurrentEditor();
 
   useImperativeHandle(ref, () => ({
@@ -115,7 +115,7 @@ const EditorRef = forwardRef((_, ref) => {
   }));
 
   return null;
-});
+};
 
 function Saver({ updateTask }) {
   const { editor } = useCurrentEditor();

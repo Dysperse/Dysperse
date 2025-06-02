@@ -21,6 +21,7 @@ export default function TextField(props: DTextInputProps) {
     <Component
       placeholderTextColor={theme[8]}
       cursorColor={theme[8]}
+      selectionHandleColor={theme[8]}
       selectionColor={theme[8]}
       {...props}
       ref={props.inputRef}

@@ -5,7 +5,7 @@ import SelectionNavbar from "@/components/layout/SelectionNavbar";
 import { useSidebarContext } from "@/components/layout/sidebar/context";
 import MenuIcon from "@/components/menuIcon";
 import { useSession } from "@/context/AuthProvider";
-import { OnboardingContainer } from "@/context/OnboardingProvider";
+import { AttachStep, OnboardingContainer } from "@/context/OnboardingProvider";
 import { useUser } from "@/context/useUser";
 import { sendApiRequest } from "@/helpers/api";
 import { useHotkeys } from "@/helpers/useHotKeys";
@@ -18,7 +18,6 @@ import { openBrowserAsync } from "expo-web-browser";
 import { memo, useMemo, useRef } from "react";
 import { Platform, View } from "react-native";
 import { Menu } from "react-native-popup-menu";
-import { AttachStep } from "react-native-spotlight-tour";
 import Toast from "react-native-toast-message";
 import useSWR from "swr";
 import { CollectionContext, useCollectionContext } from "../context";
@@ -226,11 +225,12 @@ const CollectionNavbar = memo(function CollectionNavbar({
         callback: openPopOut,
       },
 
-    !breakpoints.md && {
-      icon: "ios_share",
-      text: "Share",
-      callback: () => router.push(pathname + "/share"),
-    },
+    !breakpoints.md &&
+      !isAll && {
+        icon: "ios_share",
+        text: "Share",
+        callback: () => router.push(pathname + "/share"),
+      },
 
     data?.pinCode && {
       icon: "lock",
@@ -338,7 +338,7 @@ const CollectionNavbar = memo(function CollectionNavbar({
                     </View>
                   </AttachStep>
                 )}
-                {breakpoints.md && session && !isReadOnly && (
+                {breakpoints.md && session && !isReadOnly && !isAll && (
                   <AttachStep index={3}>
                     <View>
                       <CollectionShareMenu ref={shareMenuRef} />

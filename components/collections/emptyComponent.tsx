@@ -382,8 +382,9 @@ export const ColumnEmptyComponent = function ColumnEmptyComponent({
   const theme = useColorTheme();
 
   const message = useMemo(() => {
-    const hour = new Date().getHours() + offset;
-    return messages[hour % messages.length];
+    const hour = (new Date().getHours() + offset) % messages.length;
+    const index = hour < 0 ? messages.length + hour : hour;
+    return messages[index];
   }, [offset]);
 
   return (
@@ -459,3 +460,4 @@ export const ColumnEmptyComponent = function ColumnEmptyComponent({
     </View>
   );
 };
+

@@ -23,7 +23,7 @@ import { useColorTheme } from "@/ui/color/theme-provider";
 import capitalizeFirstLetter from "@/utils/capitalizeFirstLetter";
 import { BottomSheetScrollView, useBottomSheet } from "@gorhom/bottom-sheet";
 import { Image } from "expo-image";
-import { cloneElement, forwardRef, useEffect, useRef, useState } from "react";
+import { cloneElement, useEffect, useRef, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { Linking, Pressable, StyleSheet, View } from "react-native";
 import Animated, {
@@ -587,48 +587,49 @@ function AiSlide({ aiPrompt, setSlide }) {
   );
 }
 
-export const CreateCollectionModal = forwardRef(
-  ({ children }: { children?: any }, ref: any) => {
-    const { session } = useUser();
+export const CreateCollectionModal = ({
+  ref,
+  children,
+}: {
+  ref: any;
+  children?: any;
+}) => {
+  const { session } = useUser();
 
-    const aiPrompt = useRef(null);
-    const [slide, setSlide] = useState<"HOME" | "AI">("HOME");
+  const aiPrompt = useRef(null);
+  const [slide, setSlide] = useState<"HOME" | "AI">("HOME");
 
-    const trigger = cloneElement(children || <Pressable />, {
-      onPress: () => ref.current.present(),
-    });
+  const trigger = cloneElement(children || <Pressable />, {
+    onPress: () => ref.current.present(),
+  });
 
-    return (
-      <>
-        {trigger}
-        <Modal sheetRef={ref} animation="SCALE" maxWidth={600}>
-          <BottomSheetScrollView
-            keyboardShouldPersistTaps="handled"
-            showsVerticalScrollIndicator={false}
-            showsHorizontalScrollIndicator={false}
-          >
-            <View style={{ padding: 30, paddingBottom: 0 }}>
-              <Header
-                title={
-                  slide === "HOME" ? "Create a collection" : "AI collection"
-                }
-              />
+  return (
+    <>
+      {trigger}
+      <Modal sheetRef={ref} animation="SCALE" maxWidth={600}>
+        <BottomSheetScrollView
+          keyboardShouldPersistTaps="handled"
+          showsVerticalScrollIndicator={false}
+          showsHorizontalScrollIndicator={false}
+        >
+          <View style={{ padding: 30, paddingBottom: 0 }}>
+            <Header
+              title={slide === "HOME" ? "Create a collection" : "AI collection"}
+            />
+          </View>
+          {slide === "AI" ? (
+            <AiSlide aiPrompt={aiPrompt} setSlide={setSlide} />
+          ) : (
+            <View style={{ padding: 30, gap: 40, paddingTop: 0 }}>
+              {session?.user?.betaTester && (
+                <AiCollection aiPrompt={aiPrompt} setSlide={setSlide} />
+              )}
+              <StartFromScratch />
+              <Templates />
             </View>
-            {slide === "AI" ? (
-              <AiSlide aiPrompt={aiPrompt} setSlide={setSlide} />
-            ) : (
-              <View style={{ padding: 30, gap: 40, paddingTop: 0 }}>
-                {session?.user?.betaTester && (
-                  <AiCollection aiPrompt={aiPrompt} setSlide={setSlide} />
-                )}
-                <StartFromScratch />
-                <Templates />
-              </View>
-            )}
-          </BottomSheetScrollView>
-        </Modal>
-      </>
-    );
-  }
-);
-
+          )}
+        </BottomSheetScrollView>
+      </Modal>
+    </>
+  );
+};

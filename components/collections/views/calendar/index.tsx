@@ -9,13 +9,7 @@ import { getFontName } from "@/ui/Text";
 import { useColorTheme } from "@/ui/color/theme-provider";
 import dayjs, { ManipulateType, OpUnitType } from "dayjs";
 import { router, useLocalSearchParams } from "expo-router";
-import {
-  forwardRef,
-  useImperativeHandle,
-  useMemo,
-  useRef,
-  useState,
-} from "react";
+import { useImperativeHandle, useMemo, useRef, useState } from "react";
 import { View, useWindowDimensions } from "react-native";
 import {
   Calendar as BigCalendar,
@@ -31,57 +25,53 @@ export interface MyCustomEventType {
   color: string;
 }
 
-const CalendarTaskDrawer = forwardRef(
-  (
-    props: Omit<TaskDrawerProps, "children" | "id" | "dateRange"> & {
-      tasks: any[];
+const CalendarTaskDrawer = (
+  ref: any,
+  props: Omit<TaskDrawerProps, "children" | "id" | "dateRange"> & {
+    tasks: any[];
+  }
+) => {
+  const drawerRef = useRef(null);
+  const [taskId, setTaskId] = useState<string>("");
+
+  useImperativeHandle(ref, () => ({
+    setId: (id: string) => {
+      setTaskId(id);
+      drawerRef.current?.show();
     },
-    ref
-  ) => {
-    const drawerRef = useRef(null);
-    const [taskId, setTaskId] = useState<string>("");
+  }));
 
-    useImperativeHandle(ref, () => ({
-      setId: (id: string) => {
-        setTaskId(id);
-        drawerRef.current?.show();
-      },
-    }));
+  return (
+    props.tasks.find((e) => e.id === taskId) && (
+      <TaskDrawer
+        {...props}
+        ref={drawerRef}
+        id={taskId}
+        dateRange={props.tasks.find((e) => e.id === taskId)?.recurrenceDay}
+      />
+    )
+  );
+};
 
-    return (
-      props.tasks.find((e) => e.id === taskId) && (
-        <TaskDrawer
-          {...props}
-          ref={drawerRef}
-          id={taskId}
-          dateRange={props.tasks.find((e) => e.id === taskId)?.recurrenceDay}
-        />
-      )
-    );
-  }
-);
+const CalendarCreateTaskDrawer = (props: CreateTaskDrawerProps) => {
+  const drawerRef = useRef(null);
+  const { id } = useLocalSearchParams();
+  const [defaultValues, setDefaultValues] = useState({});
 
-const CalendarCreateTaskDrawer = forwardRef(
-  (props: CreateTaskDrawerProps, ref) => {
-    const drawerRef = useRef(null);
-    const { id } = useLocalSearchParams();
-    const [defaultValues, setDefaultValues] = useState({});
+  useImperativeHandle(props.ref, () => ({
+    present: (defaultValues) => {
+      setDefaultValues({
+        collectionId: id,
+        ...defaultValues,
+      });
+      drawerRef.current?.present();
+    },
+  }));
 
-    useImperativeHandle(ref, () => ({
-      present: (defaultValues) => {
-        setDefaultValues({
-          collectionId: id,
-          ...defaultValues,
-        });
-        drawerRef.current?.present();
-      },
-    }));
-
-    return (
-      <CreateTask defaultValues={defaultValues} ref={drawerRef} {...props} />
-    );
-  }
-);
+  return (
+    <CreateTask defaultValues={defaultValues} ref={drawerRef} {...props} />
+  );
+};
 
 export function Content() {
   const theme = useColorTheme();

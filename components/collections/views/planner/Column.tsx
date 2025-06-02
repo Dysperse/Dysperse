@@ -7,6 +7,7 @@ import { Button } from "@/ui/Button";
 import RefreshControl from "@/ui/RefreshControl";
 import { addHslAlpha } from "@/ui/color";
 import { useColorTheme } from "@/ui/color/theme-provider";
+import { TEMPORARY_CONTENT_INSET_FIX } from "@/utils/temporary-scrolling-bug-fix";
 import { FlashList } from "@shopify/flash-list";
 import dayjs from "dayjs";
 import { LinearGradient } from "expo-linear-gradient";
@@ -125,6 +126,7 @@ export function Column({
         ]}
       />
       <FlashList
+        contentInset={TEMPORARY_CONTENT_INSET_FIX}
         ref={columnRef}
         refreshControl={
           data.length > 0 && (
@@ -185,3 +187,4 @@ export function Column({
     </View>
   );
 }
+

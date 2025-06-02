@@ -37,7 +37,7 @@ import TextField from "@/ui/TextArea";
 import { useDidUpdate } from "@/utils/useDidUpdate";
 import dayjs from "dayjs";
 import { router, useLocalSearchParams, usePathname } from "expo-router";
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import {
   InteractionManager,
   Platform,
@@ -565,18 +565,14 @@ export default function Page({ isPublic }: { isPublic: boolean }) {
   const sheetRef = useRef(null);
   const breakpoints = useResponsiveBreakpoints();
 
-  const swrKey = useMemo(
-    () =>
-      id
-        ? [
-            "space/collections/collection",
-            id === "all"
-              ? { all: "true", id: "??" }
-              : { id, isPublic: isPublic ? "true" : "false" },
-          ]
-        : null,
-    [id, isPublic]
-  );
+  const swrKey = id
+    ? [
+        "space/collections/collection",
+        id === "all"
+          ? { all: "true", id: "??" }
+          : { id, isPublic: isPublic ? "true" : "false" },
+      ]
+    : null;
   const { data, mutate, error } = useSWR(swrKey);
 
   useEffect(() => {
@@ -625,19 +621,16 @@ export default function Page({ isPublic }: { isPublic: boolean }) {
       break;
   }
 
-  const collectionContextValue = useMemo(
-    () => ({
-      data,
-      mutate,
-      error,
-      type,
-      access: data?.access,
-      swrKey,
-      isPublic,
-      openLabelPicker: () => sheetRef.current?.present(),
-    }),
-    [data, mutate, error, type, isPublic, swrKey]
-  );
+  const collectionContextValue = {
+    data,
+    mutate,
+    error,
+    type,
+    access: data?.access,
+    swrKey,
+    isPublic,
+    openLabelPicker: () => sheetRef.current?.present(),
+  };
 
   const pathname = usePathname();
 
@@ -646,7 +639,7 @@ export default function Page({ isPublic }: { isPublic: boolean }) {
   }, [pathname]);
 
   const panelRef = useRef(null);
-  const collectionSidekickContextValue = useMemo(() => ({ panelRef }), []);
+  const collectionSidekickContextValue = { panelRef };
 
   return (
     <SelectionContextProvider>
@@ -692,3 +685,4 @@ export default function Page({ isPublic }: { isPublic: boolean }) {
     </SelectionContextProvider>
   );
 }
+

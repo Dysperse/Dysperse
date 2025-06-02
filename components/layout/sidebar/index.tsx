@@ -1,6 +1,6 @@
 import { useSidebarContext } from "@/components/layout/sidebar/context";
 import { useSession } from "@/context/AuthProvider";
-import { OnboardingContainer } from "@/context/OnboardingProvider";
+import { AttachStep, OnboardingContainer } from "@/context/OnboardingProvider";
 import { useUser } from "@/context/useUser";
 import { sendApiRequest } from "@/helpers/api";
 import { useHotkeys } from "@/helpers/useHotKeys";
@@ -17,7 +17,7 @@ import { useColorTheme } from "@/ui/color/theme-provider";
 import Logo from "@/ui/logo";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import dayjs from "dayjs";
-import * as BackgroundFetch from "expo-background-fetch";
+import * as BackgroundTask from "expo-background-task";
 import { ImpactFeedbackStyle, impactAsync } from "expo-haptics";
 import { router, useGlobalSearchParams, usePathname } from "expo-router";
 import * as SecureStore from "expo-secure-store";
@@ -48,11 +48,10 @@ import Animated, {
   withSpring,
 } from "react-native-reanimated";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
-import { AttachStep } from "react-native-spotlight-tour";
 import Toast from "react-native-toast-message";
 import useSWR, { useSWRConfig } from "swr";
 import LoadingErrors from "../LoadingErrors";
-import OpenTabsList from "../tabs/carousel";
+import OpenTabsList from "../tabs/list";
 import FocusPanel from "./focus-panel";
 
 export const styles = StyleSheet.create({
@@ -135,10 +134,10 @@ const HomeButton = memo(function HomeButton({ isHome }: { isHome: boolean }) {
 });
 
 const BACKGROUND_TASK_IDENTIFIER = "integration-sync";
+
 TaskManager.defineTask(BACKGROUND_TASK_IDENTIFIER, async () => {
   try {
     const now = Date.now();
-
     const token = await SecureStore.getItemAsync("session");
     if (!token) throw new Error("No session token found");
 
@@ -153,23 +152,19 @@ TaskManager.defineTask(BACKGROUND_TASK_IDENTIFIER, async () => {
       }
     );
 
-    if (!res) {
+    if (!res.ok) {
       throw new Error(`Sync failed with status ${res.status}`);
     }
 
-    console.log(`✅ Synced integrations at ${new Date(now).toISOString()}`);
-    return BackgroundFetch.BackgroundFetchResult.NewData;
-  } catch (error) {
-    console.error("❌ Failed to sync integrations: ", error);
-    return BackgroundFetch.BackgroundFetchResult.Failed;
+    console.log(`✅ Synced at ${new Date(now).toISOString()}`);
+  } catch (err) {
+    console.error("❌ Background task error:", err);
   }
 });
 
-async function registerBackgroundFetchAsync() {
-  return BackgroundFetch.registerTaskAsync(BACKGROUND_TASK_IDENTIFIER, {
-    minimumInterval: 60 * 15, // 15 minutes
-    stopOnTerminate: false, // android only,
-    startOnBoot: true, // android only
+async function registerBackgroundTaskAsync() {
+  return BackgroundTask.registerTaskAsync(BACKGROUND_TASK_IDENTIFIER, {
+    minimumInterval: 60 * 30, // 30 minutes
   });
 }
 
@@ -181,7 +176,7 @@ const SyncButton = memo(function SyncButton({ syncRef }: any) {
 
   useEffect(() => {
     // Register the background task
-    registerBackgroundFetchAsync()
+    registerBackgroundTaskAsync()
       .then(() => {
         console.log("Background task registered successfully");
       })

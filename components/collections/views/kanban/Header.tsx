@@ -154,9 +154,9 @@ export const KanbanHeader = memo(function KanbanHeader({
                 disabled={currentColumn === 0}
                 onPress={() => {
                   carouselRef.current?.prev?.();
-                  setCurrentColumn(
-                    (d) => (d - 1 + columnsLength) % columnsLength
-                  );
+                  // setCurrentColumn(
+                  //   (d) => (d - 1 + columnsLength) % columnsLength
+                  // );
                 }}
                 icon="arrow_back_ios_new"
                 style={{ height: 60 }}
@@ -171,9 +171,9 @@ export const KanbanHeader = memo(function KanbanHeader({
                 }
                 onPress={() => {
                   carouselRef.current?.next?.();
-                  setCurrentColumn(
-                    (d) => (d + (hasUnlabeled ? 2 : 1)) % columnsLength
-                  );
+                  // setCurrentColumn(
+                  //   (d) => (d + (hasUnlabeled ? 2 : 1)) % columnsLength
+                  // );
                 }}
                 icon="arrow_forward_ios"
                 style={{ height: 60 }}

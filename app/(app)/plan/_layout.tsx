@@ -81,8 +81,9 @@ function PlanNavbar({
           <IconButton
             onPress={handleClose}
             icon={currentSlide !== 0 ? "arrow_back_ios_new" : "close"}
-            size={55}
-            style={{ marginLeft: -15 }}
+            size={45}
+            variant="filled"
+            style={{ marginTop: 10 }}
           />
         </ConfirmationModal>
       </View>
@@ -112,6 +113,7 @@ export default function Layout() {
             ),
             headerMode: "float",
             detachPreviousScreen: false,
+            cardOverlayEnabled: true,
             cardStyle: { backgroundColor: theme[1], display: "flex" },
           }}
         />

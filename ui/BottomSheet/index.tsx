@@ -112,7 +112,7 @@ function BottomSheet(props: DBottomSheetProps) {
             behavior="padding"
             style={Platform.OS === "web" && { flex: 1 }}
           >
-            {props.disableBackToClose !== true && Platform.OS !== "web" && (
+            {props.disableBackToClose !== true && Platform.OS === "android" && (
               <BottomSheetBackHandler />
             )}
             {Platform.OS === "web" && props.disableEscapeToClose !== true && (

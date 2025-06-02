@@ -186,6 +186,7 @@ export default function WeatherWidget({
             opacity: 0.6,
             fontSize: 13,
             marginHorizontal: "auto",
+            textAlign: "center",
           }}
           weight={600}
         >
@@ -473,4 +474,3 @@ export default function WeatherWidget({
     </Pressable>
   );
 }
-

@@ -10,7 +10,8 @@ export const CollectionSearch = () => {
 
   const handleClick = (e) => {
     e.preventDefault();
-    router.navigate({
+    router.dismissAll();
+    router.push({
       pathname: "[tab]/collections/[id]/[view]/search",
       params: { id, tab, view: type },
     });

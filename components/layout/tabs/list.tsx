@@ -1,6 +1,7 @@
 import { useCommandPaletteContext } from "@/components/command-palette/context";
 import { useFocusPanelContext } from "@/components/focus-panel/context";
 import { useBadgingService } from "@/context/BadgingProvider";
+import { AttachStep } from "@/context/OnboardingProvider";
 import { useStorageContext } from "@/context/storageContext";
 import { useUser } from "@/context/useUser";
 import { sendApiRequest } from "@/helpers/api";
@@ -20,16 +21,16 @@ import Spinner from "@/ui/Spinner";
 import Text from "@/ui/Text";
 import { addHslAlpha, useColor } from "@/ui/color";
 import { useColorTheme } from "@/ui/color/theme-provider";
+import { TEMPORARY_CONTENT_INSET_FIX } from "@/utils/temporary-scrolling-bug-fix";
 import * as Haptics from "expo-haptics";
 import { LinearGradient } from "expo-linear-gradient";
 import { router, useGlobalSearchParams } from "expo-router";
-import React, { memo, useEffect, useState } from "react";
+import { memo, default as React, useEffect, useState } from "react";
 import { Platform, Pressable, StyleSheet, View } from "react-native";
 import ReorderableList, {
   ReorderableListReorderEvent,
   reorderItems,
 } from "react-native-reorderable-list";
-import { AttachStep } from "react-native-spotlight-tour";
 import Toast from "react-native-toast-message";
 import useSWR from "swr";
 import PWAInstallerPrompt from "../PWAInstaller";
@@ -359,6 +360,7 @@ function OpenTabsList() {
                     }}
                   />
                 }
+                contentInset={TEMPORARY_CONTENT_INSET_FIX}
                 ListFooterComponentStyle={{ marginTop: "auto" }}
                 ListFooterComponent={() => (
                   <View style={{ padding: 1, paddingHorizontal: 10 }}>
@@ -481,3 +483,4 @@ function OpenTabsList() {
 }
 
 export default memo(OpenTabsList);
+

@@ -44,3 +44,5 @@ yarn-error.*
 .vercel
 
 .env.local
+
+.env.local

@@ -1,4 +1,4 @@
-import React, { forwardRef, ReactNode } from "react";
+import { forwardRef, ReactNode } from "react";
 import {
   Pressable,
   PressableProps,
@@ -62,9 +62,23 @@ const IconButton = forwardRef<typeof Pressable, IconButtonProps>(
 
     const backgroundColors = [
       props.backgroundColors?.default ||
-        (props.variant === "filled" ? theme[3] : addHslAlpha(theme[3], 0)),
-      props.backgroundColors?.hovered || theme[4],
-      props.backgroundColors?.pressed || theme[5],
+        (props.variant === "filled"
+          ? theme[3]
+          : props.variant === "text"
+          ? addHslAlpha(theme[11], 0)
+          : addHslAlpha(theme[11], 0)),
+      props.backgroundColors?.hovered ||
+        (props.variant === "filled"
+          ? theme[4]
+          : props.variant === "text"
+          ? addHslAlpha(theme[11], 0)
+          : addHslAlpha(theme[11], 0.1)),
+      props.backgroundColors?.pressed ||
+        (props.variant === "filled"
+          ? theme[5]
+          : props.variant === "text"
+          ? addHslAlpha(theme[11], 0)
+          : addHslAlpha(theme[11], 0.2)),
     ];
     const transparent = addHslAlpha(theme[3], 0);
 

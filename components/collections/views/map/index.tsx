@@ -20,7 +20,6 @@ import { LinearGradient } from "expo-linear-gradient";
 import { router, useLocalSearchParams } from "expo-router";
 import {
   cloneElement,
-  forwardRef,
   useEffect,
   useImperativeHandle,
   useRef,
@@ -426,11 +425,11 @@ function TaskList({ tasks }) {
 // --------------------------------------------------------------------
 // MapTaskDrawer: a <TaskDrawer> that we can open from the map pins.
 // --------------------------------------------------------------------
-const MapTaskDrawer = forwardRef((props: { mutate: any }, ref) => {
+const MapTaskDrawer = (props: { mutate: any; ref: any }) => {
   const sheetRef = useRef(null);
   const [id, setId] = useState(null);
 
-  useImperativeHandle(ref, () => ({
+  useImperativeHandle(props.ref, () => ({
     open: (task) => {
       setId(task);
       setTimeout(() => sheetRef.current.show(), 200);
@@ -444,7 +443,7 @@ const MapTaskDrawer = forwardRef((props: { mutate: any }, ref) => {
       id={id}
     />
   );
-});
+};
 
 // --------------------------------------------------------------------
 // Main MapView screen: Shows the tasks on the left, map on the right

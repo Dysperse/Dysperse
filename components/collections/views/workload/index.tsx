@@ -9,11 +9,18 @@ import Icon from "@/ui/Icon";
 import IconButton from "@/ui/IconButton";
 import RefreshControl from "@/ui/RefreshControl";
 import Text from "@/ui/Text";
+import { TEMPORARY_CONTENT_INSET_FIX } from "@/utils/temporary-scrolling-bug-fix";
 import { FlashList } from "@shopify/flash-list";
 import dayjs from "dayjs";
 import { impactAsync, ImpactFeedbackStyle } from "expo-haptics";
 import { LinearGradient } from "expo-linear-gradient";
-import React, { Dispatch, SetStateAction, useRef, useState } from "react";
+import {
+  Dispatch,
+  default as React,
+  SetStateAction,
+  useRef,
+  useState,
+} from "react";
 import { Platform, Pressable, StyleSheet, View } from "react-native";
 import { ScrollView } from "react-native-gesture-handler";
 import { useCollectionContext } from "../../context";
@@ -274,6 +281,7 @@ const StoryPoint = ({
         </>
       )}
       <FlashList
+        contentInset={TEMPORARY_CONTENT_INSET_FIX}
         ref={columnRef}
         refreshControl={
           <RefreshControl refreshing={false} onRefresh={() => mutate()} />
@@ -376,3 +384,4 @@ export default function Workload() {
     </>
   );
 }
+

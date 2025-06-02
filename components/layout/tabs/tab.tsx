@@ -242,6 +242,7 @@ function Tab({
     if (Platform.OS !== "web")
       Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Soft);
     AsyncStorage.setItem("lastViewedTab", tab.id);
+    router.dismissAll();
     router.replace({
       pathname: tab.slug,
       params: {
