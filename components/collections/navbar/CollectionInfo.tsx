@@ -34,7 +34,7 @@ const collectionCategories = [
 ];
 
 const Labels = ({ labels }) => {
-  const sheetRef = useRef();
+  const sheetRef = useRef(null);
   const openLabelPicker = () => sheetRef.current?.present();
 
   return (

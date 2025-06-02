@@ -25,6 +25,7 @@ import { LinearGradient } from "expo-linear-gradient";
 import { useImperativeHandle, useRef, useState } from "react";
 import { Keyboard, Platform, useWindowDimensions, View } from "react-native";
 import { ScrollView } from "react-native-gesture-handler";
+import { KeyboardAvoidingView } from "react-native-keyboard-controller";
 import Animated, {
   useAnimatedStyle,
   useSharedValue,
@@ -252,57 +253,58 @@ function CollectionQuestionAnser({ message, messageRef, messageState }) {
           }}
         />
       </View>
-      <SafeScrollView style={{ flex: 1, padding: 20 }}>
-        <View style={{ paddingHorizontal: breakpoints.md ? 5 : 10 }}>
-          <Text
-            style={{
-              fontFamily: "serifText800",
-              fontSize: 30,
-              marginBottom: 10,
-            }}
-          >
-            {message}
-          </Text>
-          {isLoading || isValidating ? (
-            <SkeletonContainer>
-              <LinearSkeletonArray
-                animateWidth
-                height={20}
-                widths={[40, 61, 75, 85, 83, 81, 37, 61, 53, 48]}
-              />
-            </SkeletonContainer>
-          ) : data?.error ? (
-            <Text>Couldn't generate text. Did you hit your limit?</Text>
-          ) : data ? (
-            <>
-              {data?.addedFilters?.length > 0 && (
-                <FilterChips filters={data.addedFilters} />
-              )}
-              <MarkdownRenderer>{data?.generated}</MarkdownRenderer>
-              <Text style={{ opacity: 0.5, marginTop: 5, fontSize: 12 }}>
-                AI can make mistakes. Check important info
-              </Text>
-            </>
-          ) : (
-            <ErrorAlert />
-          )}
+      <KeyboardAvoidingView behavior="height">
+        <SafeScrollView style={{ flex: 1, padding: 20 }}>
+          <View style={{ paddingHorizontal: breakpoints.md ? 5 : 10 }}>
+            <Text
+              style={{
+                fontFamily: "serifText800",
+                fontSize: 30,
+                marginBottom: 10,
+              }}
+            >
+              {message}
+            </Text>
+            {isLoading || isValidating ? (
+              <SkeletonContainer>
+                <LinearSkeletonArray
+                  animateWidth
+                  height={20}
+                  widths={[40, 61, 75, 85, 83, 81, 37, 61, 53, 48]}
+                />
+              </SkeletonContainer>
+            ) : data?.error ? (
+              <Text>Couldn't generate text. Did you hit your limit?</Text>
+            ) : data ? (
+              <>
+                {data?.addedFilters?.length > 0 && (
+                  <FilterChips filters={data.addedFilters} />
+                )}
+                <MarkdownRenderer>{data?.generated}</MarkdownRenderer>
+                <Text style={{ opacity: 0.5, marginTop: 5, fontSize: 12 }}>
+                  AI can make mistakes. Check important info
+                </Text>
+              </>
+            ) : (
+              <ErrorAlert />
+            )}
+          </View>
+        </SafeScrollView>
+        <View style={{ padding: 20, paddingTop: 0 }}>
+          <LinearGradient
+            colors={[
+              addHslAlpha(theme[breakpoints.md ? 1 : 2], 0),
+              theme[breakpoints.md ? 1 : 2],
+            ]}
+            style={{ height: 20, marginTop: -20, width: "100%" }}
+          />
+          <MessageBar
+            onRetry={mutate}
+            placeholder="Ask another question"
+            messageRef={messageRef}
+          />
         </View>
-      </SafeScrollView>
-
-      <View style={{ padding: 20, paddingTop: 0 }}>
-        <LinearGradient
-          colors={[
-            addHslAlpha(theme[breakpoints.md ? 1 : 2], 0),
-            theme[breakpoints.md ? 1 : 2],
-          ]}
-          style={{ height: 20, marginTop: -20, width: "100%" }}
-        />
-        <MessageBar
-          onRetry={mutate}
-          placeholder="Ask another question"
-          messageRef={messageRef}
-        />
-      </View>
+      </KeyboardAvoidingView>
     </View>
   );
 }
@@ -310,8 +312,8 @@ function CollectionQuestionAnser({ message, messageRef, messageState }) {
 export function Sidekick() {
   const width = useSharedValue(0);
   const breakpoints = useResponsiveBreakpoints();
-  const messageRef = useRef();
-  const mobileRef = useRef<BottomSheetModal>();
+  const messageRef = useRef(null);
+  const mobileRef = useRef<BottomSheetModal>(null);
   const [message, setMessage] = useState("");
   const { height } = useWindowDimensions();
 
