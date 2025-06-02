@@ -21,10 +21,17 @@ import Spinner from "@/ui/Spinner";
 import Text from "@/ui/Text";
 import { addHslAlpha, useColor } from "@/ui/color";
 import { useColorTheme } from "@/ui/color/theme-provider";
+import { TEMPORARY_CONTENT_INSET_FIX } from "@/utils/temporary-scrolling-bug-fix";
 import * as Haptics from "expo-haptics";
 import { LinearGradient } from "expo-linear-gradient";
 import { router, useGlobalSearchParams } from "expo-router";
-import React, { memo, useEffect, useState } from "react";
+import {
+  memo,
+  default as React,
+  default as React,
+  useEffect,
+  useState,
+} from "react";
 import { Platform, Pressable, StyleSheet, View } from "react-native";
 import ReorderableList, {
   ReorderableListReorderEvent,
@@ -359,7 +366,7 @@ function OpenTabsList() {
                     }}
                   />
                 }
-                contentInset={{ top: Math.random() * 0.01 }}
+                contentInset={TEMPORARY_CONTENT_INSET_FIX}
                 ListFooterComponentStyle={{ marginTop: "auto" }}
                 ListFooterComponent={() => (
                   <View style={{ padding: 1, paddingHorizontal: 10 }}>
