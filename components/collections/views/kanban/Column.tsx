@@ -13,7 +13,7 @@ import { useColorTheme } from "@/ui/color/theme-provider";
 import { FlashList } from "@shopify/flash-list";
 import { LinearGradient } from "expo-linear-gradient";
 import React, { useRef, useState } from "react";
-import { Platform, View } from "react-native";
+import { Platform, useWindowDimensions, View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { useDidUpdate } from "../../../../utils/useDidUpdate";
 import { ColumnEmptyComponent } from "../../emptyComponent";
@@ -75,6 +75,8 @@ export function Column(props: ColumnProps) {
     setShowCompleted(collectionData.showCompleted);
   }, [collectionData.showCompleted]);
 
+  const { width } = useWindowDimensions();
+
   return (
     <View
       style={[
@@ -83,7 +85,7 @@ export function Column(props: ColumnProps) {
               position: "relative",
               height: "100%",
               width: "100%",
-              maxWidth: "100%",
+              maxWidth: width,
               borderRadius: 20,
               ...(breakpoints.md && {
                 borderWidth: 1,
