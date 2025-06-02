@@ -1,4 +1,4 @@
-import { forwardRef, ForwardRefRenderFunction, memo } from "react";
+import { ForwardRefRenderFunction } from "react";
 import {
   Text as NText,
   Platform,
@@ -14,6 +14,7 @@ export interface DTextProps extends TextProps {
   textStyle?: StyleProp<TextStyle>;
   weight?: 100 | 200 | 300 | 400 | 500 | 600 | 700 | 800 | 900;
   variant?: "default" | "eyebrow" | "menuItem";
+  ref?: React.Ref<NText>;
 }
 
 export const getFontName = (family: string, weight: number) => {
@@ -53,13 +54,13 @@ const textStyles = StyleSheet.create({
   },
 });
 
-const Text: ForwardRefRenderFunction<NText, DTextProps> = (props, ref) => {
+const Text: ForwardRefRenderFunction<NText, DTextProps> = (props) => {
   const theme = useColorTheme();
 
   return (
     <NText
       {...props}
-      ref={ref}
+      ref={props?.ref}
       maxFontSizeMultiplier={1.1}
       style={[
         {
@@ -85,5 +86,5 @@ const Text: ForwardRefRenderFunction<NText, DTextProps> = (props, ref) => {
   );
 };
 
-export default memo(forwardRef(Text));
+export default Text;
 

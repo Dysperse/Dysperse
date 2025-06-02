@@ -14,7 +14,6 @@ import { useLocalSearchParams, usePathname } from "expo-router";
 import {
   default as React,
   cloneElement,
-  forwardRef,
   useCallback,
   useImperativeHandle,
   useRef,
@@ -53,22 +52,21 @@ const SafeBlurView = (props) => {
   );
 };
 
-const TaskDrawerWrapper = forwardRef(function TaskDrawerWrapper(
-  {
-    id,
-    handleClose,
-    dateRange,
-    mutateList,
-    isReadOnly,
-  }: {
-    id: any;
-    handleClose: any;
-    dateRange?: string;
-    mutateList: any;
-    isReadOnly?: boolean;
-  },
-  ref
-) {
+function TaskDrawerWrapper({
+  id,
+  handleClose,
+  dateRange,
+  mutateList,
+  isReadOnly,
+  ref,
+}: {
+  id: any;
+  handleClose: any;
+  dateRange?: string;
+  mutateList: any;
+  isReadOnly?: boolean;
+  ref?: React.Ref<any>;
+}) {
   const { sessionToken } = useUser();
 
   const pathname = usePathname();
@@ -202,7 +200,7 @@ const TaskDrawerWrapper = forwardRef(function TaskDrawerWrapper(
       </SafeBlurView>
     </Pressable>
   );
-});
+}
 
 export interface TaskDrawerProps {
   mutateList: any;
@@ -213,21 +211,22 @@ export interface TaskDrawerProps {
   dateRange?: string;
   onDoublePress?: () => void;
   smallWidth?: boolean;
+  ref?: React.Ref<{
+    show: () => void;
+  }>;
 }
 
-export const TaskDrawer = forwardRef(function TaskDrawer(
-  {
-    mutateList,
-    children,
-    id,
-    disabled,
-    isReadOnly,
-    dateRange,
-    onDoublePress,
-    smallWidth,
-  }: TaskDrawerProps,
-  ref
-) {
+export function TaskDrawer({
+  mutateList,
+  children,
+  id,
+  disabled,
+  isReadOnly,
+  dateRange,
+  onDoublePress,
+  smallWidth,
+  ref,
+}: TaskDrawerProps) {
   const contentRef = useRef(null);
   const sheetRef = useRef(null);
   const { height } = useWindowDimensions();
@@ -305,4 +304,5 @@ export const TaskDrawer = forwardRef(function TaskDrawer(
       </Modal>
     </>
   );
-});
+}
+

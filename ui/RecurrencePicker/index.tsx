@@ -3,7 +3,7 @@ import { normalizeRecurrenceRuleObject } from "@/components/task/drawer/details"
 import { BottomSheetScrollView, useBottomSheet } from "@gorhom/bottom-sheet";
 import { Calendar, toDateId } from "@marceloterreiro/flash-calendar";
 import dayjs from "dayjs";
-import { forwardRef, useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Keyboard, View } from "react-native";
 import Toast from "react-native-toast-message";
 import { RRule } from "rrule";
@@ -468,78 +468,80 @@ function Cancel({ setValue, onClose }) {
   );
 }
 
-export const RecurrencePicker = forwardRef(
-  (
-    {
-      value,
-      setValue,
-      onClose = () => {},
-    }: { value: any; setValue: any; onClose?: any },
-    ref: any
-  ) => {
-    const [localValue, setLocalValue] = useState(value);
+export const RecurrencePicker = ({
+  value,
+  setValue,
+  onClose = () => {},
+  ref,
+}: {
+  value: any;
+  setValue: any;
+  onClose?: any;
+  ref: any;
+}) => {
+  const [localValue, setLocalValue] = useState(value);
 
-    const handleEdit = (key, newValue) => {
-      setLocalValue({
-        ...localValue,
-        [key]: newValue,
-      });
-    };
+  const handleEdit = (key, newValue) => {
+    setLocalValue({
+      ...localValue,
+      [key]: newValue,
+    });
+  };
 
-    return (
-      <Modal sheetRef={ref} animation="SCALE" maxWidth={400} onClose={onClose}>
-        <View
-          style={{
-            padding: 20,
-            flexDirection: "row",
-            alignItems: "center",
-          }}
-        >
-          <Cancel setValue={setLocalValue} onClose={onClose} />
-          <View style={{ flex: 1, justifyContent: "center" }}>
-            <Text
-              style={{
-                fontSize: 20,
-                textAlign: "center",
-                fontFamily: "serifText700",
-              }}
-            >
-              Repetition
-            </Text>
-          </View>
-          <IconButton
-            icon="check"
-            style={{ marginLeft: 20 }}
-            size={40}
-            variant="filled"
-            onPress={() => {
-              ref.current.close();
-              setValue(localValue);
-              setTimeout(onClose, 100);
+  return (
+    <Modal sheetRef={ref} animation="SCALE" maxWidth={400} onClose={onClose}>
+      <View
+        style={{
+          padding: 20,
+          flexDirection: "row",
+          alignItems: "center",
+        }}
+      >
+        <Cancel setValue={setLocalValue} onClose={onClose} />
+        <View style={{ flex: 1, justifyContent: "center" }}>
+          <Text
+            style={{
+              fontSize: 20,
+              textAlign: "center",
+              fontFamily: "serifText700",
             }}
-          />
+          >
+            Repetition
+          </Text>
         </View>
-        <BottomSheetScrollView
-          keyboardShouldPersistTaps="handled"
-          onScrollBeginDrag={Keyboard.dismiss}
-        >
-          <SetValue value={localValue} setValue={setLocalValue} />
-          <View style={{ padding: 20, paddingTop: 0 }}>
-            {localValue && (
-              <View style={{ paddingTop: 10, gap: 10 }}>
-                <Every value={localValue} handleEdit={handleEdit} />
-                {localValue.freq !== 0 && (
-                  <On value={localValue} handleEdit={handleEdit} />
-                )}
-                <Ends value={localValue} setValue={setLocalValue} />
-              </View>
-            )}
+        <IconButton
+          icon="check"
+          style={{ marginLeft: 20 }}
+          size={40}
+          variant="filled"
+          onPress={() => {
+            ref.current.close();
+            setValue(localValue);
+            setTimeout(onClose, 100);
+          }}
+        />
+      </View>
+      <BottomSheetScrollView
+        keyboardShouldPersistTaps="handled"
+        onScrollBeginDrag={Keyboard.dismiss}
+      >
+        <SetValue value={localValue} setValue={setLocalValue} />
+        <View style={{ padding: 20, paddingTop: 0 }}>
+          {localValue && (
+            <View style={{ paddingTop: 10, gap: 10 }}>
+              <Every value={localValue} handleEdit={handleEdit} />
+              {localValue.freq !== 0 && (
+                <On value={localValue} handleEdit={handleEdit} />
+              )}
+              <Ends value={localValue} setValue={setLocalValue} />
+            </View>
+          )}
 
-            <AtTime value={localValue} setValue={setLocalValue} />
-            <Preview value={localValue} />
-          </View>
-        </BottomSheetScrollView>
-      </Modal>
-    );
-  }
-);
+          <AtTime value={localValue} setValue={setLocalValue} />
+          <Preview value={localValue} />
+        </View>
+      </BottomSheetScrollView>
+    </Modal>
+  );
+};
+

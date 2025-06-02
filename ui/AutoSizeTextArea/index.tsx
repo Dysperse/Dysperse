@@ -1,4 +1,4 @@
-import { forwardRef, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import {
   Keyboard,
   Platform,
@@ -15,20 +15,20 @@ interface DTextAreaProps extends TextInputProps {
   disabled?: boolean;
 }
 
-const AutoSizeTextArea = forwardRef((props: DTextAreaProps, ref: any) => {
+const AutoSizeTextArea = (props: DTextAreaProps) => {
   const [layoutHeight, setLayoutHeight] = useState(0);
 
   useEffect(() => {
     Keyboard.addListener("keyboardDidHide", () => {
-      ref?.current?.blur();
+      props.ref?.current?.blur();
     });
-  }, [ref]);
+  }, [props.ref]);
 
   const SafeTextInput = TextInput;
 
   return (
     <SafeTextInput
-      ref={ref}
+      ref={props.ref}
       defaultValue={props.inputDefaultValue}
       multiline
       {...props}
@@ -55,7 +55,7 @@ const AutoSizeTextArea = forwardRef((props: DTextAreaProps, ref: any) => {
       }}
     />
   );
-});
+};
 
 export default AutoSizeTextArea;
 

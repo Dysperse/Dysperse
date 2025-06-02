@@ -37,8 +37,8 @@ import {
 } from "expo-speech-recognition";
 import React, {
   cloneElement,
-  forwardRef,
   memo,
+  Ref,
   RefObject,
   useCallback,
   useEffect,
@@ -550,101 +550,98 @@ function LabelNlpProcessor({
   return null;
 }
 
-const TimeSuggestion = forwardRef(
-  ({
-    value,
-    hintRef,
-    watch,
-    isDirty,
-  }: {
-    value: any;
-    hintRef: any;
-    watch;
-    isDirty;
-  }) => {
-    const hasTypedRef = useRef(false);
-    const date = watch("date");
-    const label = watch("label");
-    const parentTask = watch("parentTask");
-    const collectionId = watch("collectionId");
-    const pathname = usePathname();
-    const { type, id } = useGlobalSearchParams();
+const TimeSuggestion = ({
+  value,
+  hintRef,
+  watch,
+  isDirty,
+}: {
+  value: any;
+  hintRef: any;
+  watch;
+  isDirty;
+}) => {
+  const hasTypedRef = useRef(false);
+  const date = watch("date");
+  const label = watch("label");
+  const parentTask = watch("parentTask");
+  const collectionId = watch("collectionId");
+  const pathname = usePathname();
+  const { type, id } = useGlobalSearchParams();
 
-    useEffect(() => {
-      const setMessage = async () => {
-        if (value !== "") hasTypedRef.current = true;
+  useEffect(() => {
+    const setMessage = async () => {
+      if (value !== "") hasTypedRef.current = true;
 
-        const regex =
-          /(?:at|from|during|after|before|by)\s((1[0-2]|0?[1-9])(?::([0-5][0-9]))?(am|pm)?)/i;
+      const regex =
+        /(?:at|from|during|after|before|by)\s((1[0-2]|0?[1-9])(?::([0-5][0-9]))?(am|pm)?)/i;
 
-        const importantSuggestion = await AsyncStorage.getItem(
-          "importantSuggestion"
-        );
-        const noteSuggestion = await AsyncStorage.getItem("noteSuggestion");
-        const tagSuggestion = await AsyncStorage.getItem("tagSuggestion");
-        const tmwSuggestion = await AsyncStorage.getItem("tmwSuggestion");
+      const importantSuggestion = await AsyncStorage.getItem(
+        "importantSuggestion"
+      );
+      const noteSuggestion = await AsyncStorage.getItem("noteSuggestion");
+      const tagSuggestion = await AsyncStorage.getItem("tagSuggestion");
+      const tmwSuggestion = await AsyncStorage.getItem("tmwSuggestion");
 
-        hintRef?.current?.setMessage?.(
-          value.match(regex) && !value.includes("](time-prediction)") && date
-            ? {
-                text: "Typing a date? Hit [space] to confirm",
-                icon: "emoji_objects",
-              }
-            : Object.keys(COLLECTION_VIEWS).find(
-                (e) => e === type && COLLECTION_VIEWS[e].type === "Time Based"
-              ) &&
-              !date &&
-              !parentTask
-            ? {
-                text: `This task won't appear in ${type} view without a date`,
-                icon: "info",
-              }
-            : Object.keys(COLLECTION_VIEWS).find(
-                (e) =>
-                  e === type && COLLECTION_VIEWS[e].type === "Category Based"
-              ) &&
-              !label &&
-              !parentTask &&
-              type !== "list" &&
-              collectionId
-            ? {
-                text: `Since this task doesn't have a label, it'll appear in a special "Unlabeled" category`,
-                icon: "info",
-              }
-            : !label && id !== "all" && !collectionId
-            ? {
-                text: 'This task will appear in your "All tasks" view since it isn\'t part of any collection',
-                icon: "info",
-              }
-            : isDirty && !value && Platform.OS === "web"
-            ? {
-                text: "Hit [backspace] to reset",
-                icon: "magic_button",
-              }
-            : !importantSuggestion && Platform.OS === "web"
-            ? {
-                text: 'Type "!" to mark as important',
-                icon: "emoji_objects",
-              }
-            : !tagSuggestion && Platform.OS === "web"
-            ? {
-                text: "Type # to add a tag",
-                icon: "emoji_objects",
-              }
-            : !tmwSuggestion && Platform.OS === "web"
-            ? {
-                text: 'Type "tmw" to set a due date for tomorrow',
-                icon: "emoji_objects",
-              }
-            : false
-        );
-      };
+      hintRef?.current?.setMessage?.(
+        value.match(regex) && !value.includes("](time-prediction)") && date
+          ? {
+              text: "Typing a date? Hit [space] to confirm",
+              icon: "emoji_objects",
+            }
+          : Object.keys(COLLECTION_VIEWS).find(
+              (e) => e === type && COLLECTION_VIEWS[e].type === "Time Based"
+            ) &&
+            !date &&
+            !parentTask
+          ? {
+              text: `This task won't appear in ${type} view without a date`,
+              icon: "info",
+            }
+          : Object.keys(COLLECTION_VIEWS).find(
+              (e) => e === type && COLLECTION_VIEWS[e].type === "Category Based"
+            ) &&
+            !label &&
+            !parentTask &&
+            type !== "list" &&
+            collectionId
+          ? {
+              text: `Since this task doesn't have a label, it'll appear in a special "Unlabeled" category`,
+              icon: "info",
+            }
+          : !label && id !== "all" && !collectionId
+          ? {
+              text: 'This task will appear in your "All tasks" view since it isn\'t part of any collection',
+              icon: "info",
+            }
+          : isDirty && !value && Platform.OS === "web"
+          ? {
+              text: "Hit [backspace] to reset",
+              icon: "magic_button",
+            }
+          : !importantSuggestion && Platform.OS === "web"
+          ? {
+              text: 'Type "!" to mark as important',
+              icon: "emoji_objects",
+            }
+          : !tagSuggestion && Platform.OS === "web"
+          ? {
+              text: "Type # to add a tag",
+              icon: "emoji_objects",
+            }
+          : !tmwSuggestion && Platform.OS === "web"
+          ? {
+              text: 'Type "tmw" to set a due date for tomorrow',
+              icon: "emoji_objects",
+            }
+          : false
+      );
+    };
 
-      setMessage();
-    }, [value, hintRef, date, label, pathname, type, isDirty, parentTask]);
-    return null;
-  }
-);
+    setMessage();
+  }, [value, hintRef, date, label, pathname, type, isDirty, parentTask]);
+  return null;
+};
 
 function TaskNameInput({
   control,
@@ -974,7 +971,7 @@ const TaskAttachments = ({ watch, setValue }: any) => {
   );
 };
 
-const SubmitButton = forwardRef(({ onSubmit, watch }: any, ref) => {
+const SubmitButton = ({ onSubmit, watch, ref }: any) => {
   const theme = useColorTheme();
   const name = watch("name");
   const breakpoints = useResponsiveBreakpoints();
@@ -1009,7 +1006,7 @@ const SubmitButton = forwardRef(({ onSubmit, watch }: any, ref) => {
       onPress={onSubmit}
     />
   );
-});
+};
 
 function DateButton({
   watch,
@@ -1120,36 +1117,42 @@ function SubTaskInformation({ watch }) {
   );
 }
 
-const TaskDescriptionInput = forwardRef(
-  ({ control, nameRef }: { control; nameRef }, ref) => {
-    const editorRef = useRef(null);
+const TaskDescriptionInput = ({
+  control,
+  nameRef,
+  ref,
+}: {
+  control;
+  nameRef;
+  ref;
+}) => {
+  const editorRef = useRef(null);
 
-    useImperativeHandle(ref, () => ({
-      show: () => {
-        editorRef.current.focus();
-      },
-    }));
+  useImperativeHandle(ref, () => ({
+    show: () => {
+      editorRef.current.focus();
+    },
+  }));
 
-    return (
-      <View style={{ marginHorizontal: -10, height: 150 }}>
-        <Controller
-          control={control}
-          name="note"
-          render={({ field: { onChange, value } }) => (
-            <TaskNote
-              openLink={(url) => Linking.openURL(url)}
-              onContainerFocus={() => nameRef.current?.focus()}
-              showEditorWhenEmpty
-              ref={editorRef}
-              task={{ note: "<p>hi</p>" }}
-              updateTask={(_, t) => onChange(t)}
-            />
-          )}
-        />
-      </View>
-    );
-  }
-);
+  return (
+    <View style={{ marginHorizontal: -10, height: 150 }}>
+      <Controller
+        control={control}
+        name="note"
+        render={({ field: { onChange, value } }) => (
+          <TaskNote
+            openLink={(url) => Linking.openURL(url)}
+            onContainerFocus={() => nameRef.current?.focus()}
+            showEditorWhenEmpty
+            ref={editorRef}
+            task={{ note: "<p>hi</p>" }}
+            updateTask={(_, t) => onChange(t)}
+          />
+        )}
+      />
+    </View>
+  );
+};
 
 function SpeechRecognition({ setValue }) {
   const breakpoints = useResponsiveBreakpoints();
@@ -1288,212 +1291,207 @@ function LocationButton({ watch, setValue, nameRef }) {
   );
 }
 
-const BottomSheetContent = forwardRef(
-  (
-    {
-      defaultValues,
-      mutateList,
-      hintRef,
-    }: {
-      defaultValues: CreateTaskDrawerProps["defaultValues"];
-      mutateList: any;
-      hintRef;
+const BottomSheetContent = ({
+  defaultValues,
+  mutateList,
+  hintRef,
+  ref: formRef,
+}: {
+  defaultValues: CreateTaskDrawerProps["defaultValues"];
+  mutateList: any;
+  hintRef;
+  ref;
+}) => {
+  const breakpoints = useResponsiveBreakpoints();
+  const { sessionToken } = useUser();
+  const isDark = useDarkMode();
+  const nameRef = useRef(null);
+  const dateRef = useRef(null);
+  const recurrenceRef = useRef(null);
+  const submitRef = useRef(null);
+  const labelMenuRef = useRef<BottomSheetModal>(null);
+  const badgingService = useBadgingService();
+
+  const descriptionRef = useRef(null);
+  const theme = useColorTheme();
+  const addedTasks = useRef([]);
+  const { control, handleSubmit, reset, watch, setValue } = useForm({
+    defaultValues: {
+      dateOnly:
+        typeof defaultValues.dateOnly === "boolean"
+          ? defaultValues.dateOnly
+          : true,
+      name: defaultValues.name || "",
+      date: defaultValues.date,
+      pinned: defaultValues.pinned || false,
+      parentTask: defaultValues.parentTask,
+      label: defaultValues.label,
+      storyPoints: defaultValues.storyPoints,
+      collectionId: defaultValues.collectionId,
+      attachments: [],
+      location: null,
+      note: "",
     },
-    formRef
-  ) => {
-    const breakpoints = useResponsiveBreakpoints();
-    const { sessionToken } = useUser();
-    const isDark = useDarkMode();
-    const nameRef = useRef(null);
-    const dateRef = useRef(null);
-    const recurrenceRef = useRef(null);
-    const submitRef = useRef(null);
-    const labelMenuRef = useRef<BottomSheetModal>(null);
-    const badgingService = useBadgingService();
+  });
 
-    const descriptionRef = useRef(null);
-    const theme = useColorTheme();
-    const addedTasks = useRef([]);
-    const { control, handleSubmit, reset, watch, setValue } = useForm({
-      defaultValues: {
-        dateOnly:
-          typeof defaultValues.dateOnly === "boolean"
-            ? defaultValues.dateOnly
-            : true,
-        name: defaultValues.name || "",
-        date: defaultValues.date,
-        pinned: defaultValues.pinned || false,
-        parentTask: defaultValues.parentTask,
-        label: defaultValues.label,
-        storyPoints: defaultValues.storyPoints,
-        collectionId: defaultValues.collectionId,
-        attachments: [],
-        location: null,
-        note: "",
-      },
-    });
+  useImperativeHandle(formRef, () => ({ setValue }));
 
-    useImperativeHandle(formRef, () => ({ setValue }));
+  const { session } = useUser();
+  useEffect(() => {
+    if (!session.user.hintsViewed.includes("CREATE_TASK")) return;
+    nameRef.current?.focus({ preventScroll: true });
+  }, [session, nameRef, breakpoints]);
 
-    const { session } = useUser();
-    useEffect(() => {
-      if (!session.user.hintsViewed.includes("CREATE_TASK")) return;
-      nameRef.current?.focus({ preventScroll: true });
-    }, [session, nameRef, breakpoints]);
+  const onSubmit = async (data) => {
+    try {
+      if (Platform.OS !== "web") impactAsync(ImpactFeedbackStyle.Heavy);
+      sendApiRequest(
+        sessionToken,
+        "POST",
+        "space/entity",
+        {},
+        {
+          body: JSON.stringify({
+            ...data,
+            name: data.name.replaceAll(/[@/]\[(.*?)\]\((.*?)\)/g, "$1"),
+            start: data?.date?.toISOString(),
+            agendaOrder: defaultValues.agendaOrder,
+            pinned: data.pinned,
+            labelId: data.label?.id,
+            type: "TASK",
+            parentTask: undefined,
+            parentId: data.parentTask?.id,
+            collectionId: data.label?.id ? null : data.collectionId,
+          }),
+        }
+      )
+        .then((e) => addedTasks.current.push(e))
+        .then(() => badgingService?.current?.mutate());
 
-    const onSubmit = async (data) => {
-      try {
-        if (Platform.OS !== "web") impactAsync(ImpactFeedbackStyle.Heavy);
-        sendApiRequest(
-          sessionToken,
-          "POST",
-          "space/entity",
-          {},
-          {
-            body: JSON.stringify({
-              ...data,
-              name: data.name.replaceAll(/[@/]\[(.*?)\]\((.*?)\)/g, "$1"),
-              start: data?.date?.toISOString(),
-              agendaOrder: defaultValues.agendaOrder,
-              pinned: data.pinned,
-              labelId: data.label?.id,
-              type: "TASK",
-              parentTask: undefined,
-              parentId: data.parentTask?.id,
-              collectionId: data.label?.id ? null : data.collectionId,
-            }),
-          }
-        )
-          .then((e) => addedTasks.current.push(e))
-          .then(() => badgingService?.current?.mutate());
+      reset(defaultValues);
 
-        reset(defaultValues);
+      Toast.show({
+        type: "success",
+        text1: "Created task!",
+      });
+      nameRef.current?.focus();
+    } catch (e) {
+      Toast.show({
+        type: "error",
+        text1: "Something went wrong. Please try again later.",
+      });
+    }
+  };
 
-        Toast.show({
-          type: "success",
-          text1: "Created task!",
-        });
-        nameRef.current?.focus();
-      } catch (e) {
+  const handleSubmitButtonClick = () => {
+    if (!submitRef.current.isDisabled())
+      handleSubmit(onSubmit, () =>
         Toast.show({
           type: "error",
-          text1: "Something went wrong. Please try again later.",
-        });
+          text1: "Type in a task name",
+        })
+      )();
+  };
+
+  useEffect(() => {
+    return () => {
+      if (addedTasks.current.length > 0) {
+        for (let i = 0; i < addedTasks.current.length; i++) {
+          mutateList(addedTasks.current[i]);
+        }
       }
     };
+  }, []);
 
-    const handleSubmitButtonClick = () => {
-      if (!submitRef.current.isDisabled())
-        handleSubmit(onSubmit, () =>
-          Toast.show({
-            type: "error",
-            text1: "Type in a task name",
-          })
-        )();
-    };
-
-    useEffect(() => {
-      return () => {
-        if (addedTasks.current.length > 0) {
-          for (let i = 0; i < addedTasks.current.length; i++) {
-            mutateList(addedTasks.current[i]);
-          }
+  return (
+    <Pressable
+      style={{
+        minHeight: Platform.OS !== "web" ? 280 : undefined,
+        backgroundColor: addHslAlpha(
+          theme[2],
+          Platform.OS === "android" ? 1 : 0.5
+        ),
+      }}
+    >
+      <BlurView
+        style={{ flex: 1, padding: 25, gap: 20, flexDirection: "column" }}
+        intensity={Platform.OS === "android" ? 0 : 60}
+        tint={
+          Platform.OS === "ios"
+            ? isDark
+              ? "dark"
+              : "light"
+            : isDark
+            ? "systemUltraThinMaterialDark"
+            : "systemUltraThinMaterialLight"
         }
-      };
-    }, []);
-
-    return (
-      <Pressable
-        style={{
-          minHeight: Platform.OS !== "web" ? 280 : undefined,
-          backgroundColor: addHslAlpha(
-            theme[2],
-            Platform.OS === "android" ? 1 : 0.5
-          ),
-        }}
       >
-        <BlurView
-          style={{ flex: 1, padding: 25, gap: 20, flexDirection: "column" }}
-          intensity={Platform.OS === "android" ? 0 : 60}
-          tint={
-            Platform.OS === "ios"
-              ? isDark
-                ? "dark"
-                : "light"
-              : isDark
-              ? "systemUltraThinMaterialDark"
-              : "systemUltraThinMaterialLight"
-          }
+        <SubTaskInformation watch={watch} />
+        <View
+          style={{
+            flex: 1,
+            flexDirection: "column",
+            zIndex: 0,
+          }}
         >
-          <SubTaskInformation watch={watch} />
-          <View
-            style={{
-              flex: 1,
-              flexDirection: "column",
-              zIndex: 0,
-            }}
-          >
-            <Footer
-              defaultValues={defaultValues}
-              dateRef={dateRef}
-              recurrenceRef={recurrenceRef}
-              setValue={setValue}
+          <Footer
+            defaultValues={defaultValues}
+            dateRef={dateRef}
+            recurrenceRef={recurrenceRef}
+            setValue={setValue}
+            watch={watch}
+            nameRef={nameRef}
+            labelMenuRef={labelMenuRef}
+            control={control}
+          />
+          <View style={Platform.OS !== "web" && { minHeight: 100 }}>
+            <TaskNameInput
+              disabled={!session.user.hintsViewed.includes("CREATE_TASK")}
+              descriptionRef={descriptionRef}
+              hintRef={hintRef}
+              submitRef={submitRef}
+              reset={reset}
               watch={watch}
-              nameRef={nameRef}
-              labelMenuRef={labelMenuRef}
               control={control}
+              handleSubmitButtonClick={handleSubmitButtonClick}
+              nameRef={nameRef}
+              setValue={setValue}
             />
-            <View style={Platform.OS !== "web" && { minHeight: 100 }}>
-              <TaskNameInput
-                disabled={!session.user.hintsViewed.includes("CREATE_TASK")}
-                descriptionRef={descriptionRef}
-                hintRef={hintRef}
-                submitRef={submitRef}
-                reset={reset}
-                watch={watch}
-                control={control}
-                handleSubmitButtonClick={handleSubmitButtonClick}
-                nameRef={nameRef}
-                setValue={setValue}
-              />
-              {/* <TaskDescriptionInput
+            {/* <TaskDescriptionInput
                 nameRef={nameRef}
                 control={control}
                 ref={descriptionRef}
               /> */}
+          </View>
+        </View>
+        <TaskAttachments watch={watch} setValue={setValue} />
+        <View
+          style={{
+            gap: 7,
+            flexDirection: "row",
+            alignItems: "center",
+          }}
+        >
+          <AttachStep index={3}>
+            <View style={breakpoints.md ? undefined : { flex: 1 }}>
+              <SpeechRecognition setValue={setValue} />
             </View>
-          </View>
-          <TaskAttachments watch={watch} setValue={setValue} />
-          <View
-            style={{
-              gap: 7,
-              flexDirection: "row",
-              alignItems: "center",
-            }}
-          >
-            <AttachStep index={3}>
-              <View style={breakpoints.md ? undefined : { flex: 1 }}>
-                <SpeechRecognition setValue={setValue} />
-              </View>
-            </AttachStep>
-            <AttachStep index={4}>
-              <View
-                style={breakpoints.md ? { marginLeft: "auto" } : { flex: 1 }}
-              >
-                <PinTask control={control} />
-              </View>
-            </AttachStep>
-            <SubmitButton
-              watch={watch}
-              ref={submitRef}
-              onSubmit={handleSubmitButtonClick}
-            />
-          </View>
-        </BlurView>
-      </Pressable>
-    );
-  }
-);
+          </AttachStep>
+          <AttachStep index={4}>
+            <View style={breakpoints.md ? { marginLeft: "auto" } : { flex: 1 }}>
+              <PinTask control={control} />
+            </View>
+          </AttachStep>
+          <SubmitButton
+            watch={watch}
+            ref={submitRef}
+            onSubmit={handleSubmitButtonClick}
+          />
+        </View>
+      </BlurView>
+    </Pressable>
+  );
+};
 
 export interface CreateTaskDrawerProps {
   children?: React.ReactNode;
@@ -1511,14 +1509,15 @@ export interface CreateTaskDrawerProps {
   };
   onPress?: () => void;
   mutate: (newTask) => void;
+  ref?: Ref<any>;
 }
 
-const CreateTaskOuterContent = forwardRef((props, ref) => {
+const CreateTaskOuterContent = (props) => {
   const isDark = useDarkMode();
   const theme = useColorTheme();
   const [message, setMessage] = useState<null | { icon: any; text: any }>(null);
 
-  useImperativeHandle(ref, () => ({
+  useImperativeHandle(props.ref, () => ({
     message,
     setMessage,
   }));
@@ -1585,124 +1584,120 @@ const CreateTaskOuterContent = forwardRef((props, ref) => {
       </Animated.View>
     )
   );
-});
+};
 
-const CreateTask = forwardRef(
-  (
-    {
-      children,
-      defaultValues = {
-        date: null,
-        agendaOrder: null,
-        collectionId: null,
-        dateOnly: true,
-      },
-      onPress = () => {},
-      mutate,
-    }: CreateTaskDrawerProps,
-    forwardedRef
-  ) => {
-    const ref = useRef<BottomSheetModal>(null);
-    const formRef = useRef(null);
+const CreateTask = ({
+  children,
+  defaultValues = {
+    date: null,
+    agendaOrder: null,
+    collectionId: null,
+    dateOnly: true,
+  },
+  onPress = () => {},
+  mutate,
+  ref: forwardedRef,
+}: CreateTaskDrawerProps) => {
+  const ref = useRef<BottomSheetModal>(null);
+  const formRef = useRef(null);
 
-    useImperativeHandle(forwardedRef, () => ({
-      ...ref.current,
-      setValue: (...e) => formRef.current?.setValue(...e),
-    }));
+  useImperativeHandle(forwardedRef, () => ({
+    ...ref.current,
+    setValue: (...e) => formRef.current?.setValue(...e),
+  }));
 
-    // callbacks
-    const handleOpen = useCallback(() => {
-      onPress();
-      ref.current?.present();
-    }, [ref, onPress]);
+  // callbacks
+  const handleOpen = useCallback(() => {
+    onPress();
+    ref.current?.present();
+  }, [ref, onPress]);
 
-    const { isReached } = useStorageContext() || {};
+  const { isReached } = useStorageContext() || {};
 
-    const trigger = cloneElement((children || <Pressable />) as any, {
-      onPress: handleOpen,
-    });
+  const trigger = cloneElement((children || <Pressable />) as any, {
+    onPress: handleOpen,
+  });
 
-    const breakpoints = useResponsiveBreakpoints();
-    const theme = useColorTheme();
-    const { session } = useUser();
-    const hintRef = useRef(null);
+  const breakpoints = useResponsiveBreakpoints();
+  const theme = useColorTheme();
+  const { session } = useUser();
+  const hintRef = useRef(null);
 
-    if (!session) return null;
+  if (!session) return null;
 
-    return isReached ? null : (
-      <>
-        {trigger}
-        <Modal
-          transformCenter
-          disablePan={breakpoints.md}
-          maxWidth={breakpoints.md ? 700 : "100%"}
-          sheetRef={ref}
-          animation={breakpoints.md ? "SCALE" : "SLIDE"}
-          innerStyles={{
-            backgroundColor:
-              Platform.OS !== "android" ? "transparent" : theme[1],
-          }}
-          maxBackdropOpacity={breakpoints.md ? 0.05 : 0.1}
-          outerContent={
-            breakpoints.md && <CreateTaskOuterContent ref={hintRef} />
+  return isReached ? null : (
+    <>
+      {trigger}
+      <Modal
+        transformCenter
+        disablePan={breakpoints.md}
+        maxWidth={breakpoints.md ? 700 : "100%"}
+        sheetRef={ref}
+        animation={breakpoints.md ? "SCALE" : "SLIDE"}
+        innerStyles={{
+          backgroundColor: Platform.OS !== "android" ? "transparent" : theme[1],
+        }}
+        maxBackdropOpacity={breakpoints.md ? 0.05 : 0.1}
+        outerContent={
+          breakpoints.md && <CreateTaskOuterContent ref={hintRef} />
+        }
+        closeContainerStyles={
+          !breakpoints.md && {
+            justifyContent: "flex-end",
+            paddingBottom: 10,
+            paddingHorizontal: 10,
           }
-          closeContainerStyles={
-            !breakpoints.md && {
-              justifyContent: "flex-end",
-              paddingBottom: 10,
-              paddingHorizontal: 10,
-            }
-          }
+        }
+      >
+        <OnboardingContainer
+          delay={Platform.OS === "web" ? 500 : 1000}
+          id="CREATE_TASK"
+          onlyIf={() => !defaultValues.parentTask}
+          steps={[
+            {
+              text: "Set a due date or recurrence",
+            },
+            {
+              text: "Labels let you categorize similar tasks",
+            },
+            {
+              text: "Here, you can add a location to your task",
+            },
+            {
+              text: "Don't want to type? Use voice recognition!",
+            },
+            {
+              text: "Pinned tasks will always be on top",
+            },
+          ]}
         >
-          <OnboardingContainer
-            delay={Platform.OS === "web" ? 500 : 1000}
-            id="CREATE_TASK"
-            onlyIf={() => !defaultValues.parentTask}
-            steps={[
-              {
-                text: "Set a due date or recurrence",
-              },
-              {
-                text: "Labels let you categorize similar tasks",
-              },
-              {
-                text: "Here, you can add a location to your task",
-              },
-              {
-                text: "Don't want to type? Use voice recognition!",
-              },
-              {
-                text: "Pinned tasks will always be on top",
-              },
-            ]}
-          >
-            {() => (
-              <ErrorBoundary
-                fallback={
-                  <Text
-                    style={{
-                      backgroundColor: theme[2],
-                      padding: 20,
-                      textAlign: "center",
-                    }}
-                  >
-                    Something went wrong, please try again later
-                  </Text>
-                }
-              >
-                <BottomSheetContent
-                  ref={formRef}
-                  hintRef={hintRef}
-                  defaultValues={defaultValues}
-                  mutateList={mutate}
-                />
-              </ErrorBoundary>
-            )}
-          </OnboardingContainer>
-        </Modal>
-      </>
-    );
-  }
-);
+          {() => (
+            <ErrorBoundary
+              fallback={
+                <Text
+                  style={{
+                    backgroundColor: theme[2],
+                    padding: 20,
+                    textAlign: "center",
+                  }}
+                >
+                  Something went wrong, please try again later
+                </Text>
+              }
+            >
+              <BottomSheetContent
+                ref={formRef}
+                hintRef={hintRef}
+                defaultValues={defaultValues}
+                mutateList={mutate}
+              />
+            </ErrorBoundary>
+          )}
+        </OnboardingContainer>
+      </Modal>
+    </>
+  );
+};
 
 export default CreateTask;
+

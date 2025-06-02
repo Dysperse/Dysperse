@@ -14,7 +14,6 @@ import { useColorTheme } from "@/ui/color/theme-provider";
 import * as ImagePicker from "expo-image-picker";
 import React, {
   cloneElement,
-  forwardRef,
   useImperativeHandle,
   useRef,
   useState,
@@ -412,133 +411,131 @@ function AISimplification({ id, updateTask }) {
   );
 }
 
-export const TaskNote = forwardRef(
-  (
-    {
-      task,
-      updateTask,
-      showEditorWhenEmpty,
-      onContainerFocus,
-    }: {
-      task: any;
-      updateTask: any;
-      showEditorWhenEmpty?: any;
-      onContainerFocus?: any;
-    },
-    editorRef: any
-  ) => {
-    const theme = useColorTheme();
-    const { session } = useUser();
-    const formatMenuRef = useRef(null);
-    const isFocused = useSharedValue(0);
-    const [collapsed, setCollapsed] = useState(true);
+export const TaskNote = ({
+  task,
+  updateTask,
+  showEditorWhenEmpty,
+  onContainerFocus,
+  ref: editorRef,
+}: {
+  task: any;
+  updateTask: any;
+  showEditorWhenEmpty?: any;
+  onContainerFocus?: any;
+  ref?: any;
+}) => {
+  const theme = useColorTheme();
+  const { session } = useUser();
+  const formatMenuRef = useRef(null);
+  const isFocused = useSharedValue(0);
+  const [collapsed, setCollapsed] = useState(true);
 
-    const focusedStyles = useAnimatedStyle(() => ({
-      borderRadius: 10,
-      marginLeft: 35,
-      position: "relative",
-      backgroundColor: interpolateColor(
-        isFocused.value,
-        [0, 1],
-        [
-          theme[5].replace(")", `, ${0})`).replace("hsl", "hsla"),
-          theme[5].replace(")", `, ${0.3})`).replace("hsl", "hsla"),
-        ]
-      ),
-    }));
-    const [hasLoaded, setHasLoaded] = useState(false);
-    const [isLoading, setIsLoading] = useState(Platform.OS !== "web");
+  const focusedStyles = useAnimatedStyle(() => ({
+    borderRadius: 10,
+    marginLeft: 35,
+    position: "relative",
+    backgroundColor: interpolateColor(
+      isFocused.value,
+      [0, 1],
+      [
+        theme[5].replace(")", `, ${0})`).replace("hsl", "hsla"),
+        theme[5].replace(")", `, ${0.3})`).replace("hsl", "hsla"),
+      ]
+    ),
+  }));
+  const [hasLoaded, setHasLoaded] = useState(false);
+  const [isLoading, setIsLoading] = useState(Platform.OS !== "web");
 
-    return (
-      <>
-        <Button
-          dense
-          containerStyle={{
-            marginRight: "auto",
-            opacity: 0.6,
-            marginLeft: 5,
-          }}
-          style={{ gap: 10 }}
-          onPress={
-            isLoading
-              ? undefined
-              : () => {
-                  setCollapsed((c) => !c);
-                  if (!task.note) editorRef.current.focus();
-                }
-          }
-        >
-          <Icon size={20} style={{ marginTop: -3 }}>
-            sticky_note_2
-          </Icon>
-          <Text style={{ color: theme[11], marginLeft: 5 }}>
-            {task.note ? (collapsed ? "Show note" : "Hide note") : "Add a note"}
-          </Text>
-          {isLoading ? (
-            <Spinner size={15} style={{ marginLeft: -3 }} />
-          ) : (
-            task.note && <Icon style={{ marginLeft: -5 }}>expand_more</Icon>
+  return (
+    <>
+      <Button
+        dense
+        containerStyle={{
+          marginRight: "auto",
+          opacity: 0.6,
+          marginLeft: 5,
+        }}
+        style={{ gap: 10 }}
+        onPress={
+          isLoading
+            ? undefined
+            : () => {
+                setCollapsed((c) => !c);
+                if (!task.note) editorRef.current.focus();
+              }
+        }
+      >
+        <Icon size={20} style={{ marginTop: -3 }}>
+          sticky_note_2
+        </Icon>
+        <Text style={{ color: theme[11], marginLeft: 5 }}>
+          {task.note ? (collapsed ? "Show note" : "Hide note") : "Add a note"}
+        </Text>
+        {isLoading ? (
+          <Spinner size={15} style={{ marginLeft: -3 }} />
+        ) : (
+          task.note && <Icon style={{ marginLeft: -5 }}>expand_more</Icon>
+        )}
+      </Button>
+      <Animated.View
+        style={[
+          focusedStyles,
+          collapsed &&
+            Platform.OS !== "web" && {
+              maxHeight: 0,
+              overflow: "hidden",
+            },
+          collapsed && Platform.OS === "web" && { display: "none" },
+        ]}
+        key={task.hasSimplifiedNote ? "simplified" : "normal"}
+      >
+        {task.note &&
+          countWords(task.note) > 100 &&
+          !task.hasSimplifiedNote &&
+          session.user.betaTester && (
+            <AISimplification id={task.id} updateTask={updateTask} />
           )}
-        </Button>
-        <Animated.View
-          style={[
-            focusedStyles,
-            collapsed &&
-              Platform.OS !== "web" && {
-                maxHeight: 0,
-                overflow: "hidden",
-              },
-            collapsed && Platform.OS === "web" && { display: "none" },
-          ]}
-          key={task.hasSimplifiedNote ? "simplified" : "normal"}
-        >
-          {task.note &&
-            countWords(task.note) > 100 &&
-            !task.hasSimplifiedNote &&
-            session.user.betaTester && (
-              <AISimplification id={task.id} updateTask={updateTask} />
-            )}
-          <NoteFormatMenu
-            formatMenuRef={formatMenuRef}
-            isFocused={isFocused}
-            editorRef={editorRef}
-          />
-          <TaskNoteEditor
-            openLink={(href) => Linking.openURL(href)}
-            onContainerFocus={onContainerFocus}
-            showEditorWhenEmpty={showEditorWhenEmpty}
-            ref={editorRef}
-            setSelectionState={(state) =>
-              formatMenuRef.current.setSelectionState(state)
-            }
-            updateTask={updateTask as any}
-            theme={theme}
-            dom={{
-              useWebKit: true,
-              matchContents: true,
-              scrollEnabled: false,
-              keyboardDisplayRequiresUserAction: false,
-              hideKeyboardAccessoryView: true,
-              dataDetectorTypes: "none",
-              setBuiltInZoomControls: false,
+        <NoteFormatMenu
+          formatMenuRef={formatMenuRef}
+          isFocused={isFocused}
+          editorRef={editorRef}
+        />
+        <TaskNoteEditor
+          openLink={(href) => Linking.openURL(href)}
+          onContainerFocus={onContainerFocus}
+          showEditorWhenEmpty={showEditorWhenEmpty}
+          ref={editorRef}
+          setSelectionState={(state) =>
+            formatMenuRef.current.setSelectionState(state)
+          }
+          updateTask={updateTask as any}
+          theme={theme}
+          dom={{
+            useWebKit: true,
+            matchContents: true,
+            scrollEnabled: false,
+            keyboardDisplayRequiresUserAction: false,
+            hideKeyboardAccessoryView: true,
+            dataDetectorTypes: "none",
+            setBuiltInZoomControls: false,
 
-              // Set isLoaded to true after the webview has loaded
-              onLoadEnd: () => setIsLoading(false),
+            // Set isLoaded to true after the webview has loaded
+            onLoadEnd: () => setIsLoading(false),
 
-              // prevent navigating to another web page within the webview
-              onShouldStartLoadWithRequest: () => {
-                if (hasLoaded) {
-                  return false;
-                }
-                setHasLoaded(true);
-                return true;
-              },
-            }}
-            setFocused={(t) => (isFocused.value = withSpring(t ? 1 : 0))}
-            content={task.note?.replaceAll("] (http", "](http")?.trim()}
-          />
-        </Animated.View>
-      </>
-    );
-  }
-);
+            // prevent navigating to another web page within the webview
+            onShouldStartLoadWithRequest: () => {
+              if (hasLoaded) {
+                return false;
+              }
+              setHasLoaded(true);
+              return true;
+            },
+          }}
+          setFocused={(t) => (isFocused.value = withSpring(t ? 1 : 0))}
+          content={task.note?.replaceAll("] (http", "](http")?.trim()}
+        />
+      </Animated.View>
+    </>
+  );
+};
+

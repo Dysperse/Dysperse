@@ -7,7 +7,7 @@ import {
 } from "@marceloterreiro/flash-calendar";
 import convertTime from "convert-time";
 import dayjs, { Dayjs } from "dayjs";
-import { forwardRef, RefObject, useEffect, useRef, useState } from "react";
+import { RefObject, useEffect, useRef, useState } from "react";
 import { Platform, Pressable, StyleProp, TextStyle, View } from "react-native";
 import { TextInput } from "react-native-gesture-handler";
 import Toast from "react-native-toast-message";
@@ -20,66 +20,63 @@ import Modal from "../Modal";
 import Text from "../Text";
 import TextField from "../TextArea";
 
-export const TimeInput = forwardRef(
-  (
-    {
-      value: defaultValue,
-      setValue: setDefaultValue,
-      valueKey = "date",
-      style,
-    }: {
-      value: Dayjs;
-      setValue: (key: string, value: Dayjs) => void;
-      valueKey?: "date" | "end";
-      style?: StyleProp<TextStyle>;
-    },
-    ref: RefObject<TextInput>
-  ) => {
-    const [value, setValue] = useState(defaultValue?.format?.("h:mm A") || "");
+export const TimeInput = ({
+  value: defaultValue,
+  setValue: setDefaultValue,
+  valueKey = "date",
+  style,
+  ref,
+}: {
+  value: Dayjs;
+  setValue: (key: string, value: Dayjs) => void;
+  valueKey?: "date" | "end";
+  style?: StyleProp<TextStyle>;
+  ref: RefObject<TextInput>;
+}) => {
+  const [value, setValue] = useState(defaultValue?.format?.("h:mm A") || "");
 
-    return (
-      <TextField
-        selectTextOnFocus
-        onBlur={(e) => {
-          const n = e.nativeEvent.text.toLowerCase();
-          if (convertTime(n)) {
-            const [hours, minutes] = convertTime(n).split(":");
-            setDefaultValue({
-              [valueKey]: dayjs(defaultValue)
-                .hour(parseInt(hours))
-                .minute(parseInt(minutes)),
-            });
-            setValue(
-              dayjs(defaultValue)
-                .hour(parseInt(hours))
-                .minute(parseInt(minutes))
-                .format("h:mm A")
-            );
-          } else {
-            setValue(defaultValue.format("h:mm A"));
-            Toast.show({
-              type: "error",
-              text1: "Please type a valid time",
-            });
-          }
-        }}
-        inputRef={ref}
-        variant="filled+outlined"
-        style={[
-          {
-            flex: 1,
-            textAlign: "center",
-            height: 50,
-          },
-          style,
-        ]}
-        placeholder="12:00"
-        value={value}
-        onChangeText={(e) => setValue(e)}
-      />
-    );
-  }
-);
+  return (
+    <TextField
+      selectTextOnFocus
+      onBlur={(e) => {
+        const n = e.nativeEvent.text.toLowerCase();
+        if (convertTime(n)) {
+          const [hours, minutes] = convertTime(n).split(":");
+          setDefaultValue({
+            [valueKey]: dayjs(defaultValue)
+              .hour(parseInt(hours))
+              .minute(parseInt(minutes)),
+          });
+          setValue(
+            dayjs(defaultValue)
+              .hour(parseInt(hours))
+              .minute(parseInt(minutes))
+              .format("h:mm A")
+          );
+        } else {
+          setValue(defaultValue.format("h:mm A"));
+          Toast.show({
+            type: "error",
+            text1: "Please type a valid time",
+          });
+        }
+      }}
+      inputRef={ref}
+      variant="filled+outlined"
+      style={[
+        {
+          flex: 1,
+          textAlign: "center",
+          height: 50,
+        },
+        style,
+      ]}
+      placeholder="12:00"
+      value={value}
+      onChangeText={(e) => setValue(e)}
+    />
+  );
+};
 
 function CalendarPreview({
   value,
@@ -259,158 +256,156 @@ const OpenListener = ({ onOpen, onClose }) => {
   return null;
 };
 
-export const DatePicker = forwardRef(
-  (
-    {
-      value,
-      setValue,
-      ignoreYear,
-      ignoreTime,
-      onOpen,
-      onClose,
-    }: {
-      value: any;
-      setValue: any;
-      ignoreYear?: any;
-      ignoreTime?: any;
-      onOpen?: any;
-      onClose?: any;
-    },
-    ref: any
-  ) => {
-    const [view, setView] = useState("start");
-    const [localValue, setLocalValue] = useState(value);
+export const DatePicker = ({
+  value,
+  setValue,
+  ignoreYear,
+  ignoreTime,
+  onOpen,
+  onClose,
+  ref,
+}: {
+  value: any;
+  setValue: any;
+  ignoreYear?: any;
+  ignoreTime?: any;
+  onOpen?: any;
+  onClose?: any;
+  ref?: RefObject<any>;
+}) => {
+  const [view, setView] = useState("start");
+  const [localValue, setLocalValue] = useState(value);
 
-    useEffect(() => {
-      if (localValue === "end" && !localValue?.date) {
-        setView("start");
-      }
-    }, [view, setValue, localValue]);
+  useEffect(() => {
+    if (localValue === "end" && !localValue?.date) {
+      setView("start");
+    }
+  }, [view, setValue, localValue]);
 
-    const secondary = localValue?.end
-      ? `to ${dayjs(localValue?.end).format(
-          localValue.dateOnly ? "MMMM Do" : "MMM Do [@] h:mm A"
-        )}`
-      : !localValue?.dateOnly && localValue?.date
-      ? `at ${dayjs(localValue?.date).format("h:mm A")}`
-      : "";
+  const secondary = localValue?.end
+    ? `to ${dayjs(localValue?.end).format(
+        localValue.dateOnly ? "MMMM Do" : "MMM Do [@] h:mm A"
+      )}`
+    : !localValue?.dateOnly && localValue?.date
+    ? `at ${dayjs(localValue?.date).format("h:mm A")}`
+    : "";
 
-    return (
-      <Modal sheetRef={ref} animation="SCALE" maxWidth={400}>
-        <OpenListener onOpen={onOpen} onClose={onClose} />
-        <View style={{ padding: 20, paddingTop: 15 }}>
-          <View
+  return (
+    <Modal sheetRef={ref} animation="SCALE" maxWidth={400}>
+      <OpenListener onOpen={onOpen} onClose={onClose} />
+      <View style={{ padding: 20, paddingTop: 15 }}>
+        <View
+          style={{
+            flexDirection: "row",
+            alignItems: "center",
+          }}
+        >
+          <Button
+            dense
             style={{
-              flexDirection: "row",
-              alignItems: "center",
+              opacity:
+                !localValue?.date && !localValue?.end && localValue?.dateOnly
+                  ? 0
+                  : 1,
+            }}
+            onPress={() => {
+              setValue({
+                date: null,
+                end: null,
+                dateOnly: true,
+              });
+              ref.current.forceClose();
             }}
           >
-            <Button
-              dense
+            <ButtonText>Clear</ButtonText>
+          </Button>
+          <View style={{ flex: 1, height: 50, justifyContent: "center" }}>
+            <Text
+              weight={800}
               style={{
-                opacity:
-                  !localValue?.date && !localValue?.end && localValue?.dateOnly
-                    ? 0
-                    : 1,
-              }}
-              onPress={() => {
-                setValue({
-                  date: null,
-                  end: null,
-                  dateOnly: true,
-                });
-                ref.current.forceClose();
+                fontSize: 20,
+                textAlign: "center",
+                fontFamily: "serifText700",
               }}
             >
-              <ButtonText>Clear</ButtonText>
-            </Button>
-            <View style={{ flex: 1, height: 50, justifyContent: "center" }}>
-              <Text
-                weight={800}
-                style={{
-                  fontSize: 20,
-                  textAlign: "center",
-                  fontFamily: "serifText700",
-                }}
-              >
-                {localValue?.date
-                  ? dayjs(localValue?.date).format(
-                      localValue.dateOnly || !localValue.end
-                        ? "MMMM Do"
-                        : "MMM Do [@] h:mm A"
-                    )
-                  : "Select a date"}
+              {localValue?.date
+                ? dayjs(localValue?.date).format(
+                    localValue.dateOnly || !localValue.end
+                      ? "MMMM Do"
+                      : "MMM Do [@] h:mm A"
+                  )
+                : "Select a date"}
+            </Text>
+            {!ignoreTime && secondary && (
+              <Text style={{ opacity: 0.5, textAlign: "center" }}>
+                {secondary}
               </Text>
-              {!ignoreTime && secondary && (
-                <Text style={{ opacity: 0.5, textAlign: "center" }}>
-                  {secondary}
-                </Text>
-              )}
-            </View>
-            <IconButton
-              icon="check"
-              style={{ marginLeft: 20 }}
-              size={40}
-              variant="filled"
-              onPress={() => {
-                ref.current.close();
-                setValue(localValue);
-              }}
-            />
-          </View>
-          <View
-            style={{
-              paddingTop: 10,
-              gap: 10,
-              minHeight:
-                Platform.OS === "web" ? undefined : localValue.date ? 450 : 310,
-            }}
-          >
-            {localValue.date && !ignoreTime && (
-              <View style={{ flexDirection: "row", gap: 10, paddingTop: 5 }}>
-                <Button
-                  bold={view === "start"}
-                  text="Start"
-                  iconPosition="end"
-                  variant={view === "start" ? "filled" : "outlined"}
-                  containerStyle={{ flex: 1 }}
-                  onPress={() => setView("start")}
-                />
-                <Button
-                  disabled={!localValue?.date}
-                  bold={view === "end"}
-                  icon={localValue?.end ? undefined : "add"}
-                  text={localValue?.end ? "End" : "Add end"}
-                  iconPosition="end"
-                  variant={view === "end" ? "filled" : "outlined"}
-                  containerStyle={{ flex: 1 }}
-                  onPress={() => {
-                    setView("end");
-                    if (!localValue?.end || !dayjs(localValue?.end).isValid())
-                      setLocalValue((t) => ({
-                        ...t,
-                        end: dayjs(localValue?.date).add(1, "hour"),
-                      }));
-                  }}
-                />
-              </View>
             )}
-            <CalendarPreview
-              ignoreYear={ignoreYear}
+          </View>
+          <IconButton
+            icon="check"
+            style={{ marginLeft: 20 }}
+            size={40}
+            variant="filled"
+            onPress={() => {
+              ref.current.close();
+              setValue(localValue);
+            }}
+          />
+        </View>
+        <View
+          style={{
+            paddingTop: 10,
+            gap: 10,
+            minHeight:
+              Platform.OS === "web" ? undefined : localValue.date ? 450 : 310,
+          }}
+        >
+          {localValue.date && !ignoreTime && (
+            <View style={{ flexDirection: "row", gap: 10, paddingTop: 5 }}>
+              <Button
+                bold={view === "start"}
+                text="Start"
+                iconPosition="end"
+                variant={view === "start" ? "filled" : "outlined"}
+                containerStyle={{ flex: 1 }}
+                onPress={() => setView("start")}
+              />
+              <Button
+                disabled={!localValue?.date}
+                bold={view === "end"}
+                icon={localValue?.end ? undefined : "add"}
+                text={localValue?.end ? "End" : "Add end"}
+                iconPosition="end"
+                variant={view === "end" ? "filled" : "outlined"}
+                containerStyle={{ flex: 1 }}
+                onPress={() => {
+                  setView("end");
+                  if (!localValue?.end || !dayjs(localValue?.end).isValid())
+                    setLocalValue((t) => ({
+                      ...t,
+                      end: dayjs(localValue?.date).add(1, "hour"),
+                    }));
+                }}
+              />
+            </View>
+          )}
+          <CalendarPreview
+            ignoreYear={ignoreYear}
+            value={localValue}
+            setValue={setLocalValue}
+            view={view}
+          />
+          {!ignoreTime && (
+            <AllDaySwitch
               value={localValue}
               setValue={setLocalValue}
               view={view}
             />
-            {!ignoreTime && (
-              <AllDaySwitch
-                value={localValue}
-                setValue={setLocalValue}
-                view={view}
-              />
-            )}
-          </View>
+          )}
         </View>
-      </Modal>
-    );
-  }
-);
+      </View>
+    </Modal>
+  );
+};
+
