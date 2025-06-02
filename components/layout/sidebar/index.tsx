@@ -51,7 +51,7 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 import Toast from "react-native-toast-message";
 import useSWR, { useSWRConfig } from "swr";
 import LoadingErrors from "../LoadingErrors";
-import OpenTabsList from "../tabs/carousel";
+import OpenTabsList from "../tabs/list";
 import FocusPanel from "./focus-panel";
 
 export const styles = StyleSheet.create({

@@ -1,4 +1,3 @@
-import { ForwardRefRenderFunction } from "react";
 import {
   Text as NText,
   Platform,
@@ -54,7 +53,7 @@ const textStyles = StyleSheet.create({
   },
 });
 
-const Text: ForwardRefRenderFunction<NText, DTextProps> = (props) => {
+const Text = (props) => {
   const theme = useColorTheme();
 
   return (

@@ -6,6 +6,7 @@ import {
   TextInput,
   TextInputProps,
 } from "react-native";
+import { useColorTheme } from "../color/theme-provider";
 
 interface DTextAreaProps extends TextInputProps {
   inputClassName?: string;
@@ -16,6 +17,7 @@ interface DTextAreaProps extends TextInputProps {
 }
 
 const AutoSizeTextArea = (props: DTextAreaProps) => {
+  const theme = useColorTheme();
   const [layoutHeight, setLayoutHeight] = useState(0);
 
   useEffect(() => {
@@ -41,6 +43,8 @@ const AutoSizeTextArea = (props: DTextAreaProps) => {
         },
         props.style,
       ]}
+      selectionColor={theme[8]}
+      cursorColor={theme[8]}
       onContentSizeChange={(event) => {
         const contentHeight = event.nativeEvent.contentSize.height;
         setLayoutHeight(Math.max(layoutHeight, contentHeight));

@@ -359,6 +359,7 @@ function OpenTabsList() {
                     }}
                   />
                 }
+                contentInset={{ top: Math.random() * 0.01 }}
                 ListFooterComponentStyle={{ marginTop: "auto" }}
                 ListFooterComponent={() => (
                   <View style={{ padding: 1, paddingHorizontal: 10 }}>

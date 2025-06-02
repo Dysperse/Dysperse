@@ -129,6 +129,7 @@ export function AgendaCalendarMenu({
           />
         )}
         <SafeCalendar
+          contentOffset={{ y: -25 }}
           calendarActiveDateRanges={[
             typeof handleMenuClose === "undefined" && weekMode
               ? {
@@ -192,7 +193,10 @@ export function AgendaCalendarMenu({
               height={60}
               bold
               containerStyle={{ flex: 1 }}
-              onPress={handleMenuClose}
+              onPress={() => {
+                calendarRef.current?.scrollToMonth(new Date(), true);
+                handleMenuClose();
+              }}
               icon="close"
               text="Cancel"
             />

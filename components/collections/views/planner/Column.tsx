@@ -125,6 +125,7 @@ export function Column({
         ]}
       />
       <FlashList
+        contentInset={{ top: Math.random() * 0.01 }}
         ref={columnRef}
         refreshControl={
           data.length > 0 && (
@@ -185,3 +186,4 @@ export function Column({
     </View>
   );
 }
+
