@@ -16,7 +16,8 @@ export const OnboardingProvider = ({
     state: null,
     setState: (state) => (onboardingRef.current.state = state),
     clearState: () => (onboardingRef.current.state = null),
-    isPending: (key) => session.user.hintsViewed?.includes(key) === false,
+    isPending: (key) =>
+      /* session.user.hintsViewed?.includes(key) === false,*/ false,
   });
 
   return (
