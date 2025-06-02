@@ -70,6 +70,7 @@ export default ({ config }: ConfigContext): ExpoConfig =>
       },
       assetBundlePatterns: ["**/*"],
       ios: {
+        usesAppleSignIn: true,
         infoPlist: {
           UIBackgroundModes: ["processing", "remote-notification"],
           BGTaskSchedulerPermittedIdentifiers: ["integration-sync"],
@@ -172,6 +173,7 @@ export default ({ config }: ConfigContext): ExpoConfig =>
             },
           ],
         ],
+        "expo-apple-authentication",
         "react-native-spotlight-search",
         "react-native-edge-to-edge",
         [

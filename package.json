@@ -142,7 +142,8 @@
     "typescript": "~5.8.3",
     "use-debounce": "^10.0.4",
     "workbox-build": "^7.3.0",
-    "workbox-window": "^7.3.0"
+    "workbox-window": "^7.3.0",
+    "expo-apple-authentication": "~7.2.4"
   },
   "devDependencies": {
     "@babel/core": "^7.24.6",
@@ -160,4 +161,3 @@
   },
   "private": true
 }
-
