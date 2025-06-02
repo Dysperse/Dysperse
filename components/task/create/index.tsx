@@ -1406,7 +1406,12 @@ const BottomSheetContent = ({
   return (
     <Pressable
       style={{
-        minHeight: Platform.OS !== "web" ? 280 : undefined,
+        minHeight:
+          Platform.OS !== "web"
+            ? defaultValues.parentTask
+              ? 320
+              : 280
+            : undefined,
         backgroundColor: addHslAlpha(
           theme[2],
           Platform.OS === "android" ? 1 : 0.5
