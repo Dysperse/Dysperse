@@ -227,14 +227,12 @@ export default function Layout() {
               }}
             >
               {!breakpoints.md && <SystemBars style="light" />}
+              {!breakpoints.md && <MenuButton back gradient left icon="west" />}
               <JsStack
                 initialRouteName={breakpoints.md ? "account/index" : "index"}
                 id={undefined}
                 screenOptions={{
-                  header: () =>
-                    breakpoints.md ? null : (
-                      <MenuButton back gradient left icon="west" />
-                    ),
+                  headerShown: false,
                   headerMode: "screen",
                   // freezeOnBlur: true,
                   gestureResponseDistance: width,
