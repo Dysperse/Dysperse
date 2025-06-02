@@ -1338,7 +1338,7 @@ const BottomSheetContent = ({
 
   const { session } = useUser();
   useEffect(() => {
-    if (!session.user.hintsViewed.includes("CREATE_TASK")) return;
+    // if (!session.user.hintsViewed.includes("CREATE_TASK")) return;
     nameRef.current?.focus({ preventScroll: true });
   }, [session, nameRef, breakpoints]);
 
