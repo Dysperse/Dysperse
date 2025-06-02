@@ -25,13 +25,7 @@ import { TEMPORARY_CONTENT_INSET_FIX } from "@/utils/temporary-scrolling-bug-fix
 import * as Haptics from "expo-haptics";
 import { LinearGradient } from "expo-linear-gradient";
 import { router, useGlobalSearchParams } from "expo-router";
-import {
-  memo,
-  default as React,
-  default as React,
-  useEffect,
-  useState,
-} from "react";
+import { memo, default as React, useEffect, useState } from "react";
 import { Platform, Pressable, StyleSheet, View } from "react-native";
 import ReorderableList, {
   ReorderableListReorderEvent,

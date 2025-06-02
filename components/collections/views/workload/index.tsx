@@ -17,7 +17,6 @@ import { LinearGradient } from "expo-linear-gradient";
 import {
   Dispatch,
   default as React,
-  default as React,
   SetStateAction,
   useRef,
   useState,
