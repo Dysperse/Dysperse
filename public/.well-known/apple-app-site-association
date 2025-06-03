@@ -3,7 +3,7 @@
     "apps": [],
     "details": [
       {
-        "appID": "78H2VSK889.com.dysperse.prod",
+        "appID": "78H2VSK889.com.dysperse.go",
         "paths": [
           "/*"
         ]
@@ -12,14 +12,14 @@
   },
   "activitycontinuation": {
     "apps": [
-      "78H2VSK889.com.dysperse.prod",
-      "78H2VSK889.com.dysperse.preview"
+      "78H2VSK889.com.dysperse.go",
+      "78H2VSK889.com.dysperse.development"
     ]
   },
   "webcredentials": {
     "apps": [
-      "78H2VSK889.com.dysperse.prod",
-      "78H2VSK889.com.dysperse.preview"
+      "78H2VSK889.com.dysperse.go",
+      "78H2VSK889.com.dysperse.development"
     ]
   }
 }

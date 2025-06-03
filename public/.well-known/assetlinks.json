@@ -3,7 +3,7 @@
     "relation": ["delegate_permission/common.handle_all_urls"],
     "target": {
       "namespace": "android_app",
-      "package_name": "com.dysperse.preview",
+      "package_name": "com.dysperse.development",
       "sha256_cert_fingerprints": [
         "2D:99:26:39:DA:6B:DA:E7:C0:C8:07:67:4C:2A:16:82:0D:BB:D0:0F:DA:85:03:72:BB:AC:F0:15:CB:27:EB:09"
       ]
@@ -13,7 +13,7 @@
     "relation": ["delegate_permission/common.handle_all_urls"],
     "target": {
       "namespace": "android_app",
-      "package_name": "com.dysperse.prod",
+      "package_name": "com.dysperse.go",
       "sha256_cert_fingerprints": [
         "DB:CC:D7:68:9D:F6:39:02:F1:60:02:B4:EF:7E:DD:90:F8:EB:D5:05:3D:D2:8E:B9:52:3D:E6:4B:50:C6:9C:18"
       ]

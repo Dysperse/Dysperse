@@ -82,7 +82,9 @@ export default ({ config }: ConfigContext): ExpoConfig =>
           "webcredentials:preview.dysperse.com",
           "applinks:preview.dysperse.com",
         ],
-        bundleIdentifier: IS_DEV ? "com.dysperse.preview" : "com.dysperse.prod",
+        bundleIdentifier: IS_DEV
+          ? "com.dysperse.development"
+          : "com.dysperse.go",
         supportsTablet: true,
         googleServicesFile: IS_DEV
           ? process.env.GOOGLE_SERVICE_PLIST_DEV
@@ -112,7 +114,7 @@ export default ({ config }: ConfigContext): ExpoConfig =>
           monochromeImage: "./assets/android-icons/monochrome.png",
         },
         softwareKeyboardLayoutMode: "pan",
-        package: IS_DEV ? "com.dysperse.preview" : "com.dysperse.prod",
+        package: IS_DEV ? "com.dysperse.development" : "com.dysperse.go",
       },
       web: {
         name: "Dysperse",

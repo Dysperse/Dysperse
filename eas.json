@@ -40,7 +40,7 @@
   "submit": {
     "production": {
       "ios": {
-        "bundleIdentifier": "com.dysperse.prod"
+        "bundleIdentifier": "com.dysperse.go"
       }
     }
   }
