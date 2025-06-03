@@ -50,13 +50,12 @@ function Branding() {
           {
             icon: "north_east",
             text: "Open Dysperse",
-            callback: () => Linking.openURL("https://app.dysperse.com"),
+            callback: () => Linking.openURL("https://go.dysperse.com"),
           },
           {
             icon: "settings",
             text: "Settings",
-            callback: () =>
-              Linking.openURL("https://app.dysperse.com/settings"),
+            callback: () => Linking.openURL("https://go.dysperse.com/settings"),
           },
         ]}
       />

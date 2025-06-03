@@ -86,7 +86,7 @@ export default function Page() {
           {
             icon: "globe",
             name: "Web",
-            href: "https://app.dysperse.com",
+            href: "https://go.dysperse.com",
             description: "Works on all modern browsers on any device",
           },
           { icon: "ios", name: "iOS", comingSoon: true },
@@ -212,3 +212,4 @@ export default function Page() {
     </SettingsScrollView>
   );
 }
+

@@ -35,7 +35,7 @@ export default function Layout() {
       >
         <Text>
           You're loading dysperse on an insecure website. Please log in via
-          app.dysperse.com
+          go.dysperse.com
         </Text>
       </View>
     );

@@ -342,7 +342,7 @@ export default function Page() {
     `${
       process.env.NODE_ENV === "development"
         ? "/integrations.json"
-        : "https://app.dysperse.com/integrations.json"
+        : "https://go.dysperse.com/integrations.json"
     }`,
     (t) => fetch(t).then((t) => t.json())
   );

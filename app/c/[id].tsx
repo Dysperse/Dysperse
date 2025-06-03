@@ -71,7 +71,7 @@ export default function Page() {
                   variant="filled"
                   onPress={() => {
                     if (inIframe()) {
-                      Linking.openURL("https://app.dysperse.com/auth");
+                      Linking.openURL("https://go.dysperse.com/auth");
                     } else {
                       router.push("/auth");
                     }

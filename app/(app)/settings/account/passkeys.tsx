@@ -39,7 +39,7 @@ const bundleId = Application.applicationId?.split(".").reverse().join(".");
 export const rp = {
   id: Platform.select({
     web: undefined,
-    // "app.dysperse.com",
+    // "go.dysperse.com",
     ios: bundleId,
     android: bundleId?.replaceAll("_", "-"),
   }),

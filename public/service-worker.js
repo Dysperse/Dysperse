@@ -6,7 +6,7 @@ importScripts(
 );
 
 if (workbox) {
-  
+
 
   // Precache files
   workbox.precaching.precacheAndRoute(self.__WB_MANIFEST);
@@ -25,7 +25,7 @@ if (workbox) {
     })
   );
 } else {
-  
+
 }
 
 // Handle push events
@@ -34,8 +34,8 @@ self.addEventListener("push", (event) => {
   const title = data.title || "Default Title";
   const options = {
     body: data.body,
-    badge: "https://app.dysperse.com/assets/notification.png",
-    icon: "https://app.dysperse.com/assets/notification-icon.png",
+    badge: "https://go.dysperse.com/assets/notification.png",
+    icon: "https://go.dysperse.com/assets/notification-icon.png",
   };
 
   event.waitUntil(self.registration.showNotification(title, options));
