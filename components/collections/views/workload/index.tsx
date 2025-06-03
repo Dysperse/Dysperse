@@ -281,7 +281,7 @@ const StoryPoint = ({
         </>
       )}
       <FlashList
-        contentInset={TEMPORARY_CONTENT_INSET_FIX}
+        contentInset={TEMPORARY_CONTENT_INSET_FIX()}
         ref={columnRef}
         refreshControl={
           <RefreshControl refreshing={false} onRefresh={() => mutate()} />

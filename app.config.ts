@@ -79,8 +79,8 @@ export default ({ config }: ConfigContext): ExpoConfig =>
           usesNonExemptEncryption: false,
         },
         associatedDomains: [
-          "webcredentials:app.dysperse.com",
-          "applinks:app.dysperse.com",
+          "webcredentials:preview.dysperse.com",
+          "applinks:preview.dysperse.com",
         ],
         bundleIdentifier: IS_DEV ? "com.dysperse.preview" : "com.dysperse.prod",
         supportsTablet: true,
