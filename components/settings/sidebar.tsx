@@ -269,7 +269,7 @@ export function SettingsSidebar({ forceShow }: { forceShow?: boolean }) {
 
   return !breakpoints.md && !forceShow ? null : (
     <ScrollView
-      contentInset={TEMPORARY_CONTENT_INSET_FIX}
+      contentInset={TEMPORARY_CONTENT_INSET_FIX()}
       onScrollBeginDrag={Keyboard.dismiss}
       style={{
         maxHeight: breakpoints.md

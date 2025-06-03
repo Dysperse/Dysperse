@@ -126,7 +126,7 @@ export function Column({
         ]}
       />
       <FlashList
-        contentInset={TEMPORARY_CONTENT_INSET_FIX}
+        contentInset={TEMPORARY_CONTENT_INSET_FIX()}
         ref={columnRef}
         refreshControl={
           data.length > 0 && (

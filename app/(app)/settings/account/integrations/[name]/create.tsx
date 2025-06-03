@@ -278,7 +278,6 @@ function OauthRedirect({ integration, onSubmit }) {
         additionalScopes={integration.authorization.scopes}
         redirectPath="space/integrations/settings/google-calendar/auth"
         onNewAccount={(e) => {
-          
           if (e.account && e.tokens) {
             setValue("params", {
               account: JSON.parse(e.account),
@@ -301,7 +300,7 @@ export default function Page() {
     `${
       process.env.NODE_ENV === "development"
         ? "/integrations.json"
-        : "https://app.dysperse.com/integrations.json"
+        : "https://go.dysperse.com/integrations.json"
     }`,
     (t) => fetch(t).then((t) => t.json())
   );

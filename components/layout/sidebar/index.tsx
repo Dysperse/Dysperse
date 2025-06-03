@@ -774,7 +774,7 @@ function SecondarySidebar({ scrollRef }) {
           marginRight: ORIGINAL_SIDEBAR_WIDTH - SECONDARY_SIDEBAR_WIDTH,
           padding: 15,
           paddingRight: 0,
-          paddingBottom: breakpoints.md ? undefined : 90 + insets.bottom,
+          paddingBottom: breakpoints.md ? undefined : 20 + insets.bottom,
           paddingTop:
             insets.top + (!breakpoints.md || Platform.OS === "web" ? 20 : 0),
           backgroundColor: theme[2],

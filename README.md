@@ -8,7 +8,7 @@
 <!-- # **Quick links**
 
 - [Home page](https://dysperse.com)
-- [Launch app](https://app.dysperse.com)
+- [Launch app](https://go.dysperse.com)
 - [Status](https://status.dysperse.com)
 - [Blog](https://blog.dysperse.com)
 

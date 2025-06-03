@@ -145,6 +145,64 @@ function Insights({ year }) {
         </View>
       </View>
 
+      <View>
+        <View style={cardStyles}>
+          <Text style={labelStyles}>By day</Text>
+          <View
+            style={{
+              flexDirection: "row",
+              height: 100,
+              gap: 20,
+              marginTop: 10,
+            }}
+          >
+            {data.byDay.map((day, index) => (
+              <View
+                key={index}
+                style={{
+                  flex: 1,
+                }}
+              >
+                <View style={{ flex: 1 }} />
+                <View
+                  style={{
+                    height: `${(day / Math.max(...data.byDay)) * 100}%`,
+                    minHeight: 50,
+                  }}
+                >
+                  <View
+                    style={{
+                      backgroundColor: addHslAlpha(theme[6], 0.7),
+                      borderRadius: 15,
+                      alignItems: "center",
+                      justifyContent: "flex-end",
+                      padding: 5,
+                      flex: 1,
+                    }}
+                  >
+                    <Text variant="eyebrow" style={{ fontSize: 13 }}>
+                      {day === 0 ? "" : day.toString()}
+                    </Text>
+                  </View>
+                  <View>
+                    <Text
+                      variant="eyebrow"
+                      style={{
+                        textAlign: "center",
+                        marginTop: 5,
+                        marginBottom: -5,
+                      }}
+                    >
+                      {["S", "M", "T", "W", "T", "F", "S"][index]}
+                    </Text>
+                  </View>
+                </View>
+              </View>
+            ))}
+          </View>
+        </View>
+      </View>
+
       <View style={cardStyles}>
         <Text style={labelStyles}>Top views</Text>
         <View
@@ -195,64 +253,6 @@ function Insights({ year }) {
                   </View>
                 )
             )}
-        </View>
-      </View>
-
-      <View>
-        <View style={cardStyles}>
-          <Text style={labelStyles}>By day</Text>
-          <View
-            style={{
-              flexDirection: "row",
-              height: 200,
-              gap: 20,
-              marginTop: 10,
-            }}
-          >
-            {data.byDay.map((day, index) => (
-              <View
-                key={index}
-                style={{
-                  flex: 1,
-                }}
-              >
-                <View style={{ flex: 1 }} />
-                <View
-                  style={{
-                    height: `${(day / Math.max(...data.byDay)) * 100}%`,
-                    minHeight: 50,
-                  }}
-                >
-                  <View
-                    style={{
-                      backgroundColor: addHslAlpha(theme[6], 0.7),
-                      borderRadius: 15,
-                      alignItems: "center",
-                      justifyContent: "flex-end",
-                      padding: 5,
-                      flex: 1,
-                    }}
-                  >
-                    <Text variant="eyebrow" style={{ fontSize: 13 }}>
-                      {day === 0 ? "" : day.toString()}
-                    </Text>
-                  </View>
-                  <View>
-                    <Text
-                      variant="eyebrow"
-                      style={{
-                        textAlign: "center",
-                        marginTop: 5,
-                        marginBottom: -5,
-                      }}
-                    >
-                      {["S", "M", "T", "W", "T", "F", "S"][index]}
-                    </Text>
-                  </View>
-                </View>
-              </View>
-            ))}
-          </View>
         </View>
       </View>
 

@@ -45,7 +45,7 @@ const Link = ({ collection }) => {
   });
   const url = `${
     process.env.NODE_ENV === "production"
-      ? "https://app.dysperse.com"
+      ? "https://go.dysperse.com"
       : "http://localhost:8081"
   }/c/${data?.id}${params.toString() ? `?${params}` : ""}`;
 
