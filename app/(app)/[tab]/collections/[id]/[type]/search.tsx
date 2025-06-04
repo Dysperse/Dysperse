@@ -2,6 +2,7 @@ import { MenuButton } from "@/app/(app)/home";
 import { CollectionContext } from "@/components/collections/context";
 import { Entity } from "@/components/collections/entity";
 import { FadeOnRender } from "@/components/layout/FadeOnRender";
+import { ArcSystemBar } from "@/components/layout/arcAnimations";
 import { useHotkeys } from "@/helpers/useHotKeys";
 import { useResponsiveBreakpoints } from "@/helpers/useResponsiveBreakpoints";
 import { Button } from "@/ui/Button";
@@ -16,7 +17,6 @@ import { router, useLocalSearchParams } from "expo-router";
 import fuzzysort from "fuzzysort";
 import { useEffect, useRef, useState } from "react";
 import { Keyboard, Platform, StyleSheet, View } from "react-native";
-import { SystemBars } from "react-native-edge-to-edge";
 import { ScrollView } from "react-native-gesture-handler";
 import { KeyboardAvoidingView } from "react-native-keyboard-controller";
 import Animated, {
@@ -395,7 +395,7 @@ export default function Page() {
   return (
     <>
       <CollectionContext.Provider value={contextValue}>
-        {!breakpoints.md && <SystemBars style="light" />}
+        <ArcSystemBar />
         {data && (
           <SearchList
             handleClose={handleClose}

@@ -3,6 +3,7 @@ import { useDarkMode } from "@/ui/color";
 import {
   StackCardInterpolatedStyle,
   StackCardInterpolationProps,
+  StackNavigationOptions,
   TransitionPresets,
 } from "@react-navigation/stack";
 import { Animated, Platform } from "react-native";
@@ -103,7 +104,6 @@ export const arcCard = ({ theme, breakpoints, maxWidth, padding = 15 }) =>
     animation: "default",
     presentation: "modal",
     detachPreviousScreen: false,
-    animationEnabled: true,
     gestureEnabled: true,
     ...TransitionPresets.ModalPresentationIOS,
     ...(breakpoints.md && {
@@ -122,7 +122,7 @@ export const arcCard = ({ theme, breakpoints, maxWidth, padding = 15 }) =>
           marginBottom: Platform.OS === "web" ? undefined : 0,
         }
       : undefined,
-  } as any);
+  } as StackNavigationOptions);
 
 export const ArcSystemBar = () => {
   const breakpoints = useResponsiveBreakpoints();

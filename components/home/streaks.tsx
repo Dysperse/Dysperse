@@ -2,7 +2,6 @@ import { Avatar } from "@/ui/Avatar";
 import { Button } from "@/ui/Button";
 import ErrorAlert from "@/ui/Error";
 import MenuPopover from "@/ui/MenuPopover";
-import Spinner from "@/ui/Spinner";
 import Text from "@/ui/Text";
 import { useColorTheme } from "@/ui/color/theme-provider";
 import dayjs from "dayjs";
@@ -137,24 +136,18 @@ function StreakGoal({ dense }: { dense?: boolean }) {
                   },
             ]}
           >
-            {data && process.env.NODE_ENV !== "production" ? (
-              <>
-                <GoalIndicator
-                  dense={dense}
-                  name="Today"
-                  completed={data.dayTasks || 0}
-                  goal={data.user?.dailyStreakGoal || 5}
-                />
-                <GoalIndicator
-                  dense={dense}
-                  name={dense ? "Week" : "This week"}
-                  completed={data.weekTasks || 0}
-                  goal={data.user?.weeklyStreakGoal || 5}
-                />
-              </>
-            ) : (
-              <Spinner />
-            )}
+            <GoalIndicator
+              dense={dense}
+              name="Today"
+              completed={data.dayTasks || 0}
+              goal={data.user?.dailyStreakGoal || 5}
+            />
+            <GoalIndicator
+              dense={dense}
+              name={dense ? "Week" : "This week"}
+              completed={data.weekTasks || 0}
+              goal={data.user?.weeklyStreakGoal || 5}
+            />
           </View>
         </>
       )}
@@ -163,3 +156,4 @@ function StreakGoal({ dense }: { dense?: boolean }) {
 }
 
 export default memo(StreakGoal);
+
