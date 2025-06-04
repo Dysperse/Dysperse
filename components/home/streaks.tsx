@@ -2,6 +2,7 @@ import { Avatar } from "@/ui/Avatar";
 import { Button } from "@/ui/Button";
 import ErrorAlert from "@/ui/Error";
 import MenuPopover from "@/ui/MenuPopover";
+import Spinner from "@/ui/Spinner";
 import Text from "@/ui/Text";
 import { useColorTheme } from "@/ui/color/theme-provider";
 import dayjs from "dayjs";
@@ -136,18 +137,24 @@ function StreakGoal({ dense }: { dense?: boolean }) {
                   },
             ]}
           >
-            <GoalIndicator
-              dense={dense}
-              name="Today"
-              completed={data.dayTasks || 0}
-              goal={data.user?.dailyStreakGoal || 5}
-            />
-            <GoalIndicator
-              dense={dense}
-              name={dense ? "Week" : "This week"}
-              completed={data.weekTasks || 0}
-              goal={data.user?.weeklyStreakGoal || 5}
-            />
+            {data ? (
+              <>
+                <GoalIndicator
+                  dense={dense}
+                  name="Today"
+                  completed={data.dayTasks || 0}
+                  goal={data.user?.dailyStreakGoal || 5}
+                />
+                <GoalIndicator
+                  dense={dense}
+                  name={dense ? "Week" : "This week"}
+                  completed={data.weekTasks || 0}
+                  goal={data.user?.weeklyStreakGoal || 5}
+                />
+              </>
+            ) : (
+              <Spinner />
+            )}
           </View>
         </>
       )}
