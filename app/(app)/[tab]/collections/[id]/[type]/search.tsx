@@ -74,11 +74,6 @@ function SearchList({ collection, inputRef, listRef, handleClose }) {
   }));
 
   const titleStyles = useAnimatedStyle(() => ({
-    marginTop: withSpring(interpolate(titleValue.value, [1, 0], [10, -40]), {
-      stiffness: 400,
-      damping: 30,
-    }),
-    overflow: "hidden",
     opacity: withSpring(interpolate(titleValue.value, [1, 0], [1, 0]), {
       stiffness: 400,
       damping: 30,
@@ -197,19 +192,21 @@ function SearchList({ collection, inputRef, listRef, handleClose }) {
           }}
         >
           <View>
-            <Animated.View style={titleStyles}>
-              <Text
-                style={{
-                  fontFamily: "serifText700",
-                  fontSize: 30,
-                  marginLeft: 5,
-                  marginTop: 30,
-                  marginBottom: 20,
-                }}
-              >
-                {filtered.length} result{filtered.length !== 1 && "s"}
-              </Text>
-            </Animated.View>
+            <Text
+              style={{
+                fontFamily: "serifText700",
+                fontSize: 30,
+                marginLeft: 5,
+                marginTop: 30,
+                marginBottom: 20,
+              }}
+            >
+              {filtered.length < 2
+                ? "Search"
+                : `${filtered.length} result${
+                    filtered.length !== 1 ? "s" : ""
+                  }`}
+            </Text>
             <View
               style={{
                 flexDirection: "row",
