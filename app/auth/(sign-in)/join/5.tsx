@@ -179,7 +179,7 @@ function Content() {
           variant="filled"
         >
           <ListItemText
-            primary="I want to recieve annoying newsletters"
+            primary="I want to receive annoying newsletters"
             secondary="We promise they're once a month and actually useful"
           />
           <Icon size={40}>toggle_{allowMarketingEmails ? "on" : "off"}</Icon>
