@@ -679,6 +679,7 @@ function TaskNameInput({
       { id: "3.75", name: "LOCK IN", value: ["pinned", true] },
       { id: "4", name: "tomorrow", value: ["date", dayjs().add(1, "day")] },
       { id: "5", name: "important", value: ["pinned", true] },
+      { id: "5", name: "asap", value: ["pinned", true] },
       { id: "6", name: "eod", value: ["date", dayjs().endOf("day")] },
       { id: "7", name: "eow", value: ["date", dayjs().endOf("week")] },
       { id: "8", name: "eom", value: ["date", dayjs().endOf("month")] },
