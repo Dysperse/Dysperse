@@ -156,7 +156,7 @@ function Root() {
       <ThemeProvider
         value={{
           colors: {
-            background: "transparent",
+            background: theme[2],
             card: theme[2],
             primary: theme[2],
             border: theme[6],
@@ -174,7 +174,6 @@ function Root() {
                   <SWRWrapper>
                     <SystemBars style="dark" />
                     <JsStack
-                      id={undefined}
                       screenOptions={{
                         header: () => null,
                         cardShadowEnabled: false,

@@ -1,6 +1,5 @@
 import { RenderWidget } from "@/app/(app)/home";
 import { useFocusPanelContext } from "@/components/focus-panel/context";
-import { useResponsiveBreakpoints } from "@/helpers/useResponsiveBreakpoints";
 import { Button } from "@/ui/Button";
 import IconButton from "@/ui/IconButton";
 import Modal from "@/ui/Modal";
@@ -9,34 +8,17 @@ import { useColorTheme } from "@/ui/color/theme-provider";
 import { BottomSheetScrollView } from "@gorhom/bottom-sheet";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { ImpactFeedbackStyle, impactAsync } from "expo-haptics";
-import {
-  default as React,
-  memo,
-  useEffect,
-  useImperativeHandle,
-  useRef,
-  useState,
-} from "react";
-import { Freeze } from "react-freeze";
+import { default as React, memo, useEffect, useRef, useState } from "react";
 import { Platform, View } from "react-native";
 
 const FocusPanel = memo(() => {
   const theme = useColorTheme();
-  const { widgets, focusPanelFreezerRef, activeStateRef } =
-    useFocusPanelContext();
+  const { widgets, activeStateRef } = useFocusPanelContext();
   const sheetRef = useRef(null);
   const [activeWidget, setActiveWidget] = useState(activeStateRef.current);
-  const breakpoints = useResponsiveBreakpoints();
 
   const pinnedWidgets = widgets.filter((i) => i.pinned);
   const pinnedWidget = pinnedWidgets[activeWidget];
-
-  const [frozen, setFrozen] = useState(Platform.OS === "web");
-
-  useImperativeHandle(focusPanelFreezerRef, () => ({
-    freeze: () => setFrozen(true),
-    thaw: () => setFrozen(false),
-  }));
 
   useEffect(() => {
     const loadActiveWidget = async () => {
@@ -61,24 +43,7 @@ const FocusPanel = memo(() => {
 
   return (
     pinnedWidget && (
-      <Freeze
-        freeze={frozen && !breakpoints.md}
-        placeholder={
-          <View
-            style={{
-              height: 50,
-              justifyContent: "center",
-              alignItems: "center",
-              backgroundColor: theme[3],
-              borderRadius: 20,
-              padding: 10,
-              flexDirection: "row",
-              marginBottom: Platform.OS === "web" ? 10 : 8,
-              marginHorizontal: 10,
-            }}
-          />
-        }
-      >
+      <>
         <Modal
           animation="SLIDE"
           onClose={() => sheetRef.current?.close?.()}
@@ -171,9 +136,10 @@ const FocusPanel = memo(() => {
             <RenderWidget small widget={pinnedWidget} />
           </View>
         </Button>
-      </Freeze>
+      </>
     )
   );
 });
 
 export default FocusPanel;
+

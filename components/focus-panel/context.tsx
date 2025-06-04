@@ -1,24 +1,18 @@
 import { createContext, RefObject, useContext, useRef } from "react";
 import { DrawerLayout } from "react-native-gesture-handler";
-import useSWR from "swr";
-import { KeyedMutator } from "swr/dist/_internal";
+import useSWR, { KeyedMutator } from "swr";
 
 interface FocusPanelContext {
   widgets: any[];
   mutate: KeyedMutator<any>;
   drawerRef: RefObject<DrawerLayout>;
-  focusPanelFreezerRef: RefObject<any>;
   activeStateRef?: any;
 }
 
 const FocusPanelContext = createContext<FocusPanelContext>(null);
 export const useFocusPanelContext = () => useContext(FocusPanelContext);
 
-export const FocusPanelProvider = ({
-  children,
-  drawerRef,
-  focusPanelFreezerRef,
-}) => {
+export const FocusPanelProvider = ({ children, drawerRef }) => {
   const { data, mutate } = useSWR(["user/focus-panel"]);
   const activeStateRef = useRef(0);
 
@@ -29,10 +23,10 @@ export const FocusPanelProvider = ({
         mutate,
         drawerRef,
         activeStateRef,
-        focusPanelFreezerRef,
       }}
     >
       {children}
     </FocusPanelContext.Provider>
   );
 };
+

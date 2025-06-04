@@ -32,7 +32,6 @@ async function fileSystemProvider(cacheData) {
     async function ensureDirExists() {
       const dirInfo = await FileSystem.getInfoAsync(cacheDir);
       if (!dirInfo.exists) {
-        
         await FileSystem.makeDirectoryAsync(cacheDir, { intermediates: true });
       }
     }
@@ -40,16 +39,14 @@ async function fileSystemProvider(cacheData) {
     const map = cacheData || new Map();
 
     if (map.size === 0) {
-      
       return;
     }
-    
+
     await ensureDirExists();
     await FileSystem.writeAsStringAsync(
       file,
       JSON.stringify(Array.from(map.entries()))
     );
-    
   });
 }
 
@@ -85,13 +82,10 @@ export function SWRWrapper({ children }) {
       const file = `${cacheDir}cache.json`;
       const fileInfo = await FileSystem.getInfoAsync(file);
       if (fileInfo.exists) {
-        
         const data = await FileSystem.readAsStringAsync(file);
         const entries = JSON.parse(data);
         cacheData.current = new Map(entries);
-        
       } else {
-        
         cacheData.current = new Map();
       }
       if (!cacheLoaded) setCacheLoaded(true);
@@ -124,7 +118,6 @@ export function SWRWrapper({ children }) {
         let appState = AppState.currentState;
 
         const onAppStateChange = (nextAppState) => {
-          /* If it's resuming from background or inactive mode to active one */
           if (
             appState.match(/inactive|background/) &&
             nextAppState === "active"
@@ -134,7 +127,6 @@ export function SWRWrapper({ children }) {
           appState = nextAppState;
         };
 
-        // Subscribe to the app state change events
         const subscription = AppState.addEventListener(
           "change",
           onAppStateChange
