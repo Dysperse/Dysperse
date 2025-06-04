@@ -6,7 +6,7 @@ import ErrorAlert from "@/ui/Error";
 import Spinner from "@/ui/Spinner";
 import dayjs, { ManipulateType, OpUnitType } from "dayjs";
 import { useLocalSearchParams } from "expo-router";
-import React, { useEffect, useMemo, useRef } from "react";
+import React, { useEffect, useMemo, useRef, useState } from "react";
 import { InteractionManager, View } from "react-native";
 import { FlatList } from "react-native-gesture-handler";
 import Animated, {
@@ -27,6 +27,7 @@ function Agenda() {
   const { isPublic } = useCollectionContext();
 
   const state = useSharedValue(1);
+  const [open, setOpen] = useState(false);
 
   const animatedCalendarStyle = useAnimatedStyle(() => ({
     marginTop: withSpring(state.value === 0 ? 0 : -450, {
@@ -139,7 +140,14 @@ function Agenda() {
             ]}
           >
             <Animated.View style={[animatedCalendarStyle, { height: 450 }]}>
-              <AgendaCalendarMenu handleMenuClose={() => (state.value = 1)} />
+              {open && (
+                <AgendaCalendarMenu
+                  handleMenuClose={() => {
+                    state.value = 1;
+                    setTimeout(() => setOpen(false), 1000);
+                  }}
+                />
+              )}
             </Animated.View>
             <Animated.View
               style={[
@@ -152,7 +160,10 @@ function Agenda() {
             >
               <AgendaButtons
                 weekMode
-                handleMenuOpen={() => (state.value = 0)}
+                handleMenuOpen={() => {
+                  state.value = 0;
+                  setOpen(true);
+                }}
               />
               <AgendaSelector data={data} />
             </Animated.View>
