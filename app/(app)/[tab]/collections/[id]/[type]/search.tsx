@@ -62,7 +62,6 @@ function SearchList({ collection, inputRef, listRef, handleClose }) {
   const [activeFilters, setActiveFilters] = useState([]);
 
   const clearValue = useSharedValue(0);
-  const titleValue = useSharedValue(0);
 
   const clearStyles = useAnimatedStyle(() => ({
     opacity: withSpring(clearValue.value),
@@ -76,10 +75,6 @@ function SearchList({ collection, inputRef, listRef, handleClose }) {
   useEffect(() => {
     clearValue.value = query || activeFilters.length > 0 ? 1 : 0;
   }, [query, activeFilters]);
-
-  useEffect(() => {
-    titleValue.value = query.length > 2 ? 1 : 0;
-  }, [query]);
 
   const filters = [
     { label: "Important", icon: "push_pin", filter: (item) => item.pinned },
