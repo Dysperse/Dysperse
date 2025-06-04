@@ -73,13 +73,6 @@ function SearchList({ collection, inputRef, listRef, handleClose }) {
     }),
   }));
 
-  const titleStyles = useAnimatedStyle(() => ({
-    opacity: withSpring(interpolate(titleValue.value, [1, 0], [1, 0]), {
-      stiffness: 400,
-      damping: 30,
-    }),
-  }));
-
   useEffect(() => {
     clearValue.value = query || activeFilters.length > 0 ? 1 : 0;
   }, [query, activeFilters]);
