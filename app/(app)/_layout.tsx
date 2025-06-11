@@ -87,6 +87,7 @@ const WebAnimationComponent = ({ children }) => {
 
 export function LastStateRestore() {
   const { data } = useSWR(["user/tabs"]);
+  const pathname = usePathname();
   const { fullscreen, tab: currentTab } = useGlobalSearchParams();
 
   const setCurrentPage = useCallback(async () => {
@@ -111,7 +112,7 @@ export function LastStateRestore() {
   }, []);
 
   useEffect(() => {
-    if (!fullscreen) setCurrentPage();
+    if (!fullscreen && !pathname.includes("chrome-extension")) setCurrentPage();
   }, []);
 
   return null;
