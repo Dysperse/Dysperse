@@ -10,6 +10,7 @@ import Icon from "@/ui/Icon";
 import RefreshControl from "@/ui/RefreshControl";
 import { addHslAlpha } from "@/ui/color";
 import { useColorTheme } from "@/ui/color/theme-provider";
+import { TEMPORARY_CONTENT_INSET_FIX } from "@/utils/temporary-scrolling-bug-fix";
 import { FlashList } from "@shopify/flash-list";
 import { LinearGradient } from "expo-linear-gradient";
 import React, { useRef, useState } from "react";
@@ -235,6 +236,7 @@ export function Column(props: ColumnProps) {
           paddingTop: props.grid ? 5 : 15,
           paddingBottom: insets.bottom + 35,
         }}
+        contentInset={TEMPORARY_CONTENT_INSET_FIX()}
         ListFooterComponentStyle={[
           hasNoIncompleteTasks && {
             marginBottom: showCompleted ? 10 : -70,

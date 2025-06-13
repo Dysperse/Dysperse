@@ -11,6 +11,7 @@ import Text from "@/ui/Text";
 import TextField from "@/ui/TextArea";
 import { addHslAlpha } from "@/ui/color";
 import { useColorTheme } from "@/ui/color/theme-provider";
+import { TEMPORARY_CONTENT_INSET_FIX } from "@/utils/temporary-scrolling-bug-fix";
 import { FlashList } from "@shopify/flash-list";
 import dayjs from "dayjs";
 import { router, useLocalSearchParams } from "expo-router";
@@ -300,6 +301,7 @@ function SearchList({ collection, inputRef, listRef, handleClose }) {
                 keyboardShouldPersistTaps="handled"
                 data={filtered}
                 style={{ backgroundColor: "red" }}
+                contentInset={TEMPORARY_CONTENT_INSET_FIX()}
                 contentContainerStyle={{
                   padding: 25,
                   paddingTop: 15,
