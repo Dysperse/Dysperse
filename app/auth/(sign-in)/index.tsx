@@ -130,6 +130,93 @@ function QrModal({ children }: { children: any }) {
     </>
   );
 }
+function AppleAuth() {
+  const theme = useColorTheme();
+  const isDark = useDarkMode();
+  const breakpoints = useResponsiveBreakpoints();
+  const { signIn } = useSession();
+  const [loading, setLoading] = useState(false);
+
+  return (
+    <>
+      {AppleAuthentication.isAvailableAsync() && (
+        <View
+          style={{
+            position: "relative",
+            height: 50,
+            width: "100%",
+          }}
+        >
+          <AppleAuthentication.AppleAuthenticationButton
+            buttonType={
+              AppleAuthentication.AppleAuthenticationButtonType.SIGN_IN
+            }
+            buttonStyle={
+              isDark
+                ? AppleAuthentication.AppleAuthenticationButtonStyle.BLACK
+                : AppleAuthentication.AppleAuthenticationButtonStyle.WHITE
+            }
+            cornerRadius={999}
+            style={{
+              width: "100%",
+              height: 50,
+              position: "absolute",
+              top: 0,
+              left: 0,
+              marginBottom: 10,
+            }}
+            onPress={async () => {
+              try {
+                const credential = await AppleAuthentication.signInAsync({
+                  requestedScopes: [
+                    AppleAuthentication.AppleAuthenticationScope.FULL_NAME,
+                    AppleAuthentication.AppleAuthenticationScope.EMAIL,
+                  ],
+                });
+                setLoading(true);
+                const data = await fetch(
+                  `${process.env.EXPO_PUBLIC_API_URL}/auth/login/apple`,
+                  {
+                    method: "POST",
+                    body: JSON.stringify(credential),
+                  }
+                ).then((r) => r.json());
+
+                if (data?.session) signIn(data.session);
+
+                setLoading(false);
+              } catch (e) {
+                console.log(e);
+              }
+            }}
+          />
+          <Button
+            large
+            bold
+            icon="east"
+            isLoading={loading}
+            text="Sign in with Apple"
+            iconPosition="end"
+            style={[{ justifyContent: "flex-start", paddingLeft: 25, gap: 15 }]}
+            iconSize={30}
+            height={50}
+            containerStyle={[
+              { flex: 1, pointerEvents: "none", alignItems: "center" },
+              !breakpoints.md && { borderRadius: 30 },
+            ]}
+            textStyle={{ color: theme[11] }}
+            backgroundColors={{
+              default: theme[3],
+              hovered: theme[3],
+              pressed: theme[3],
+            }}
+          />
+        </View>
+      )}
+    </>
+  );
+}
+
 export default function SignIn() {
   const theme = useColorTheme();
   const isDark = useDarkMode();
@@ -317,68 +404,7 @@ export default function SignIn() {
           />
         </QrModal>
       </View>
-      {AppleAuthentication.isAvailableAsync() && (
-        <View
-          style={{
-            position: "relative",
-            height: 50,
-            width: "100%",
-          }}
-        >
-          <AppleAuthentication.AppleAuthenticationButton
-            buttonType={
-              AppleAuthentication.AppleAuthenticationButtonType.SIGN_IN
-            }
-            buttonStyle={
-              isDark
-                ? AppleAuthentication.AppleAuthenticationButtonStyle.BLACK
-                : AppleAuthentication.AppleAuthenticationButtonStyle.WHITE
-            }
-            cornerRadius={999}
-            style={{
-              width: "100%",
-              height: 50,
-              position: "absolute",
-              top: 0,
-              left: 0,
-              marginBottom: 10,
-            }}
-            onPress={async () => {
-              try {
-                const credential = await AppleAuthentication.signInAsync({
-                  requestedScopes: [
-                    AppleAuthentication.AppleAuthenticationScope.FULL_NAME,
-                    AppleAuthentication.AppleAuthenticationScope.EMAIL,
-                  ],
-                });
-                console.log(credential);
-              } catch (e) {
-                console.log(e);
-              }
-            }}
-          />
-          <Button
-            large
-            bold
-            icon="east"
-            text="Sign in with Apple"
-            iconPosition="end"
-            style={[{ justifyContent: "flex-start", paddingLeft: 25, gap: 15 }]}
-            iconSize={30}
-            height={50}
-            containerStyle={[
-              { flex: 1, pointerEvents: "none", alignItems: "center" },
-              !breakpoints.md && { borderRadius: 30 },
-            ]}
-            textStyle={{ color: theme[11] }}
-            backgroundColors={{
-              default: theme[3],
-              hovered: theme[3],
-              pressed: theme[3],
-            }}
-          />
-        </View>
-      )}
+      <AppleAuth />
       <Button
         large
         bold

@@ -21,7 +21,7 @@ import React, {
   useState,
 } from "react";
 import { Controller, useForm } from "react-hook-form";
-import { Keyboard, Platform, StyleSheet, View } from "react-native";
+import { Platform, StyleSheet, View } from "react-native";
 import { KeyboardAwareScrollView } from "react-native-keyboard-controller";
 import * as passkey from "react-native-passkeys";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
@@ -252,27 +252,36 @@ function Email({ control, handleSubmit }: { control: any; handleSubmit }) {
   });
 
   const insets = useSafeAreaInsets();
+  const breakpoints = useResponsiveBreakpoints();
 
   return (
     <KeyboardAwareScrollView
       bounces={false}
-      onScrollBeginDrag={Keyboard.dismiss}
       keyboardShouldPersistTaps="handled"
       style={{
         flex: 1,
         paddingHorizontal: 25,
         paddingTop: insets.top + 20,
       }}
-      contentContainerStyle={{ flexGrow: 1, justifyContent: "center" }}
+      contentContainerStyle={{
+        justifyContent: "center",
+        flexGrow: 1,
+      }}
     >
       <View style={{ gap: 10 }}>
         <Text
-          style={{
-            fontFamily: "serifText700",
-            fontSize: 35,
-            color: theme[11],
-            marginTop: "auto",
-          }}
+          style={[
+            {
+              fontFamily: "serifText700",
+              fontSize: 30,
+              color: theme[11],
+              marginTop: "auto",
+            },
+            !breakpoints.md && {
+              textAlign: "center",
+              marginBottom: 10,
+            },
+          ]}
         >
           Sign in with email
         </Text>
@@ -290,6 +299,7 @@ function Email({ control, handleSubmit }: { control: any; handleSubmit }) {
                 fontSize: 20,
                 color: theme[11],
                 paddingHorizontal: 20,
+                borderWidth: 0,
               }}
               inputRef={inputRef}
               placeholder="Email or username..."
@@ -297,6 +307,7 @@ function Email({ control, handleSubmit }: { control: any; handleSubmit }) {
               onChangeText={onChange}
               onSubmitEditing={onFinish}
               variant="filled+outlined"
+              autoComplete="email"
               keyboardType="email-address"
             />
           )}
@@ -313,6 +324,7 @@ function Email({ control, handleSubmit }: { control: any; handleSubmit }) {
                 height: 60,
                 fontFamily: "body_600",
                 borderRadius: 20,
+                borderWidth: 0,
                 fontSize: 20,
                 color: theme[11],
                 paddingHorizontal: 20,
@@ -321,6 +333,7 @@ function Email({ control, handleSubmit }: { control: any; handleSubmit }) {
               secureTextEntry
               onBlur={onBlur}
               onChangeText={onChange}
+              autoComplete="current-password"
               onSubmitEditing={onFinish}
               inputRef={passwordRef}
               variant="filled+outlined"
@@ -354,7 +367,7 @@ function Email({ control, handleSubmit }: { control: any; handleSubmit }) {
           onPress={() => router.push("/auth/forgot-password")}
           isLoading={false}
           text="Need help?"
-          containerStyle={{ marginBottom: "auto" }}
+          containerStyle={{ marginTop: "auto" }}
         />
       </View>
     </KeyboardAwareScrollView>
