@@ -177,7 +177,15 @@ export default ({ config }: ConfigContext): ExpoConfig =>
           ],
         ],
         "react-native-spotlight-search",
-        "react-native-edge-to-edge",
+        [
+          "react-native-edge-to-edge",
+          {
+            android: {
+              parentTheme: "Default",
+              enforceNavigationBarContrast: false,
+            },
+          },
+        ],
         [
           "expo-splash-screen",
           {
