@@ -17,6 +17,7 @@ import { Platform, useWindowDimensions, View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { useDidUpdate } from "../../../../utils/useDidUpdate";
 import { ColumnEmptyComponent } from "../../emptyComponent";
+import { taskSortAlgorithm } from "../skyline";
 import { KanbanHeader } from "./Header";
 
 export type ColumnProps =
@@ -48,26 +49,27 @@ export function Column(props: ColumnProps) {
 
   const isReadOnly = access?.access === "READ_ONLY";
 
-  const data = Object.values(props.label?.entities || props.entities)
-    .filter(
+  const data = taskSortAlgorithm(
+    Object.values(props.label?.entities || props.entities).filter(
       (e) =>
         (showCompleted
           ? true
           : e.completionInstances.length === 0 || e.recurrenceRule) && !e.trash
     )
-    .sort((a, b) => {
-      if (a.pinned !== b.pinned) return a.pinned ? -1 : 1;
-      if (a.completionInstances.length !== b.completionInstances.length)
-        return a.completionInstances.length === 0 ? -1 : 1;
-      return a.agendaOrder?.toString()?.localeCompare(b.agendaOrder);
-    });
+  );
 
   const hasItems = data.length > 0;
+
   const hasNoTasks =
     Object.keys(props.label?.entities || props?.entities || {}).length === 0;
 
-  const hasNoCompleteTasks =
+  const hasNoIncompleteTasks =
     data.filter((e) => e.completionInstances.length === 0).length === 0;
+
+  const completeTasksExist =
+    Object.values(props.label?.entities || props.entities).filter(
+      (e) => e.completionInstances.length > 0
+    ).length > 0;
 
   const centerContent = data.length === 0;
 
@@ -234,13 +236,13 @@ export function Column(props: ColumnProps) {
           paddingBottom: insets.bottom + 35,
         }}
         ListFooterComponentStyle={[
-          hasNoCompleteTasks && {
+          hasNoIncompleteTasks && {
             marginBottom: showCompleted ? 10 : -70,
           },
         ]}
         ListFooterComponent={() => (
           <>
-            {hasNoTasks ? null : (
+            {hasNoTasks || !completeTasksExist ? null : (
               <View style={{ flexDirection: "row" }}>
                 <Button
                   onPress={() => setShowCompleted(!showCompleted)}

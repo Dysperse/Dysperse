@@ -1,5 +1,4 @@
 import { useUser } from "@/context/useUser";
-import { useResponsiveBreakpoints } from "@/helpers/useResponsiveBreakpoints";
 import BottomSheet from "@/ui/BottomSheet";
 import { Button } from "@/ui/Button";
 import { useColorTheme } from "@/ui/color/theme-provider";
@@ -28,7 +27,6 @@ import { useCollectionContext } from "./context";
 
 function InspireMe({ row, labelId }) {
   const { data: collection } = useCollectionContext();
-  const breakpoints = useResponsiveBreakpoints();
   const ref = useRef(null);
   const [opened, setOpened] = React.useState(false);
 
@@ -52,10 +50,9 @@ function InspireMe({ row, labelId }) {
   return (
     <>
       <Button
-        variant={breakpoints.md ? "filled" : "text"}
+        variant="filled"
         dense
         containerStyle={{
-          marginRight: "auto",
           marginTop: 10,
           zIndex: 99,
         }}
@@ -444,7 +441,8 @@ export const ColumnEmptyComponent = function ColumnEmptyComponent({
       <View
         style={{
           flexDirection: "row",
-          marginLeft: row ? 80 : "auto",
+          marginLeft: row ? 80 : undefined,
+          justifyContent: row ? "flex-start" : "center",
           gap: 10,
           marginTop: 5,
         }}
