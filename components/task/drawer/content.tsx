@@ -702,6 +702,7 @@ export function TaskDrawerContent({
                 ),
           },
         });
+        forceClose();
       } catch (e) {
         Toast.show({
           type: "error",
@@ -709,7 +710,7 @@ export function TaskDrawerContent({
         });
       }
     },
-    [updateTask, task, theme]
+    [updateTask, task, theme, forceClose]
   );
 
   useHotkeys(["delete", "backspace"], () => handleDelete(true));
