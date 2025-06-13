@@ -181,12 +181,24 @@ function AppleAuth() {
                     body: JSON.stringify(credential),
                   }
                 ).then((r) => r.json());
-
-                if (data?.session) signIn(data.session);
-
-                setLoading(false);
+                if (data?.sessionId) signIn(data.sessionId);
+                else if (data.isNew) {
+                  Toast.show({
+                    type: "success",
+                    text1: "We couldn't find an account with that email",
+                  });
+                  router.push({
+                    pathname: "/auth/join",
+                    params: {
+                      email: credential.email,
+                      name: `${credential.fullName?.givenName} ${credential.fullName?.familyName}`,
+                    },
+                  });
+                }
               } catch (e) {
                 console.log(e);
+              } finally {
+                setLoading(false);
               }
             }}
           />
