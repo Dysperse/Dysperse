@@ -4,7 +4,6 @@ import { Button } from "@/ui/Button";
 import { useColorTheme } from "@/ui/color/theme-provider";
 import { DatePicker } from "@/ui/DatePicker";
 import Icon from "@/ui/Icon";
-import IconButton from "@/ui/IconButton";
 import { ListItemButton } from "@/ui/ListItemButton";
 import ListItemText from "@/ui/ListItemText";
 import Spinner from "@/ui/Spinner";
@@ -238,12 +237,6 @@ function Content() {
         entering={FadeIn.delay(1400)}
         style={{ marginTop: 20, flexDirection: "row", gap: 10 }}
       >
-        <IconButton
-          size={65}
-          icon="arrow_back_ios_new"
-          variant="outlined"
-          onPress={() => router.push("/auth/join/4")}
-        />
         <Button
           height={65}
           variant="filled"

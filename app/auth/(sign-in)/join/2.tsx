@@ -7,7 +7,6 @@ import { Button } from "@/ui/Button";
 import { useColor, useDarkMode } from "@/ui/color";
 import { useColorTheme } from "@/ui/color/theme-provider";
 import Icon from "@/ui/Icon";
-import IconButton from "@/ui/IconButton";
 import Spinner from "@/ui/Spinner";
 import Text from "@/ui/Text";
 import TextField from "@/ui/TextArea";
@@ -302,14 +301,6 @@ function Content() {
         entering={FadeIn.delay(1200 + 3 * 100)}
         style={{ marginTop: 10, flexDirection: "row", gap: 10 }}
       >
-        <IconButton
-          size={65}
-          icon="arrow_back_ios_new"
-          variant="outlined"
-          onPress={() =>
-            router.canGoBack() ? router.back() : router.push("/auth")
-          }
-        />
         <Button
           height={65}
           variant="filled"

@@ -3,7 +3,6 @@ import { useResponsiveBreakpoints } from "@/helpers/useResponsiveBreakpoints";
 import { Button } from "@/ui/Button";
 import { useColor, useDarkMode } from "@/ui/color";
 import { useColorTheme } from "@/ui/color/theme-provider";
-import IconButton from "@/ui/IconButton";
 import Text from "@/ui/Text";
 import { Image } from "expo-image";
 import { router } from "expo-router";
@@ -135,12 +134,6 @@ function Color() {
         entering={FadeIn.delay(1200)}
         style={{ flexDirection: "row", gap: 10, marginTop: 10 }}
       >
-        <IconButton
-          size={65}
-          icon="arrow_back_ios_new"
-          variant="outlined"
-          onPress={() => router.push("/auth/join/3")}
-        />
         <Button
           height={65}
           variant="filled"

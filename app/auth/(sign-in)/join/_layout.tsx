@@ -1,4 +1,5 @@
 import { JsStack } from "@/components/layout/_stack";
+import { forHorizontalIOS } from "@/components/layout/forHorizontalIOS";
 import { useResponsiveBreakpoints } from "@/helpers/useResponsiveBreakpoints";
 import { useColorTheme } from "@/ui/color/theme-provider";
 import { TransitionPresets } from "@react-navigation/stack";
@@ -40,6 +41,8 @@ export default function Layout() {
             paddingLeft: breakpoints.md ? 60 : undefined,
           },
           ...TransitionPresets.SlideFromRightIOS,
+          cardStyleInterpolator: forHorizontalIOS,
+          cardOverlayEnabled: true,
         }}
       />
     </SignupContext.Provider>

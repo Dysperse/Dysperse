@@ -1,7 +1,6 @@
 import { useResponsiveBreakpoints } from "@/helpers/useResponsiveBreakpoints";
 import { Button } from "@/ui/Button";
 import { useColorTheme } from "@/ui/color/theme-provider";
-import IconButton from "@/ui/IconButton";
 import Text from "@/ui/Text";
 import TextField from "@/ui/TextArea";
 import { router } from "expo-router";
@@ -74,14 +73,6 @@ function Intro() {
         entering={FadeIn.delay(1200)}
         style={{ flexDirection: "row", gap: 10 }}
       >
-        <IconButton
-          size={65}
-          icon="arrow_back_ios_new"
-          variant="outlined"
-          onPress={() =>
-            router.canGoBack() ? router.back() : router.push("/auth")
-          }
-        />
         <Button
           height={65}
           variant="filled"

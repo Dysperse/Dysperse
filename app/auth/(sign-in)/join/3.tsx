@@ -4,7 +4,6 @@ import { Button } from "@/ui/Button";
 import { addHslAlpha } from "@/ui/color";
 import { useColorTheme } from "@/ui/color/theme-provider";
 import Icon from "@/ui/Icon";
-import IconButton from "@/ui/IconButton";
 import { ListItemButton } from "@/ui/ListItemButton";
 import ListItemText from "@/ui/ListItemText";
 import Text from "@/ui/Text";
@@ -153,14 +152,6 @@ function Customization() {
         entering={FadeIn.delay(900 + methods.length * 100)}
         style={{ flexDirection: "row", gap: 10 }}
       >
-        <IconButton
-          size={65}
-          icon="arrow_back_ios_new"
-          variant="outlined"
-          onPress={() =>
-            router.canGoBack() ? router.back() : router.push("/auth")
-          }
-        />
         <Button
           height={65}
           variant="filled"

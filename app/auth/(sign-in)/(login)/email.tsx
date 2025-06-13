@@ -1,7 +1,6 @@
 import { useResponsiveBreakpoints } from "@/helpers/useResponsiveBreakpoints";
 import { useWebStatusBar } from "@/helpers/useWebStatusBar";
 import { Button } from "@/ui/Button";
-import IconButton from "@/ui/IconButton";
 import OtpInput from "@/ui/OtpInput";
 import Spinner from "@/ui/Spinner";
 import Text from "@/ui/Text";
@@ -14,7 +13,13 @@ import * as Device from "expo-device";
 import { createURL } from "expo-linking";
 import { router } from "expo-router";
 import * as WebBrowser from "expo-web-browser";
-import { cloneElement, useCallback, useEffect, useRef, useState } from "react";
+import React, {
+  cloneElement,
+  useCallback,
+  useEffect,
+  useRef,
+  useState,
+} from "react";
 import { Controller, useForm } from "react-hook-form";
 import { Keyboard, Platform, StyleSheet, View } from "react-native";
 import { KeyboardAwareScrollView } from "react-native-keyboard-controller";
@@ -250,10 +255,12 @@ function Email({ control, handleSubmit }: { control: any; handleSubmit }) {
 
   return (
     <KeyboardAwareScrollView
+      bounces={false}
       onScrollBeginDrag={Keyboard.dismiss}
       keyboardShouldPersistTaps="handled"
       style={{
         flex: 1,
+        paddingHorizontal: 25,
         paddingTop: insets.top + 20,
       }}
       contentContainerStyle={{ flexGrow: 1, justifyContent: "center" }}
@@ -329,14 +336,6 @@ function Email({ control, handleSubmit }: { control: any; handleSubmit }) {
             marginTop: 5,
           }}
         >
-          <IconButton
-            size={60}
-            variant="outlined"
-            icon="arrow_back_ios_new"
-            onPress={() =>
-              router.canGoBack() ? router.back() : router.replace("/auth")
-            }
-          />
           <Button
             variant="filled"
             height={60}
@@ -527,6 +526,7 @@ export default function SignIn() {
         ) : (
           <KeyboardAwareScrollView
             contentContainerStyle={{ flexGrow: 1, justifyContent: "center" }}
+            bounces={false}
           >
             <View style={{ marginVertical: "auto", gap: 10 }}>
               <Text

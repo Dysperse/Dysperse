@@ -32,7 +32,6 @@ export default function Layout() {
                 gestureEnabled: true,
                 cardStyle: { backgroundColor: theme[1] },
                 cardOverlayEnabled: true,
-                gestureVelocityImpact: 0.7,
               }}
             />
             <Toast topOffset={insets.top + 15} config={toastConfig(theme)} />

@@ -1,6 +1,7 @@
 import { useSession } from "@/context/AuthProvider";
 import { useResponsiveBreakpoints } from "@/helpers/useResponsiveBreakpoints";
 import { Button, ButtonText } from "@/ui/Button";
+import { useDarkMode } from "@/ui/color";
 import { useColorTheme } from "@/ui/color/theme-provider";
 import ErrorAlert from "@/ui/Error";
 import IconButton from "@/ui/IconButton";
@@ -131,6 +132,7 @@ function QrModal({ children }: { children: any }) {
 }
 export default function SignIn() {
   const theme = useColorTheme();
+  const isDark = useDarkMode();
   const breakpoints = useResponsiveBreakpoints();
   const handleSignUpPress = () => {
     router.push("/auth/join");
@@ -168,28 +170,6 @@ export default function SignIn() {
       >
         Pick a method to sign in
       </Text>
-      {AppleAuthentication.isAvailableAsync() && (
-        <AppleAuthentication.AppleAuthenticationButton
-          buttonType={AppleAuthentication.AppleAuthenticationButtonType.SIGN_IN}
-          buttonStyle={AppleAuthentication.AppleAuthenticationButtonStyle.BLACK}
-          cornerRadius={5}
-          style={{ width: "100%", height: 100, marginBottom: 10 }}
-          onPress={async () => {
-            try {
-              const credential = await AppleAuthentication.signInAsync({
-                requestedScopes: [
-                  AppleAuthentication.AppleAuthenticationScope.FULL_NAME,
-                  AppleAuthentication.AppleAuthenticationScope.EMAIL,
-                ],
-              });
-              console.log(credential);
-            } catch (e) {
-              console.log(e);
-            }
-          }}
-        />
-      )}
-
       <View style={{ flexDirection: "row", gap: 10 }}>
         <GoogleAuth
           onNewAccount={(d) => {
@@ -337,6 +317,68 @@ export default function SignIn() {
           />
         </QrModal>
       </View>
+      {AppleAuthentication.isAvailableAsync() && (
+        <View
+          style={{
+            position: "relative",
+            height: 50,
+            width: "100%",
+          }}
+        >
+          <AppleAuthentication.AppleAuthenticationButton
+            buttonType={
+              AppleAuthentication.AppleAuthenticationButtonType.SIGN_IN
+            }
+            buttonStyle={
+              isDark
+                ? AppleAuthentication.AppleAuthenticationButtonStyle.BLACK
+                : AppleAuthentication.AppleAuthenticationButtonStyle.WHITE
+            }
+            cornerRadius={999}
+            style={{
+              width: "100%",
+              height: 50,
+              position: "absolute",
+              top: 0,
+              left: 0,
+              marginBottom: 10,
+            }}
+            onPress={async () => {
+              try {
+                const credential = await AppleAuthentication.signInAsync({
+                  requestedScopes: [
+                    AppleAuthentication.AppleAuthenticationScope.FULL_NAME,
+                    AppleAuthentication.AppleAuthenticationScope.EMAIL,
+                  ],
+                });
+                console.log(credential);
+              } catch (e) {
+                console.log(e);
+              }
+            }}
+          />
+          <Button
+            large
+            bold
+            icon="east"
+            text="Sign in with Apple"
+            iconPosition="end"
+            style={[{ justifyContent: "flex-start", paddingLeft: 25, gap: 15 }]}
+            iconSize={30}
+            height={50}
+            containerStyle={[
+              { flex: 1, pointerEvents: "none", alignItems: "center" },
+              !breakpoints.md && { borderRadius: 30 },
+            ]}
+            textStyle={{ color: theme[11] }}
+            backgroundColors={{
+              default: theme[3],
+              hovered: theme[3],
+              pressed: theme[3],
+            }}
+          />
+        </View>
+      )}
       <Button
         large
         bold

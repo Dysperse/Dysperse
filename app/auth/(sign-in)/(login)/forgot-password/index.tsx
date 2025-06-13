@@ -1,7 +1,6 @@
 import { useSession } from "@/context/AuthProvider";
 import { Button, ButtonText } from "@/ui/Button";
 import Icon from "@/ui/Icon";
-import IconButton from "@/ui/IconButton";
 import Spinner from "@/ui/Spinner";
 import Text from "@/ui/Text";
 import TextField from "@/ui/TextArea";
@@ -9,13 +8,7 @@ import { useColorTheme } from "@/ui/color/theme-provider";
 import Turnstile from "@/ui/turnstile";
 import * as Device from "expo-device";
 import { router } from "expo-router";
-import {
-  createContext,
-  useCallback,
-  useContext,
-  useEffect,
-  useState,
-} from "react";
+import { createContext, useContext, useEffect, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { Platform, StyleSheet, View } from "react-native";
 import { KeyboardAwareScrollView } from "react-native-keyboard-controller";
@@ -299,13 +292,6 @@ export default function Page() {
     <Password form={form} key="4" />,
   ];
 
-  const handleBack = useCallback(() => {
-    if (step === 0)
-      if (router.canGoBack()) router.back();
-      else router.push("/");
-    else setStep(step - 1);
-  }, [step]);
-
   const onSubmit = async (values) => {
     if (step < 3) {
       setStep(step + 1);
@@ -363,12 +349,6 @@ export default function Page() {
           padding: 20,
         }}
       >
-        <IconButton
-          size={45}
-          icon="arrow_back_ios_new"
-          style={{ marginLeft: -20 }}
-          onPress={handleBack}
-        />
         <View
           style={{
             justifyContent: "center",
