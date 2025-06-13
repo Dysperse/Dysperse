@@ -192,72 +192,79 @@ export const CollectionInfo = ({ collection }) => {
           />
         </ListItemButton>
       </View>
-      <Text variant="eyebrow" style={{ marginTop: 30 }}>
-        Template settings
-      </Text>
-      <View style={{ marginHorizontal: -13 }}>
-        <ListItemButton
-          onPress={() => updateCollection("public", !data.public)}
-        >
-          <ListItemText
-            primary="Share items from this collection"
-            secondary={
-              data.public
-                ? "Templates include labels and items."
-                : "Others can copy labels, but items aren't shared."
-            }
-          />
-          <Icon size={40} style={{ opacity: data.public ? 1 : 0.4 }}>
-            toggle_{data.public ? "on" : "off"}
-          </Icon>
-        </ListItemButton>
-        <ListItemButton>
-          <ListItemText primary="Category" />
-          <MenuPopover
-            scrollViewStyle={{
-              maxHeight: 285,
-            }}
-            trigger={
-              <Button variant="outlined">
-                {data.category ? (
-                  <View style={{ flexDirection: "row", gap: 5 }}>
-                    <Icon size={20}>
-                      {
-                        collectionCategories.find(
-                          (category) => category.text === data.category
-                        ).icon
-                      }
-                    </Icon>
-                    <ButtonText>{data.category}</ButtonText>
-                  </View>
-                ) : (
-                  <>
-                    <ButtonText>Select</ButtonText>
-                    <Icon>expand_more</Icon>
-                  </>
-                )}
-              </Button>
-            }
-            options={collectionCategories.map((category: any) => ({
-              ...category,
-              callback: () => updateCollection("category", category.text),
-            }))}
-          />
-        </ListItemButton>
-        <ListItemButton
-          onPress={() =>
-            updateCollection("keepProfileAnonymous", !data.keepProfileAnonymous)
-          }
-        >
-          <ListItemText primary="Keep my profile anonymous" />
-          <Icon
-            size={40}
-            style={{ opacity: data.keepProfileAnonymous ? 1 : 0.4 }}
-          >
-            toggle_{data.keepProfileAnonymous ? "on" : "off"}
-          </Icon>
-        </ListItemButton>
-      </View>
+      {data.public && (
+        <>
+          <Text variant="eyebrow" style={{ marginTop: 30 }}>
+            Template settings
+          </Text>
+          <View style={{ marginHorizontal: -13 }}>
+            <ListItemButton
+              onPress={() => updateCollection("public", !data.public)}
+            >
+              <ListItemText
+                primary="Share items from this collection"
+                secondary={
+                  data.public
+                    ? "Templates include labels and items."
+                    : "Others can copy labels, but items aren't shared."
+                }
+              />
+              <Icon size={40} style={{ opacity: data.public ? 1 : 0.4 }}>
+                toggle_{data.public ? "on" : "off"}
+              </Icon>
+            </ListItemButton>
+            <ListItemButton>
+              <ListItemText primary="Category" />
+              <MenuPopover
+                scrollViewStyle={{
+                  maxHeight: 285,
+                }}
+                trigger={
+                  <Button variant="outlined">
+                    {data.category ? (
+                      <View style={{ flexDirection: "row", gap: 5 }}>
+                        <Icon size={20}>
+                          {
+                            collectionCategories.find(
+                              (category) => category.text === data.category
+                            ).icon
+                          }
+                        </Icon>
+                        <ButtonText>{data.category}</ButtonText>
+                      </View>
+                    ) : (
+                      <>
+                        <ButtonText>Select</ButtonText>
+                        <Icon>expand_more</Icon>
+                      </>
+                    )}
+                  </Button>
+                }
+                options={collectionCategories.map((category: any) => ({
+                  ...category,
+                  callback: () => updateCollection("category", category.text),
+                }))}
+              />
+            </ListItemButton>
+            <ListItemButton
+              onPress={() =>
+                updateCollection(
+                  "keepProfileAnonymous",
+                  !data.keepProfileAnonymous
+                )
+              }
+            >
+              <ListItemText primary="Keep my profile anonymous" />
+              <Icon
+                size={40}
+                style={{ opacity: data.keepProfileAnonymous ? 1 : 0.4 }}
+              >
+                toggle_{data.keepProfileAnonymous ? "on" : "off"}
+              </Icon>
+            </ListItemButton>
+          </View>
+        </>
+      )}
     </View>
   ) : (
     <Spinner />
