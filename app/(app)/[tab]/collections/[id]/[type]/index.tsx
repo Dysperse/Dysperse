@@ -423,7 +423,7 @@ function PasswordPrompt({ mutate }) {
     >
       <MenuButton addInsets gradient />
       <KeyboardAvoidingView
-        behavior={"padding"}
+        behavior="padding"
         style={{
           flex: 1,
           padding: 40,

@@ -168,12 +168,12 @@ export default function SignIn() {
       >
         Pick a method to sign in
       </Text>
-      {Platform.OS === "ios" && (
+      {AppleAuthentication.isAvailableAsync() && (
         <AppleAuthentication.AppleAuthenticationButton
           buttonType={AppleAuthentication.AppleAuthenticationButtonType.SIGN_IN}
           buttonStyle={AppleAuthentication.AppleAuthenticationButtonStyle.BLACK}
           cornerRadius={5}
-          style={{ marginBottom: 10 }}
+          style={{ width: "100%", height: 100, marginBottom: 10 }}
           onPress={async () => {
             try {
               const credential = await AppleAuthentication.signInAsync({
@@ -182,14 +182,9 @@ export default function SignIn() {
                   AppleAuthentication.AppleAuthenticationScope.EMAIL,
                 ],
               });
-              // signed in
-              alert(JSON.stringify(credential));
+              console.log(credential);
             } catch (e) {
-              if (e.code === "ERR_REQUEST_CANCELED") {
-                // handle that the user canceled the sign-in flow
-              } else {
-                // handle other errors
-              }
+              console.log(e);
             }
           }}
         />

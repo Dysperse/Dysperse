@@ -167,7 +167,7 @@ function Root() {
         }}
       >
         <ErrorBoundary showDialog fallback={<ErrorBoundaryComponent />}>
-          <KeyboardProvider navigationBarTranslucent statusBarTranslucent>
+          <KeyboardProvider>
             <ModalStackProvider>
               <ColorThemeProvider theme={theme}>
                 <SidebarContext.Provider value={sidebarContextValue}>

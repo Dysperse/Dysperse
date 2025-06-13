@@ -127,6 +127,7 @@ export default ({ config }: ConfigContext): ExpoConfig =>
         display: "standalone",
       },
       plugins: [
+        "expo-apple-authentication",
         [
           "expo-alternate-app-icons",
           [
@@ -175,7 +176,6 @@ export default ({ config }: ConfigContext): ExpoConfig =>
             },
           ],
         ],
-        "expo-apple-authentication",
         "react-native-spotlight-search",
         "react-native-edge-to-edge",
         [
