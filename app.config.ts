@@ -79,8 +79,8 @@ export default ({ config }: ConfigContext): ExpoConfig =>
           usesNonExemptEncryption: false,
         },
         associatedDomains: [
-          "webcredentials:preview.dysperse.com",
-          "applinks:preview.dysperse.com",
+          "webcredentials:go.dysperse.com",
+          "applinks:go.dysperse.com",
         ],
         bundleIdentifier: IS_DEV
           ? "com.dysperse.development"
