@@ -10,7 +10,7 @@ import { useEffect, useState } from "react";
 import { Keyboard, View } from "react-native";
 import { KeyboardAwareScrollView } from "react-native-keyboard-controller";
 import Animated, { FadeIn } from "react-native-reanimated";
-import { useSignupContext } from "./_layout";
+import { useSignupContext } from "../_layout";
 
 function Color() {
   const theme = useColorTheme();

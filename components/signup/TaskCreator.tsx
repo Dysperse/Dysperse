@@ -1,4 +1,4 @@
-import { useSignupContext } from "@/app/auth/sign-up";
+import { useSignupContext } from "@/app/auth/(sign-in)/_layout";
 import { Button, ButtonText } from "@/ui/Button";
 import Icon from "@/ui/Icon";
 import Text from "@/ui/Text";

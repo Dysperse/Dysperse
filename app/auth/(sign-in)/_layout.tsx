@@ -6,16 +6,36 @@ import IconButton from "@/ui/IconButton";
 import Logo from "@/ui/logo";
 import Text from "@/ui/Text";
 import { TransitionPresets } from "@react-navigation/stack";
+import dayjs from "dayjs";
 import { Image, ImageBackground } from "expo-image";
 import { router } from "expo-router";
+import { createContext, useContext, useRef } from "react";
 import { Dimensions, Platform, View } from "react-native";
 import { SystemBars } from "react-native-edge-to-edge";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
+
+const SignupContext = createContext(null);
+export const useSignupContext = () => useContext(SignupContext);
 
 export default function Layout() {
   const breakpoints = useResponsiveBreakpoints();
   const theme = useColorTheme();
   const insets = useSafeAreaInsets();
+
+  const signupData = useRef({
+    name: "",
+    email: "",
+    password: "",
+    confirmPassword: "",
+    captchaToken: "",
+    timeZone: dayjs.tz.guess(),
+    theme: "mint",
+    allowMarketingEmails: true,
+    isGoogle: false,
+    methods: [],
+    tasks: ["", "", ""],
+    bio: "",
+  });
 
   function inIframe() {
     if (Platform.OS !== "web") return false;
@@ -33,10 +53,11 @@ export default function Layout() {
           flex: 1,
           justifyContent: "center",
           alignItems: "center",
+          padding: 20,
           backgroundColor: theme[1],
         }}
       >
-        <Text>
+        <Text style={{ color: theme[11], textAlign: "center" }}>
           You're loading dysperse on an insecure website. Please log in via
           go.dysperse.com
         </Text>
@@ -45,7 +66,7 @@ export default function Layout() {
   }
 
   return (
-    <>
+    <SignupContext.Provider value={signupData.current}>
       <SystemBars style="auto" />
       <View
         style={{
@@ -158,7 +179,7 @@ export default function Layout() {
           </JsStack>
         </View>
       </View>
-    </>
+    </SignupContext.Provider>
   );
 }
 

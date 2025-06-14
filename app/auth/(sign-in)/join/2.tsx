@@ -17,7 +17,7 @@ import { useCallback, useEffect, useState } from "react";
 import { Keyboard, Platform, View } from "react-native";
 import { KeyboardAwareScrollView } from "react-native-keyboard-controller";
 import Animated, { FadeIn } from "react-native-reanimated";
-import { useSignupContext } from "./_layout";
+import { useSignupContext } from "../_layout";
 
 export function Weather({ weatherCode, isNight, icon, temp }) {
   const weatherDescription =
@@ -37,6 +37,7 @@ export function Weather({ weatherCode, isNight, icon, temp }) {
           flexDirection: "row",
           alignItems: "center",
           gap: 5,
+          transform: [{ translateY: 18 }],
           verticalAlign: breakpoints.md ? "middle" : undefined,
         },
       ]}
@@ -204,6 +205,7 @@ function Content() {
                 flexDirection: "row",
                 alignItems: "center",
                 borderRadius: 10,
+                transform: [{ translateY: 18 }],
               },
             ]}
           >

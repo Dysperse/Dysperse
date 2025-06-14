@@ -15,7 +15,7 @@ import { useEffect, useRef, useState } from "react";
 import { Keyboard, Linking, View } from "react-native";
 import { KeyboardAwareScrollView } from "react-native-keyboard-controller";
 import Animated, { FadeIn } from "react-native-reanimated";
-import { useSignupContext } from "./_layout";
+import { useSignupContext } from "../_layout";
 
 export const validateEmail = (email) => {
   return String(email)

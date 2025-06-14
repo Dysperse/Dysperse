@@ -8,7 +8,7 @@ import dayjs from "dayjs";
 import { router } from "expo-router";
 import { useCallback, useEffect, useState } from "react";
 import { View } from "react-native";
-import { useSignupContext } from "./_layout";
+import { useSignupContext } from "../_layout";
 
 export default function Page() {
   const theme = useColorTheme();
@@ -43,7 +43,7 @@ export default function Page() {
           keepalive: true,
         }
       ).then((res) => res.json());
-      
+
       if (data.error) throw new Error(data.error);
       setSuccess(true);
       signIn(data.id);
@@ -100,3 +100,4 @@ export default function Page() {
     </View>
   );
 }
+
