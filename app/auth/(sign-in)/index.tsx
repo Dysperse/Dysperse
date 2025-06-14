@@ -131,11 +131,8 @@ function QrModal({ children }: { children: any }) {
   );
 }
 function AppleAuth() {
-  const theme = useColorTheme();
   const isDark = useDarkMode();
-  const breakpoints = useResponsiveBreakpoints();
   const { signIn } = useSession();
-  const [loading, setLoading] = useState(false);
 
   return (
     <>
@@ -168,7 +165,6 @@ function AppleAuth() {
                   AppleAuthentication.AppleAuthenticationScope.EMAIL,
                 ],
               });
-              setLoading(true);
               const data = await fetch(
                 `${process.env.EXPO_PUBLIC_API_URL}/auth/login/apple`,
                 {
@@ -193,8 +189,6 @@ function AppleAuth() {
             } catch (e) {
               Toast.show({ type: "error" });
               console.log(e);
-            } finally {
-              setLoading(false);
             }
           }}
         />
