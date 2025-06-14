@@ -140,90 +140,64 @@ function AppleAuth() {
   return (
     <>
       {AppleAuthentication.isAvailableAsync() && (
-        <View
+        <AppleAuthentication.AppleAuthenticationButton
+          buttonType={AppleAuthentication.AppleAuthenticationButtonType.SIGN_IN}
+          buttonStyle={
+            isDark
+              ? AppleAuthentication.AppleAuthenticationButtonStyle.BLACK
+              : AppleAuthentication.AppleAuthenticationButtonStyle.WHITE
+          }
+          cornerRadius={999}
           style={{
-            position: "relative",
-            height: 50,
             width: "100%",
+            height: 50,
           }}
-        >
-          <AppleAuthentication.AppleAuthenticationButton
-            buttonType={
-              AppleAuthentication.AppleAuthenticationButtonType.SIGN_IN
-            }
-            buttonStyle={
-              isDark
-                ? AppleAuthentication.AppleAuthenticationButtonStyle.BLACK
-                : AppleAuthentication.AppleAuthenticationButtonStyle.WHITE
-            }
-            cornerRadius={999}
-            style={{
-              width: "100%",
-              height: 50,
-              position: "absolute",
-              top: 0,
-              left: 0,
-              marginBottom: 10,
-            }}
-            onPress={async () => {
-              try {
-                const credential = await AppleAuthentication.signInAsync({
-                  requestedScopes: [
-                    AppleAuthentication.AppleAuthenticationScope.FULL_NAME,
-                    AppleAuthentication.AppleAuthenticationScope.EMAIL,
-                  ],
-                });
-                setLoading(true);
-                const data = await fetch(
-                  `${process.env.EXPO_PUBLIC_API_URL}/auth/login/apple`,
-                  {
-                    method: "POST",
-                    body: JSON.stringify(credential),
-                  }
-                ).then((r) => r.json());
-                if (data?.sessionId) signIn(data.sessionId);
-                else if (data.isNew) {
-                  Toast.show({
-                    type: "success",
-                    text1: "We couldn't find an account with that email",
-                  });
-                  router.push({
-                    pathname: "/auth/join",
-                    params: {
-                      email: credential.email,
-                      name: `${credential.fullName?.givenName} ${credential.fullName?.familyName}`,
-                    },
-                  });
+          onPress={async () => {
+            Toast.show({
+              type: "loading",
+              autoHide: false,
+              text1: "Signing in with Apple...",
+              props: {
+                renderTrailingIcon: () => <Spinner />,
+              },
+            });
+            try {
+              const credential = await AppleAuthentication.signInAsync({
+                requestedScopes: [
+                  AppleAuthentication.AppleAuthenticationScope.FULL_NAME,
+                  AppleAuthentication.AppleAuthenticationScope.EMAIL,
+                ],
+              });
+              setLoading(true);
+              const data = await fetch(
+                `${process.env.EXPO_PUBLIC_API_URL}/auth/login/apple`,
+                {
+                  method: "POST",
+                  body: JSON.stringify(credential),
                 }
-              } catch (e) {
-                console.log(e);
-              } finally {
-                setLoading(false);
+              ).then((r) => r.json());
+              if (data?.sessionId) signIn(data.sessionId);
+              else if (data.isNew) {
+                Toast.show({
+                  type: "success",
+                  text1: "We couldn't find an account with that email",
+                });
+                router.push({
+                  pathname: "/auth/join",
+                  params: {
+                    email: credential.email,
+                    name: `${credential.fullName?.givenName} ${credential.fullName?.familyName}`,
+                  },
+                });
               }
-            }}
-          />
-          <Button
-            large
-            bold
-            icon="east"
-            isLoading={loading}
-            text="Sign in with Apple"
-            iconPosition="end"
-            style={[{ justifyContent: "flex-start", paddingLeft: 25, gap: 15 }]}
-            iconSize={30}
-            height={50}
-            containerStyle={[
-              { flex: 1, pointerEvents: "none", alignItems: "center" },
-              !breakpoints.md && { borderRadius: 30 },
-            ]}
-            textStyle={{ color: theme[11] }}
-            backgroundColors={{
-              default: theme[3],
-              hovered: theme[3],
-              pressed: theme[3],
-            }}
-          />
-        </View>
+            } catch (e) {
+              Toast.show({ type: "error" });
+              console.log(e);
+            } finally {
+              setLoading(false);
+            }
+          }}
+        />
       )}
     </>
   );

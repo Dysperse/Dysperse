@@ -67,7 +67,7 @@ export const toastConfig = (theme) => ({
     </View>
   ),
 
-  info: (props) => (
+  success: (props) => (
     <View style={toastContainerStyles}>
       <BaseToast
         {...props}
@@ -75,21 +75,30 @@ export const toastConfig = (theme) => ({
         text1NumberOfLines={null}
         text2NumberOfLines={null}
         text1Props={text1Props(theme)}
-        renderLeadingIcon={() =>
-          props.props?.loading ? (
-            <View style={{ marginLeft: 15, marginRight: -10 }}>
-              <Spinner />
-            </View>
-          ) : (
-            <Icon
-              style={{ color: theme[8], marginLeft: 15, marginRight: -10 }}
-              filled
-              size={30}
-            >
-              info
-            </Icon>
-          )
-        }
+        renderLeadingIcon={() => (
+          <Icon
+            style={{ color: theme[8], marginLeft: 15, marginRight: -10 }}
+            filled
+            size={30}
+          >
+            check_circle
+          </Icon>
+        )}
+        text2Props={text2Props(theme)}
+        renderTrailingIcon={props.props?.renderTrailingIcon}
+      />
+    </View>
+  ),
+
+  loading: (props) => (
+    <View style={toastContainerStyles}>
+      <BaseToast
+        {...props}
+        style={[toastStyles(theme), Platform.OS !== "web" && { minWidth: 270 }]}
+        text1NumberOfLines={null}
+        text2NumberOfLines={null}
+        text1Props={text1Props(theme)}
+        renderLeadingIcon={() => <Spinner style={{ marginLeft: 10 }} />}
         text2Props={text2Props(theme)}
       />
     </View>
