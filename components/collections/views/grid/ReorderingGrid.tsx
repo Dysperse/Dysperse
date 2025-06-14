@@ -1,120 +1,130 @@
 import { useCollectionContext } from "@/components/collections/context";
 import { useSession } from "@/context/AuthProvider";
 import { sendApiRequest } from "@/helpers/api";
+import { useResponsiveBreakpoints } from "@/helpers/useResponsiveBreakpoints";
 import Emoji from "@/ui/Emoji";
 import Text from "@/ui/Text";
 import { useColorTheme } from "@/ui/color/theme-provider";
-import { View } from "react-native";
-import { DraggableGrid } from "react-native-draggable-grid";
+import { useCallback } from "react";
+import { Platform, StyleSheet, View } from "react-native";
+import type { SortableGridRenderItem } from "react-native-sortables";
+import Sortable from "react-native-sortables";
 
-export function ReorderingGrid() {
+const styles = StyleSheet.create({
+  card: {
+    backgroundColor: "#36877F",
+    height: 100,
+    borderRadius: 10,
+    alignItems: "center",
+    justifyContent: "center",
+  },
+});
+
+export function Grid() {
   const { session } = useSession();
+  const breakpoints = useResponsiveBreakpoints();
+  const { data, mutate } = useCollectionContext();
   const theme = useColorTheme();
 
-  const { data: collectionData, mutate } = useCollectionContext();
-
-  const labels = collectionData.gridOrder.map((id) =>
-    collectionData.labels.find((l) => l.id === id)
+  const labels = data.gridOrder.map((id) =>
+    data.labels.find((l) => l.id === id)
   );
 
-  if (collectionData.entities.length > 0) labels.push({ other: true });
-  if (labels.length % 2 !== 0) labels.push({ empty: true });
-  if (labels.length < 4)
-    labels.push(
-      ...new Array(4 - labels.length).fill({
-        empty: true,
-      })
-    );
-
-  const updateLabelOrder = async (newOrder) => {
-    const data = newOrder.map((l) => l.key).filter((e) => e);
-
-    
-
-    mutate(
-      (oldData) => ({
-        ...oldData,
-        gridOrder: data,
-        labels: newOrder.map((e) => e.label),
-      }),
-      {
-        revalidate: false,
-      }
-    );
-
-    await sendApiRequest(
-      session,
-      "PUT",
-      "space/collections",
-      {},
-      { body: JSON.stringify({ id: collectionData.id, gridOrder: data }) }
-    );
-  };
-
-  return (
-    <View style={{ padding: 10 }}>
-      <DraggableGrid
+  const renderItem = useCallback<SortableGridRenderItem<string>>(
+    ({ item }) => (
+      <View
         style={{
+          flex: 1,
+          borderRadius: 20,
           alignItems: "center",
           justifyContent: "center",
         }}
-        numColumns={labels.length / 2}
-        renderItem={(data: any) => (
-          <View
-            style={{
-              flex: 1,
-              width: 200,
-              minHeight: 200,
-              borderRadius: 20,
-              padding: 10,
-              alignItems: "center",
-              justifyContent: "center",
-            }}
-          >
-            <View
+      >
+        <View
+          style={{
+            flex: 1,
+            width: "100%",
+            backgroundColor: theme[4],
+            borderRadius: 20,
+            padding: 10,
+            paddingVertical: 20,
+            alignItems: "center",
+            justifyContent: "center",
+          }}
+        >
+          <>
+            <Emoji emoji={item.emoji} size={50} />
+            <Text
+              weight={900}
               style={{
-                flex: 1,
-                width: "100%",
-                backgroundColor: theme[4],
-                borderRadius: 20,
-                padding: 20,
-                alignItems: "center",
-                justifyContent: "center",
+                fontSize: 17,
+                textAlign: "center",
+                marginTop: 10,
+                paddingHorizontal: 10,
+                marginBottom: 5,
               }}
+              numberOfLines={1}
             >
-              {!data.key ? null : (
-                <>
-                  <Emoji emoji={data.label.emoji} size={50} />
-                  <Text
-                    weight={900}
-                    style={{
-                      fontSize: 20,
-                      textAlign: "center",
-                      marginTop: 10,
-                      paddingHorizontal: 10,
-                      marginBottom: 5,
-                    }}
-                    numberOfLines={1}
-                  >
-                    {data.label.name}
-                  </Text>
-                  <Text>
-                    {Object.keys(data.label.entities)?.length} item
-                    {Object.keys(data.label.entities)?.length !== 1 && "s"}
-                  </Text>
-                </>
-              )}
-            </View>
-          </View>
-        )}
-        data={labels
-          .map((label) => ({
-            label,
-            key: label?.id,
-          }))
-          .filter((e) => e.key)}
-        onDragRelease={updateLabelOrder}
-      />
+              {item.name}
+            </Text>
+            <Text>
+              {Object.keys(item.entities)?.length} item
+              {Object.keys(item.entities)?.length !== 1 && "s"}
+            </Text>
+          </>
+        </View>
+      </View>
+    ),
+    []
+  );
+
+  return (
+    <Sortable.Grid
+      dragActivationDelay={
+        Platform.OS === "web" && breakpoints.md ? 0 : undefined
+      }
+      columns={Math.ceil(labels.length / 2)}
+      data={labels}
+      renderItem={renderItem}
+      rowGap={10}
+      columnGap={10}
+      onActiveItemDropped={(res) => {
+        const gridOrder = data.gridOrder;
+        const { fromIndex, toIndex } = res;
+        const item = gridOrder[fromIndex];
+        const newGridOrder = [...gridOrder];
+        newGridOrder.splice(fromIndex, 1);
+        newGridOrder.splice(toIndex, 0, item);
+        mutate(
+          (oldData) => ({
+            ...oldData,
+            gridOrder: newGridOrder,
+          }),
+          {
+            revalidate: false,
+          }
+        );
+        sendApiRequest(
+          session,
+          "PUT",
+          "space/collections",
+          {},
+          {
+            body: JSON.stringify({
+              id: data.id,
+              gridOrder: newGridOrder,
+            }),
+          }
+        );
+      }}
+    />
+  );
+}
+
+export function ReorderingGrid() {
+  return (
+    <View style={{ paddingHorizontal: 20 }}>
+      <Grid />
     </View>
   );
 }
