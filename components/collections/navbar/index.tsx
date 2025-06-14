@@ -258,7 +258,7 @@ const CollectionNavbar = memo(function CollectionNavbar({
   return (
     <OnboardingContainer
       id="COLLECTION"
-      onlyIf={() => type !== "matrix"}
+      onlyIf={() => type !== "matrix" && pathname.includes("collections")}
       delay={500}
       steps={[
         {
