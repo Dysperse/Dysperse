@@ -173,8 +173,11 @@ const SyncButton = memo(function SyncButton({ syncRef }: any) {
   const { session } = useSession();
   const [isLoading, setIsLoading] = useState(false);
   const checkOpacity = useSharedValue(0);
+  const hasRegistered = useRef(false);
 
   useEffect(() => {
+    if (hasRegistered.current) return;
+    hasRegistered.current = true;
     // Register the background task
     registerBackgroundTaskAsync()
       .then(() => {

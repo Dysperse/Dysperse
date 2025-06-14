@@ -55,11 +55,15 @@ function IOSSpotlightSearch() {
   const { data: sharedCollections } = useSWR(["user/collectionAccess"]);
   const { sidebarRef } = useSidebarContext();
   const { sessionToken } = useUser();
+  const hasSynced = useRef(false);
 
   const sections = paletteItems(collections, sharedCollections, labels);
 
   useEffect(() => {
     const indexSpotlight = async () => {
+      if (hasSynced.current) return;
+      hasSynced.current = true;
+
       if (!collections || !sharedCollections || !labels) return;
 
       try {
