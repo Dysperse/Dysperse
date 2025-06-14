@@ -6,7 +6,6 @@ import { useStorageContext } from "@/context/storageContext";
 import { sendApiRequest } from "@/helpers/api";
 import { useHotkeys } from "@/helpers/useHotKeys";
 import { useResponsiveBreakpoints } from "@/helpers/useResponsiveBreakpoints";
-import { Button } from "@/ui/Button";
 import ConfirmationModal from "@/ui/ConfirmationModal";
 import Emoji from "@/ui/Emoji";
 import ErrorAlert from "@/ui/Error";
@@ -33,7 +32,7 @@ const containerStyles = StyleSheet.create({
   left: {
     flex: 1,
     borderRightWidth: 1,
-    padding: 20,
+    padding: 30,
     paddingBottom: 0,
   },
   rightEmpty: {
@@ -221,7 +220,7 @@ const Collections = () => {
                 </Text>
                 {!isReached && (
                   <CreateCollectionModal>
-                    <Button variant="filled" icon="add" text="New" />
+                    <IconButton variant="outlined" size={45} icon="add" />
                   </CreateCollectionModal>
                 )}
               </View>
@@ -231,6 +230,12 @@ const Collections = () => {
                 variant="filled+outlined"
                 weight={800}
                 placeholder="Search…"
+                style={{
+                  borderRadius: 99,
+                  paddingVertical: 15,
+                  paddingHorizontal: 20,
+                  fontSize: 20,
+                }}
                 autoFocus={breakpoints.md && Platform.OS !== "ios"}
               />
 

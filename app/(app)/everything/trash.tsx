@@ -47,6 +47,8 @@ const containerStyles = StyleSheet.create({
 });
 
 const DeleteAllButton = ({ handleDelete }) => {
+  const breakpoints = useResponsiveBreakpoints();
+
   return (
     <ConfirmationModal
       height={400}
@@ -61,6 +63,7 @@ const DeleteAllButton = ({ handleDelete }) => {
         icon="delete"
         iconPosition="end"
         text="Clear"
+        containerStyle={{ marginTop: !breakpoints.md ? -10 : 0 }}
       />
     </ConfirmationModal>
   );
@@ -93,8 +96,6 @@ export default function Trash() {
       });
     }
   }, [session, data, mutate]);
-
-  
 
   const isEmpty = (filteredData || []).filter((t) => t.trash).length === 0;
   const insets = useSafeAreaInsets();
@@ -148,7 +149,13 @@ export default function Trash() {
               weight={800}
               placeholder="Search…"
               autoFocus={breakpoints.md && Platform.OS !== "ios"}
-              style={{ marginBottom: 10, marginTop: 3 }}
+              style={{
+                borderRadius: 99,
+                paddingVertical: 15,
+                paddingHorizontal: 20,
+                fontSize: 20,
+                marginBottom: 10,
+              }}
             />
             <Alert
               emoji="26A0"
@@ -205,7 +212,6 @@ export default function Trash() {
                     isReadOnly={false}
                     showLabel
                     onTaskUpdate={(newTask) => {
-                      
                       mutate((oldData) =>
                         oldData.map((t) => (t.id === newTask.id ? newTask : t))
                       );

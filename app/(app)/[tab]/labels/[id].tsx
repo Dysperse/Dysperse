@@ -27,7 +27,7 @@ export default function Page() {
   };
 
   return (
-    <ContentWrapper>
+    <ContentWrapper noPaddingTop>
       {data ? (
         <LabelDetails
           mutateList={
@@ -52,3 +52,4 @@ export default function Page() {
     </ContentWrapper>
   );
 }
+

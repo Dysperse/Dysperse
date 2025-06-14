@@ -386,7 +386,7 @@ function TaskList({ tasks }) {
             height: 50,
             marginBottom: -50,
             zIndex: 999,
-            marginTop: Platform.OS === "web" ? 0 : 50,
+            marginTop: Platform.OS === "web" ? 0 : 55,
           }}
         />
         <FlashList

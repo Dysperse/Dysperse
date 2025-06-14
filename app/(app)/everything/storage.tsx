@@ -170,18 +170,24 @@ export default function Page() {
   return (
     <ContentWrapper
       noPaddingTop
-      style={!breakpoints.md && { paddingTop: insets.top + 70 }}
+      style={
+        !breakpoints.md && {
+          paddingTop: insets.top + 70,
+        }
+      }
     >
       <MenuButton gradient addInsets />
-      <ScrollView contentContainerStyle={{ padding: breakpoints.md ? 50 : 20 }}>
+      <ScrollView
+        contentContainerStyle={{
+          padding: breakpoints.md ? 50 : 30,
+          paddingBottom: insets.bottom + 30,
+        }}
+      >
         <Text style={{ fontFamily: "serifText700", fontSize: 27 }}>Usage</Text>
-        <Text
-          style={{ marginTop: 10, opacity: 0.6, marginBottom: 20 }}
-          weight={300}
-        >
-          Dysperse is free, but we have limits to ensure smooth service and
-          prevent abuse.{"\n"}Once you reach your limit, you must free up space
-          to create more.
+        <Text style={{ marginTop: 10, opacity: 0.6, marginBottom: 20 }}>
+          Dysperse is free to use, with fair usage limits in place to keep
+          things running smoothly for everyone. If you reach your storage limit,
+          clear up some space to continue using our app.
         </Text>
         <View
           style={{

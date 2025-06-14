@@ -1,6 +1,8 @@
 import { Entity } from "@/components/collections/entity";
 import { CreateLabelModal } from "@/components/labels/createModal";
 import ContentWrapper from "@/components/layout/content";
+import { useSidebarContext } from "@/components/layout/sidebar/context";
+import MenuIcon from "@/components/menuIcon";
 import { useSession } from "@/context/AuthProvider";
 import { sendApiRequest } from "@/helpers/api";
 import { useHotkeys } from "@/helpers/useHotKeys";
@@ -21,7 +23,7 @@ import { ColorThemeProvider, useColorTheme } from "@/ui/color/theme-provider";
 import capitalizeFirstLetter from "@/utils/capitalizeFirstLetter";
 import { FlashList } from "@shopify/flash-list";
 import { LinearGradient } from "expo-linear-gradient";
-import { router } from "expo-router";
+import { router, useLocalSearchParams } from "expo-router";
 import fuzzysort from "fuzzysort";
 import { useState } from "react";
 import { Keyboard, Platform, StyleSheet, View } from "react-native";
@@ -37,7 +39,7 @@ const containerStyles = StyleSheet.create({
   left: {
     flex: 1,
     borderRightWidth: 1,
-    padding: 20,
+    padding: 30,
     paddingBottom: 0,
   },
   rightEmpty: {
@@ -78,8 +80,10 @@ export const LabelDetails = ({
   const breakpoints = useResponsiveBreakpoints();
   const { session } = useSession();
   const userTheme = useColorTheme();
+  const { sidebarRef } = useSidebarContext();
   const labelTheme = useColor(label?.color || userTheme);
-
+  const { tab } = useLocalSearchParams();
+  const isTab = !!tab;
   const { data, mutate, error } = useSWR([
     "space/labels/label",
     { id: label?.id },
@@ -99,14 +103,22 @@ export const LabelDetails = ({
     }
   };
 
+  const insets = useSafeAreaInsets();
+
   return (
     label && (
       <ScrollView
-        bounces={false}
         style={{ flex: 2 }}
         showsVerticalScrollIndicator={Boolean(data?.entities)}
         contentContainerStyle={{ backgroundColor: labelTheme[1] }}
       >
+        <View
+          style={{
+            height: 1000,
+            marginTop: -1000,
+            backgroundColor: labelTheme[3],
+          }}
+        />
         <ColorThemeProvider theme={labelTheme}>
           <View
             style={{
@@ -114,17 +126,22 @@ export const LabelDetails = ({
               flexDirection: "row",
               backgroundColor: labelTheme[3],
               padding: breakpoints.md ? 15 : 20,
+              paddingTop: (isTab ? insets.top : 0) + 20,
               gap: 10,
               justifyContent: "flex-end",
             }}
           >
             {!breakpoints.md && (
               <IconButton
-                size={50}
-                icon="arrow_back_ios_new"
-                variant="outlined"
+                size={isTab ? 40 : 50}
+                icon={isTab ? <MenuIcon /> : "arrow_back_ios_new"}
+                variant={isTab ? "filled" : "outlined"}
                 style={{ marginRight: "auto" }}
-                onPress={() => setSelectedLabel(null)}
+                onPress={
+                  isTab
+                    ? () => sidebarRef.current.openDrawer()
+                    : () => setSelectedLabel(null)
+                }
               />
             )}
             {data && (
@@ -142,7 +159,11 @@ export const LabelDetails = ({
                   )
                 }
                 trigger={
-                  <IconButton size={50} variant="outlined" icon="edit" />
+                  <IconButton
+                    size={isTab ? 40 : 50}
+                    variant={isTab ? undefined : "outlined"}
+                    icon="edit"
+                  />
                 }
               />
             )}
@@ -152,7 +173,11 @@ export const LabelDetails = ({
               onSuccess={handleDelete}
               height={350}
             >
-              <IconButton variant="outlined" size={50} icon="delete" />
+              <IconButton
+                variant={isTab ? undefined : "outlined"}
+                size={isTab ? 40 : 50}
+                icon="delete"
+              />
             </ConfirmationModal>
           </View>
           <LinearGradient
@@ -383,7 +408,7 @@ const Labels = () => {
                   marginBottom: 10,
                 }}
               >
-                <Text style={{ fontFamily: "serifText700", fontSize: 27 }}>
+                <Text style={{ fontFamily: "serifText700", fontSize: 30 }}>
                   Labels
                 </Text>
                 <CreateLabelModal
@@ -404,7 +429,7 @@ const Labels = () => {
                     );
                   }}
                 >
-                  <Button variant="filled" icon="add" text="New" />
+                  <IconButton variant="outlined" size={45} icon="add" />
                 </CreateLabelModal>
               </View>
               <TextField
@@ -413,6 +438,12 @@ const Labels = () => {
                 variant="filled+outlined"
                 weight={800}
                 placeholder="Search…"
+                style={{
+                  borderRadius: 99,
+                  paddingVertical: 15,
+                  paddingHorizontal: 20,
+                  fontSize: 20,
+                }}
                 autoFocus={breakpoints.md && Platform.OS !== "ios"}
               />
               {error && <ErrorAlert />}
