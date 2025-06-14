@@ -148,22 +148,22 @@ function Root() {
   if (Platform.OS === "android") StatusBar.setBackgroundColor("transparent");
 
   return (
-    <SessionProvider>
-      <ThemeProvider
-        value={{
-          colors: {
-            background: theme[2],
-            card: theme[2],
-            primary: theme[2],
-            border: theme[6],
-            text: theme[11],
-            notification: theme[9],
-          },
-          dark: true,
-        }}
-      >
-        <ErrorBoundary showDialog fallback={<ErrorBoundaryComponent />}>
-          <KeyboardProvider>
+    <KeyboardProvider>
+      <SessionProvider>
+        <ThemeProvider
+          value={{
+            colors: {
+              background: theme[2],
+              card: theme[2],
+              primary: theme[2],
+              border: theme[6],
+              text: theme[11],
+              notification: theme[9],
+            },
+            dark: true,
+          }}
+        >
+          <ErrorBoundary showDialog fallback={<ErrorBoundaryComponent />}>
             <ModalStackProvider>
               <ColorThemeProvider theme={theme}>
                 <SidebarContext.Provider value={sidebarContextValue}>
@@ -182,10 +182,10 @@ function Root() {
                 </SidebarContext.Provider>
               </ColorThemeProvider>
             </ModalStackProvider>
-          </KeyboardProvider>
-        </ErrorBoundary>
-      </ThemeProvider>
-    </SessionProvider>
+          </ErrorBoundary>
+        </ThemeProvider>
+      </SessionProvider>
+    </KeyboardProvider>
   );
 }
 
