@@ -145,7 +145,7 @@ function Root() {
   };
 
   if (Platform.OS !== "web" && !fontsLoaded && !fontsError) return null;
-  StatusBar.setBackgroundColor("transparent");
+  if (Platform.OS === "android") StatusBar.setBackgroundColor("transparent");
 
   return (
     <SessionProvider>
