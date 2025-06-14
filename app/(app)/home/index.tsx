@@ -20,7 +20,6 @@ import Spinner from "@/ui/Spinner";
 import { addHslAlpha } from "@/ui/color";
 import { useColorTheme } from "@/ui/color/theme-provider";
 import Logo from "@/ui/logo";
-import dayjs from "dayjs";
 import { ImageBackground as ExpoImageBackground } from "expo-image";
 import { LinearGradient } from "expo-linear-gradient";
 import { router } from "expo-router";
@@ -60,14 +59,6 @@ const WordOfTheDay = lazy(
 const Randomizer = lazy(
   () => import("@/components/focus-panel/widgets/randomizer")
 );
-
-export const getProfileLastActiveRelativeTime = (time) => {
-  const t = dayjs(time).fromNow(true);
-  return t.includes("few") || dayjs().diff(time, "minute") < 3
-    ? "NOW"
-    : t.split(" ")[0].replace("an", "1").replace("a", "1") +
-        t.split(" ")?.[1]?.[0].toUpperCase();
-};
 
 export const HOME_PATTERNS = [
   "dots",

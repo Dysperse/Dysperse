@@ -7,6 +7,7 @@ import Spinner from "@/ui/Spinner";
 import Text from "@/ui/Text";
 import { useColor } from "@/ui/color";
 import { useColorTheme } from "@/ui/color/theme-provider";
+import { getProfileLastActiveRelativeTime } from "@/utils/getProfileLastActiveRelativeTime";
 import { router } from "expo-router";
 import { useCallback } from "react";
 import {
@@ -16,7 +17,6 @@ import {
   useWindowDimensions,
 } from "react-native";
 import useSWR from "swr";
-import { getProfileLastActiveRelativeTime } from "../../app/(app)/home";
 import { ProfileModal } from "../ProfileModal";
 
 const styles = StyleSheet.create({

@@ -1,10 +1,13 @@
+/* eslint-disable react-hooks/exhaustive-deps */
+/* eslint-disable @typescript-eslint/no-require-imports */
+
 import { ErrorBoundaryComponent } from "@/components/layout/ErrorBoundary";
 import { SWRWrapper } from "@/components/layout/SWRWrapper";
 import { JsStack } from "@/components/layout/_stack";
 import { SidebarContext } from "@/components/layout/sidebar/context";
 import { ModalStackProvider } from "@/context/modal-stack";
 import { useResponsiveBreakpoints } from "@/helpers/useResponsiveBreakpoints";
-import { useColor } from "@/ui/color";
+import { useColor, useDarkMode } from "@/ui/color";
 import { ColorThemeProvider } from "@/ui/color/theme-provider";
 import {
   BricolageGrotesque_300Light,
@@ -22,7 +25,7 @@ import {
   Jost_900Black,
 } from "@expo-google-fonts/jost";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { ThemeProvider } from "@react-navigation/native";
+import { DefaultTheme, ThemeProvider } from "@react-navigation/native";
 import * as Sentry from "@sentry/react-native";
 import { ErrorBoundary } from "@sentry/react-native";
 import { useFonts } from "expo-font";
@@ -89,6 +92,7 @@ const useWebDevtoolsWarning = () => {
 };
 
 function Root() {
+  const isDark = useDarkMode();
   const theme = useColor("mint");
   const { width } = useWindowDimensions();
   const breakpoints = useResponsiveBreakpoints();
@@ -131,6 +135,7 @@ function Root() {
   const ORIGINAL_SIDEBAR_WIDTH = breakpoints.md
     ? 220
     : Math.min(280, width - 40);
+
   const SIDEBAR_WIDTH = useSharedValue(ORIGINAL_SIDEBAR_WIDTH);
   const sidebarState = useRef(false);
 
@@ -152,6 +157,7 @@ function Root() {
       <SessionProvider>
         <ThemeProvider
           value={{
+            ...DefaultTheme,
             colors: {
               background: theme[2],
               card: theme[2],
@@ -168,8 +174,9 @@ function Root() {
               <ColorThemeProvider theme={theme}>
                 <SidebarContext.Provider value={sidebarContextValue}>
                   <SWRWrapper>
-                    <SystemBars style="dark" />
+                    <SystemBars style={isDark ? "dark" : "light"} />
                     <JsStack
+                      id={undefined}
                       screenOptions={{
                         header: () => null,
                         cardShadowEnabled: false,

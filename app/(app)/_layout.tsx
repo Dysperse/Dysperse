@@ -234,8 +234,6 @@ export default function AppLayout() {
               Platform.OS === "web" && ({ WebkitAppRegion: "drag" } as any),
               breakpoints.md
                 ? {
-                    flex: 1,
-                    height,
                     paddingTop: insets.top,
                     paddingBottom: insets.bottom,
                   }
@@ -309,6 +307,7 @@ export default function AppLayout() {
                               >
                                 <ThemeProvider
                                   value={{
+                                    ...DefaultTheme,
                                     colors: {
                                       background: theme[2],
                                       card: theme[2],
@@ -317,7 +316,6 @@ export default function AppLayout() {
                                       text: theme[11],
                                       notification: theme[9],
                                     },
-                                    dark: true,
                                   }}
                                 >
                                   <AppContainer
@@ -355,7 +353,6 @@ export default function AppLayout() {
                                             } as any)),
                                         },
                                         animation: "none",
-                                        gestureVelocityImpact: 0.5,
                                       }}
                                     >
                                       <JsStack.Screen name="index" />
