@@ -546,40 +546,35 @@ export const Header = memo(function Header() {
           gap: 5,
         }}
       >
-        <AttachStep index={0}>
-          <View style={{ flex: 1 }}>
-            <HomeButton isHome={isHome} />
-          </View>
+        <AttachStep index={0} style={{ flex: 1 }}>
+          <HomeButton isHome={isHome} />
         </AttachStep>
-        <AttachStep index={1}>
-          <View style={{ flex: 1, marginRight: -10 }}>
-            <IconButton
-              style={{ borderRadius: 15, width: "100%" }}
-              variant="filled"
-              size={45}
-              onPress={() => {
-                if (Platform.OS !== "web")
-                  impactAsync(ImpactFeedbackStyle.Soft);
-                router.replace("/everything");
-              }}
-            >
-              <Icon>home_storage</Icon>
-              {Array.isArray(hasUnread) && hasUnread?.length > 0 && (
-                <View
-                  style={{
-                    width: 10,
-                    height: 10,
-                    borderRadius: 99,
-                    backgroundColor: theme[9],
+        <AttachStep index={1} style={{ flex: 1, marginRight: -10 }}>
+          <IconButton
+            style={{ borderRadius: 15, width: "100%" }}
+            variant="filled"
+            size={45}
+            onPress={() => {
+              if (Platform.OS !== "web") impactAsync(ImpactFeedbackStyle.Soft);
+              router.replace("/everything");
+            }}
+          >
+            <Icon>home_storage</Icon>
+            {Array.isArray(hasUnread) && hasUnread?.length > 0 && (
+              <View
+                style={{
+                  width: 10,
+                  height: 10,
+                  borderRadius: 99,
+                  backgroundColor: theme[9],
 
-                    position: "absolute",
-                    top: 5,
-                    right: 5,
-                  }}
-                />
-              )}
-            </IconButton>
-          </View>
+                  position: "absolute",
+                  top: 5,
+                  right: 5,
+                }}
+              />
+            )}
+          </IconButton>
         </AttachStep>
       </View>
     </View>

@@ -93,6 +93,7 @@
     "html-minifier": "^4.0.0",
     "leaflet": "^1.9.4",
     "lexorank": "^1.0.5",
+    "manuthecoder-react-native-spotlight-tour": "^1.0.0",
     "mime-types": "^3.0.1",
     "npx": "^10.2.2",
     "patch-package": "^8.0.0",

@@ -125,7 +125,7 @@ export default function AppLayout() {
   const breakpoints = useResponsiveBreakpoints();
   const pathname = usePathname();
 
-  const progressValue = useRef(null);
+  const progressValue = useRef(0);
 
   const insets = useSafeAreaInsets();
   const focusPanelRef = useRef(null);

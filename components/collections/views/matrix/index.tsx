@@ -448,97 +448,81 @@ export default function Matrix() {
                 <View style={[styles.row, { gap: breakpoints.md ? 20 : 10 }]}>
                   <Label size={100} y="Important" />
                   {breakpoints.md ? (
-                    <AttachStep index={0}>
-                      <View style={{ flex: 1, height: "100%" }}>
-                        <Cell
-                          cellIndex={0}
-                          onEntityCreate={mutations.categoryBased.add(mutate)}
-                          onTaskUpdate={mutations.categoryBased.update(mutate)}
-                          tasks={grid.pinnedImportant}
-                          defaultOptions={{
-                            pinned: true,
-                            due: dayjs().startOf("day"),
-                          }}
-                        />
-                      </View>
+                    <AttachStep index={0} style={{ flex: 1, height: "100%" }}>
+                      <Cell
+                        cellIndex={0}
+                        onEntityCreate={mutations.categoryBased.add(mutate)}
+                        onTaskUpdate={mutations.categoryBased.update(mutate)}
+                        tasks={grid.pinnedImportant}
+                        defaultOptions={{
+                          pinned: true,
+                          due: dayjs().startOf("day"),
+                        }}
+                      />
                     </AttachStep>
                   ) : (
-                    <AttachStep index={0}>
-                      <View style={{ flex: 1 }}>
-                        <Preview
-                          onPress={() => setCurrentColumn("pinnedImportant")}
-                          tasks={grid.pinnedImportant}
-                        />
-                      </View>
+                    <AttachStep index={0} style={{ flex: 1 }}>
+                      <Preview
+                        onPress={() => setCurrentColumn("pinnedImportant")}
+                        tasks={grid.pinnedImportant}
+                      />
                     </AttachStep>
                   )}
                   {breakpoints.md ? (
-                    <AttachStep index={1}>
-                      <View style={{ flex: 1, height: "100%" }}>
-                        <Cell
-                          cellIndex={1}
-                          onEntityCreate={mutations.categoryBased.add(mutate)}
-                          onTaskUpdate={mutations.categoryBased.update(mutate)}
-                          tasks={grid.important}
-                          defaultOptions={{ due: dayjs().startOf("day") }}
-                        />
-                      </View>
+                    <AttachStep index={1} style={{ flex: 1, height: "100%" }}>
+                      <Cell
+                        cellIndex={1}
+                        onEntityCreate={mutations.categoryBased.add(mutate)}
+                        onTaskUpdate={mutations.categoryBased.update(mutate)}
+                        tasks={grid.important}
+                        defaultOptions={{ due: dayjs().startOf("day") }}
+                      />
                     </AttachStep>
                   ) : (
-                    <AttachStep index={1}>
-                      <View style={{ flex: 1 }}>
-                        <Preview
-                          onPress={() => setCurrentColumn("important")}
-                          tasks={grid.important}
-                        />
-                      </View>
+                    <AttachStep index={1} style={{ flex: 1 }}>
+                      <Preview
+                        onPress={() => setCurrentColumn("important")}
+                        tasks={grid.important}
+                      />
                     </AttachStep>
                   )}
                 </View>
                 <View style={[styles.row, { gap: breakpoints.md ? 20 : 10 }]}>
                   <Label size={150} y="Less important" />
                   {breakpoints.md ? (
-                    <AttachStep index={2}>
-                      <View style={{ flex: 1, height: "100%" }}>
-                        <Cell
-                          cellIndex={2}
-                          onEntityCreate={mutations.categoryBased.add(mutate)}
-                          onTaskUpdate={mutations.categoryBased.update(mutate)}
-                          tasks={grid.pinned}
-                          defaultOptions={{ pinned: true }}
-                        />
-                      </View>
+                    <AttachStep index={2} style={{ flex: 1, height: "100%" }}>
+                      <Cell
+                        cellIndex={2}
+                        onEntityCreate={mutations.categoryBased.add(mutate)}
+                        onTaskUpdate={mutations.categoryBased.update(mutate)}
+                        tasks={grid.pinned}
+                        defaultOptions={{ pinned: true }}
+                      />
                     </AttachStep>
                   ) : (
-                    <AttachStep index={2}>
-                      <View style={{ flex: 1 }}>
-                        <Preview
-                          onPress={() => setCurrentColumn("pinned")}
-                          tasks={grid.pinned}
-                        />
-                      </View>
+                    <AttachStep index={2} style={{ flex: 1 }}>
+                      <Preview
+                        onPress={() => setCurrentColumn("pinned")}
+                        tasks={grid.pinned}
+                      />
                     </AttachStep>
                   )}
                   {breakpoints.md ? (
-                    <AttachStep index={3}>
-                      <View style={{ flex: 1, height: "100%" }}>
-                        <Cell
-                          cellIndex={3}
-                          onEntityCreate={mutations.categoryBased.add(mutate)}
-                          onTaskUpdate={mutations.categoryBased.update(mutate)}
-                          tasks={grid.other}
-                          defaultOptions={{}}
-                        />
-                      </View>
+                    <AttachStep index={3} style={{ flex: 1, height: "100%" }}>
+                      <Cell
+                        cellIndex={3}
+                        onEntityCreate={mutations.categoryBased.add(mutate)}
+                        onTaskUpdate={mutations.categoryBased.update(mutate)}
+                        tasks={grid.other}
+                        defaultOptions={{}}
+                      />
                     </AttachStep>
                   ) : (
-                    <AttachStep index={3}>
-                      <View style={{ flex: 1 }}>
-                        <Preview
-                          onPress={() => setCurrentColumn("other")}
-                          tasks={grid.other}
-                        />
-                      </View>
+                    <AttachStep index={3} style={{ flex: 1 }}>
+                      <Preview
+                        onPress={() => setCurrentColumn("other")}
+                        tasks={grid.other}
+                      />
                     </AttachStep>
                   )}
                 </View>

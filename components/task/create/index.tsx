@@ -1341,7 +1341,7 @@ const BottomSheetContent = ({
 
   const { session } = useUser();
   useEffect(() => {
-    // if (!session.user.hintsViewed.includes("CREATE_TASK")) return;
+    if (!session.user.hintsViewed.includes("CREATE_TASK")) return;
     nameRef.current?.focus({ preventScroll: true });
   }, [session, nameRef, breakpoints]);
 
@@ -1454,7 +1454,7 @@ const BottomSheetContent = ({
           />
           <View style={Platform.OS !== "web" && { minHeight: 100 }}>
             <TaskNameInput
-              // disabled={!session.user.hintsViewed.includes("CREATE_TASK")}
+              disabled={!session.user.hintsViewed.includes("CREATE_TASK")}
               descriptionRef={descriptionRef}
               hintRef={hintRef}
               submitRef={submitRef}
@@ -1480,15 +1480,17 @@ const BottomSheetContent = ({
             alignItems: "center",
           }}
         >
-          <AttachStep index={3}>
-            <View style={breakpoints.md ? undefined : { flex: 1 }}>
-              <SpeechRecognition setValue={setValue} />
-            </View>
+          <AttachStep
+            index={3}
+            style={breakpoints.md ? undefined : { flex: 1 }}
+          >
+            <SpeechRecognition setValue={setValue} />
           </AttachStep>
-          <AttachStep index={4}>
-            <View style={breakpoints.md ? { marginLeft: "auto" } : { flex: 1 }}>
-              <PinTask control={control} />
-            </View>
+          <AttachStep
+            index={4}
+            style={breakpoints.md ? { marginLeft: "auto" } : { flex: 1 }}
+          >
+            <PinTask control={control} />
           </AttachStep>
           <SubmitButton
             watch={watch}
