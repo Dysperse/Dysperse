@@ -722,6 +722,7 @@ const PrimarySidebar = memo(function PrimarySidebar({ progressValue }: any) {
               backgroundColor: theme[2],
               ...(Platform.OS === "web" &&
                 !desktopCollapsed &&
+                globalThis.OS !== "win32" &&
                 ({
                   paddingTop: "env(titlebar-area-height,0)",
                 } as any)),
