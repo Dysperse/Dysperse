@@ -67,7 +67,7 @@ export const toastConfig = (theme) => ({
     </View>
   ),
 
-  success: (props) => (
+  info: (props) => (
     <View style={toastContainerStyles}>
       <BaseToast
         {...props}
@@ -81,7 +81,7 @@ export const toastConfig = (theme) => ({
             filled
             size={30}
           >
-            check_circle
+            info
           </Icon>
         )}
         text2Props={text2Props(theme)}

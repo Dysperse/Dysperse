@@ -53,7 +53,7 @@ const styles = StyleSheet.create({
     height: "100%",
     width: "100%",
     gap: 2,
-    transform: [{ translateX: -1.5 }, { translateY: 3 }],
+    transform: [{ translateX: -1.5 }, { translateY: -0.2 }],
     justifyContent: "space-between",
   },
   bar: {
@@ -65,3 +65,4 @@ const styles = StyleSheet.create({
 });
 
 export default VolumeBars;
+
