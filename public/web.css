@@ -180,6 +180,17 @@ body {
 
 .protected {
   filter: blur(10px);
+  pointer-events: none;
+  background-color: var(--theme-2);
+}
+
+body,
+body > div {
+  transition: transform 0.4s, filter 0.4s;
+}
+
+.protected > div {
+  transform: scale(0.98);
 }
 
 @keyframes appAnimation {
