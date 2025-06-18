@@ -5,20 +5,11 @@ import { useResponsiveBreakpoints } from "@/helpers/useResponsiveBreakpoints";
 import Emoji from "@/ui/Emoji";
 import Text from "@/ui/Text";
 import { useColorTheme } from "@/ui/color/theme-provider";
+import { impactAsync, ImpactFeedbackStyle } from "expo-haptics";
 import { useCallback } from "react";
-import { Platform, StyleSheet, View } from "react-native";
+import { Platform, View } from "react-native";
 import type { SortableGridRenderItem } from "react-native-sortables";
 import Sortable from "react-native-sortables";
-
-const styles = StyleSheet.create({
-  card: {
-    backgroundColor: "#36877F",
-    height: 100,
-    borderRadius: 10,
-    alignItems: "center",
-    justifyContent: "center",
-  },
-});
 
 export function Grid() {
   const { session } = useSession();
@@ -34,10 +25,12 @@ export function Grid() {
     ({ item }) => (
       <View
         style={{
-          flex: 1,
           borderRadius: 20,
           alignItems: "center",
           justifyContent: "center",
+
+          backgroundColor: "#36877F",
+          height: 150,
         }}
       >
         <View
@@ -88,6 +81,8 @@ export function Grid() {
       renderItem={renderItem}
       rowGap={10}
       columnGap={10}
+      onOrderChange={() => impactAsync(ImpactFeedbackStyle.Light)}
+      onDragStart={() => impactAsync(ImpactFeedbackStyle.Medium)}
       onActiveItemDropped={(res) => {
         const gridOrder = data.gridOrder;
         const { fromIndex, toIndex } = res;
@@ -123,7 +118,7 @@ export function Grid() {
 
 export function ReorderingGrid() {
   return (
-    <View style={{ paddingHorizontal: 20 }}>
+    <View style={{ paddingHorizontal: 20, height: "100%" }}>
       <Grid />
     </View>
   );
