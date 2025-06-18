@@ -46,7 +46,7 @@ export function Grid() {
           }}
         >
           <>
-            <Emoji emoji={item.emoji} size={50} />
+            <Emoji emoji={item?.emoji} size={50} />
             <Text
               weight={900}
               style={{
@@ -58,11 +58,11 @@ export function Grid() {
               }}
               numberOfLines={1}
             >
-              {item.name}
+              {item?.name}
             </Text>
             <Text>
-              {Object.keys(item.entities)?.length} item
-              {Object.keys(item.entities)?.length !== 1 && "s"}
+              {Object.keys(item?.entities || {})?.length} item
+              {Object.keys(item?.entities || {})?.length !== 1 && "s"}
             </Text>
           </>
         </View>
