@@ -180,9 +180,6 @@ body {
 
 .protected {
   filter: blur(10px);
-  transform: scale(0.98);
-  pointer-events: none;
-  display: block;
 }
 
 @keyframes appAnimation {
@@ -238,3 +235,4 @@ body {
     filter: blur(0px);
   }
 }
+

@@ -386,6 +386,7 @@ const Labels = () => {
     data.map((l) => ({ ...l, selected: l.id === selectedLabel }));
 
   const selectedLabelData = selectedLabel && d.find((i) => i.selected);
+  const insets = useSafeAreaInsets();
 
   return (
     <View style={containerStyles.root}>
@@ -400,53 +401,7 @@ const Labels = () => {
                 },
               ]}
             >
-              <View
-                style={{
-                  flexDirection: "row",
-                  justifyContent: "space-between",
-                  alignItems: "center",
-                  marginBottom: 10,
-                }}
-              >
-                <Text style={{ fontFamily: "serifText700", fontSize: 30 }}>
-                  Labels
-                </Text>
-                <CreateLabelModal
-                  mutate={(newLabel) => {
-                    mutate(
-                      () => [
-                        {
-                          ...newLabel,
-                          _count: { entities: 0 },
-                          entities: [],
-                          collections: [],
-                        },
-                        ...d,
-                      ],
-                      {
-                        revalidate: false,
-                      }
-                    );
-                  }}
-                >
-                  <IconButton variant="outlined" size={45} icon="add" />
-                </CreateLabelModal>
-              </View>
-              <TextField
-                value={query}
-                onChangeText={setQuery}
-                variant="filled+outlined"
-                weight={800}
-                placeholder="Search…"
-                style={{
-                  borderRadius: 99,
-                  paddingVertical: 15,
-                  paddingHorizontal: 20,
-                  fontSize: 20,
-                }}
-                autoFocus={breakpoints.md && Platform.OS !== "ios"}
-              />
-              {error && <ErrorAlert />}
+              <MenuButton gradient addInsets />
               <FlashList
                 refreshControl={
                   <RefreshControl
@@ -456,6 +411,61 @@ const Labels = () => {
                 }
                 onScrollBeginDrag={Keyboard.dismiss}
                 estimatedItemSize={60}
+                ListHeaderComponent={() => (
+                  <>
+                    <View
+                      style={{
+                        flexDirection: "row",
+                        justifyContent: "space-between",
+                        alignItems: "center",
+                        marginBottom: 10,
+                        marginTop: breakpoints.md ? 0 : insets.top + 50,
+                      }}
+                    >
+                      <Text
+                        style={{ fontFamily: "serifText700", fontSize: 30 }}
+                      >
+                        Labels
+                      </Text>
+                      <CreateLabelModal
+                        mutate={(newLabel) => {
+                          mutate(
+                            () => [
+                              {
+                                ...newLabel,
+                                _count: { entities: 0 },
+                                entities: [],
+                                collections: [],
+                              },
+                              ...d,
+                            ],
+                            {
+                              revalidate: false,
+                            }
+                          );
+                        }}
+                      >
+                        <IconButton variant="outlined" size={45} icon="add" />
+                      </CreateLabelModal>
+                    </View>
+                    <TextField
+                      value={query}
+                      onChangeText={setQuery}
+                      variant="filled+outlined"
+                      weight={800}
+                      placeholder="Search…"
+                      style={{
+                        borderRadius: 99,
+                        paddingVertical: 15,
+                        paddingHorizontal: 20,
+                        fontSize: 20,
+                        marginBottom: 20,
+                      }}
+                      autoFocus={breakpoints.md && Platform.OS !== "ios"}
+                    />
+                    {error && <ErrorAlert />}
+                  </>
+                )}
                 data={fuzzysort
                   .go(query, d, {
                     keys: ["name"],
@@ -539,15 +549,8 @@ const Labels = () => {
 };
 
 export default function Page() {
-  const insets = useSafeAreaInsets();
-  const breakpoints = useResponsiveBreakpoints();
-
   return (
-    <ContentWrapper
-      noPaddingTop
-      style={!breakpoints.md && { paddingTop: insets.top + 70 }}
-    >
-      <MenuButton gradient addInsets />
+    <ContentWrapper noPaddingTop>
       <Labels />
     </ContentWrapper>
   );

@@ -194,6 +194,8 @@ const Collections = () => {
   const selectedCollectionData =
     selectedCollection && d.find((i) => i.selected);
   const breakpoints = useResponsiveBreakpoints();
+  const insets = useSafeAreaInsets();
+
   return (
     <View style={containerStyles.root}>
       {Array.isArray(d) ? (
@@ -207,38 +209,7 @@ const Collections = () => {
                 },
               ]}
             >
-              <View
-                style={{
-                  flexDirection: "row",
-                  justifyContent: "space-between",
-                  alignItems: "center",
-                  marginBottom: 10,
-                }}
-              >
-                <Text style={{ fontFamily: "serifText700", fontSize: 27 }}>
-                  Collections
-                </Text>
-                {!isReached && (
-                  <CreateCollectionModal>
-                    <IconButton variant="outlined" size={45} icon="add" />
-                  </CreateCollectionModal>
-                )}
-              </View>
-              <TextField
-                value={query}
-                onChangeText={setQuery}
-                variant="filled+outlined"
-                weight={800}
-                placeholder="Search…"
-                style={{
-                  borderRadius: 99,
-                  paddingVertical: 15,
-                  paddingHorizontal: 20,
-                  fontSize: 20,
-                }}
-                autoFocus={breakpoints.md && Platform.OS !== "ios"}
-              />
-
+              <MenuButton gradient addInsets />
               <FlashList
                 refreshControl={
                   <RefreshControl
@@ -250,6 +221,45 @@ const Collections = () => {
                 estimatedItemSize={60}
                 data={d.filter((l) =>
                   l.name.toLowerCase().includes(query.toLowerCase())
+                )}
+                ListHeaderComponent={() => (
+                  <>
+                    <View
+                      style={{
+                        flexDirection: "row",
+                        justifyContent: "space-between",
+                        alignItems: "center",
+                        marginBottom: 10,
+                        paddingTop: insets.top + 50,
+                      }}
+                    >
+                      <Text
+                        style={{ fontFamily: "serifText700", fontSize: 27 }}
+                      >
+                        Collections
+                      </Text>
+                      {!isReached && (
+                        <CreateCollectionModal>
+                          <IconButton variant="outlined" size={45} icon="add" />
+                        </CreateCollectionModal>
+                      )}
+                    </View>
+                    <TextField
+                      value={query}
+                      onChangeText={setQuery}
+                      variant="filled+outlined"
+                      weight={800}
+                      placeholder="Search…"
+                      style={{
+                        borderRadius: 99,
+                        paddingVertical: 15,
+                        paddingHorizontal: 20,
+                        fontSize: 20,
+                        marginBottom: 20,
+                      }}
+                      autoFocus={breakpoints.md && Platform.OS !== "ios"}
+                    />
+                  </>
                 )}
                 ListEmptyComponent={() => (
                   <Pressable
@@ -337,11 +347,7 @@ export default function Page() {
   const breakpoints = useResponsiveBreakpoints();
 
   return (
-    <ContentWrapper
-      noPaddingTop
-      style={!breakpoints.md && { paddingTop: insets.top + 70 }}
-    >
-      <MenuButton gradient addInsets />
+    <ContentWrapper noPaddingTop>
       <Collections />
     </ContentWrapper>
   );

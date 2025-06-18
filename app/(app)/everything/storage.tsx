@@ -168,19 +168,13 @@ export default function Page() {
   }, [sessionToken, mutate]);
 
   return (
-    <ContentWrapper
-      noPaddingTop
-      style={
-        !breakpoints.md && {
-          paddingTop: insets.top + 70,
-        }
-      }
-    >
+    <ContentWrapper noPaddingTop>
       <MenuButton gradient addInsets />
       <ScrollView
         contentContainerStyle={{
           padding: breakpoints.md ? 50 : 30,
           paddingBottom: insets.bottom + 30,
+          paddingTop: insets.top + (breakpoints.md ? 0 : 100),
         }}
       >
         <Text style={{ fontFamily: "serifText700", fontSize: 27 }}>Usage</Text>

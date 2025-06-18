@@ -68,10 +68,67 @@ const DeleteAllButton = ({ handleDelete }) => {
     </ConfirmationModal>
   );
 };
-
+function Header({
+  query,
+  setQuery,
+  data,
+  mutate,
+  handleDelete,
+  isEmpty = false,
+}) {
+  const breakpoints = useResponsiveBreakpoints();
+  return (
+    <ScrollView
+      refreshControl={
+        <RefreshControl refreshing={!data} onRefresh={() => mutate()} />
+      }
+      onScrollBeginDrag={Keyboard.dismiss}
+      bounces={breakpoints.md}
+      style={
+        breakpoints.md
+          ? { flex: 1 }
+          : { paddingHorizontal: 10, paddingVertical: 20 }
+      }
+    >
+      <View
+        style={{
+          flexDirection: "row",
+          justifyContent: "space-between",
+          alignItems: "center",
+          marginBottom: 10,
+          marginTop: 5,
+        }}
+      >
+        <Text style={{ fontFamily: "serifText700", fontSize: 27 }}>Trash</Text>
+      </View>
+      <TextField
+        value={query}
+        onChangeText={setQuery}
+        variant="filled+outlined"
+        weight={800}
+        placeholder="Search…"
+        autoFocus={breakpoints.md && Platform.OS !== "ios"}
+        style={{
+          borderRadius: 99,
+          paddingVertical: 15,
+          paddingHorizontal: 20,
+          fontSize: 20,
+          marginBottom: 10,
+        }}
+      />
+      <Alert
+        emoji="26A0"
+        title="Items are permanently deleted on the 1st of every month"
+        dense
+      />
+      {!isEmpty && <DeleteAllButton handleDelete={handleDelete} />}
+    </ScrollView>
+  );
+}
 export default function Trash() {
   const { session } = useSession();
-  const { data, mutate, error, isValidating } = useSWR(["space/trash"]);
+  const insets = useSafeAreaInsets();
+  const { data, mutate, error } = useSWR(["space/trash"]);
   const [query, setQuery] = useState("");
 
   const filteredData = fuzzysort
@@ -98,73 +155,32 @@ export default function Trash() {
   }, [session, data, mutate]);
 
   const isEmpty = (filteredData || []).filter((t) => t.trash).length === 0;
-  const insets = useSafeAreaInsets();
   const theme = useColorTheme();
   const breakpoints = useResponsiveBreakpoints();
 
   return (
-    <ContentWrapper
-      noPaddingTop
-      style={!breakpoints.md && { paddingTop: insets.top + 70 }}
-    >
+    <ContentWrapper noPaddingTop>
       <MenuButton gradient addInsets />
       <View style={breakpoints.md ? containerStyles.root : { flex: 1 }}>
-        <View
-          style={[
-            breakpoints.md && containerStyles.left,
-            breakpoints.md && {
-              borderRightColor: theme[5],
-            },
-          ]}
-        >
-          <ScrollView
-            refreshControl={
-              <RefreshControl refreshing={!data} onRefresh={() => mutate()} />
-            }
-            onScrollBeginDrag={Keyboard.dismiss}
-            bounces={breakpoints.md}
-            style={
-              breakpoints.md
-                ? { flex: 1 }
-                : { paddingHorizontal: 20, paddingTop: 20 }
-            }
+        {breakpoints.md && (
+          <View
+            style={[
+              breakpoints.md && containerStyles.left,
+              breakpoints.md && {
+                borderRightColor: theme[5],
+              },
+            ]}
           >
-            <View
-              style={{
-                flexDirection: "row",
-                justifyContent: "space-between",
-                alignItems: "center",
-                marginBottom: 10,
-                marginTop: 5,
-              }}
-            >
-              <Text style={{ fontFamily: "serifText700", fontSize: 27 }}>
-                Trash
-              </Text>
-            </View>
-            <TextField
-              value={query}
-              onChangeText={setQuery}
-              variant="filled+outlined"
-              weight={800}
-              placeholder="Search…"
-              autoFocus={breakpoints.md && Platform.OS !== "ios"}
-              style={{
-                borderRadius: 99,
-                paddingVertical: 15,
-                paddingHorizontal: 20,
-                fontSize: 20,
-                marginBottom: 10,
-              }}
+            <Header
+              query={query}
+              setQuery={setQuery}
+              data={data}
+              mutate={mutate}
+              handleDelete={handleDelete}
+              isEmpty={isEmpty}
             />
-            <Alert
-              emoji="26A0"
-              title="Items are permanently deleted on the 1st of every month"
-              dense
-            />
-            {!isEmpty && <DeleteAllButton handleDelete={handleDelete} />}
-          </ScrollView>
-        </View>
+          </View>
+        )}
         <View
           style={[
             { flex: 2 },
@@ -200,12 +216,30 @@ export default function Trash() {
                 data={filteredData.filter((t) => t.trash)}
                 contentContainerStyle={{
                   padding: breakpoints.md ? 20 : 0,
-                  paddingTop: 0,
+                  paddingTop: breakpoints.md ? 0 : insets.top + 50,
                 }}
-                style={{ flex: 1, backgroundColor: "red", height: "100%" }}
+                ListHeaderComponent={
+                  breakpoints.md
+                    ? null
+                    : () => (
+                        <Header
+                          query={query}
+                          setQuery={setQuery}
+                          data={data}
+                          mutate={mutate}
+                          handleDelete={handleDelete}
+                          isEmpty={isEmpty}
+                        />
+                      )
+                }
+                style={{
+                  flex: 1,
+                  backgroundColor: "red",
+                  height: "100%",
+                }}
                 refreshControl={
                   <RefreshControl
-                    refreshing={isValidating}
+                    refreshing={!data}
                     onRefresh={() => mutate()}
                   />
                 }
