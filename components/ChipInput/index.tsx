@@ -261,6 +261,7 @@ export default function ChipInput({
       placeholderTextColor={addHslAlpha(theme[11], 0.2)}
       cursorColor={theme[8]}
       selectionColor={theme[8]}
+      blurOnSubmit
       partTypes={[
         ...suggestions.map((item) => ({
           trigger: item.key,

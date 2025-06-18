@@ -335,6 +335,7 @@ function TaskNameInput() {
         ref={inputRef}
         onBlur={handleSave}
         onChangeText={(text) => setName(text)}
+        blurOnSubmit
         enterKeyHint="done"
         defaultValue={name}
         bounces={false}
