@@ -803,6 +803,7 @@ export function TaskDrawerContent({
             </View>
             <KeyboardAvoidingView behavior="height">
               <SafeScrollView
+                // bounces={false}
                 showsHorizontalScrollIndicator={false}
                 style={{
                   maxHeight: Dimensions.get("window").height - 200,

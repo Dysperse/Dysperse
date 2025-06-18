@@ -35,7 +35,7 @@ const styles = StyleSheet.create({
     top: 0,
     backgroundColor: "transparent",
   },
-  closeIcon: { opacity: 0.6 },
+  closeIcon: { opacity: 1 },
 });
 
 function Tab({
@@ -63,6 +63,7 @@ function Tab({
 
   const handleDelete = useCallback(
     async (id: string) => {
+      Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
       try {
         if (!tabs) {
           return Toast.show({
@@ -140,11 +141,8 @@ function Tab({
         ]}
         size={50}
         onPress={handleCloseTab}
-      >
-        <Icon size={20} style={[styles.closeIcon]}>
-          close
-        </Icon>
-      </IconButton>
+        icon="close_small"
+      />
     ),
     [selected, handleCloseTab]
   );

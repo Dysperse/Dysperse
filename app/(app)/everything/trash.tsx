@@ -7,8 +7,8 @@ import Alert from "@/ui/Alert";
 import { Button } from "@/ui/Button";
 import { useColorTheme } from "@/ui/color/theme-provider";
 import ConfirmationModal from "@/ui/ConfirmationModal";
-import Emoji from "@/ui/Emoji";
 import ErrorAlert from "@/ui/Error";
+import Icon from "@/ui/Icon";
 import RefreshControl from "@/ui/RefreshControl";
 import Spinner from "@/ui/Spinner";
 import Text from "@/ui/Text";
@@ -168,7 +168,10 @@ export default function Trash() {
         <View
           style={[
             { flex: 2 },
-            !breakpoints.md && { paddingHorizontal: 20, paddingTop: 20 },
+            !breakpoints.md && {
+              paddingHorizontal: 20,
+              paddingTop: isEmpty ? 0 : 20,
+            },
           ]}
         >
           {Array.isArray(filteredData) ? (
@@ -180,13 +183,12 @@ export default function Trash() {
                   justifyContent: "center",
                 }}
               >
-                <Emoji size={50} emoji="1f389" />
+                <Icon size={40}>celebration</Icon>
                 <Text
                   style={{
                     fontSize: 20,
                     textAlign: "center",
-                    padding: 20,
-                    opacity: 0.6,
+                    color: theme[11],
                   }}
                 >
                   Nothing to see here!

@@ -678,7 +678,7 @@ function CanvasLiveInfo() {
         paddingVertical: 20,
         paddingHorizontal: 10,
         position: "relative",
-        marginBottom: 15,
+        marginBottom: 10,
         borderRadius: 30,
       }}
     >
