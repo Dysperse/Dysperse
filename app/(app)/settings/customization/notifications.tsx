@@ -420,9 +420,12 @@ function NotificationPreferences({ data, mutate }) {
 function AppBadging({ notificationData, mutateSettings }) {
   const { session } = useSession();
   const { data, error } = useSWR(["space/collections"]);
+
   return error ? (
     <ErrorAlert />
-  ) : (
+  ) : !data ? (
+    <Spinner />
+  ) : data.length == 0 ? null : (
     <>
       <Text style={settingStyles.heading}>App badging</Text>
       <Section>
