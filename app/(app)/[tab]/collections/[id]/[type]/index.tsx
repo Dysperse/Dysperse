@@ -563,12 +563,8 @@ function NativeProtection() {
         left: 0,
         right: 0,
         bottom: 0,
-        justifyContent: "center",
-        alignItems: "center",
         zIndex: 1000,
         display: showProtection ? "flex" : "none",
-        padding: 20,
-        borderRadius: 10,
       }}
     />
   );
