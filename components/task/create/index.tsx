@@ -729,7 +729,11 @@ function TaskNameInput({
             />
             <ChipInput
               placeholder="What's on your mind?"
-              onSubmitEditing={() => handleSubmitButtonClick()}
+              onSubmitEditing={() => {
+                nameRef.current?.focus();
+                setTimeout(() => nameRef.current?.focus());
+                handleSubmitButtonClick();
+              }}
               inputProps={{
                 onBlur,
                 ...(Platform.OS === "web" && {

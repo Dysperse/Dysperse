@@ -28,6 +28,7 @@ import { sendApiRequest } from "@/helpers/api";
 import { useHotkeys } from "@/helpers/useHotKeys";
 import { useResponsiveBreakpoints } from "@/helpers/useResponsiveBreakpoints";
 import { Button } from "@/ui/Button";
+import { useDarkMode } from "@/ui/color";
 import { useColorTheme } from "@/ui/color/theme-provider";
 import OtpInput from "@/ui/OtpInput";
 import CircularSkeleton from "@/ui/Skeleton/circular";
@@ -36,9 +37,11 @@ import Text from "@/ui/Text";
 import TextField from "@/ui/TextArea";
 import { useDidUpdate } from "@/utils/useDidUpdate";
 import dayjs from "dayjs";
+import { BlurView } from "expo-blur";
 import { router, useLocalSearchParams, usePathname } from "expo-router";
 import { useEffect, useRef, useState } from "react";
 import {
+  AppState,
   InteractionManager,
   Platform,
   Pressable,
@@ -537,6 +540,40 @@ function TaskShortcutCreation() {
   );
 }
 
+function NativeProtection() {
+  const [showProtection, setShowProtection] = useState(false);
+  const isDark = useDarkMode();
+
+  useEffect(() => {
+    AppState.addEventListener("change", (state) => {
+      if (state === "active") {
+        setShowProtection(false);
+      } else {
+        setShowProtection(true);
+      }
+    });
+  }, []);
+
+  return (
+    <BlurView
+      tint={isDark ? "dark" : "light"}
+      style={{
+        position: "absolute",
+        top: 0,
+        left: 0,
+        right: 0,
+        bottom: 0,
+        justifyContent: "center",
+        alignItems: "center",
+        zIndex: 1000,
+        display: showProtection ? "flex" : "none",
+        padding: 20,
+        borderRadius: 10,
+      }}
+    />
+  );
+}
+
 function Protection() {
   useEffect(() => {
     const update = () => {
@@ -655,6 +692,7 @@ export default function Page({ isPublic }: { isPublic: boolean }) {
               <TaskShortcutCreation />
               {data && <WindowTitle title={data?.name || "All tasks"} />}
               {data?.pinCode && Platform.OS === "web" && <Protection />}
+              {data?.pinCode && Platform.OS !== "web" && <NativeProtection />}
               {(data ? (
                 (data.pinCode || data.pinCodeError) &&
                 (!data.pinAuthorizationExpiresAt ||
