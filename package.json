@@ -108,7 +108,6 @@
     "react-mentions": "github:moxylabs/react-mentions#v4.6.0",
     "react-native": "0.79.3",
     "react-native-autogrow-textinput": "^5.4.0",
-    "react-native-big-calendar": "^4.18.4",
     "react-native-circular-progress": "^1.4.1",
     "react-native-collapsible": "^1.6.2",
     "react-native-controlled-mentions": "^2.2.5",

@@ -1,9 +1,8 @@
 import dayjs, { Dayjs } from "dayjs";
 import { createContext, useContext } from "react";
-import { Mode } from "react-native-big-calendar";
 
 interface CalendarContextProps {
-  mode: Mode;
+  mode: any;
   type: "week" | "month" | "year";
   start: Dayjs;
   end: Dayjs;
@@ -19,3 +18,4 @@ export const CalendarContext = createContext<CalendarContextProps>({
 });
 
 export const useCalendarContext = () => useContext(CalendarContext);
+

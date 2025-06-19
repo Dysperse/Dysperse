@@ -19,7 +19,6 @@ import { LinearGradient } from "expo-linear-gradient";
 import { useLocalSearchParams } from "expo-router";
 import { React, useImperativeHandle, useMemo, useRef, useState } from "react";
 import { Pressable, useWindowDimensions, View } from "react-native";
-import { ICalendarEventBase } from "react-native-big-calendar";
 import useSWR from "swr";
 import { useCollectionContext } from "../../context";
 import { AgendaButtons } from "../../navbar/AgendaButtons";
@@ -458,7 +457,7 @@ export function Content() {
                 )
                   .add(task.end ? 0 : 1, "hour")
                   .toDate(),
-          } as ICalendarEventBase;
+          };
         }),
     [tasks]
   );
