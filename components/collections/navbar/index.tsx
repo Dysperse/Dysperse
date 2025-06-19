@@ -170,18 +170,18 @@ const CollectionNavbar = memo(function CollectionNavbar({
   const collectionMenuOptions = [
     ...(type === "calendar"
       ? [
-          {
-            icon: "view_week",
-            text: "3-day view",
-            id: "3days",
-            callback: () => router.setParams({ mode: "3days" }),
-          },
-          {
-            icon: "calendar_view_week",
-            text: "Week view",
-            id: "week",
-            callback: () => router.setParams({ mode: "week" }),
-          },
+          // {
+          //   icon: "view_week",
+          //   text: "3-day view",
+          //   id: "3days",
+          //   callback: () => router.setParams({ mode: "3days" }),
+          // },
+          // {
+          //   icon: "calendar_view_week",
+          //   text: "Week view",
+          //   id: "week",
+          //   callback: () => router.setParams({ mode: "week" }),
+          // },
           {
             icon: "calendar_month",
             text: "Month view",

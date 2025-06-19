@@ -179,7 +179,16 @@ function Date({ day, events, theme, dIdx, wIdx }) {
   };
 
   if (!day) {
-    return <View style={{ width: `${100 / 7}%` }} />;
+    return (
+      <View
+        style={{
+          width: `${100 / 7}%`,
+          borderRightWidth: dIdx < 6 ? 0.5 : 0,
+          borderBottomWidth: wIdx < 4 ? 0.5 : 0,
+          borderColor: theme[4],
+        }}
+      />
+    );
   }
 
   const dayEvents = getEventsForDay(day);
