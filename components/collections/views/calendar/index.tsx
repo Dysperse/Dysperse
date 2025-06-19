@@ -183,7 +183,7 @@ function Date({ day, events, theme, dIdx, wIdx }) {
         style={{
           width: `${100 / 7}%`,
           borderRightWidth: dIdx < 6 ? 0.5 : 0,
-          borderBottomWidth: wIdx < 4 ? 0.5 : 0,
+          borderBottomWidth: wIdx < 5 ? 0.5 : 0,
           borderColor: theme[4],
         }}
       />
