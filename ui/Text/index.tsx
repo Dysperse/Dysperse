@@ -53,7 +53,7 @@ const textStyles = StyleSheet.create({
   },
 });
 
-const Text = (props) => {
+const Text = (props: DTextProps) => {
   const theme = useColorTheme();
 
   return (

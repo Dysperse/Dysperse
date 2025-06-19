@@ -196,6 +196,18 @@ export default function Grid() {
 
   return (
     <GridContext.Provider value={{ currentColumn, setCurrentColumn }}>
+      {!breakpoints.md && isMobileHome && (
+        <View
+          style={{
+            position: "absolute",
+            top: 130,
+            left: 0,
+            zIndex: 1000,
+            height: "100%",
+            width: 40,
+          }}
+        />
+      )}
       {displayLabels?.filter((t) => !t?.empty).length === 0 ? (
         <CollectionEmpty />
       ) : (

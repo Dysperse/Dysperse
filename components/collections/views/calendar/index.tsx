@@ -1,22 +1,25 @@
 import { mutations } from "@/app/(app)/[tab]/collections/mutations";
 import { useLabelColors } from "@/components/labels/useLabelColors";
+import Task from "@/components/task";
 import CreateTask, { CreateTaskDrawerProps } from "@/components/task/create";
 import { TaskDrawer, TaskDrawerProps } from "@/components/task/drawer";
 import { getTaskCompletionStatus } from "@/helpers/getTaskCompletionStatus";
 import { useResponsiveBreakpoints } from "@/helpers/useResponsiveBreakpoints";
-import Spinner from "@/ui/Spinner";
-import Text, { getFontName } from "@/ui/Text";
+import BottomSheet from "@/ui/BottomSheet";
+import { Button } from "@/ui/Button";
+import { addHslAlpha } from "@/ui/color";
 import { useColorTheme } from "@/ui/color/theme-provider";
+import Icon from "@/ui/Icon";
+import Spinner from "@/ui/Spinner";
+import Text from "@/ui/Text";
+import { BottomSheetFlashList, BottomSheetModal } from "@gorhom/bottom-sheet";
 import dayjs, { ManipulateType, OpUnitType } from "dayjs";
-import { router, useLocalSearchParams } from "expo-router";
-import { useImperativeHandle, useMemo, useRef, useState } from "react";
-import { TouchableOpacity, View, useWindowDimensions } from "react-native";
-import {
-  Calendar as BigCalendar,
-  CalendarTouchableOpacityProps,
-  ICalendarEventBase,
-} from "react-native-big-calendar";
-import { useSafeAreaInsets } from "react-native-safe-area-context";
+import { impactAsync, ImpactFeedbackStyle } from "expo-haptics";
+import { LinearGradient } from "expo-linear-gradient";
+import { useLocalSearchParams } from "expo-router";
+import { React, useImperativeHandle, useMemo, useRef, useState } from "react";
+import { Pressable, useWindowDimensions, View } from "react-native";
+import { ICalendarEventBase } from "react-native-big-calendar";
 import useSWR from "swr";
 import { useCollectionContext } from "../../context";
 import { AgendaButtons } from "../../navbar/AgendaButtons";
@@ -74,28 +77,330 @@ const CalendarCreateTaskDrawer = (props: CreateTaskDrawerProps) => {
   );
 };
 
-const renderEvent = <T extends ICalendarEventBase>(
-  event: T,
-  touchableOpacityProps: CalendarTouchableOpacityProps
-) => (
-  <TouchableOpacity
-    {...touchableOpacityProps}
-    style={{
-      padding: 0,
-    }}
-  >
-    <Text style={{ fontSize: 12 }} numberOfLines={1}>{`${event.title}`}</Text>
-  </TouchableOpacity>
-);
+const Event = ({ event, day }) => {
+  const theme = useColorTheme();
+  const colors = useLabelColors();
+
+  const colorTheme = event.label?.color ? colors[event.label.color] : theme;
+
+  const hasCompleted = getTaskCompletionStatus(event, day);
+
+  return (
+    <View
+      style={{
+        width: "100%",
+        borderRadius: 3,
+        paddingHorizontal: 4,
+        paddingVertical: 1,
+        backgroundColor: colorTheme[event.pinned ? 7 : 4],
+        flexDirection: "row",
+        alignItems: "center",
+        gap: 4,
+      }}
+    >
+      {hasCompleted && (
+        <View
+          style={{
+            backgroundColor: colorTheme[10],
+            borderRadius: 4,
+            width: 12,
+            height: 12,
+            alignItems: "center",
+            justifyContent: "center",
+          }}
+        >
+          <Icon
+            size={10}
+            bold
+            style={{
+              marginTop: -2,
+              color: colorTheme[2],
+            }}
+          >
+            check
+          </Icon>
+        </View>
+      )}
+      <View style={{ flex: 1 }}>
+        <Text
+          style={{
+            fontSize: 10,
+            textDecorationLine: hasCompleted ? "line-through" : "none",
+            opacity: hasCompleted ? 0.6 : 1,
+            color: colorTheme[event.pinned ? 12 : 11],
+          }}
+          numberOfLines={1}
+        >{`${event.name}`}</Text>
+      </View>
+    </View>
+  );
+};
+
+function DateIndicator({ day }) {
+  const theme = useColorTheme();
+  return (
+    <View
+      style={{
+        width: 20,
+        height: 20,
+        alignItems: "center",
+        justifyContent: "center",
+        backgroundColor: theme[day.isToday() ? 9 : 1],
+        borderRadius: 5,
+        marginBottom: 5,
+      }}
+    >
+      <Text
+        style={{
+          fontSize: 13,
+          fontFamily: day.isToday() ? "serifText700" : "serifText800",
+          color: theme[day.isToday() ? 1 : 11],
+        }}
+      >
+        {day.date()}
+      </Text>
+    </View>
+  );
+}
+
+function Date({ day, events, theme, dIdx, wIdx }) {
+  const { mutate } = useCollectionContext();
+  const breakpoints = useResponsiveBreakpoints();
+  const drawerRef = useRef<BottomSheetModal>(null);
+
+  const getEventsForDay = (day) => {
+    if (!day || !events) return [];
+    return events.filter(
+      (event) =>
+        dayjs(event.start).isSame(day, "day") ||
+        (dayjs(event.start).isBefore(day, "day") &&
+          dayjs(event.end).isAfter(day, "day"))
+    );
+  };
+
+  if (!day) {
+    return <View style={{ width: `${100 / 7}%` }} />;
+  }
+
+  const dayEvents = getEventsForDay(day);
+  const maxToShow = 3;
+
+  return (
+    <>
+      <Pressable
+        style={{
+          width: `${100 / 7}%`,
+          borderRightWidth: dIdx < 6 ? 0.5 : 0,
+          borderBottomWidth: wIdx < 4 ? 0.5 : 0,
+          borderColor: theme[4],
+          paddingVertical: 10,
+          paddingHorizontal: 2,
+          gap: 2,
+          paddingBottom: 5,
+          alignItems: "center",
+        }}
+        onLongPress={() => impactAsync(ImpactFeedbackStyle.Medium)}
+        onPress={() => {
+          impactAsync(ImpactFeedbackStyle.Light);
+          drawerRef.current?.present();
+        }}
+      >
+        <DateIndicator day={day} />
+        {dayEvents.slice(0, maxToShow).map((event) => (
+          <Event key={event.id} event={event} day={day} />
+        ))}
+        {dayEvents.length > maxToShow && (
+          <Text
+            style={{
+              fontSize: 11,
+              color: theme[8],
+              marginTop: "auto",
+            }}
+            numberOfLines={1}
+          >
+            +{dayEvents.length - maxToShow} more
+          </Text>
+        )}
+      </Pressable>
+
+      <BottomSheet
+        sheetRef={drawerRef}
+        snapPoints={dayEvents.length == 0 ? [300] : ["50%", "90%"]}
+        maxBackdropOpacity={0.1}
+        backgroundStyle={{
+          overflow: "hidden",
+          borderRadius: 40,
+        }}
+        containerStyle={{
+          marginHorizontal: 15,
+          borderRadius: 40,
+        }}
+        bottomInset={20}
+      >
+        <View
+          style={{
+            alignItems: "center",
+            marginTop: 20,
+          }}
+        >
+          <Text
+            style={{ fontSize: 16, color: theme[8], marginBottom: 2 }}
+            weight={600}
+          >
+            {day.format("dddd")}
+          </Text>
+          <Text
+            style={{
+              fontSize: 22,
+              fontFamily: "serifText700",
+              color: theme[11],
+            }}
+          >
+            {day.format("MMMM D, YYYY")}
+          </Text>
+        </View>
+        <View style={{ paddingHorizontal: 15, marginTop: 20, height: 60 }}>
+          <CreateTask
+            defaultValues={{
+              dateOnly: true,
+            }}
+            mutate={mutations.timeBased.add(mutate)}
+          >
+            <Button
+              variant="filled"
+              containerStyle={{ flex: 1 }}
+              large={!breakpoints.md}
+              bold={!breakpoints.md}
+              textStyle={breakpoints.md && { fontFamily: "body_400" }}
+              iconPosition="end"
+              text="Create"
+              icon="stylus_note"
+              height={breakpoints.md ? 50 : 55}
+            />
+          </CreateTask>
+        </View>
+        <LinearGradient
+          colors={[
+            addHslAlpha(theme[1], 1),
+            addHslAlpha(theme[1], 0.7),
+            addHslAlpha(theme[1], 0),
+          ]}
+          style={{ height: 40, marginBottom: -40, zIndex: 1 }}
+        />
+        <View style={{ height: "100%" }}>
+          {dayEvents.length == 0 ? (
+            <View style={{ marginTop: 80, justifyContent: "center" }}>
+              <Text style={{ color: theme[11], textAlign: "center" }}>
+                No events for this day
+              </Text>
+            </View>
+          ) : (
+            <BottomSheetFlashList
+              data={dayEvents}
+              keyExtractor={(item) => item.id}
+              contentContainerStyle={{
+                paddingHorizontal: 15,
+                paddingTop: 10,
+                paddingBottom: 350,
+              }}
+              renderItem={({ item }) => (
+                <Task
+                  key={item.id}
+                  task={item}
+                  onTaskUpdate={mutations.timeBased.update}
+                />
+              )}
+            />
+          )}
+        </View>
+      </BottomSheet>
+    </>
+  );
+}
+
+function CalendarContainer(props) {
+  const theme = useColorTheme();
+
+  const { start } = useCalendarContext();
+  const { width } = useWindowDimensions();
+
+  // Get first day of month and number of days
+  const firstDay = useMemo(() => dayjs(start).startOf("month"), [start]);
+  const daysInMonth = useMemo(() => firstDay.daysInMonth(), [firstDay]);
+  const firstDayOfWeek = useMemo(() => firstDay.day(), [firstDay]); // 0 (Sunday) - 6 (Saturday)
+
+  // Generate days array with blanks for alignment
+  const days = useMemo(() => {
+    const blanks = Array.from({ length: firstDayOfWeek }, () => null);
+    const daysArr = Array.from({ length: daysInMonth }, (_, i) =>
+      firstDay.add(i, "day")
+    );
+    return [...blanks, ...daysArr];
+  }, [firstDay, daysInMonth, firstDayOfWeek]);
+
+  // Weekday headers
+  const weekDays = ["S", "M", "T", "W", "T", "F", "S"];
+
+  // Split days into weeks
+  const weeks = [];
+  for (let i = 0; i < days.length; i += 7) {
+    weeks.push(days.slice(i, i + 7));
+  }
+
+  // Ensure weeks have 7 days
+  weeks.forEach((week) => {
+    while (week.length < 7) {
+      week.push(null); // Fill with nulls if week is incomplete
+    }
+  });
+
+  return (
+    <View style={{ flex: 1, width }}>
+      {/* Weekday headers */}
+      <View style={{ flexDirection: "row", width: "100%" }}>
+        {weekDays.map((wd, i) => (
+          <View
+            key={wd + i}
+            style={{
+              width: `${100 / 7}%`,
+              alignItems: "center",
+              justifyContent: "center",
+              paddingVertical: 4,
+              backgroundColor: theme[1],
+              borderBottomWidth: 0.5,
+              borderColor: theme[4],
+            }}
+          >
+            <Text variant="eyebrow">{wd}</Text>
+          </View>
+        ))}
+      </View>
+      {/* Calendar days */}
+      {weeks.map((week, wIdx) => (
+        <View
+          key={wIdx}
+          style={{ flexDirection: "row", width: "100%", flex: 1 }}
+        >
+          {week.map((day, dIdx) => (
+            <Date
+              key={dIdx}
+              day={day}
+              events={props.events}
+              theme={theme}
+              wIdx={wIdx}
+              dIdx={dIdx}
+            />
+          ))}
+        </View>
+      ))}
+    </View>
+  );
+}
 
 export function Content() {
-  const theme = useColorTheme();
   const params = useLocalSearchParams();
-  const colors = useLabelColors();
-  const insets = useSafeAreaInsets();
   const { type, start, end } = useCalendarContext();
   const { isPublic } = useCollectionContext();
-  const { mode: originalMode, start: originalStart } = useLocalSearchParams();
 
   const { data, mutate } = useSWR([
     "space/collections/collection/planner",
@@ -149,12 +454,31 @@ export function Content() {
     [tasks]
   );
 
-  const { height } = useWindowDimensions();
   const breakpoints = useResponsiveBreakpoints();
 
   return data ? (
     <>
       {!breakpoints.md && <AgendaButtons weekMode />}
+      <View style={{ paddingHorizontal: 15, height: 60 }}>
+        <CreateTask
+          defaultValues={{
+            dateOnly: true,
+          }}
+          mutate={mutations.timeBased.add(mutate)}
+        >
+          <Button
+            variant="filled"
+            containerStyle={{ flex: 1 }}
+            large={!breakpoints.md}
+            bold={!breakpoints.md}
+            textStyle={breakpoints.md && { fontFamily: "body_400" }}
+            iconPosition="end"
+            text="Create"
+            icon="stylus_note"
+            height={breakpoints.md ? 50 : 55}
+          />
+        </CreateTask>
+      </View>
       <CalendarTaskDrawer
         mutateList={mutations.timeBased.update(mutate)}
         tasks={tasks}
@@ -188,75 +512,7 @@ export function Content() {
             );
         }}
       />
-      <BigCalendar
-        onPressMoreLabel={(event) => {
-          router.setParams({
-            mode: "week",
-            start: event[0].start || event[0].dateRange[0],
-          });
-        }}
-        onPressCell={(date) => {
-          createTaskSheetRef.current?.present({
-            dateOnly: originalMode === "month",
-            date:
-              originalMode === "month"
-                ? dayjs(date).startOf("day")
-                : dayjs(date),
-          });
-        }}
-        onPressDateHeader={(date) => {
-          createTaskSheetRef.current?.present({
-            dateOnly: true,
-            date: dayjs(date).startOf("day"),
-          });
-        }}
-        key={`${start.toISOString()}-${end.toISOString()}`}
-        height={height - 20 - 65 - 70 - insets.bottom}
-        showAdjacentMonths={false}
-        mode={originalMode as any}
-        hourStyle={{ fontFamily: getFontName("jost", 700), color: theme[7] }}
-        onPressEvent={(event: any) => taskDrawerRef.current?.setId(event.id)}
-        eventCellStyle={(event) => ({
-          backgroundColor:
-            theme[getTaskCompletionStatus(event, event.recurrenceDay) ? 7 : 11],
-          paddingHorizontal: 15,
-          ...(event.label && {
-            backgroundColor: getTaskCompletionStatus(event, event.recurrenceDay)
-              ? theme[7]
-              : colors[event.label.color][11],
-          }),
-        })}
-        headerContainerStyle={{ paddingTop: 20 }}
-        ampm
-        calendarCellTextStyle={{ color: theme[11] }}
-        theme={{
-          typography: {
-            fontFamily: getFontName("jost", 700),
-            sm: { fontFamily: getFontName("jost", 700) },
-            xl: { fontFamily: getFontName("jost", 700) },
-            xs: { fontFamily: getFontName("jost", 700) },
-          },
-          palette: {
-            nowIndicator: theme[11],
-            gray: {
-              "100": theme[5],
-              "200": theme[5],
-              "300": theme[3],
-              "500": theme[9],
-              "800": theme[10],
-            },
-            primary: {
-              main: theme[11],
-              contrastText: theme[3],
-            },
-          },
-        }}
-        swipeEnabled={false}
-        events={filteredEvents}
-        renderEvent={renderEvent}
-        date={dayjs(originalStart as any).toDate()}
-      />
-      <View style={{ height: insets.bottom }} />
+      <CalendarContainer events={filteredEvents} />
     </>
   ) : (
     <View
