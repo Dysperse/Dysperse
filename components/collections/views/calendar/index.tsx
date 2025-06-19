@@ -5,14 +5,15 @@ import { TaskDrawer, TaskDrawerProps } from "@/components/task/drawer";
 import { getTaskCompletionStatus } from "@/helpers/getTaskCompletionStatus";
 import { useResponsiveBreakpoints } from "@/helpers/useResponsiveBreakpoints";
 import Spinner from "@/ui/Spinner";
-import { getFontName } from "@/ui/Text";
+import Text, { getFontName } from "@/ui/Text";
 import { useColorTheme } from "@/ui/color/theme-provider";
 import dayjs, { ManipulateType, OpUnitType } from "dayjs";
 import { router, useLocalSearchParams } from "expo-router";
 import { useImperativeHandle, useMemo, useRef, useState } from "react";
-import { View, useWindowDimensions } from "react-native";
+import { TouchableOpacity, View, useWindowDimensions } from "react-native";
 import {
   Calendar as BigCalendar,
+  CalendarTouchableOpacityProps,
   ICalendarEventBase,
 } from "react-native-big-calendar";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
@@ -26,15 +27,15 @@ export interface MyCustomEventType {
 }
 
 const CalendarTaskDrawer = (
-  ref: any,
   props: Omit<TaskDrawerProps, "children" | "id" | "dateRange"> & {
     tasks: any[];
+    ref: any;
   }
 ) => {
   const drawerRef = useRef(null);
   const [taskId, setTaskId] = useState<string>("");
 
-  useImperativeHandle(ref, () => ({
+  useImperativeHandle(props.ref, () => ({
     setId: (id: string) => {
       setTaskId(id);
       drawerRef.current?.show();
@@ -72,6 +73,20 @@ const CalendarCreateTaskDrawer = (props: CreateTaskDrawerProps) => {
     <CreateTask defaultValues={defaultValues} ref={drawerRef} {...props} />
   );
 };
+
+const renderEvent = <T extends ICalendarEventBase>(
+  event: T,
+  touchableOpacityProps: CalendarTouchableOpacityProps
+) => (
+  <TouchableOpacity
+    {...touchableOpacityProps}
+    style={{
+      padding: 0,
+    }}
+  >
+    <Text style={{ fontSize: 12 }} numberOfLines={1}>{`${event.title}`}</Text>
+  </TouchableOpacity>
+);
 
 export function Content() {
   const theme = useColorTheme();
@@ -111,23 +126,26 @@ export function Content() {
     () =>
       Object.values(tasks || {})
         .filter((e) => e.start || e.recurrenceRule)
-        .map(
-          (task) =>
-            ({
-              ...task,
-              title: task.name,
-              start: dayjs(
-                task.recurrenceRule ? task.recurrenceDay : task.start
-              ).toDate(),
-              end: dayjs(
-                task.recurrenceRule
-                  ? task.recurrenceDay
-                  : task.end || task.start
-              )
-                .add(task.end ? 0 : 1, "hour")
-                .toDate(),
-            } as ICalendarEventBase)
-        ),
+        .map((task) => {
+          const start = dayjs(
+            task.recurrenceRule ? task.recurrenceDay : task.start
+          ).toDate();
+
+          return {
+            ...task,
+            title: task.name,
+            start,
+            end: task.dateOnly
+              ? start
+              : dayjs(
+                  task.recurrenceRule
+                    ? task.recurrenceDay
+                    : task.end || task.start
+                )
+                  .add(task.end ? 0 : 1, "hour")
+                  .toDate(),
+          } as ICalendarEventBase;
+        }),
     [tasks]
   );
 
@@ -202,7 +220,6 @@ export function Content() {
           backgroundColor:
             theme[getTaskCompletionStatus(event, event.recurrenceDay) ? 7 : 11],
           paddingHorizontal: 15,
-          borderRadius: 15,
           ...(event.label && {
             backgroundColor: getTaskCompletionStatus(event, event.recurrenceDay)
               ? theme[7]
@@ -236,6 +253,7 @@ export function Content() {
         }}
         swipeEnabled={false}
         events={filteredEvents}
+        renderEvent={renderEvent}
         date={dayjs(originalStart as any).toDate()}
       />
       <View style={{ height: insets.bottom }} />

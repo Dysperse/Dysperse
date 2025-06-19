@@ -1617,6 +1617,7 @@ const CreateTask = ({
 
   useImperativeHandle(forwardedRef, () => ({
     ...ref.current,
+    present: (t) => ref.current?.present(t),
     setValue: (...e) => formRef.current?.setValue(...e),
   }));
 
