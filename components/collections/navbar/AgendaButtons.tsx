@@ -8,6 +8,7 @@ import Text from "@/ui/Text";
 import { addHslAlpha } from "@/ui/color";
 import { useColorTheme } from "@/ui/color/theme-provider";
 import dayjs, { ManipulateType } from "dayjs";
+import { impactAsync, ImpactFeedbackStyle } from "expo-haptics";
 import { router, useGlobalSearchParams } from "expo-router";
 import React, { useCallback } from "react";
 import { View } from "react-native";
@@ -16,10 +17,12 @@ import { AgendaCalendarMenu } from "./AgendaCalendarMenu";
 export function AgendaButtons({
   handleMenuOpen,
   weekMode,
+  monthMode,
   center,
 }: {
   handleMenuOpen?: () => void;
   weekMode?: boolean;
+  monthMode?: boolean;
   center?: boolean;
 }) {
   const theme = useColorTheme();
@@ -28,45 +31,25 @@ export function AgendaButtons({
   if (!agendaView) agendaView = mode || "week";
 
   const handlePrev = useCallback(async () => {
+    const t = dayjs(start).startOf(monthMode ? "month" : "week");
+
     const newParams = {
-      start: dayjs(start)
-        .subtract(
-          agendaView === "3days" ? 3 : 1,
-          weekMode
-            ? agendaView === "3days"
-              ? "day"
-              : agendaView === "schedule"
-              ? "month"
-              : (agendaView as ManipulateType)
-            : "days"
-        )
-        .toISOString(),
+      start: t.subtract(1, monthMode ? "month" : "week").toISOString(),
     };
     router.setParams(newParams);
-  }, [agendaView, start, weekMode]);
+  }, [start, monthMode]);
 
   const handleNext = useCallback(() => {
-    const t = weekMode
-      ? dayjs(start).startOf(agendaView as ManipulateType)
-      : dayjs(start);
+    impactAsync(ImpactFeedbackStyle.Light);
+    const t = dayjs(start).startOf(monthMode ? "month" : "week");
 
     router.setParams({
-      start: t
-        .add(
-          agendaView === "3days" ? 3 : 1,
-          weekMode
-            ? agendaView === "3days"
-              ? "day"
-              : agendaView === "schedule"
-              ? "month"
-              : (agendaView as ManipulateType)
-            : "days"
-        )
-        .toISOString(),
+      start: t.add(1, monthMode ? "month" : "week").toISOString(),
     });
-  }, [agendaView, start, weekMode]);
+  }, [start, monthMode]);
 
   const handleToday = useCallback(() => {
+    impactAsync(ImpactFeedbackStyle.Light);
     router.setParams({
       start: dayjs().startOf("day").utc().toISOString(),
     });
@@ -95,6 +78,7 @@ export function AgendaButtons({
 
   const trigger = (
     <Button
+      disabled={monthMode}
       onPress={handleMenuOpen}
       height={45}
       backgroundColors={{
@@ -127,7 +111,7 @@ export function AgendaButtons({
         {dayjs(start).format(titleFormat).split("•")?.[0]}
       </Text>
 
-      {!breakpoints.md && (
+      {!breakpoints.md && !monthMode && (
         <Icon size={30} style={{ marginLeft: -5 }}>
           expand_more
         </Icon>
@@ -152,6 +136,11 @@ export function AgendaButtons({
         !breakpoints.md && isTodaysView && { display: "none" },
         { opacity: isTodaysView ? 0 : 1 },
       ]}
+      backgroundColors={{
+        default: addHslAlpha(theme[8], 0),
+        hovered: addHslAlpha(theme[8], 0.15),
+        pressed: addHslAlpha(theme[8], 0.2),
+      }}
     >
       <View
         style={{
@@ -214,7 +203,9 @@ export function AgendaButtons({
               : { flex: 1 },
           ]}
         >
-          {typeof handleMenuOpen === "undefined" ? (
+          {monthMode ? (
+            trigger
+          ) : typeof handleMenuOpen === "undefined" ? (
             <MenuPopover
               trigger={trigger}
               containerStyle={{ width: breakpoints.md ? 300 : "100%" }}
@@ -224,7 +215,7 @@ export function AgendaButtons({
           ) : (
             trigger
           )}
-          {(weekMode || breakpoints.md) && (
+          {(weekMode || monthMode || breakpoints.md) && (
             <View
               style={{
                 flexDirection: "row",

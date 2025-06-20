@@ -6,10 +6,10 @@ import { TaskDrawer, TaskDrawerProps } from "@/components/task/drawer";
 import { getTaskCompletionStatus } from "@/helpers/getTaskCompletionStatus";
 import { useResponsiveBreakpoints } from "@/helpers/useResponsiveBreakpoints";
 import BottomSheet from "@/ui/BottomSheet";
-import { Button } from "@/ui/Button";
 import { addHslAlpha } from "@/ui/color";
 import { useColorTheme } from "@/ui/color/theme-provider";
 import Icon from "@/ui/Icon";
+import IconButton from "@/ui/IconButton";
 import Spinner from "@/ui/Spinner";
 import Text from "@/ui/Text";
 import { BottomSheetFlashList, BottomSheetModal } from "@gorhom/bottom-sheet";
@@ -164,7 +164,6 @@ function DateIndicator({ day }) {
 
 function Date({ day, events, theme, dIdx, wIdx }) {
   const { mutate } = useCollectionContext();
-  const breakpoints = useResponsiveBreakpoints();
   const drawerRef = useRef<BottomSheetModal>(null);
 
   const getEventsForDay = (day) => {
@@ -235,57 +234,67 @@ function Date({ day, events, theme, dIdx, wIdx }) {
         sheetRef={drawerRef}
         snapPoints={dayEvents.length == 0 ? [300] : ["50%", "90%"]}
         maxBackdropOpacity={0.1}
+        handleIndicatorStyle={{
+          height: 10,
+          marginTop: 3,
+          backgroundColor: theme[4],
+          borderRadius: 20,
+          width: 40,
+          marginBottom: -20,
+        }}
         backgroundStyle={{
           overflow: "hidden",
-          borderRadius: 40,
+          borderRadius: 50,
         }}
         containerStyle={{
-          marginHorizontal: 15,
-          borderRadius: 40,
+          marginHorizontal: 10,
+          borderRadius: 50,
         }}
-        bottomInset={20}
+        bottomInset={10}
       >
         <View
           style={{
+            flexDirection: "row",
             alignItems: "center",
-            marginTop: 20,
+            paddingHorizontal: 20,
+            paddingVertical: 20,
           }}
         >
-          <Text
-            style={{ fontSize: 16, color: theme[8], marginBottom: 2 }}
-            weight={600}
-          >
-            {day.format("dddd")}
-          </Text>
-          <Text
-            style={{
-              fontSize: 22,
-              fontFamily: "serifText700",
-              color: theme[11],
-            }}
-          >
-            {day.format("MMMM D, YYYY")}
-          </Text>
-        </View>
-        <View style={{ paddingHorizontal: 15, marginTop: 20, height: 60 }}>
-          <CreateTask
-            defaultValues={{
-              dateOnly: true,
-            }}
-            mutate={mutations.timeBased.add(mutate)}
-          >
-            <Button
-              variant="filled"
-              containerStyle={{ flex: 1 }}
-              large={!breakpoints.md}
-              bold={!breakpoints.md}
-              textStyle={breakpoints.md && { fontFamily: "body_400" }}
-              iconPosition="end"
-              text="Create"
-              icon="stylus_note"
-              height={breakpoints.md ? 50 : 55}
-            />
-          </CreateTask>
+          <View>
+            <Text
+              style={{ fontSize: 16, color: theme[8], marginBottom: 2 }}
+              weight={600}
+            >
+              {day.format("dddd")}
+            </Text>
+            <Text
+              style={{
+                fontSize: 22,
+                fontFamily: "serifText700",
+                color: theme[11],
+              }}
+            >
+              {day.format("MMMM D, YYYY")}
+            </Text>
+          </View>
+          <View style={{ marginLeft: "auto" }}>
+            <CreateTask
+              defaultValues={{
+                dateOnly: true,
+              }}
+              mutate={mutations.timeBased.add(mutate)}
+            >
+              <IconButton
+                icon="stylus_note"
+                size={50}
+                variant="filled"
+                iconProps={{ bold: true }}
+                style={{
+                  borderRadius: 20,
+                }}
+              />
+            </CreateTask>
+          </View>
         </View>
         <LinearGradient
           colors={[
@@ -293,7 +302,12 @@ function Date({ day, events, theme, dIdx, wIdx }) {
             addHslAlpha(theme[1], 0.7),
             addHslAlpha(theme[1], 0),
           ]}
-          style={{ height: 40, marginBottom: -40, zIndex: 1 }}
+          style={{
+            height: 40,
+            marginBottom: -40,
+            zIndex: 1,
+            pointerEvents: "none",
+          }}
         />
         <View style={{ height: "100%" }}>
           {dayEvents.length == 0 ? (
@@ -315,7 +329,7 @@ function Date({ day, events, theme, dIdx, wIdx }) {
                 <Task
                   key={item.id}
                   task={item}
-                  onTaskUpdate={mutations.timeBased.update}
+                  onTaskUpdate={mutations.timeBased.update(mutate)}
                 />
               )}
             />
@@ -466,27 +480,7 @@ export function Content() {
 
   return data ? (
     <>
-      {!breakpoints.md && <AgendaButtons weekMode />}
-      <View style={{ paddingHorizontal: 15, height: 60 }}>
-        <CreateTask
-          defaultValues={{
-            dateOnly: true,
-          }}
-          mutate={mutations.timeBased.add(mutate)}
-        >
-          <Button
-            variant="filled"
-            containerStyle={{ flex: 1 }}
-            large={!breakpoints.md}
-            bold={!breakpoints.md}
-            textStyle={breakpoints.md && { fontFamily: "body_400" }}
-            iconPosition="end"
-            text="Create"
-            icon="stylus_note"
-            height={breakpoints.md ? 50 : 55}
-          />
-        </CreateTask>
-      </View>
+      {!breakpoints.md && <AgendaButtons monthMode />}
       <CalendarTaskDrawer
         mutateList={mutations.timeBased.update(mutate)}
         tasks={tasks}
