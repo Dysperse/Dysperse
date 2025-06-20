@@ -12,6 +12,7 @@ import { useHotkeys } from "@/helpers/useHotKeys";
 import { useResponsiveBreakpoints } from "@/helpers/useResponsiveBreakpoints";
 import IconButton from "@/ui/IconButton";
 import MenuPopover from "@/ui/MenuPopover";
+import Text from "@/ui/Text";
 import dayjs from "dayjs";
 import { router, useGlobalSearchParams, usePathname } from "expo-router";
 import { openBrowserAsync } from "expo-web-browser";
@@ -83,7 +84,7 @@ const CollectionNavbar = memo(function CollectionNavbar({
   const { data, access, type, swrKey, ...ctx } = useCollectionContext();
   const isReadOnly = access?.access === "READ_ONLY" || (!access && !session);
   const breakpoints = useResponsiveBreakpoints();
-  const { id, mode, fullscreen, tab } = useGlobalSearchParams();
+  const { id, days, fullscreen, tab, showAs } = useGlobalSearchParams();
   const menuRef = useRef<Menu>(null);
   const pathname = usePathname();
   const shareMenuRef = useRef(null);
@@ -168,29 +169,64 @@ const CollectionNavbar = memo(function CollectionNavbar({
   );
 
   const collectionMenuOptions = [
-    ...(type === "calendar"
+    ...(type === "planner"
       ? [
-          // {
-          //   icon: "view_week",
-          //   text: "3-day view",
-          //   id: "3days",
-          //   callback: () => router.setParams({ mode: "3days" }),
-          // },
-          // {
-          //   icon: "calendar_view_week",
-          //   text: "Week view",
-          //   id: "week",
-          //   callback: () => router.setParams({ mode: "week" }),
-          // },
           {
-            icon: "calendar_month",
-            text: "Month view",
-            id: "month",
-            callback: () => router.setParams({ mode: "month" }),
+            renderer: () => (
+              <Text
+                variant="eyebrow"
+                style={{ paddingHorizontal: 10, marginTop: 5 }}
+              >
+                Show as
+              </Text>
+            ),
           },
+          {
+            text: "List",
+            id: "planner",
+            callback: () => router.setParams({ showAs: null }),
+            selected: !showAs || showAs === "list",
+          },
+          {
+            text: "Schedule",
+            id: "planner",
+            callback: () => router.setParams({ showAs: "schedule" }),
+            selected: showAs === "schedule",
+          },
+          { divider: true },
+          {
+            renderer: () => (
+              <Text
+                variant="eyebrow"
+                style={{ paddingHorizontal: 10, marginTop: 5 }}
+              >
+                View
+              </Text>
+            ),
+          },
+        ]
+      : []),
+    ...(type === "planner"
+      ? [
+          {
+            text: "2 days",
+            id: 2,
+            callback: () => router.setParams({ days: 2 }),
+          },
+          {
+            text: "3 days",
+            id: 3,
+            callback: () => router.setParams({ days: 3 }),
+          },
+          {
+            text: "Week",
+            id: 7,
+            callback: () => router.setParams({ days: null }),
+          },
+          { divider: true },
         ].map((e) => ({
           ...e,
-          selected: e.text && e.id === mode,
+          selected: e.text && e.id.toString() === (days || 7)?.toString(),
         }))
       : []),
     session &&

@@ -10,13 +10,17 @@ import IconButton from "@/ui/IconButton";
 import Logo from "@/ui/logo";
 import Spinner from "@/ui/Spinner";
 import Text from "@/ui/Text";
+import { toastConfig } from "@/ui/toast.config";
 import { BottomSheetModalProvider } from "@gorhom/bottom-sheet";
+import { setStringAsync } from "expo-clipboard";
 import { useLocalSearchParams } from "expo-router";
-import * as Sharing from "expo-sharing";
+import { shareAsync } from "expo-sharing";
 import { createContext, useCallback, useMemo } from "react";
-import { Linking, Pressable, View } from "react-native";
+import { Linking, Platform, Pressable, View } from "react-native";
 import { ScrollView } from "react-native-gesture-handler";
 import { MenuProvider } from "react-native-popup-menu";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
+import Toast from "react-native-toast-message";
 import useSWR from "swr";
 
 const PublishedEntityContext = createContext(null);
@@ -26,7 +30,15 @@ const Header = () => {
   const params = useLocalSearchParams();
 
   const handleShare = useCallback(() => {
-    Sharing.shareAsync(`https://dys.us.to/${params.entity}`);
+    if (Platform.OS === "web" && !navigator.share) {
+      setStringAsync(`https://dys.us.to/${params.entity}`);
+      Toast.show({ type: "info", text1: "Copied link to clipboard!" });
+    } else
+      shareAsync(`https://dys.us.to/${params.entity}`, {
+        dialogTitle: "Share Dysperse Task",
+        UTI: "public.plain-text",
+        mimeType: "text/plain",
+      });
   }, [params]);
 
   return (
@@ -88,6 +100,7 @@ const ErrorPage = () => {
         <Alert
           direction={breakpoints.md ? "row" : "column"}
           emoji="1f494"
+          style={{ marginVertical: "auto" }}
           title="This link might be broken, or you may not have access…"
           subtitle="We searched the whole galaxy but couldn't find the item you're looking for."
         />
@@ -97,6 +110,7 @@ const ErrorPage = () => {
 };
 
 export default function Page() {
+  const insets = useSafeAreaInsets();
   const theme = useColor("mint");
   const params = useLocalSearchParams();
   const { data, isLoading, error } = useSWR([
@@ -199,6 +213,7 @@ export default function Page() {
             </MenuProvider>
           </BottomSheetModalProvider>
         )}
+        <Toast topOffset={insets.top + 15} config={toastConfig(theme)} />
       </ColorThemeProvider>
     </PublishedEntityContext.Provider>
   );
