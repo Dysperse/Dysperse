@@ -377,7 +377,7 @@ function CalendarContainer(props) {
   });
 
   return (
-    <View style={{ flex: 1, width }}>
+    <View style={{ flex: 1, width: "100%" }}>
       {/* Weekday headers */}
       <View style={{ flexDirection: "row", width: "100%" }}>
         {weekDays.map((wd, i) => (
