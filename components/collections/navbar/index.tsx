@@ -270,7 +270,7 @@ const CollectionNavbar = memo(function CollectionNavbar({
         {
           text: "Edit, print, and import tasks to your collection",
         },
-        {
+        id !== "all" && {
           text: "Share or publish your collection as a template",
         },
       ]}
@@ -295,7 +295,12 @@ const CollectionNavbar = memo(function CollectionNavbar({
               (type === "planner" ||
                 type === "skyline" ||
                 type === "calendar") &&
-              breakpoints.md && <AgendaButtons weekMode={type === "planner"} />}
+              breakpoints.md && (
+                <AgendaButtons
+                  weekMode={type === "planner"}
+                  monthMode={type === "calendar"}
+                />
+              )}
             <View
               style={{
                 width: breakpoints.md ? 220 : undefined,

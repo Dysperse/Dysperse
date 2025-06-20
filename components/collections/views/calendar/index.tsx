@@ -18,7 +18,7 @@ import { impactAsync, ImpactFeedbackStyle } from "expo-haptics";
 import { LinearGradient } from "expo-linear-gradient";
 import { useLocalSearchParams } from "expo-router";
 import { React, useImperativeHandle, useMemo, useRef, useState } from "react";
-import { Pressable, useWindowDimensions, View } from "react-native";
+import { Platform, Pressable, useWindowDimensions, View } from "react-native";
 import useSWR from "swr";
 import { useCollectionContext } from "../../context";
 import { AgendaButtons } from "../../navbar/AgendaButtons";
@@ -146,7 +146,7 @@ function DateIndicator({ day }) {
         height: 20,
         alignItems: "center",
         justifyContent: "center",
-        backgroundColor: theme[day.isToday() ? 9 : 1],
+        backgroundColor: addHslAlpha(theme[9], day.isToday() ? 1 : 0),
         borderRadius: 5,
         marginBottom: 5,
       }}
@@ -167,6 +167,7 @@ function DateIndicator({ day }) {
 function Date({ day, events, theme, dIdx, wIdx }) {
   const { mutate } = useCollectionContext();
   const drawerRef = useRef<BottomSheetModal>(null);
+  const createTaskSheetRef = useRef<BottomSheetModal>(null);
 
   const getEventsForDay = (day) => {
     if (!day || !events) return [];
@@ -197,7 +198,7 @@ function Date({ day, events, theme, dIdx, wIdx }) {
   return (
     <>
       <Pressable
-        style={{
+        style={({ hovered, pressed }) => ({
           width: `${100 / 7}%`,
           borderRightWidth: dIdx < 6 ? 0.5 : 0,
           borderBottomWidth: wIdx < 4 ? 0.5 : 0,
@@ -205,13 +206,26 @@ function Date({ day, events, theme, dIdx, wIdx }) {
           paddingVertical: 10,
           paddingHorizontal: 2,
           gap: 2,
+          backgroundColor: addHslAlpha(
+            theme[5],
+            (day.isToday() ? 0.2 : 0) + (pressed ? 0.2 : hovered ? 0.1 : 0)
+          ),
           paddingBottom: 5,
           alignItems: "center",
-        }}
+          ...(Platform.OS === "web" && {
+            transition: "background-color 0.2s ease",
+          }),
+        })}
         onLongPress={() => impactAsync(ImpactFeedbackStyle.Medium)}
         onPress={() => {
           impactAsync(ImpactFeedbackStyle.Light);
-          drawerRef.current?.present();
+          if (dayEvents.length) {
+            drawerRef.current?.present();
+          } else {
+            createTaskSheetRef.current?.present({
+              defaultValues: { date: day.toDate() },
+            });
+          }
         }}
       >
         <DateIndicator day={day} />
@@ -231,6 +245,11 @@ function Date({ day, events, theme, dIdx, wIdx }) {
           </Text>
         )}
       </Pressable>
+      <CreateTask
+        defaultValues={{ dateOnly: true }}
+        mutate={mutations.timeBased.add(mutate)}
+        ref={createTaskSheetRef}
+      />
 
       <BottomSheet
         sheetRef={drawerRef}
@@ -280,22 +299,21 @@ function Date({ day, events, theme, dIdx, wIdx }) {
             </Text>
           </View>
           <View style={{ marginLeft: "auto" }}>
-            <CreateTask
-              defaultValues={{
-                dateOnly: true,
+            <IconButton
+              icon="stylus_note"
+              size={50}
+              variant="filled"
+              iconProps={{ bold: true }}
+              onPress={() => {
+                impactAsync(ImpactFeedbackStyle.Light);
+                createTaskSheetRef.current?.present({
+                  defaultValues: { date: day.toDate() },
+                });
               }}
-              mutate={mutations.timeBased.add(mutate)}
-            >
-              <IconButton
-                icon="stylus_note"
-                size={50}
-                variant="filled"
-                iconProps={{ bold: true }}
-                style={{
-                  borderRadius: 20,
-                }}
-              />
-            </CreateTask>
+              style={{
+                borderRadius: 20,
+              }}
+            />
           </View>
         </View>
         <LinearGradient
