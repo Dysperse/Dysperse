@@ -79,6 +79,7 @@ const CalendarCreateTaskDrawer = (props: CreateTaskDrawerProps) => {
 const Event = ({ event, day }) => {
   const theme = useColorTheme();
   const colors = useLabelColors();
+  const breakpoints = useResponsiveBreakpoints();
 
   const colorTheme = event.label?.color ? colors[event.label.color] : theme;
 
@@ -123,11 +124,12 @@ const Event = ({ event, day }) => {
       <View style={{ flex: 1 }}>
         <Text
           style={{
-            fontSize: 10,
+            fontSize: breakpoints.md ? 13 : 10,
             textDecorationLine: hasCompleted ? "line-through" : "none",
             opacity: hasCompleted ? 0.6 : 1,
             color: colorTheme[event.pinned ? 12 : 11],
           }}
+          weight={event.pinned ? 500 : 400}
           numberOfLines={1}
         >{`${event.name}`}</Text>
       </View>
