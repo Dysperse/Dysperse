@@ -17,7 +17,7 @@ import dayjs, { ManipulateType, OpUnitType } from "dayjs";
 import { impactAsync, ImpactFeedbackStyle } from "expo-haptics";
 import { LinearGradient } from "expo-linear-gradient";
 import { useLocalSearchParams } from "expo-router";
-import { React, useImperativeHandle, useMemo, useRef, useState } from "react";
+import React, { useImperativeHandle, useMemo, useRef, useState } from "react";
 import { Platform, Pressable, useWindowDimensions, View } from "react-native";
 import useSWR from "swr";
 import { useCollectionContext } from "../../context";
@@ -60,11 +60,13 @@ const CalendarCreateTaskDrawer = (props: CreateTaskDrawerProps) => {
   const drawerRef = useRef(null);
   const { id } = useLocalSearchParams();
   const [defaultValues, setDefaultValues] = useState({});
+  const { mutate } = useCollectionContext();
 
   useImperativeHandle(props.ref, () => ({
     present: (defaultValues) => {
       setDefaultValues({
-        collectionId: id,
+        collectionId: id === "all" ? undefined : id,
+        dateOnly: true,
         ...defaultValues,
       });
       drawerRef.current?.present();
@@ -72,7 +74,12 @@ const CalendarCreateTaskDrawer = (props: CreateTaskDrawerProps) => {
   }));
 
   return (
-    <CreateTask defaultValues={defaultValues} ref={drawerRef} {...props} />
+    <CreateTask
+      mutate={mutations.timeBased.add(mutate)}
+      defaultValues={defaultValues}
+      ref={drawerRef}
+      {...props}
+    />
   );
 };
 
@@ -167,7 +174,9 @@ function DateIndicator({ day }) {
 function Date({ day, events, theme, dIdx, wIdx }) {
   const { mutate } = useCollectionContext();
   const drawerRef = useRef<BottomSheetModal>(null);
-  const createTaskSheetRef = useRef<BottomSheetModal>(null);
+  const createTaskSheetRef = useRef(null);
+  const { id } = useLocalSearchParams();
+  const breakpoints = useResponsiveBreakpoints();
 
   const getEventsForDay = (day) => {
     if (!day || !events) return [];
@@ -204,7 +213,7 @@ function Date({ day, events, theme, dIdx, wIdx }) {
           borderBottomWidth: wIdx < 4 ? 0.5 : 0,
           borderColor: theme[4],
           paddingVertical: 10,
-          paddingHorizontal: 2,
+          paddingHorizontal: breakpoints.md ? 5 : 2,
           gap: 2,
           backgroundColor: addHslAlpha(
             theme[5],
@@ -222,9 +231,11 @@ function Date({ day, events, theme, dIdx, wIdx }) {
           if (dayEvents.length) {
             drawerRef.current?.present();
           } else {
-            createTaskSheetRef.current?.present({
-              defaultValues: { date: day.toDate() },
-            });
+            createTaskSheetRef.current?.present();
+            setTimeout(
+              () => createTaskSheetRef.current?.setValue("date", dayjs(day)),
+              100
+            );
           }
         }}
       >
@@ -246,7 +257,10 @@ function Date({ day, events, theme, dIdx, wIdx }) {
         )}
       </Pressable>
       <CreateTask
-        defaultValues={{ dateOnly: true }}
+        defaultValues={{
+          collectionId: id === "all" ? undefined : id,
+          dateOnly: true,
+        }}
         mutate={mutations.timeBased.add(mutate)}
         ref={createTaskSheetRef}
       />
@@ -306,13 +320,14 @@ function Date({ day, events, theme, dIdx, wIdx }) {
               iconProps={{ bold: true }}
               onPress={() => {
                 impactAsync(ImpactFeedbackStyle.Light);
-                createTaskSheetRef.current?.present({
-                  defaultValues: { date: day.toDate() },
-                });
+                createTaskSheetRef.current?.present();
+                setTimeout(
+                  () =>
+                    createTaskSheetRef.current?.setValue("date", dayjs(day)),
+                  100
+                );
               }}
-              style={{
-                borderRadius: 20,
-              }}
+              style={{ borderRadius: 20 }}
             />
           </View>
         </View>
@@ -397,44 +412,55 @@ function CalendarContainer(props) {
   });
 
   return (
-    <View style={{ flex: 1, width: "100%" }}>
-      {/* Weekday headers */}
-      <View style={{ flexDirection: "row", width: "100%" }}>
-        {weekDays.map((wd, i) => (
+    <View style={{ flex: 1, padding: 10 }}>
+      <View
+        style={{
+          flex: 1,
+          width: "100%",
+          borderWidth: 1,
+          borderRadius: 20,
+          overflow: "hidden",
+          borderColor: addHslAlpha(theme[5], 0.5),
+          backgroundColor: theme[2],
+        }}
+      >
+        {/* Weekday headers */}
+        <View style={{ flexDirection: "row", width: "100%" }}>
+          {weekDays.map((wd, i) => (
+            <View
+              key={wd + i}
+              style={{
+                width: `${100 / 7}%`,
+                alignItems: "center",
+                justifyContent: "center",
+                paddingVertical: 4,
+                borderBottomWidth: 0.5,
+                borderColor: theme[4],
+              }}
+            >
+              <Text variant="eyebrow">{wd}</Text>
+            </View>
+          ))}
+        </View>
+        {/* Calendar days */}
+        {weeks.map((week, wIdx) => (
           <View
-            key={wd + i}
-            style={{
-              width: `${100 / 7}%`,
-              alignItems: "center",
-              justifyContent: "center",
-              paddingVertical: 4,
-              backgroundColor: theme[1],
-              borderBottomWidth: 0.5,
-              borderColor: theme[4],
-            }}
+            key={wIdx}
+            style={{ flexDirection: "row", width: "100%", flex: 1 }}
           >
-            <Text variant="eyebrow">{wd}</Text>
+            {week.map((day, dIdx) => (
+              <Date
+                key={dIdx}
+                day={day}
+                events={props.events}
+                theme={theme}
+                wIdx={wIdx}
+                dIdx={dIdx}
+              />
+            ))}
           </View>
         ))}
       </View>
-      {/* Calendar days */}
-      {weeks.map((week, wIdx) => (
-        <View
-          key={wIdx}
-          style={{ flexDirection: "row", width: "100%", flex: 1 }}
-        >
-          {week.map((day, dIdx) => (
-            <Date
-              key={dIdx}
-              day={day}
-              events={props.events}
-              theme={theme}
-              wIdx={wIdx}
-              dIdx={dIdx}
-            />
-          ))}
-        </View>
-      ))}
     </View>
   );
 }
