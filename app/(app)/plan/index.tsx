@@ -80,7 +80,7 @@ export function Greetings({
   ];
 
   const intro = planData
-    ? `${greeting}, ${name || session?.user.profile.name.split(" ")[0]}.`
+    ? `${greeting}, ${name || session?.user.profile.name.split(" ")[0]}. It's`
     : "";
 
   return (
@@ -99,8 +99,7 @@ export function Greetings({
           {word}{" "}
         </Text>
       ))}
-      <View style={{ flexGrow: 1, width: "100%" }} />
-      {`${`It's${!planData.weather || !planData.device ? " currently" : ""}`}`
+      {`${`${!planData.weather || !planData.device ? "currently" : ""}`}`
         .split(" ")
         .map((word, index) => (
           <Text key={index} style={[textStyle]}>
@@ -143,13 +142,18 @@ export function Greetings({
           {dayjs().format("h:mm A")}
         </Text>
       </View>
-      <Text style={[textStyle]}>and currently </Text>
+      {"  and currently ".split(" ").map((word, index) => (
+        <Text key={index} style={[textStyle]}>
+          {word}{" "}
+        </Text>
+      ))}
       <Weather
         weatherCode={planData?.weather?.current?.weather_code}
         isNight={!planData?.weather?.current?.is_day}
         icon={icon}
         temp={temp}
       />
+      <View style={{ flexGrow: 1, width: "100%" }} />
       <Text style={textStyle}>in </Text>
       <Location planData={planData} locationName={locationName} />
     </View>

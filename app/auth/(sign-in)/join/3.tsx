@@ -10,7 +10,7 @@ import Text from "@/ui/Text";
 import { router } from "expo-router";
 import { useState } from "react";
 import { Keyboard, View } from "react-native";
-import { KeyboardAwareScrollView } from "react-native-keyboard-controller";
+import { ScrollView } from "react-native-gesture-handler";
 import Animated, { FadeIn } from "react-native-reanimated";
 import { useSignupContext } from "../_layout";
 
@@ -128,6 +128,7 @@ function Customization() {
                 disabled
                 icon={method.icon}
                 size={40}
+                theme="gray"
                 style={{
                   backgroundColor: theme[4],
                 }}
@@ -156,7 +157,6 @@ function Customization() {
         <Button
           height={65}
           variant="filled"
-          style={{ margin: 20 }}
           text={value.length ? "Next" : "Skip"}
           icon={value.length ? "east" : ""}
           iconPosition="end"
@@ -171,12 +171,9 @@ function Customization() {
 
 export default function Page() {
   return (
-    <KeyboardAwareScrollView
-      onScrollBeginDrag={Keyboard.dismiss}
-      contentContainerStyle={{ flexGrow: 1, justifyContent: "center" }}
-    >
+    <ScrollView onScrollBeginDrag={Keyboard.dismiss}>
       <Customization />
-    </KeyboardAwareScrollView>
+    </ScrollView>
   );
 }
 

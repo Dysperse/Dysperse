@@ -32,6 +32,7 @@ function Color() {
       style={{
         padding: 20,
         paddingHorizontal: 30,
+        paddingTop: 100,
         flex: 1,
         justifyContent: "center",
       }}
@@ -138,7 +139,6 @@ function Color() {
         <Button
           height={65}
           variant="filled"
-          style={{ margin: 20 }}
           text="Next"
           containerStyle={[!selected.trim() && { opacity: 0.6 }, { flex: 1 }]}
           icon="east"

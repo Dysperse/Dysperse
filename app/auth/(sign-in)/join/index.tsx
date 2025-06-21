@@ -60,6 +60,11 @@ function Intro() {
           autoFocus
           variant="filled+outlined"
           placeholder="Barack Obama"
+          onSubmitEditing={() => {
+            if (name.trim()) {
+              router.push("/auth/join/2");
+            }
+          }}
           style={{
             paddingHorizontal: 25,
             paddingVertical: 20,
@@ -81,7 +86,6 @@ function Intro() {
         <Button
           height={65}
           variant="filled"
-          style={{ margin: 20 }}
           text="Next"
           containerStyle={[!name.trim() && { opacity: 0.6 }, { flex: 1 }]}
           icon="east"

@@ -13,7 +13,7 @@ import dayjs from "dayjs";
 import { router, useLocalSearchParams } from "expo-router";
 import { useEffect, useRef, useState } from "react";
 import { Keyboard, Linking, View } from "react-native";
-import { KeyboardAwareScrollView } from "react-native-keyboard-controller";
+import { ScrollView } from "react-native-gesture-handler";
 import Animated, { FadeIn } from "react-native-reanimated";
 import { useSignupContext } from "../_layout";
 
@@ -241,7 +241,6 @@ function Content() {
         <Button
           height={65}
           variant="filled"
-          style={{ margin: 20 }}
           text="Finish"
           containerStyle={[!enabled && { opacity: 0.6 }, { flex: 1 }]}
           icon="check"
@@ -302,12 +301,9 @@ function Content() {
 
 export default function Page() {
   return (
-    <KeyboardAwareScrollView
-      onScrollBeginDrag={Keyboard.dismiss}
-      contentContainerStyle={{ flexGrow: 1, justifyContent: "center" }}
-    >
+    <ScrollView onScrollBeginDrag={Keyboard.dismiss}>
       <Content />
-    </KeyboardAwareScrollView>
+    </ScrollView>
   );
 }
 

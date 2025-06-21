@@ -248,10 +248,7 @@ function Content() {
 
 export default function Page() {
   return (
-    <KeyboardAwareScrollView
-      keyboardShouldPersistTaps="handled"
-      contentContainerStyle={{ flexGrow: 1, justifyContent: "center" }}
-    >
+    <KeyboardAwareScrollView keyboardShouldPersistTaps="handled">
       <Content />
     </KeyboardAwareScrollView>
   );
