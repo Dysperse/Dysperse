@@ -90,6 +90,8 @@ const FocusPanel = memo(() => {
             paddingVertical: 0,
             borderRadius: 0,
             flex: 1,
+            ...(Platform.OS === "web" &&
+              ({ WebkitAppRegion: "no-drag" } as any)),
           }}
           style={{
             flex: 1,
