@@ -467,7 +467,7 @@ function CalendarContainer(props) {
 
 export function Content() {
   const params = useLocalSearchParams();
-  const { type, start, end } = useCalendarContext();
+  const { start, end } = useCalendarContext();
   const { isPublic } = useCollectionContext();
 
   const { data, mutate } = useSWR([
@@ -475,7 +475,7 @@ export function Content() {
     {
       start: start.toISOString(),
       end: end.toISOString(),
-      type,
+      type: "month",
       timezone: dayjs.tz.guess(),
       id: params.id,
       isPublic: isPublic ? "true" : "false",
