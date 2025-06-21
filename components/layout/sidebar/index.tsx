@@ -314,7 +314,6 @@ export const LogoButton = memo(function LogoButton({
           alignItems: "center",
           justifyContent: "space-between",
         },
-        Platform.OS === "web" && ({ WebkitAppRegion: "no-drag" } as any),
       ]}
     >
       <MenuPopover
@@ -418,7 +417,11 @@ export const LogoButton = memo(function LogoButton({
           <IconButton
             size={40}
             icon="dock_to_left"
-            style={{ opacity: 0.9 }}
+            style={{
+              opacity: 0.9,
+              ...(Platform.OS === "web" &&
+                ({ WebkitAppRegion: "no-drag" } as any)),
+            }}
             onPress={toggleHidden}
             variant={desktopCollapsed ? "filled" : undefined}
           />
@@ -713,6 +716,7 @@ const PrimarySidebar = memo(function PrimarySidebar({ progressValue }: any) {
             Platform.OS === "web" && {
               scrollSnapAlign: "start",
             },
+            Platform.OS === "web" && ({ WebkitAppRegion: "drag" } as any),
             {
               flexShrink: 0,
               width: ORIGINAL_SIDEBAR_WIDTH + 10,
