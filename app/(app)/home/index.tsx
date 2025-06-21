@@ -510,14 +510,6 @@ function Page() {
           style={{ flex: 1 }}
           contentContainerStyle={{
             paddingTop: Platform.OS === "web" ? 90 : insets.top,
-            ...(Platform.OS === "android"
-              ? {
-                  height: "100%",
-                  justifyContent: "center",
-                }
-              : {
-                  // paddingVertical: Platform.OS === "ios" ? 40 : 100,
-                }),
           }}
         >
           <View

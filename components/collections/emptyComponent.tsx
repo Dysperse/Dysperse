@@ -229,8 +229,8 @@ function ShareProgress() {
                   style={{
                     fontFamily: "serifText700",
                     fontSize: size === "SMALL" ? 20 : 25,
-                    marginTop: 10,
-                    marginBottom: 5,
+                    overflow: "visible",
+                    marginBottom: 10,
                     textAlign: "center",
                     color: theme[11],
                     alignItems: "center",
@@ -241,16 +241,17 @@ function ShareProgress() {
                   <View
                     style={{
                       backgroundColor: theme[9],
-                      verticalAlign: "middle",
                       borderRadius: 5,
                       paddingHorizontal: 4,
                       marginBottom: -3,
+                      transform: [{ translateY: size === "SMALL" ? 4.5 : 7 }],
                     }}
                   >
                     <Text
                       style={{
                         fontFamily: "serifText700",
                         fontSize: size === "SMALL" ? 20 : 25,
+                        lineHeight: size === "SMALL" ? 20 : 30,
                         color: theme[2],
                       }}
                     >
@@ -389,9 +390,9 @@ export const ColumnEmptyComponent = function ColumnEmptyComponent({
       style={[
         finished && {
           marginTop: 5,
-          paddingTop: 60,
+          paddingTop: Platform.OS === "android" ? 0 : 60,
           marginBottom: 10,
-          paddingBottom: 15,
+          paddingBottom: Platform.OS === "android" ? 30 : 15,
           borderRadius: 20,
           backgroundColor: theme[3],
         },

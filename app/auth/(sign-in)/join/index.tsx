@@ -57,6 +57,7 @@ function Intro() {
       </Animated.View>
       <Animated.View entering={FadeIn.delay(900)}>
         <TextField
+          autoFocus
           variant="filled+outlined"
           placeholder="Barack Obama"
           style={{

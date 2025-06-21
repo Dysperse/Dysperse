@@ -113,6 +113,7 @@ export default function Layout() {
             ),
             headerMode: "float",
             detachPreviousScreen: false,
+            gestureEnabled: true,
             cardOverlayEnabled: true,
             cardStyle: { backgroundColor: theme[1], display: "flex" },
           }}

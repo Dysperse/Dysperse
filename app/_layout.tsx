@@ -93,7 +93,7 @@ const useWebDevtoolsWarning = () => {
 
 function Root() {
   const isDark = useDarkMode();
-  const theme = useColor("mint");
+  const theme = useColor("gray");
   const { width } = useWindowDimensions();
   const breakpoints = useResponsiveBreakpoints();
   const [desktopCollapsed, setDesktopCollapsed] = useState(

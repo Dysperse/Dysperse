@@ -1,6 +1,5 @@
-import { styles } from "@/app/(app)/plan";
+import { Greetings, styles } from "@/app/(app)/plan";
 import weatherCodes from "@/components/focus-panel/widgets/weather/weatherCodes.json";
-import { getGreeting } from "@/components/home/getGreeting";
 import { sendApiRequest } from "@/helpers/api";
 import { useResponsiveBreakpoints } from "@/helpers/useResponsiveBreakpoints";
 import { Button } from "@/ui/Button";
@@ -37,15 +36,13 @@ export function Weather({ weatherCode, isNight, icon, temp }) {
           flexDirection: "row",
           alignItems: "center",
           gap: 5,
-          transform: [{ translateY: 18 }],
-          verticalAlign: breakpoints.md ? "middle" : undefined,
         },
       ]}
     >
       <Icon
         bold
         size={breakpoints.md ? 40 : 24}
-        style={{ marginRight: 5, verticalAlign: "middle", color: theme[11] }}
+        style={{ marginRight: 5, color: theme[11] }}
       >
         {icon}
       </Icon>
@@ -54,6 +51,7 @@ export function Weather({ weatherCode, isNight, icon, temp }) {
         style={{
           color: theme[11],
           fontSize: breakpoints.md ? 40 : 30,
+          lineHeight: breakpoints.md ? 50 : 40,
           fontFamily: "serifText700",
         }}
       >
@@ -79,7 +77,7 @@ export function Location({ planData, locationName }) {
             height: breakpoints.md ? undefined : 40,
             borderRadius: 10,
             alignItems: "center",
-            verticalAlign: "middle",
+            alignSelf: "flex-start",
             flexDirection: "row",
             gap: 10,
           },
@@ -103,6 +101,7 @@ export function Location({ planData, locationName }) {
             color: gray[11],
             fontSize: breakpoints.md ? 40 : 30,
             fontFamily: "serifText700",
+            lineHeight: breakpoints.md ? 50 : 40,
           }}
           numberOfLines={1}
         >
@@ -116,20 +115,12 @@ export function Location({ planData, locationName }) {
 function Content() {
   const theme = useColorTheme();
   const params = useLocalSearchParams() as { name: string };
-  const greeting = getGreeting();
   const store = useSignupContext();
   const breakpoints = useResponsiveBreakpoints();
 
   const [hasTouched, setHasTouched] = useState(false);
 
-  const orange = useColor("orange");
-
   const [planData, setPlanData] = useState(null);
-
-  const icon =
-    weatherCodes[planData?.weather?.current?.weather_code]?.[
-      planData?.weather?.current?.is_day ? "day" : "night"
-    ]?.icon;
 
   const getPlan = useCallback(async () => {
     const ip = await fetch("https://api.ipify.org?format=json")
@@ -156,13 +147,6 @@ function Content() {
       );
   }, [getPlan]);
 
-  const locationName =
-    planData?.device?.city?.names?.en ||
-    planData?.device?.country?.names?.en ||
-    planData?.device?.continent?.names?.en;
-
-  const temp = planData?.weather?.current?.temperature_2m;
-
   return !planData ? (
     <View style={{ alignItems: "center", gap: 5 }}>
       <Spinner size={30} />
@@ -179,71 +163,7 @@ function Content() {
     >
       <Animated.View entering={FadeIn.delay(300)}>
         <Text variant="eyebrow">2/5</Text>
-        <Text
-          style={[
-            styles.title,
-            {
-              marginTop: 15,
-              marginBottom: 5,
-              marginLeft: -3,
-              fontSize: breakpoints.md ? 40 : 30,
-              lineHeight: breakpoints.md ? 55 : 45,
-              color: theme[11],
-            },
-          ]}
-        >
-          {greeting}, {store.name.split(" ")[0]}.{"\n"}
-          {`It's${
-            !planData.weather || !planData.device ? " currently" : ""
-          }`}{" "}
-          <View
-            style={[
-              styles.title,
-              {
-                height: breakpoints.md ? undefined : 40,
-                backgroundColor: orange[6],
-                paddingHorizontal: 5,
-                flexDirection: "row",
-                alignItems: "center",
-                borderRadius: 10,
-                transform: [{ translateY: 18 }],
-              },
-            ]}
-          >
-            <Icon
-              style={{
-                verticalAlign: "middle",
-                marginRight: 5,
-                color: orange[11],
-              }}
-              size={breakpoints.md ? 40 : 24}
-              bold
-            >
-              access_time
-            </Icon>
-            <Text
-              style={{
-                color: orange[11],
-                fontSize: breakpoints.md ? 40 : 30,
-                fontFamily: "serifText700",
-              }}
-              numberOfLines={1}
-            >
-              {dayjs().format("h:mm A")}
-            </Text>
-          </View>
-          {planData.weather && " and currently "}
-          {planData?.weather && (
-            <Weather
-              weatherCode={planData?.weather?.current?.weather_code}
-              isNight={!planData?.weather?.current?.is_day}
-              icon={icon}
-              temp={temp}
-            />
-          )}
-          {planData?.device && " in "}
-          <Location planData={planData} locationName={locationName} />
-        </Text>
+        <Greetings name={store.name.split(" ")[0]} planData={planData} />
       </Animated.View>
       <Animated.View entering={FadeIn.delay(900)}>
         <Text

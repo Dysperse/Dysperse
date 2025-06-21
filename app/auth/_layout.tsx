@@ -1,6 +1,6 @@
 import { JsStack } from "@/components/layout/_stack";
 import { useUser } from "@/context/useUser";
-import { ColorThemeProvider, useColorTheme } from "@/ui/color/theme-provider";
+import { useColorTheme } from "@/ui/color/theme-provider";
 import { toastConfig } from "@/ui/toast.config";
 import { BottomSheetModalProvider } from "@gorhom/bottom-sheet";
 import { PortalProvider } from "@gorhom/portal";
@@ -21,22 +21,20 @@ export default function Layout() {
   return (
     <BottomSheetModalProvider>
       <MenuProvider>
-        <ColorThemeProvider theme={theme} setHTMLAttributes>
-          <PortalProvider>
-            <JsStack
-              id={undefined}
-              screenOptions={{
-                header: () => null,
-                headerTransparent: true,
-                gestureResponseDistance: width,
-                gestureEnabled: true,
-                cardStyle: { backgroundColor: theme[1] },
-                cardOverlayEnabled: true,
-              }}
-            />
-            <Toast topOffset={insets.top + 15} config={toastConfig(theme)} />
-          </PortalProvider>
-        </ColorThemeProvider>
+        <PortalProvider>
+          <JsStack
+            id={undefined}
+            screenOptions={{
+              header: () => null,
+              headerTransparent: true,
+              gestureResponseDistance: width,
+              gestureEnabled: true,
+              cardStyle: { backgroundColor: theme[1] },
+              cardOverlayEnabled: true,
+            }}
+          />
+          <Toast topOffset={insets.top + 15} config={toastConfig(theme)} />
+        </PortalProvider>
       </MenuProvider>
     </BottomSheetModalProvider>
   );

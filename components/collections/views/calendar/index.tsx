@@ -10,6 +10,7 @@ import { addHslAlpha } from "@/ui/color";
 import { useColorTheme } from "@/ui/color/theme-provider";
 import Icon from "@/ui/Icon";
 import IconButton from "@/ui/IconButton";
+import RefreshControl from "@/ui/RefreshControl";
 import Spinner from "@/ui/Spinner";
 import Text from "@/ui/Text";
 import { BottomSheetFlashList, BottomSheetModal } from "@gorhom/bottom-sheet";
@@ -18,7 +19,9 @@ import { impactAsync, ImpactFeedbackStyle } from "expo-haptics";
 import { LinearGradient } from "expo-linear-gradient";
 import { useLocalSearchParams } from "expo-router";
 import React, { useImperativeHandle, useMemo, useRef, useState } from "react";
-import { Platform, Pressable, useWindowDimensions, View } from "react-native";
+import { Platform, Pressable, View } from "react-native";
+import { ScrollView } from "react-native-gesture-handler";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 import useSWR from "swr";
 import { useCollectionContext } from "../../context";
 import { AgendaButtons } from "../../navbar/AgendaButtons";
@@ -177,6 +180,7 @@ function Date({ day, events, theme, dIdx, wIdx }) {
   const createTaskSheetRef = useRef(null);
   const { id } = useLocalSearchParams();
   const breakpoints = useResponsiveBreakpoints();
+  const insets = useSafeAreaInsets();
 
   const getEventsForDay = (day) => {
     if (!day || !events) return [];
@@ -285,7 +289,7 @@ function Date({ day, events, theme, dIdx, wIdx }) {
           marginHorizontal: 10,
           borderRadius: 50,
         }}
-        bottomInset={10}
+        bottomInset={insets.bottom + 10}
       >
         <View
           style={{
@@ -377,9 +381,10 @@ function Date({ day, events, theme, dIdx, wIdx }) {
 
 function CalendarContainer(props) {
   const theme = useColorTheme();
+  const insets = useSafeAreaInsets();
+  const breakpoints = useResponsiveBreakpoints();
 
   const { start } = useCalendarContext();
-  const { width } = useWindowDimensions();
 
   // Get first day of month and number of days
   const firstDay = useMemo(() => dayjs(start).startOf("month"), [start]);
@@ -412,16 +417,23 @@ function CalendarContainer(props) {
   });
 
   return (
-    <View style={{ flex: 1, padding: 10 }}>
+    <View
+      style={{
+        flex: 1,
+        padding: breakpoints.md ? 10 : 0,
+        paddingBottom: insets.bottom + (breakpoints.md ? 10 : 0),
+      }}
+    >
       <View
         style={{
           flex: 1,
           width: "100%",
-          borderWidth: 1,
-          borderRadius: 20,
-          overflow: "hidden",
+          borderWidth: breakpoints.md ? 1 : 0,
+          borderRadius: breakpoints.md ? 20 : undefined,
+          overflow: breakpoints.md ? "hidden" : undefined,
           borderColor: addHslAlpha(theme[5], 0.5),
-          backgroundColor: theme[2],
+          backgroundColor: breakpoints.md ? theme[2] : undefined,
+          borderTopWidth: 1,
         }}
       >
         {/* Weekday headers */}
@@ -576,6 +588,7 @@ export function Content() {
 }
 
 export default function Calendar() {
+  const { mutate } = useCollectionContext();
   // eslint-disable-next-line prefer-const
   let { start } = useLocalSearchParams();
   if (!start) start = dayjs().startOf("month").toISOString();
@@ -589,7 +602,15 @@ export default function Calendar() {
 
   return (
     <CalendarContext.Provider value={agendaContextValue as any}>
-      <Content />
+      <ScrollView
+        style={{ flex: 1 }}
+        contentContainerStyle={{ flexGrow: 1 }}
+        refreshControl={
+          <RefreshControl refreshing={false} onRefresh={() => mutate()} />
+        }
+      >
+        <Content />
+      </ScrollView>
     </CalendarContext.Provider>
   );
 }

@@ -18,9 +18,10 @@ export function BottomSheetBackHandler() {
       BackHandler.addEventListener("hardwareBackPress", handleBackPress);
 
     return () => {
-      BackHandler.removeEventListener("hardwareBackPress", handleBackPress);
+      // BackHandler.removeEventListener("hardwareBackPress", handleBackPress);
     };
   }, [animatedIndex, close]);
 
   return null;
 }
+

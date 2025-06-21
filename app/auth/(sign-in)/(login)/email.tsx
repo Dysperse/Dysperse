@@ -27,6 +27,7 @@ import * as passkey from "react-native-passkeys";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { Path, Svg } from "react-native-svg";
 import Toast from "react-native-toast-message";
+import { PasskeyAuth } from "..";
 import { rp } from "../../../(app)/settings/account/passkeys";
 import { authStyles } from "../../../../components/authStyles";
 import { useSession } from "../../../../context/AuthProvider";
@@ -362,6 +363,7 @@ function Email({ control, handleSubmit }: { control: any; handleSubmit }) {
             bold
           />
         </View>
+        <PasskeyAuth />
         <Button
           height={50}
           onPress={() => router.push("/auth/forgot-password")}

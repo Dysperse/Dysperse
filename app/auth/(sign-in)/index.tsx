@@ -17,6 +17,7 @@ import QRCode from "react-native-qrcode-svg";
 import Svg, { Path } from "react-native-svg";
 import Toast from "react-native-toast-message";
 import { GoogleAuth, PasskeyModal } from "./(login)/email";
+import { BannerImage } from "./_layout";
 
 function QrLogin() {
   const theme = useColorTheme();
@@ -138,16 +139,18 @@ function AppleAuth() {
     <>
       {AppleAuthentication.isAvailableAsync() && (
         <AppleAuthentication.AppleAuthenticationButton
-          buttonType={AppleAuthentication.AppleAuthenticationButtonType.SIGN_IN}
+          buttonType={
+            AppleAuthentication.AppleAuthenticationButtonType.CONTINUE
+          }
           buttonStyle={
             isDark
-              ? AppleAuthentication.AppleAuthenticationButtonStyle.BLACK
-              : AppleAuthentication.AppleAuthenticationButtonStyle.WHITE
+              ? AppleAuthentication.AppleAuthenticationButtonStyle.WHITE
+              : AppleAuthentication.AppleAuthenticationButtonStyle.BLACK
           }
-          cornerRadius={999}
+          cornerRadius={19.4}
           style={{
-            width: "100%",
-            height: 50,
+            width: 80,
+            height: "100%",
           }}
           onPress={async () => {
             Toast.show({
@@ -197,19 +200,51 @@ function AppleAuth() {
   );
 }
 
-export default function SignIn() {
-  const theme = useColorTheme();
+export function PasskeyAuth() {
   const isDark = useDarkMode();
   const breakpoints = useResponsiveBreakpoints();
-  const handleSignUpPress = () => {
-    router.push("/auth/join");
-  };
+  return (
+    <PasskeyModal>
+      <Button
+        large
+        bold
+        icon="vpn_key"
+        text={breakpoints.md ? "Passkey" : "Continue with Passkey"}
+        variant={breakpoints.md ? "filled" : "outlined"}
+        iconStyle={breakpoints.md ? { color: "#fff" } : undefined}
+        textStyle={breakpoints.md ? { color: "#fff" } : undefined}
+        style={
+          breakpoints.md
+            ? [
+                { justifyContent: "flex-start", paddingLeft: 25, gap: 15 },
+                !breakpoints.md && {
+                  flexDirection: "column",
+                  justifyContent: "center",
+                  gap: 5,
+                },
+              ]
+            : []
+        }
+        iconSize={breakpoints.md ? 30 : undefined}
+        height={breakpoints.md ? undefined : 60}
+        containerStyle={[{ flex: 1 }]}
+      />
+    </PasskeyModal>
+  );
+}
+
+export default function SignIn() {
+  const isDark = useDarkMode();
+  const theme = useColorTheme();
+  const breakpoints = useResponsiveBreakpoints();
+
   return (
     <View
       style={{
         flex: 1,
         justifyContent: "center",
         padding: breakpoints.md ? 40 : 20,
+        paddingTop: breakpoints.md ? 40 : 10,
         paddingBottom: 0,
         paddingLeft: breakpoints.md ? 60 : undefined,
       }}
@@ -217,10 +252,9 @@ export default function SignIn() {
       <Text
         style={{
           fontFamily: "serifText700",
-          fontSize: breakpoints.md ? 45 : 35,
+          fontSize: breakpoints.md ? 45 : 30,
           color: theme[11],
-          paddingTop: 60,
-          marginTop: "auto",
+          textAlign: breakpoints.md ? "left" : "center",
         }}
       >
         Welcome back!
@@ -229,15 +263,40 @@ export default function SignIn() {
         style={{
           opacity: 0.4,
           fontSize: breakpoints.md ? 25 : 20,
-          marginTop: 5,
-          marginBottom: 20,
+          marginTop: Platform.OS === "android" ? 0 : 3,
           color: theme[11],
+          textAlign: breakpoints.md ? "left" : "center",
         }}
         weight={600}
       >
-        Pick a method to sign in
+        Choose a way to sign in below.{"\n"}
       </Text>
-      <View style={{ flexDirection: "row", gap: 10 }}>
+
+      <View style={{ flexDirection: "row", gap: 10, marginTop: -10 }}>
+        <Button
+          large
+          bold
+          icon="alternate_email"
+          text="Email"
+          onPress={() => router.push("/auth/email")}
+          style={[{ gap: 15 }]}
+          iconSize={30}
+          height={breakpoints.md ? undefined : 60}
+          containerStyle={[
+            { flex: 1 },
+            !breakpoints.md && { borderRadius: 22 },
+          ]}
+          variant="filled"
+          iconStyle={{ color: !isDark ? "#fff" : "#000" }}
+          textStyle={{ color: !isDark ? "#fff" : "#000" }}
+          backgroundColors={{
+            default: isDark ? "#fff" : "#000",
+            hovered: isDark ? "#fff" : "#000",
+            pressed: isDark ? "#fff" : "#000",
+          }}
+          android_ripple={{ color: isDark ? "#000" : "#fff" }}
+        />
+        <AppleAuth />
         <GoogleAuth
           onNewAccount={(d) => {
             Toast.show({
@@ -268,10 +327,11 @@ export default function SignIn() {
           <Button
             large
             bold
+            android_ripple={{ color: isDark ? "#000" : "#fff" }}
             icon={
               (
                 <Svg
-                  fill={theme[3]}
+                  fill={isDark ? "#000" : "#fff"}
                   width={24}
                   height={24}
                   viewBox="0 0 512 512"
@@ -280,7 +340,6 @@ export default function SignIn() {
                 </Svg>
               ) as any
             }
-            text="Google"
             iconStyle={{ marginBottom: Platform.OS === "web" ? 0 : -5 }}
             style={[
               { justifyContent: "flex-start", paddingLeft: 25, gap: 15 },
@@ -290,110 +349,73 @@ export default function SignIn() {
                 gap: 5,
               },
             ]}
-            height={breakpoints.md ? undefined : 90}
-            onPress={handleSignUpPress}
-            textStyle={{ color: theme[3] }}
+            height={breakpoints.md ? undefined : 60}
             containerStyle={[
-              { flex: 1 },
-              !breakpoints.md && { borderRadius: 30 },
+              { width: 80 },
+              !breakpoints.md && { borderRadius: 22 },
             ]}
             iconSize={30}
+            variant="filled"
             backgroundColors={{
-              default: theme[11],
-              hovered: theme[11],
-              pressed: theme[11],
+              default: isDark ? "#fff" : "#000",
+              hovered: isDark ? "#fff" : "#000",
+              pressed: isDark ? "#fff" : "#000",
             }}
           />
         </GoogleAuth>
-        <Button
-          large
-          bold
-          icon="alternate_email"
-          text="Email"
-          onPress={() => router.push("/auth/email")}
-          style={[
-            { justifyContent: "flex-start", paddingLeft: 25, gap: 15 },
-            !breakpoints.md && {
-              flexDirection: "column",
-              justifyContent: "center",
-              gap: 5,
-            },
-          ]}
-          iconSize={30}
-          height={breakpoints.md ? undefined : 90}
-          containerStyle={[
-            { flex: 1 },
-            !breakpoints.md && { borderRadius: 30 },
-          ]}
-          variant="filled"
-        />
       </View>
-      <View
-        style={{
-          flexDirection: "row",
-          gap: 10,
-          marginVertical: 10,
-        }}
-      >
-        <PasskeyModal>
-          <Button
-            large
-            bold
-            icon="vpn_key"
-            text="Passkey"
-            variant="filled"
-            onPress={handleSignUpPress}
-            style={[
-              { justifyContent: "flex-start", paddingLeft: 25, gap: 15 },
-              !breakpoints.md && {
-                flexDirection: "column",
-                justifyContent: "center",
-                gap: 5,
-              },
-            ]}
-            iconSize={30}
-            height={breakpoints.md ? undefined : 90}
-            containerStyle={[
-              { flex: 1 },
-              !breakpoints.md && { borderRadius: 30 },
-            ]}
-          />
-        </PasskeyModal>
-        <QrModal>
-          <Button
-            large
-            bold
-            icon="center_focus_weak"
-            text="QR code"
-            onPress={handleSignUpPress}
-            variant="filled"
-            style={[
-              { justifyContent: "flex-start", paddingLeft: 25, gap: 15 },
-              !breakpoints.md && {
-                flexDirection: "column",
-                justifyContent: "center",
-                gap: 5,
-              },
-            ]}
-            iconSize={30}
-            height={breakpoints.md ? undefined : 90}
-            containerStyle={[
-              { flex: 1 },
-              !breakpoints.md && { borderRadius: 30 },
-            ]}
-          />
-        </QrModal>
-      </View>
-      <AppleAuth />
+      {breakpoints.md && (
+        <View
+          style={{
+            flexDirection: "row",
+            gap: 10,
+            marginVertical: 10,
+          }}
+        >
+          <PasskeyAuth />
+          <QrModal>
+            <Button
+              large
+              bold
+              icon="center_focus_weak"
+              text="QR code"
+              variant="filled"
+              style={[
+                { justifyContent: "flex-start", paddingLeft: 25, gap: 15 },
+                !breakpoints.md && {
+                  flexDirection: "column",
+                  justifyContent: "center",
+                  gap: 5,
+                },
+              ]}
+              iconSize={30}
+              height={breakpoints.md ? undefined : 60}
+              containerStyle={[
+                { flex: 1 },
+                !breakpoints.md && { borderRadius: 22 },
+              ]}
+            />
+          </QrModal>
+        </View>
+      )}
+
       <Button
         large
         bold
-        iconPosition="end"
-        icon="arrow_forward_ios"
         text="Create an account"
-        onPress={handleSignUpPress}
-        containerStyle={{ flex: 1, marginTop: "auto" }}
+        onPress={() => router.push("/auth/join")}
+        style={[{ gap: 15 }]}
+        iconSize={30}
+        height={60}
+        containerStyle={[
+          !breakpoints.md && { borderRadius: 25, marginTop: 10 },
+        ]}
+        icon="east"
+        iconPosition="end"
+        variant="filled"
       />
+
+      {!breakpoints.md && <BannerImage />}
     </View>
   );
 }
