@@ -1,6 +1,7 @@
 import { JsStack } from "@/components/layout/_stack";
 import { forHorizontalIOS } from "@/components/layout/forHorizontalIOS";
 import { useResponsiveBreakpoints } from "@/helpers/useResponsiveBreakpoints";
+import { addHslAlpha } from "@/ui/color";
 import { useColorTheme } from "@/ui/color/theme-provider";
 import IconButton from "@/ui/IconButton";
 import Logo from "@/ui/logo";
@@ -8,6 +9,7 @@ import Text from "@/ui/Text";
 import { TransitionPresets } from "@react-navigation/stack";
 import dayjs from "dayjs";
 import { Image, ImageBackground } from "expo-image";
+import { LinearGradient } from "expo-linear-gradient";
 import { router } from "expo-router";
 import { createContext, useContext, useRef } from "react";
 import { Dimensions, Platform, View } from "react-native";
@@ -128,6 +130,17 @@ export default function Layout() {
                     width: "100%",
                   }}
                 >
+                  <LinearGradient
+                    colors={[theme[1], addHslAlpha(theme[1], 0)]}
+                    style={{
+                      position: "absolute",
+                      top: 0,
+                      left: 0,
+                      right: 0,
+                      height: 100,
+                      pointerEvents: "none",
+                    }}
+                  />
                   <IconButton
                     icon="west"
                     size={45}

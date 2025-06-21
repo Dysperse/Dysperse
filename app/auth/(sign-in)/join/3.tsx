@@ -63,6 +63,7 @@ function Customization() {
   return (
     <View
       style={{
+        paddingHorizontal: 30,
         padding: 20,
         flex: 1,
         paddingTop: 110,

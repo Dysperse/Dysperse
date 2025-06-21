@@ -390,7 +390,7 @@ export default function SignIn() {
         bold
         iconPosition="end"
         icon="arrow_forward_ios"
-        text="Join Dysperse"
+        text="Create an account"
         onPress={handleSignUpPress}
         containerStyle={{ flex: 1, marginTop: "auto" }}
       />

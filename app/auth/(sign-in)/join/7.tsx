@@ -92,9 +92,6 @@ export default function Page() {
           }}
         >
           <Spinner size={30} />
-          {/* <Text style={{ fontFamily: "mono" }}>
-            {JSON.stringify(store, null, 2)}
-          </Text> */}
         </View>
       )}
     </View>

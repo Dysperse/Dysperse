@@ -105,8 +105,6 @@ export default function Page() {
             <TextField
               variant="filled+outlined"
               style={{
-                paddingHorizontal: 30,
-                paddingVertical: 20,
                 fontSize: 20,
                 width: "100%",
                 borderColor: error ? "red" : theme[6],

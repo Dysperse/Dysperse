@@ -5,7 +5,7 @@ import Text from "@/ui/Text";
 import TextField from "@/ui/TextArea";
 import { router } from "expo-router";
 import { useEffect, useState } from "react";
-import { Keyboard, View } from "react-native";
+import { View } from "react-native";
 import { KeyboardAwareScrollView } from "react-native-keyboard-controller";
 import Animated, { FadeIn } from "react-native-reanimated";
 import { useSignupContext } from "../_layout";
@@ -24,6 +24,7 @@ function Intro() {
     <View
       style={{
         padding: 20,
+        paddingHorizontal: 30,
         flex: 1,
         justifyContent: "center",
       }}
@@ -59,11 +60,14 @@ function Intro() {
           variant="filled+outlined"
           placeholder="Barack Obama"
           style={{
-            padding: 20,
+            paddingHorizontal: 25,
+            paddingVertical: 20,
             fontSize: 20,
             height: 65,
             borderRadius: 20,
             marginBottom: 20,
+            fontFamily: "body_600",
+            borderWidth: 0,
           }}
           onChangeText={setName}
           autoComplete="name"
@@ -93,8 +97,13 @@ function Intro() {
 export default function Page() {
   return (
     <KeyboardAwareScrollView
-      onScrollBeginDrag={Keyboard.dismiss}
-      contentContainerStyle={{ flexGrow: 1, justifyContent: "center" }}
+      keyboardShouldPersistTaps="handled"
+      // onScrollBeginDrag={Keyboard.dismiss}
+      contentContainerStyle={{
+        flexGrow: 1,
+        justifyContent: "center",
+        paddingTop: 90,
+      }}
     >
       <Intro />
     </KeyboardAwareScrollView>

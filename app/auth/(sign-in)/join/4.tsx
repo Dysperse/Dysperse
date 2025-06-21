@@ -31,6 +31,7 @@ function Color() {
     <View
       style={{
         padding: 20,
+        paddingHorizontal: 30,
         flex: 1,
         justifyContent: "center",
       }}

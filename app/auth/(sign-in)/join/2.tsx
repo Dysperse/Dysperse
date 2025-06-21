@@ -14,7 +14,7 @@ import dayjs from "dayjs";
 import { Image } from "expo-image";
 import { router, useLocalSearchParams } from "expo-router";
 import { useCallback, useEffect, useState } from "react";
-import { Keyboard, Platform, View } from "react-native";
+import { Platform, View } from "react-native";
 import { KeyboardAwareScrollView } from "react-native-keyboard-controller";
 import Animated, { FadeIn } from "react-native-reanimated";
 import { useSignupContext } from "../_layout";
@@ -171,6 +171,7 @@ function Content() {
     <View
       style={{
         padding: 20,
+        paddingHorizontal: 30,
         flex: 1,
         paddingTop: 110,
         justifyContent: "center",
@@ -328,7 +329,7 @@ function Content() {
 export default function Page() {
   return (
     <KeyboardAwareScrollView
-      onScrollBeginDrag={Keyboard.dismiss}
+      keyboardShouldPersistTaps="handled"
       contentContainerStyle={{ flexGrow: 1, justifyContent: "center" }}
     >
       <Content />

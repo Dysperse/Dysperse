@@ -13,7 +13,7 @@ import IconButton from "@/ui/IconButton";
 import Spinner from "@/ui/Spinner";
 import Text from "@/ui/Text";
 import { BottomSheetFlashList, BottomSheetModal } from "@gorhom/bottom-sheet";
-import dayjs, { ManipulateType, OpUnitType } from "dayjs";
+import dayjs from "dayjs";
 import { impactAsync, ImpactFeedbackStyle } from "expo-haptics";
 import { LinearGradient } from "expo-linear-gradient";
 import { useLocalSearchParams } from "expo-router";
@@ -473,9 +473,9 @@ export function Content() {
   const { data, mutate } = useSWR([
     "space/collections/collection/planner",
     {
+      type: "month",
       start: start.toISOString(),
       end: end.toISOString(),
-      type: "month",
       timezone: dayjs.tz.guess(),
       id: params.id,
       isPublic: isPublic ? "true" : "false",
@@ -577,26 +577,15 @@ export function Content() {
 
 export default function Calendar() {
   // eslint-disable-next-line prefer-const
-  let { start, id, mode } = useLocalSearchParams();
-  const { mode: originalMode } = useLocalSearchParams();
-  if (!mode || mode === "3days") mode = "week";
-  if (mode === "schedule") mode = "month";
-  if (!start)
-    start = dayjs()
-      .startOf(mode as any)
-      .toISOString();
+  let { start } = useLocalSearchParams();
+  if (!start) start = dayjs().startOf("month").toISOString();
 
   const agendaContextValue = useMemo(() => {
     return {
-      mode,
-      type: "week",
-      start: dayjs(start as string).startOf(mode as OpUnitType),
-      end: dayjs(start as string)
-        .startOf(mode as OpUnitType)
-        .add(originalMode === "3days" ? 2 : 1, mode as ManipulateType),
-      id,
+      start: dayjs(start as string).startOf("month"),
+      end: dayjs(start as string).endOf("month"),
     };
-  }, [start, id, mode, originalMode]);
+  }, [start]);
 
   return (
     <CalendarContext.Provider value={agendaContextValue as any}>

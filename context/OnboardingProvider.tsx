@@ -109,7 +109,7 @@ export function OnboardingContainer(
       onStop={async (value) => {
         if (value.isLast) {
           onboardingState.current = null;
-          const t = await sendApiRequest(
+          await sendApiRequest(
             sessionToken,
             "PUT",
             "user/account",

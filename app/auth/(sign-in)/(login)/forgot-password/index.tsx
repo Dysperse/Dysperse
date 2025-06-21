@@ -1,4 +1,5 @@
 import { useSession } from "@/context/AuthProvider";
+import { useResponsiveBreakpoints } from "@/helpers/useResponsiveBreakpoints";
 import { Button, ButtonText } from "@/ui/Button";
 import Icon from "@/ui/Icon";
 import Spinner from "@/ui/Spinner";
@@ -30,8 +31,10 @@ const styles = StyleSheet.create({
     textAlign: "center",
   },
   input: {
-    paddingHorizontal: 30,
-    paddingVertical: 20,
+    height: 60,
+    paddingHorizontal: 20,
+    fontFamily: "body_600",
+    borderWidth: 0,
     marginBottom: 20,
     fontSize: 20,
     width: "100%",
@@ -39,6 +42,8 @@ const styles = StyleSheet.create({
 });
 
 const Email = ({ form }: any) => {
+  const theme = useColorTheme();
+  const breakpoints = useResponsiveBreakpoints();
   const { handleNext } = usePasswordContext();
 
   return (
@@ -50,14 +55,23 @@ const Email = ({ form }: any) => {
             marginTop: "auto",
             paddingTop: 10,
             fontFamily: "serifText700",
+            color: theme[11],
+            textAlign: "center",
           },
         ]}
       >
         Forgot password?
       </Text>
       <Text
-        style={[authStyles.subtitleContainer, { opacity: 0.6 }]}
-        weight={300}
+        style={[
+          authStyles.subtitleContainer,
+          {
+            color: theme[11],
+            textAlign: breakpoints.md ? undefined : "center",
+            opacity: 0.6,
+          },
+        ]}
+        weight={500}
       >
         Enter your email and we'll send{"\n"}you a link to reset your password.
       </Text>

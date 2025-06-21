@@ -690,6 +690,7 @@ const PrimarySidebar = memo(function PrimarySidebar({ progressValue }: any) {
   return (
     <OnboardingContainer
       id="SIDEBAR"
+      delay={1000}
       onlyIf={() => pathname === "/home"}
       onStart={() => sidebarRef.current.openDrawer()}
       steps={[
