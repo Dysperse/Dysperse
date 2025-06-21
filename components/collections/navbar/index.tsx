@@ -172,6 +172,7 @@ const CollectionNavbar = memo(function CollectionNavbar({
     ...(type === "planner"
       ? [
           {
+            id: "render",
             renderer: () => (
               <Text
                 variant="eyebrow"
@@ -193,8 +194,9 @@ const CollectionNavbar = memo(function CollectionNavbar({
             callback: () => router.setParams({ showAs: "schedule" }),
             selected: showAs === "schedule",
           },
-          { divider: true },
+          { key: "1", id: "divider", divider: true },
           {
+            id: "text",
             renderer: () => (
               <Text
                 variant="eyebrow"
@@ -210,25 +212,25 @@ const CollectionNavbar = memo(function CollectionNavbar({
       ? [
           {
             text: "2 days",
-            id: 2,
+            id: "2",
             callback: () => router.setParams({ days: 2 }),
           },
           {
             text: "3 days",
-            id: 3,
+            id: "3",
             callback: () => router.setParams({ days: 3 }),
           },
           {
             text: "Week",
-            id: 7,
+            id: "7",
             callback: () => router.setParams({ days: null }),
           },
-          { divider: true },
         ].map((e) => ({
           ...e,
           selected: e.text && e.id.toString() === (days || 7)?.toString(),
         }))
       : []),
+    ...(type === "planner" ? [{ key: 2, divider: true }] : []),
     session &&
       !isAll && {
         icon: "edit",
