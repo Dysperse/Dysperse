@@ -183,12 +183,6 @@ export default function Layout() {
             }}
           >
             <JsStack.Screen
-              name="join"
-              options={{
-                ...TransitionPresets.SlideFromRightIOS,
-              }}
-            />
-            <JsStack.Screen
               name="index"
               options={{
                 header: () => (
