@@ -96,7 +96,7 @@ const Event = ({ event, day }) => {
     <View
       style={{
         width: "100%",
-        borderRadius: 3,
+        borderRadius: breakpoints.md ? 7 : 4,
         paddingHorizontal: 4,
         paddingVertical: 1,
         backgroundColor: colorTheme[event.pinned ? 7 : 4],
@@ -210,7 +210,7 @@ function Date({ day, events, theme, dIdx, wIdx }) {
         style={({ hovered, pressed }) => ({
           width: `${100 / 7}%`,
           borderRightWidth: dIdx < 6 ? 0.5 : 0,
-          borderBottomWidth: wIdx < 4 ? 0.5 : 0,
+          borderBottomWidth: wIdx < 5 ? 0.5 : 0,
           borderColor: theme[4],
           paddingVertical: 10,
           paddingHorizontal: breakpoints.md ? 5 : 2,
@@ -433,8 +433,8 @@ function CalendarContainer(props) {
                 width: `${100 / 7}%`,
                 alignItems: "center",
                 justifyContent: "center",
-                paddingVertical: 4,
-                borderBottomWidth: 0.5,
+                paddingTop: 10,
+                borderRightWidth: 0.5,
                 borderColor: theme[4],
               }}
             >
