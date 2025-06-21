@@ -48,7 +48,14 @@ import React, {
   useState,
 } from "react";
 import { Controller, useForm } from "react-hook-form";
-import { Keyboard, Linking, Platform, Pressable, View } from "react-native";
+import {
+  InteractionManager,
+  Keyboard,
+  Linking,
+  Platform,
+  Pressable,
+  View,
+} from "react-native";
 import { ScrollView } from "react-native-gesture-handler";
 import Animated, {
   useAnimatedStyle,
@@ -1346,7 +1353,11 @@ const BottomSheetContent = ({
   const { session } = useUser();
   useEffect(() => {
     if (!session.user.hintsViewed.includes("CREATE_TASK")) return;
-    nameRef.current?.focus({ preventScroll: true });
+    setTimeout(() => {
+      InteractionManager.runAfterInteractions(() => {
+        nameRef.current?.focus({ preventScroll: true });
+      });
+    }, 200);
   }, [session, nameRef, breakpoints]);
 
   const onSubmit = async (data) => {

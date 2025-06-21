@@ -438,8 +438,8 @@ function Header({ title }) {
     >
       <Text
         style={{
-          fontFamily: "serifText800",
-          fontSize: 30,
+          fontFamily: "serifText700",
+          fontSize: 20,
           color: theme[11],
         }}
       >
@@ -633,3 +633,4 @@ export const CreateCollectionModal = ({
     </>
   );
 };
+
