@@ -4,6 +4,8 @@ import { AttachStep } from "@/context/OnboardingProvider";
 import { useUser } from "@/context/useUser";
 import { useResponsiveBreakpoints } from "@/helpers/useResponsiveBreakpoints";
 import { Button, ButtonText } from "@/ui/Button";
+import { addHslAlpha } from "@/ui/color";
+import { useColorTheme } from "@/ui/color/theme-provider";
 import { DatePicker } from "@/ui/DatePicker";
 import ErrorAlert from "@/ui/Error";
 import Icon from "@/ui/Icon";
@@ -16,8 +18,6 @@ import { RecurrencePicker } from "@/ui/RecurrencePicker";
 import SkeletonContainer from "@/ui/Skeleton/container";
 import { LinearSkeletonArray } from "@/ui/Skeleton/linear";
 import Text from "@/ui/Text";
-import { addHslAlpha } from "@/ui/color";
-import { useColorTheme } from "@/ui/color/theme-provider";
 import capitalizeFirstLetter from "@/utils/capitalizeFirstLetter";
 import dayjs from "dayjs";
 import { LinearGradient } from "expo-linear-gradient";
@@ -27,8 +27,8 @@ import Toast from "react-native-toast-message";
 import { RRule } from "rrule";
 import useSWR from "swr";
 import CreateTask from "../create";
-import { TaskNote } from "./TaskNote";
 import { useTaskDrawerContext } from "./context";
+import { TaskNote } from "./TaskNote";
 
 function TaskRescheduleButton({ task, updateTask }) {
   const sheetRef = useRef(null);
