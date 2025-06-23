@@ -5,7 +5,8 @@ import Text from "@/ui/Text";
 import TextField from "@/ui/TextArea";
 import { useColorTheme } from "@/ui/color/theme-provider";
 import { Controller } from "react-hook-form";
-import { KeyboardAvoidingView, View } from "react-native";
+import { View } from "react-native";
+import { KeyboardAvoidingView } from "react-native-keyboard-controller";
 
 export const Intro = ({ form }) => {
   const { handleNext } = useSignupContext();
