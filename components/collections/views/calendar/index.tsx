@@ -63,7 +63,6 @@ const CalendarCreateTaskDrawer = (props: CreateTaskDrawerProps) => {
   const drawerRef = useRef(null);
   const { id } = useLocalSearchParams();
   const [defaultValues, setDefaultValues] = useState({});
-  const { mutate } = useCollectionContext();
 
   useImperativeHandle(props.ref, () => ({
     present: (defaultValues) => {
@@ -78,7 +77,7 @@ const CalendarCreateTaskDrawer = (props: CreateTaskDrawerProps) => {
 
   return (
     <CreateTask
-      mutate={mutations.timeBased.add(mutate)}
+      mutate={mutations.timeBased.add(props.mutate)}
       defaultValues={defaultValues}
       ref={drawerRef}
       {...props}
@@ -174,8 +173,7 @@ function DateIndicator({ day }) {
   );
 }
 
-function Date({ day, events, theme, dIdx, wIdx }) {
-  const { mutate } = useCollectionContext();
+function Date({ mutate, day, events, theme, dIdx, wIdx }) {
   const drawerRef = useRef<BottomSheetModal>(null);
   const createTaskSheetRef = useRef(null);
   const { id } = useLocalSearchParams();
@@ -284,6 +282,7 @@ function Date({ day, events, theme, dIdx, wIdx }) {
         backgroundStyle={{
           overflow: "hidden",
           borderRadius: 50,
+          backgroundColor: theme[1],
         }}
         containerStyle={{
           marginHorizontal: 10,
@@ -462,6 +461,7 @@ function CalendarContainer(props) {
           >
             {week.map((day, dIdx) => (
               <Date
+                mutate={props.mutate}
                 key={dIdx}
                 day={day}
                 events={props.events}
@@ -498,14 +498,16 @@ export function Content() {
   const taskDrawerRef = useRef(null);
   const createTaskSheetRef = useRef(null);
 
-  const tasks = data?.reduce((acc, col) => {
-    return acc.concat(
-      Object.values(col?.entities || {}).map((task) => ({
-        ...task,
-        dateRange: [dayjs(col.start).toDate(), dayjs(col.end).toDate()],
-      }))
-    );
-  }, []);
+  const tasks = data
+    ?.reduce((acc, col) => {
+      return acc.concat(
+        Object.values(col?.entities || {}).map((task) => ({
+          ...task,
+          dateRange: [dayjs(col.start).toDate(), dayjs(col.end).toDate()],
+        }))
+      );
+    }, [])
+    .filter((t) => !t.trash);
 
   const filteredEvents = useMemo(
     () =>
@@ -537,7 +539,13 @@ export function Content() {
   const breakpoints = useResponsiveBreakpoints();
 
   return data ? (
-    <>
+    <ScrollView
+      style={{ flex: 1 }}
+      contentContainerStyle={{ flexGrow: 1 }}
+      refreshControl={
+        <RefreshControl refreshing={false} onRefresh={() => mutate()} />
+      }
+    >
       {!breakpoints.md && <AgendaButtons monthMode />}
       <CalendarTaskDrawer
         mutateList={mutations.timeBased.update(mutate)}
@@ -546,34 +554,10 @@ export function Content() {
       />
       <CalendarCreateTaskDrawer
         ref={createTaskSheetRef}
-        mutate={(newItem) => {
-          if (newItem)
-            mutate(
-              (oldData) =>
-                oldData.map((d) => {
-                  if (
-                    dayjs(newItem.date).isBetween(
-                      dayjs(d.start),
-                      dayjs(d.end),
-                      "day",
-                      "[]"
-                    )
-                  ) {
-                    return {
-                      ...d,
-                      tasks: [...d.tasks, newItem],
-                    };
-                  }
-                  return d;
-                }),
-              {
-                revalidate: false,
-              }
-            );
-        }}
+        mutate={mutations.timeBased.add(mutate)}
       />
-      <CalendarContainer events={filteredEvents} />
-    </>
+      <CalendarContainer mutate={mutate} events={filteredEvents} />
+    </ScrollView>
   ) : (
     <View
       style={{
@@ -588,7 +572,6 @@ export function Content() {
 }
 
 export default function Calendar() {
-  const { mutate } = useCollectionContext();
   // eslint-disable-next-line prefer-const
   let { start } = useLocalSearchParams();
   if (!start) start = dayjs().startOf("month").toISOString();
@@ -596,21 +579,16 @@ export default function Calendar() {
   const agendaContextValue = useMemo(() => {
     return {
       start: dayjs(start as string).startOf("month"),
-      end: dayjs(start as string).endOf("month"),
+      // todo: fix api bug
+      end: dayjs(start as string)
+        .endOf("month")
+        .add(1, "month"),
     };
   }, [start]);
 
   return (
     <CalendarContext.Provider value={agendaContextValue as any}>
-      <ScrollView
-        style={{ flex: 1 }}
-        contentContainerStyle={{ flexGrow: 1 }}
-        refreshControl={
-          <RefreshControl refreshing={false} onRefresh={() => mutate()} />
-        }
-      >
-        <Content />
-      </ScrollView>
+      <Content />
     </CalendarContext.Provider>
   );
 }
