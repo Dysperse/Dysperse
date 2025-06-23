@@ -19,7 +19,7 @@ import { impactAsync, ImpactFeedbackStyle } from "expo-haptics";
 import { LinearGradient } from "expo-linear-gradient";
 import { useLocalSearchParams } from "expo-router";
 import React, { useImperativeHandle, useMemo, useRef, useState } from "react";
-import { Platform, Pressable, View } from "react-native";
+import { Platform, Pressable, useWindowDimensions, View } from "react-native";
 import { ScrollView } from "react-native-gesture-handler";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import useSWR from "swr";
@@ -415,9 +415,12 @@ function CalendarContainer(props) {
     }
   });
 
+  const { height } = useWindowDimensions();
+
   return (
     <View
       style={{
+        height,
         flex: 1,
         padding: breakpoints.md ? 10 : 0,
         paddingBottom: insets.bottom + (breakpoints.md ? 10 : 0),
@@ -436,7 +439,13 @@ function CalendarContainer(props) {
         }}
       >
         {/* Weekday headers */}
-        <View style={{ flexDirection: "row", width: "100%" }}>
+        <View
+          style={{
+            flexDirection: "row",
+            width: "100%",
+            height: 33,
+          }}
+        >
           {weekDays.map((wd, i) => (
             <View
               key={wd + i}
@@ -457,7 +466,13 @@ function CalendarContainer(props) {
         {weeks.map((week, wIdx) => (
           <View
             key={wIdx}
-            style={{ flexDirection: "row", width: "100%", flex: 1 }}
+            style={{
+              flexDirection: "row",
+              width: "100%",
+              height:
+                (height - 33 - 64 - 50 - insets.top - insets.bottom) /
+                weeks.length, // 6 weeks
+            }}
           >
             {week.map((day, dIdx) => (
               <Date
@@ -539,25 +554,27 @@ export function Content() {
   const breakpoints = useResponsiveBreakpoints();
 
   return data ? (
-    <ScrollView
-      style={{ flex: 1 }}
-      contentContainerStyle={{ flexGrow: 1 }}
-      refreshControl={
-        <RefreshControl refreshing={false} onRefresh={() => mutate()} />
-      }
-    >
+    <>
       {!breakpoints.md && <AgendaButtons monthMode />}
-      <CalendarTaskDrawer
-        mutateList={mutations.timeBased.update(mutate)}
-        tasks={tasks}
-        ref={taskDrawerRef}
-      />
-      <CalendarCreateTaskDrawer
-        ref={createTaskSheetRef}
-        mutate={mutations.timeBased.add(mutate)}
-      />
-      <CalendarContainer mutate={mutate} events={filteredEvents} />
-    </ScrollView>
+      <ScrollView
+        style={{ flex: 1 }}
+        contentContainerStyle={{ flexGrow: 1 }}
+        refreshControl={
+          <RefreshControl refreshing={false} onRefresh={() => mutate()} />
+        }
+      >
+        <CalendarTaskDrawer
+          mutateList={mutations.timeBased.update(mutate)}
+          tasks={tasks}
+          ref={taskDrawerRef}
+        />
+        <CalendarCreateTaskDrawer
+          ref={createTaskSheetRef}
+          mutate={mutations.timeBased.add(mutate)}
+        />
+        <CalendarContainer mutate={mutate} events={filteredEvents} />
+      </ScrollView>
+    </>
   ) : (
     <View
       style={{
