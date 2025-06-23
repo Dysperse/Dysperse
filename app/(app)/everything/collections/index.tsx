@@ -20,7 +20,7 @@ import { useColorTheme } from "@/ui/color/theme-provider";
 import capitalizeFirstLetter from "@/utils/capitalizeFirstLetter";
 import { FlashList } from "@shopify/flash-list";
 import { router } from "expo-router";
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { Keyboard, Platform, Pressable, StyleSheet, View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import Toast from "react-native-toast-message";
@@ -177,6 +177,7 @@ const Collections = () => {
   const [selectedCollection, setSelectedCollection] = useState<number | null>(
     null
   );
+  const ref = useRef(null);
   const { isReached } = useStorageContext();
   const theme = useColorTheme();
   const [query, setQuery] = useState("");
@@ -239,7 +240,7 @@ const Collections = () => {
                         Collections
                       </Text>
                       {!isReached && (
-                        <CreateCollectionModal>
+                        <CreateCollectionModal ref={ref}>
                           <IconButton variant="outlined" size={45} icon="add" />
                         </CreateCollectionModal>
                       )}
