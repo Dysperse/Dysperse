@@ -81,6 +81,7 @@ function TaskCheckbox({
               pressed: theme[7],
             }}
             onPress={() => {
+              impactAsync(ImpactFeedbackStyle.Heavy);
               let newArr = !isCompleted
                 ? []
                 : [...task.completionInstances, true];
@@ -198,3 +199,4 @@ function TaskCheckbox({
 }
 
 export default memo(TaskCheckbox);
+

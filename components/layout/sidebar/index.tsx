@@ -381,9 +381,7 @@ export const LogoButton = memo(function LogoButton({
               menuRef.current.close();
               if (!breakpoints.md || desktopCollapsed)
                 sidebarRef.current.closeDrawer();
-              InteractionManager.runAfterInteractions(() => {
-                router.push("/settings");
-              });
+              router.push("/settings");
             },
           },
           {
