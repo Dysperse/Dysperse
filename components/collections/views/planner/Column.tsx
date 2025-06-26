@@ -278,6 +278,10 @@ export function Column({
       />
       {showAs === "schedule" ? (
         <Schedule tasks={data} />
+      ) : data.length == 0 ? (
+        <View style={{ marginVertical: "auto" }}>
+          <ColumnEmptyComponent offset={cellIndex} />
+        </View>
       ) : (
         <FlashList
           contentInset={TEMPORARY_CONTENT_INSET_FIX()}
@@ -298,11 +302,6 @@ export function Column({
             paddingHorizontal: 15,
           }}
           centerContent={Object.keys(column.entities).length === 0}
-          ListEmptyComponent={() => (
-            <View style={{ marginVertical: "auto" }}>
-              <ColumnEmptyComponent offset={cellIndex} />
-            </View>
-          )}
           ListHeaderComponent={() => (
             <View>
               {Object.keys(column.entities).length > 0 &&

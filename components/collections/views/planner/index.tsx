@@ -78,13 +78,19 @@ function Agenda() {
     });
   }, [data, start]);
 
-  const column =
+  const colIndex =
     typeof data?.find === "function"
-      ? data.find(
+      ? data.findIndex(
           (col) =>
             dayjs(params.start as any).toISOString() ===
             dayjs(col.start).toISOString()
-        ) || data.find((col) => dayjs().isBetween(col.start, col.end))
+        )
+      : -1;
+  const column =
+    Array.isArray(data) && colIndex !== -1
+      ? data[colIndex]
+      : Array.isArray(data)
+      ? data.find((col) => dayjs().isBetween(col.start, col.end))
       : null;
 
   const agendaFallback = (
@@ -169,7 +175,9 @@ function Agenda() {
             </Animated.View>
           </View>
 
-          {column && <Column mutate={mutate} column={column} />}
+          {column && (
+            <Column cellIndex={colIndex} mutate={mutate} column={column} />
+          )}
         </View>
       ) : (
         agendaFallback
