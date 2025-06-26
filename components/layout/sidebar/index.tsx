@@ -124,7 +124,7 @@ const HomeButton = memo(function HomeButton({ isHome }: { isHome: boolean }) {
               marginLeft: -10,
               position: "absolute",
               top: 12,
-              right: breakpoints.md ? 33 : 45,
+              right: breakpoints.md ? 33 : 47,
             },
           ]}
         />
