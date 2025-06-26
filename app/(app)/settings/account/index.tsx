@@ -424,7 +424,14 @@ function ProfileBanner() {
     <View>
       <ListItemButton disabled>
         <ListItemText primary="Profile picture" />
-        <View style={{ width: 60, height: 60, marginLeft: "auto" }}>
+        {session?.user?.profile?.picture && (
+          <IconButton
+            onPress={() => onChange("picture", null)}
+            icon="close"
+            iconProps={{ bold: true }}
+          />
+        )}
+        <View style={{ width: 60, height: 60 }}>
           <ProfilePicture
             name={session?.user?.profile?.name || "--"}
             image={session?.user?.profile?.picture}
