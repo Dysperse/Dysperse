@@ -529,7 +529,7 @@ export default function Page() {
         }}
       >
         <SubscribeButton settings data={data} mutate={mutate} />
-        <TestNotifications />
+        {data?.subscriptions?.length > 0 && <TestNotifications />}
       </View>
       <Text style={settingStyles.heading}>Preferences</Text>
       {data?.settings ? (
