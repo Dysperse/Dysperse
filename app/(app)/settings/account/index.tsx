@@ -422,7 +422,7 @@ function ProfileBanner() {
 
   return (
     <View>
-      <ListItemButton>
+      <ListItemButton disabled>
         <ListItemText primary="Profile picture" />
         <View style={{ width: 60, height: 60, marginLeft: "auto" }}>
           <ProfilePicture
