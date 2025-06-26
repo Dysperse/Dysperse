@@ -162,7 +162,7 @@ function NoteInsertMenu({ isFocused, editorRef }) {
       Toast.hide();
       Toast.show({ type: "success", text1: "Image attached!" });
     } else {
-      alert("You did not select any image.");
+      // alert("You did not select any image.");
     }
   };
 

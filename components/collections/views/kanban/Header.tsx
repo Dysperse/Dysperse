@@ -136,11 +136,11 @@ export const KanbanHeader = memo(function KanbanHeader({
         {label?.id && !isReadOnly && session && label?.id !== "entities" && (
           <ColumnMenuTrigger label={label}>
             <IconButton
-              size={40}
+              size={isGridView && breakpoints.md ? 40 : 50}
               icon={
                 grid && !breakpoints.md && !list ? "more_vert" : "more_horiz"
               }
-              style={{ marginRight: grid ? 4 : 0 }}
+              style={{ width: 40, marginRight: grid ? 4 : 0 }}
               iconProps={{ bold: true }}
               iconStyle={{ opacity: 0.7 }}
             />

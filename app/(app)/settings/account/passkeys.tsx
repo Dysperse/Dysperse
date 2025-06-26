@@ -155,6 +155,7 @@ function CreatePasskey({ mutate }) {
       variant="filled"
       large
       bold
+      containerStyle={{ width: "100%" }}
       icon="add"
       isLoading={loading}
       text="Create"
@@ -186,8 +187,9 @@ export default function App() {
         <View>
           <Text style={settingStyles.title}>Passkeys</Text>
           <Text>
-            Passkeys are {passkey.isSupported() ? "supported" : "not Supported"}{" "}
-            on your current device.
+            {passkey.isSupported()
+              ? "Passkeys let you log in securely without passwords using your device's biometrics or PIN."
+              : "Passkeys aren't supported on this device."}
           </Text>
         </View>
         <CreatePasskey mutate={mutate} />

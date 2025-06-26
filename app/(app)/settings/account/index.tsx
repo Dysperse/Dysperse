@@ -1,7 +1,6 @@
 import { settingStyles } from "@/components/settings/settingsStyles";
 import { useUser } from "@/context/useUser";
 import { sendApiRequest } from "@/helpers/api";
-import { omit } from "@/helpers/omit";
 import { ProfilePicture } from "@/ui/Avatar";
 import BottomSheet from "@/ui/BottomSheet";
 import { Button, ButtonText } from "@/ui/Button";
@@ -20,13 +19,13 @@ import { useColorTheme } from "@/ui/color/theme-provider";
 import { BottomSheetModal, BottomSheetScrollView } from "@gorhom/bottom-sheet";
 import dayjs from "dayjs";
 import * as ImagePicker from "expo-image-picker";
-import { LinearGradient } from "expo-linear-gradient";
 import { router } from "expo-router";
-import { useCallback, useRef, useState } from "react";
+import { cloneElement, useCallback, useRef, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { View } from "react-native";
 import Toast from "react-native-toast-message";
 import useSWR from "swr";
+import { Section } from "../tasks";
 
 export const pickImageAsync = async (setLoading, onChange) => {
   try {
@@ -59,7 +58,7 @@ export const pickImageAsync = async (setLoading, onChange) => {
 
       onChange(res.image.display_url);
     } else {
-      alert("You did not select any image.");
+      // alert("You did not select any image.");
     }
   } catch (e) {
     Toast.show({ type: "error" });
@@ -68,8 +67,8 @@ export const pickImageAsync = async (setLoading, onChange) => {
   }
 };
 
-function EmailSection({ editing }) {
-  const theme = useColorTheme();
+function EmailSection({ children }) {
+  const [isVerifying, setIsVerifying] = useState(false);
   const { session, mutate, sessionToken } = useUser();
   const [isLoading, setIsLoading] = useState(false);
   const { control, handleSubmit } = useForm({
@@ -97,6 +96,7 @@ function EmailSection({ editing }) {
           Toast.show({ type: "error", text1: data.error });
           return;
         }
+        setIsVerifying(true);
         sheetRef.current.present();
       } catch (e) {
         Toast.show({ type: "error" });
@@ -137,89 +137,148 @@ function EmailSection({ editing }) {
   };
 
   const handleClose = useCallback(() => sheetRef.current?.close(), []);
+  const trigger = cloneElement(children, {
+    onPress: () => {
+      sheetRef.current?.present();
+    },
+  });
 
   return (
     <>
-      <View style={{ flexDirection: "row", gap: 10, alignItems: "center" }}>
-        <Controller
-          name="email"
-          control={control}
-          rules={{
-            required: "Email is required",
-            pattern: {
-              value: /\S+@\S+\.\S+/,
-              message: "Invalid email",
-            },
-          }}
-          render={({ field }) => (
+      {trigger}
+      <BottomSheet
+        onClose={handleClose}
+        snapPoints={[400]}
+        sheetRef={sheetRef}
+        disableBackdropPressToClose={isVerifying}
+        enableContentPanningGesture={!isVerifying}
+        enableHandlePanningGesture={!isVerifying}
+      >
+        <BottomSheetScrollView
+          keyboardShouldPersistTaps="handled"
+          contentContainerStyle={{ padding: 30 }}
+        >
+          {!isVerifying ? (
             <>
-              <TextField
-                style={{ flex: 1, marginTop: 3, color: theme[12] }}
-                editable={!isLoading}
-                onSubmitEditing={handleSubmit(onSubmit, () =>
-                  Toast.show({ type: "error", text1: "Please enter an email" })
+              <Text style={{ fontSize: 25, fontFamily: "serifText700" }}>
+                Change your email
+              </Text>
+              <Text style={{ marginBottom: 20, marginTop: 10 }}>
+                Enter a new email to update your account. If you use Google or
+                Apple to sign in, make sure it matches your Google or Apple
+                email.
+              </Text>
+              <Controller
+                name="email"
+                control={control}
+                rules={{
+                  required: "Email is required",
+                  pattern: {
+                    value: /\S+@\S+\.\S+/,
+                    message: "Invalid email",
+                  },
+                }}
+                render={({ field: { value, onChange } }) => (
+                  <>
+                    <TextField
+                      bottomSheet
+                      style={{ flex: 1, height: 50 }}
+                      editable={!isLoading}
+                      onSubmitEditing={handleSubmit(onSubmit, () =>
+                        Toast.show({
+                          type: "error",
+                          text1: "Please enter an email",
+                        })
+                      )}
+                      defaultValue={value}
+                      onChangeText={onChange}
+                      variant={"filled+outlined"}
+                    />
+                    <Button
+                      iconPosition="end"
+                      disabled={session.user.email === value}
+                      isLoading={isLoading}
+                      text="Update"
+                      large
+                      bold
+                      containerStyle={{ marginTop: 20 }}
+                      variant="filled"
+                      onPress={handleSubmit(onSubmit, () =>
+                        Toast.show({
+                          type: "error",
+                          text1: "Please enter an email",
+                        })
+                      )}
+                    />
+                    <Button
+                      text="Cancel"
+                      large
+                      containerStyle={{ marginTop: 10 }}
+                      variant="outlined"
+                      onPress={() => sheetRef.current.close()}
+                    />
+                  </>
                 )}
-                variant={editing ? "filled+outlined" : "default"}
-                {...omit(["ref"], field)}
               />
-              {editing && (
-                <Button
-                  iconPosition="end"
-                  disabled={session.user.email === field.value}
-                  icon={isLoading ? <Spinner size={24} /> : "east"}
-                  text="Update"
-                  variant="outlined"
-                  onPress={handleSubmit(onSubmit, () =>
-                    Toast.show({
-                      type: "error",
-                      text1: "Please enter an email",
-                    })
-                  )}
-                />
-              )}
+            </>
+          ) : (
+            <>
+              <Text style={{ fontSize: 25, fontFamily: "serifText700" }}>
+                Verify your email
+              </Text>
+              <Text style={{ marginBottom: 20, marginTop: 10 }}>
+                We sent a verification email to your new email address. Please
+                enter the code to confirm your new email.
+              </Text>
+              <Controller
+                name="token"
+                control={control}
+                rules={{
+                  required: true,
+                  minLength: 8,
+                }}
+                render={({ field: { value, onChange } }) => (
+                  <TextField
+                    placeholder="Verification code"
+                    variant="filled+outlined"
+                    bottomSheet
+                    style={{ flex: 1, height: 50 }}
+                    editable={!isLoading}
+                    onSubmitEditing={handleSubmit(onSubmit, () =>
+                      Toast.show({
+                        type: "error",
+                        text1: "Please enter a code",
+                      })
+                    )}
+                    defaultValue=""
+                    onChangeText={onChange}
+                    autoComplete="new-password"
+                  />
+                )}
+              />
+              <Button
+                isLoading={isLoading}
+                text="Confirm"
+                large
+                bold
+                containerStyle={{ marginTop: 20 }}
+                variant="filled"
+                disabled={isLoading}
+                onPress={handleSubmit(onSubmit, () =>
+                  Toast.show({ type: "error", text1: "Please enter a code" })
+                )}
+              />
+              <Button
+                text="Back"
+                large
+                containerStyle={{ marginTop: 10 }}
+                variant="outlined"
+                onPress={() => {
+                  setIsVerifying(false);
+                }}
+              />
             </>
           )}
-        />
-      </View>
-
-      <BottomSheet onClose={handleClose} snapPoints={[400]} sheetRef={sheetRef}>
-        <BottomSheetScrollView contentContainerStyle={{ padding: 30 }}>
-          <Text weight={800} style={{ fontSize: 30 }}>
-            Verify your email
-          </Text>
-          <Text style={{ marginVertical: 10, fontSize: 20, opacity: 0.7 }}>
-            We sent a verification email to your new email address. Please enter
-            the code to confirm your new email.
-          </Text>
-          <Controller
-            name="token"
-            control={control}
-            rules={{
-              required: true,
-              minLength: 8,
-            }}
-            render={({ field }) => (
-              <TextField
-                placeholder="Verification code"
-                variant="filled+outlined"
-                {...omit(["ref"], field)}
-              />
-            )}
-          />
-          <Button
-            height={40}
-            containerStyle={{ marginTop: 10 }}
-            variant="filled"
-            isLoading={isLoading}
-            onPress={handleSubmit(onSubmit, () =>
-              Toast.show({ type: "error", text1: "Please enter a code" })
-            )}
-          >
-            <ButtonText weight={700} style={{ fontSize: 20 }}>
-              Confirm
-            </ButtonText>
-            <Icon>check</Icon>
-          </Button>
         </BottomSheetScrollView>
       </BottomSheet>
     </>
@@ -275,7 +334,6 @@ function TwoFactorAuthSection() {
 function ProfileBanner() {
   const { session, sessionToken, mutate } = useUser();
   const theme = useColorTheme();
-  const [editing, setEditing] = useState(false);
   const [loading, setLoading] = useState(false);
 
   const onChange = async (key, value) => {
@@ -306,39 +364,23 @@ function ProfileBanner() {
   };
 
   const eyebrowStyles = {
-    marginTop: editing ? 20 : 10,
-    marginBottom: editing ? 2 : 0,
+    marginTop: 20,
+    marginBottom: 2,
   };
 
   return (
-    <View
-      style={{
-        borderRadius: 20,
-        backgroundColor: theme[3],
-        overflow: "hidden",
-        marginTop: 10,
-        marginBottom: 20,
-        paddingBottom: 20,
-      }}
-    >
-      <LinearGradient
-        colors={[theme[9], theme[5]]}
-        style={{
-          padding: 30,
-          height: 140,
-          marginBottom: 20,
-        }}
-      />
-      <View style={{ top: 80, position: "absolute", left: 30, zIndex: 99 }}>
-        <ProfilePicture
-          name={session?.user?.profile?.name || "--"}
-          image={session?.user?.profile?.picture}
-          size={90}
-        />
-        {editing && (
+    <View>
+      <ListItemButton>
+        <ListItemText primary="Profile picture" />
+        <View style={{ width: 60, height: 60, marginLeft: "auto" }}>
+          <ProfilePicture
+            name={session?.user?.profile?.name || "--"}
+            image={session?.user?.profile?.picture}
+            size={60}
+          />
           <View
             style={{
-              backgroundColor: addHslAlpha(theme[12], 0.8),
+              backgroundColor: addHslAlpha(theme[12], 0.5),
               position: "absolute",
               top: 0,
               left: 0,
@@ -362,100 +404,24 @@ function ProfileBanner() {
               />
             )}
           </View>
-        )}
-      </View>
-      <View
-        style={{
-          paddingHorizontal: 30,
-        }}
-      >
-        <IconButton
-          size={50}
-          icon={editing ? "check" : "edit"}
-          variant={editing ? "outlined" : undefined}
-          style={{
-            position: "absolute",
-            top: 0,
-            right: 0,
-            margin: 10,
-            zIndex: 99,
-            marginTop: -5,
-          }}
-          onPress={() => setEditing((e) => !e)}
-        />
-        <View
-          style={{
-            pointerEvents: editing ? undefined : "none",
-          }}
-        >
-          <View style={{ marginTop: 20 }} />
-          {editing && <Text variant="eyebrow">Name</Text>}
-          <TextField
-            defaultValue={session.user.profile.name}
-            weight={700}
-            variant={editing ? "filled+outlined" : undefined}
-            editable={editing}
-            onBlur={(e) => editing && onChange("name", e.nativeEvent.text)}
-            style={{
-              marginVertical: 5,
-              fontSize: 30,
-              opacity: 1,
-              color: theme[12],
-              fontFamily: "serifText800",
-            }}
-          />
-          {editing && (
-            <Text variant="eyebrow" style={eyebrowStyles}>
-              Username
-            </Text>
-          )}
-          {(editing || session.user.username) && (
-            <TextField
-              value={session.user.username ? `@${session.user.username}` : ""}
-              variant={editing ? "filled+outlined" : undefined}
-              editable={editing}
-              style={{
-                fontSize: 20,
-                opacity: 0.6,
-                marginBottom: 10,
-                color: theme[12],
-              }}
-            />
-          )}
-          <Text variant="eyebrow" style={eyebrowStyles}>
-            Email
-          </Text>
-          <EmailSection editing={editing} />
-          {(editing || session.user.profile.bio) && (
-            <>
-              <Text variant="eyebrow" style={eyebrowStyles}>
-                About me
-              </Text>
-              <TextField
-                variant={editing ? "filled+outlined" : undefined}
-                multiline
-                onBlur={(e) => onChange("bio", e.nativeEvent.text)}
-                defaultValue={session.user.profile.bio}
-                style={{ marginVertical: 5, color: theme[12] }}
-                numberOfLines={1}
-                placeholder="Tell the world about yourself <3"
-              />
-            </>
-          )}
-          {(editing || session.user.profile.birthday) && (
-            <>
-              <Text variant="eyebrow" style={eyebrowStyles}>
-                Birthday
-              </Text>
-              <TextField
-                value={dayjs(session.user.profile.birthday).format("MMMM Do")}
-                style={{ marginVertical: 5, color: theme[12] }}
-                placeholder="What's your birthday?"
-              />
-            </>
-          )}
         </View>
-      </View>
+      </ListItemButton>
+      <ListItemButton>
+        <ListItemText primary="Name" secondary={session.user.profile.name} />
+        <Icon>arrow_forward_ios</Icon>
+      </ListItemButton>
+      <EmailSection>
+        <ListItemButton>
+          <ListItemText primary="Email" secondary={session.user.email} />
+          <Icon>arrow_forward_ios</Icon>
+        </ListItemButton>
+      </EmailSection>
+      <ListItemButton>
+        <ListItemText
+          primary="Birthday"
+          secondary={dayjs(session.user.profile.birthday).format("MMMM Do")}
+        />
+      </ListItemButton>
     </View>
   );
 }
@@ -588,12 +554,24 @@ export default function Page() {
           <Text style={settingStyles.heading} weight={700}>
             Profile
           </Text>
-          <ProfileBanner />
-          <PasskeysSection />
-          <TwoFactorAuthSection />
-          <BetaTesterSection />
-          <ResetHintsButton />
-          <DeleteAccountSection />
+          <Section>
+            <ProfileBanner />
+          </Section>
+          <Text style={settingStyles.heading} weight={700}>
+            Security
+          </Text>
+          <Section>
+            <PasskeysSection />
+            <TwoFactorAuthSection />
+          </Section>
+          <Text style={settingStyles.heading} weight={700}>
+            Other
+          </Text>
+          <Section>
+            <BetaTesterSection />
+            <ResetHintsButton />
+            <DeleteAccountSection />
+          </Section>
         </>
       ) : error ? (
         <ErrorAlert />
