@@ -56,11 +56,14 @@ export const pickImageAsync = async (setLoading, onChange) => {
         body: form,
       }).then((res) => res.json());
 
+      console.log(res);
+
       onChange(res.image.display_url);
     } else {
       // alert("You did not select any image.");
     }
   } catch (e) {
+    console.error("Error picking image:", e);
     Toast.show({ type: "error" });
   } finally {
     setLoading(false);
