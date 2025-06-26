@@ -26,6 +26,7 @@ import Animated, {
   useSharedValue,
   withSpring,
 } from "react-native-reanimated";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 import useSWR from "swr";
 import { mutations } from "../../mutations";
 
@@ -45,7 +46,6 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     padding: 20,
     gap: 15,
-    marginTop: -120,
   },
   emptyHeading: {
     fontSize: 40,
@@ -59,6 +59,7 @@ const styles = StyleSheet.create({
 function SearchList({ collection, inputRef, listRef, handleClose }) {
   const theme = useColorTheme();
   const { data, mutate } = collection;
+  const insets = useSafeAreaInsets();
   const [query, setQuery] = useState("");
   const [activeFilters, setActiveFilters] = useState([]);
 
@@ -295,32 +296,16 @@ function SearchList({ collection, inputRef, listRef, handleClose }) {
             style={{ marginHorizontal: -20, flex: 1 }}
           >
             <FadeOnRender>
-              <FlashList
-                onScrollBeginDrag={Keyboard.dismiss}
-                ref={listRef}
-                keyboardShouldPersistTaps="handled"
-                data={filtered}
-                style={{ backgroundColor: "red" }}
-                contentInset={TEMPORARY_CONTENT_INSET_FIX()}
-                contentContainerStyle={{
-                  padding: 25,
-                  paddingTop: 15,
-                  paddingHorizontal: 15,
-                }}
-                estimatedItemSize={150}
-                keyExtractor={(item) => item.id}
-                renderItem={({ item }) => (
-                  <Entity
-                    showDate
-                    showLabel
-                    isReadOnly={collection.isReadOnly}
-                    item={item}
-                    onTaskUpdate={mutations.categoryBased.update(mutate)}
-                  />
-                )}
-                stickyHeaderHiddenOnScroll
-                ListEmptyComponent={
-                  query.length > 2 ? (
+              {filtered.length == 0 ? (
+                <View
+                  style={{
+                    flex: 1,
+                    alignItems: "center",
+                    justifyContent: "center",
+                    marginBottom: insets.bottom + insets.top,
+                  }}
+                >
+                  {query.length > 2 ? (
                     <View style={styles.empty}>
                       <Icon size={30}>heart_broken</Icon>
                       <Text style={{ fontSize: 20, color: theme[11] }}>
@@ -328,7 +313,7 @@ function SearchList({ collection, inputRef, listRef, handleClose }) {
                       </Text>
                     </View>
                   ) : (
-                    <View style={[styles.empty, { marginTop: -80 }]}>
+                    <View style={[styles.empty]}>
                       <Icon size={30}>search</Icon>
                       <Text style={{ fontSize: 20, color: theme[11] }}>
                         {query.length !== 0
@@ -338,10 +323,36 @@ function SearchList({ collection, inputRef, listRef, handleClose }) {
                           : "Start typing to search"}
                       </Text>
                     </View>
-                  )
-                }
-                centerContent={filtered.length === 0}
-              />
+                  )}
+                </View>
+              ) : (
+                <FlashList
+                  onScrollBeginDrag={Keyboard.dismiss}
+                  ref={listRef}
+                  keyboardShouldPersistTaps="handled"
+                  data={filtered}
+                  style={{ backgroundColor: "red" }}
+                  contentInset={TEMPORARY_CONTENT_INSET_FIX()}
+                  contentContainerStyle={{
+                    padding: 25,
+                    paddingTop: 15,
+                    paddingHorizontal: 15,
+                  }}
+                  estimatedItemSize={150}
+                  keyExtractor={(item) => item.id}
+                  renderItem={({ item }) => (
+                    <Entity
+                      showDate
+                      showLabel
+                      isReadOnly={collection.isReadOnly}
+                      item={item}
+                      onTaskUpdate={mutations.categoryBased.update(mutate)}
+                    />
+                  )}
+                  stickyHeaderHiddenOnScroll
+                  centerContent={filtered.length === 0}
+                />
+              )}
             </FadeOnRender>
           </KeyboardAvoidingView>
         </View>

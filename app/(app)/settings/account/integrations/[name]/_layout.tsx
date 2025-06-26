@@ -60,7 +60,12 @@ export default function Layout() {
         screenOptions={{
           ...TransitionPresets.SlideFromRightIOS,
           cardStyleInterpolator: forHorizontalIOS,
-          header: () => <Navbar />,
+          header: () =>
+            breakpoints.md ? (
+              <Navbar />
+            ) : (
+              <View style={{ height: 10 + insets.top }} />
+            ),
           cardStyle: {
             backgroundColor: theme[2],
           },

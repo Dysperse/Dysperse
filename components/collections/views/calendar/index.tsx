@@ -10,7 +10,6 @@ import { addHslAlpha } from "@/ui/color";
 import { useColorTheme } from "@/ui/color/theme-provider";
 import Icon from "@/ui/Icon";
 import IconButton from "@/ui/IconButton";
-import RefreshControl from "@/ui/RefreshControl";
 import Spinner from "@/ui/Spinner";
 import Text from "@/ui/Text";
 import { BottomSheetFlashList, BottomSheetModal } from "@gorhom/bottom-sheet";
@@ -20,7 +19,6 @@ import { LinearGradient } from "expo-linear-gradient";
 import { useLocalSearchParams } from "expo-router";
 import React, { useImperativeHandle, useMemo, useRef, useState } from "react";
 import { Platform, Pressable, useWindowDimensions, View } from "react-native";
-import { ScrollView } from "react-native-gesture-handler";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import useSWR from "swr";
 import { useCollectionContext } from "../../context";
@@ -268,6 +266,7 @@ function Date({ mutate, day, events, theme, dIdx, wIdx }) {
       />
 
       <BottomSheet
+        onClose={() => mutate()}
         sheetRef={drawerRef}
         snapPoints={dayEvents.length == 0 ? [300] : ["50%", "90%"]}
         maxBackdropOpacity={0.1}
@@ -556,24 +555,16 @@ export function Content() {
   return data ? (
     <>
       {!breakpoints.md && <AgendaButtons monthMode />}
-      <ScrollView
-        style={{ flex: 1 }}
-        contentContainerStyle={{ flexGrow: 1 }}
-        refreshControl={
-          <RefreshControl refreshing={false} onRefresh={() => mutate()} />
-        }
-      >
-        <CalendarTaskDrawer
-          mutateList={mutations.timeBased.update(mutate)}
-          tasks={tasks}
-          ref={taskDrawerRef}
-        />
-        <CalendarCreateTaskDrawer
-          ref={createTaskSheetRef}
-          mutate={mutations.timeBased.add(mutate)}
-        />
-        <CalendarContainer mutate={mutate} events={filteredEvents} />
-      </ScrollView>
+      <CalendarTaskDrawer
+        mutateList={mutations.timeBased.update(mutate)}
+        tasks={tasks}
+        ref={taskDrawerRef}
+      />
+      <CalendarCreateTaskDrawer
+        ref={createTaskSheetRef}
+        mutate={mutations.timeBased.add(mutate)}
+      />
+      <CalendarContainer mutate={mutate} events={filteredEvents} />
     </>
   ) : (
     <View

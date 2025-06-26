@@ -1,4 +1,5 @@
 import { useUser } from "@/context/useUser";
+import { useResponsiveBreakpoints } from "@/helpers/useResponsiveBreakpoints";
 import BottomSheet from "@/ui/BottomSheet";
 import { Button } from "@/ui/Button";
 import { useColorTheme } from "@/ui/color/theme-provider";
@@ -376,6 +377,7 @@ export const ColumnEmptyComponent = function ColumnEmptyComponent({
   offset?: number;
   plannerFinished?: boolean;
 }) {
+  const breakpoints = useResponsiveBreakpoints();
   const { session } = useUser();
   const theme = useColorTheme();
 
@@ -411,13 +413,16 @@ export const ColumnEmptyComponent = function ColumnEmptyComponent({
           !list && { marginTop: -40 },
         ]}
       >
-        <Icon size={40} style={!row && { marginHorizontal: "auto" }}>
+        <Icon
+          size={!breakpoints.md && !finished ? 60 : 40}
+          style={!row && { marginHorizontal: "auto" }}
+        >
           {message[0]}
         </Icon>
         <View style={[{ alignItems: row ? "flex-start" : "center" }]}>
           <Text
             style={{
-              fontSize: 20,
+              fontSize: !breakpoints.md && !finished ? 25 : 20,
               fontFamily: "serifText700",
               color: theme[11],
               marginBottom: 5,
@@ -432,6 +437,7 @@ export const ColumnEmptyComponent = function ColumnEmptyComponent({
               zIndex: 99,
               color: theme[11],
               marginTop: -3,
+              fontSize: !breakpoints.md && !finished ? 20 : 16,
             }}
             numberOfLines={1}
           >

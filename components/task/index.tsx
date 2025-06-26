@@ -319,9 +319,10 @@ const Task = memo(function Task({
     () =>
       (showLabel && task.label) ||
       task.note ||
+      ((showRelativeTime || !task.dateOnly) && task.start) ||
       task.pinned ||
       task.recurrenceRule,
-    [task, showLabel]
+    [task, showLabel, showRelativeTime]
   );
 
   return (
@@ -445,10 +446,14 @@ const Task = memo(function Task({
                   }}
                 >
                   {task.pinned && <TaskImportantChip />}
-                  {showRelativeTime && task.start && (
+                  {(showRelativeTime || !task.dateOnly) && task.start && (
                     <Button
                       chip
-                      text={dayjs(task.start).fromNow()}
+                      text={
+                        showRelativeTime
+                          ? dayjs(task.start).fromNow()
+                          : dayjs(task.start).format("h:mm a")
+                      }
                       icon="access_time"
                     />
                   )}
@@ -503,3 +508,4 @@ const Task = memo(function Task({
 });
 
 export default React.memo(Task);
+

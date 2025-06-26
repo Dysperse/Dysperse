@@ -491,7 +491,7 @@ function TaskMoreMenu({ handleDelete }) {
           session?.user?.betaTester && {
             icon: "content_copy",
             text: "Duplicate",
-            callback: () => {},
+            callback: () => Toast.show({ type: "info", text1: "Coming soon!" }),
           },
           {
             icon: task.trash ? "restore_from_trash" : "delete",
