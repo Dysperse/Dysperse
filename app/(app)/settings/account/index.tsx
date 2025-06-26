@@ -22,7 +22,7 @@ import * as ImagePicker from "expo-image-picker";
 import { router } from "expo-router";
 import { cloneElement, useCallback, useRef, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
-import { View } from "react-native";
+import { Platform, View } from "react-native";
 import Toast from "react-native-toast-message";
 import useSWR from "swr";
 import { Section } from "../tasks";
@@ -290,12 +290,7 @@ function TwoFactorAuthSection() {
   const isEnabled = session.user.twoFactorSecret;
 
   return (
-    <ListItemButton
-      disabled
-      onPress={() =>
-        router.replace("/settings/account/two-factor-authentication")
-      }
-    >
+    <ListItemButton disabled>
       <ListItemText
         primary="Two-factor auth"
         secondary="We'll require an annoying code every time you login"
@@ -317,7 +312,7 @@ function TwoFactorAuthSection() {
               }
             );
           } else {
-            router.replace("/settings/login/account/two-factor-authentication");
+            router.push("/settings/login/account/two-factor-authentication");
           }
         }}
         disabled={!isEnabled}
@@ -331,6 +326,65 @@ function TwoFactorAuthSection() {
   );
 }
 
+function NameSection({ children, onChange }) {
+  const sheetRef = useRef<BottomSheetModal>(null);
+  const { session } = useUser();
+  const [loading, setLoading] = useState(false);
+  const nameRef = useRef<string>(session.user.profile.name || "");
+
+  const trigger = cloneElement(children, {
+    onPress: () => sheetRef.current?.present(),
+  });
+
+  return (
+    <>
+      {trigger}
+      <BottomSheet
+        onClose={() => sheetRef.current?.close()}
+        snapPoints={[220]}
+        sheetRef={sheetRef}
+      >
+        <View style={{ padding: 20 }}>
+          <Text
+            style={{
+              fontSize: 25,
+              marginBottom: 10,
+              fontFamily: "serifText700",
+            }}
+          >
+            Change your name
+          </Text>
+          <TextField
+            placeholder="Name"
+            variant="filled+outlined"
+            bottomSheet
+            autoFocus={Platform.OS !== "web"}
+            style={{ height: 50 }}
+            editable={!loading}
+            onChangeText={(e) => (nameRef.current = e)}
+            defaultValue={nameRef.current}
+            autoComplete="name"
+          />
+          <Button
+            isLoading={loading}
+            text="Save"
+            large
+            bold
+            containerStyle={{ marginTop: 10 }}
+            variant="filled"
+            onPress={async () => {
+              setLoading(true);
+              await onChange("name", nameRef.current);
+              setLoading(false);
+              sheetRef.current?.close();
+            }}
+          />
+        </View>
+      </BottomSheet>
+    </>
+  );
+}
+
 function ProfileBanner() {
   const { session, sessionToken, mutate } = useUser();
   const theme = useColorTheme();
@@ -338,7 +392,7 @@ function ProfileBanner() {
 
   const onChange = async (key, value) => {
     try {
-      sendApiRequest(
+      await sendApiRequest(
         sessionToken,
         "PUT",
         "user/profile",
@@ -361,11 +415,6 @@ function ProfileBanner() {
     } catch (e) {
       Toast.show({ type: "error" });
     }
-  };
-
-  const eyebrowStyles = {
-    marginTop: 20,
-    marginBottom: 2,
   };
 
   return (
@@ -406,17 +455,19 @@ function ProfileBanner() {
           </View>
         </View>
       </ListItemButton>
-      <ListItemButton>
-        <ListItemText primary="Name" secondary={session.user.profile.name} />
-        <Icon>arrow_forward_ios</Icon>
-      </ListItemButton>
+      <NameSection onChange={onChange}>
+        <ListItemButton>
+          <ListItemText primary="Name" secondary={session.user.profile.name} />
+          <Icon>arrow_forward_ios</Icon>
+        </ListItemButton>
+      </NameSection>
       <EmailSection>
         <ListItemButton>
           <ListItemText primary="Email" secondary={session.user.email} />
           <Icon>arrow_forward_ios</Icon>
         </ListItemButton>
       </EmailSection>
-      <ListItemButton>
+      <ListItemButton disabled>
         <ListItemText
           primary="Birthday"
           secondary={dayjs(session.user.profile.birthday).format("MMMM Do")}
@@ -427,7 +478,7 @@ function ProfileBanner() {
 }
 
 function PasskeysSection() {
-  const handlePress = () => router.replace("/settings/account/passkeys");
+  const handlePress = () => router.push("/settings/account/passkeys");
 
   return (
     <ListItemButton onPress={handlePress}>
@@ -443,7 +494,7 @@ function PasskeysSection() {
 function DeleteAccountSection() {
   return (
     <ListItemButton
-      onPress={() => router.replace("/settings/account/delete-account")}
+      onPress={() => router.push("/settings/account/delete-account")}
     >
       <ListItemText
         primary="Delete my account"
