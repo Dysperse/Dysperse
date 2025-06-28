@@ -2,6 +2,7 @@ import { useLabelColors } from "@/components/labels/useLabelColors";
 import { useSession } from "@/context/AuthProvider";
 import { sendApiRequest } from "@/helpers/api";
 import { Button } from "@/ui/Button";
+import { useColorTheme } from "@/ui/color/theme-provider";
 import Emoji from "@/ui/Emoji";
 import { EmojiPicker } from "@/ui/EmojiPicker";
 import Icon from "@/ui/Icon";
@@ -12,28 +13,32 @@ import TextField from "@/ui/TextArea";
 import { BottomSheetModal } from "@gorhom/bottom-sheet";
 import { ReactElement, cloneElement, memo, useRef } from "react";
 import { Controller, useForm } from "react-hook-form";
-import { InteractionManager, Platform, Pressable, View } from "react-native";
+import { InteractionManager, Pressable, View } from "react-native";
 import Toast from "react-native-toast-message";
 
 export const LabelEditModal = memo(function LabelEditModal({
   label,
   trigger,
   onLabelUpdate,
+  header,
 }: {
   label: any;
   trigger: ReactElement;
   onLabelUpdate: any;
+  header?: string;
 }) {
+  const theme = useColorTheme();
   const menuRef = useRef<BottomSheetModal>(null);
   const colors = useLabelColors();
   const { session } = useSession();
-  const { control, handleSubmit } = useForm({
+  const { control, handleSubmit, watch } = useForm({
     defaultValues: {
       emoji: label.emoji,
       name: label.name,
       color: label.color,
     },
   });
+  const color = watch("color");
 
   const onSubmit = async (updatedLabel) => {
     try {
@@ -94,7 +99,7 @@ export const LabelEditModal = memo(function LabelEditModal({
               fontFamily: "serifText700",
             }}
           >
-            Create label
+            {header || "Create label"}
           </Text>
           <IconButton variant="filled" onPress={() => menuRef.current.close()}>
             <Icon>close</Icon>
@@ -102,71 +107,50 @@ export const LabelEditModal = memo(function LabelEditModal({
         </View>
         <View
           style={{
-            padding: 20,
-            gap: 20,
-            paddingTop: Platform.OS === "web" ? 0 : 20,
+            gap: 10,
+            paddingBottom: 20,
             paddingHorizontal: 30,
           }}
         >
           <View
             style={{
               alignItems: "center",
-              gap: 20,
+              gap: 10,
               flexDirection: "row",
-              flex: 1,
             }}
           >
             <Controller
               render={({ field: { onChange, value } }) => (
-                <EmojiPicker setEmoji={onChange}>
+                <EmojiPicker
+                  onClose={() => nameRef.current.focus()}
+                  setEmoji={onChange}
+                >
                   <IconButton
                     variant="outlined"
-                    size={60}
-                    style={{ borderStyle: "dashed" }}
+                    size={70}
+                    style={{
+                      borderStyle: "dashed",
+                      borderWidth: 2,
+                    }}
+                    borderColors={{
+                      default: colors[color][7],
+                      hovered: colors[color][8],
+                      pressed: colors[color][9],
+                    }}
+                    backgroundColors={{
+                      default: colors[color][4],
+                      hovered: colors[color][5],
+                      pressed: colors[color][6],
+                    }}
                   >
-                    <Emoji emoji={value || "1f4ad"} size={30} />
+                    <Emoji emoji={value || "1f4ad"} size={40} />
                   </IconButton>
                 </EmojiPicker>
               )}
               name="emoji"
               control={control}
             />
-            <Controller
-              rules={{ required: true }}
-              render={({ field: { onChange, onBlur, value } }) => (
-                <TextField
-                  variant="filled+outlined"
-                  style={{
-                    height: 60,
-                    fontSize: 20,
-                    borderRadius: 99,
-                    flex: 1,
-                    maxWidth: 270,
-                  }}
-                  onKeyPress={(e: any) => {
-                    if (e.key === "Escape") menuRef.current?.close?.();
-                  }}
-                  placeholder="Label name"
-                  inputRef={nameRef}
-                  onBlur={onBlur}
-                  weight={900}
-                  onChangeText={onChange}
-                  value={value}
-                  onSubmitEditing={handleButtonClick}
-                />
-              )}
-              name="name"
-              control={control}
-            />
-          </View>
-          <View
-            style={{
-              width: "100%",
-              gap: 10,
-              marginTop: Platform.OS !== "web" && 20,
-            }}
-          >
-            <Text variant="eyebrow">Color</Text>
+
             <Controller
               control={control}
               rules={{ required: true }}
@@ -176,8 +160,7 @@ export const LabelEditModal = memo(function LabelEditModal({
                     flexDirection: "row",
                     alignItems: "center",
                     flexWrap: "wrap",
-                    gap: 5,
-                    width: "100%",
+                    flex: 1,
                   }}
                 >
                   {Object.keys(colors).map((color) => (
@@ -185,20 +168,63 @@ export const LabelEditModal = memo(function LabelEditModal({
                       key={color}
                       onPress={() => onChange(color)}
                       style={() => ({
-                        flex: 1,
-                        aspectRatio: 1,
-                        borderRadius: 999,
+                        borderRadius: 15,
                         backgroundColor: colors[color][6],
                         borderWidth: 2,
-                        borderColor: colors[color][color === value ? 11 : 6],
+                        height: 35,
+                        width: `${100 / 5}%`,
+                        borderColor: theme[2],
+                        alignItems: "center",
+                        justifyContent: "center",
                       })}
-                    />
+                    >
+                      {value === color && (
+                        <Icon
+                          style={{
+                            color: colors[color][11],
+                          }}
+                          bold
+                        >
+                          done_outline
+                        </Icon>
+                      )}
+                    </Pressable>
                   ))}
                 </View>
               )}
               name="color"
             />
           </View>
+
+          <Controller
+            rules={{ required: true }}
+            render={({ field: { onChange, onBlur, value } }) => (
+              <TextField
+                variant="filled+outlined"
+                style={{
+                  height: 60,
+                  fontSize: 20,
+                  textAlign: "center",
+                  paddingHorizontal: 25,
+                  borderRadius: 99,
+                  marginTop: 10,
+                }}
+                onKeyPress={(e: any) => {
+                  if (e.key === "Escape") menuRef.current?.close?.();
+                }}
+                placeholder="Label name"
+                inputRef={nameRef}
+                onBlur={onBlur}
+                weight={900}
+                onChangeText={onChange}
+                value={value}
+                onSubmitEditing={handleButtonClick}
+              />
+            )}
+            name="name"
+            control={control}
+          />
+
           <Button
             height={60}
             onPress={handleButtonClick}

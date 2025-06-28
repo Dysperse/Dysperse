@@ -8,7 +8,13 @@ import {
   useRef,
   useState,
 } from "react";
-import { Pressable, StyleSheet, useWindowDimensions, View } from "react-native";
+import {
+  Platform,
+  Pressable,
+  StyleSheet,
+  useWindowDimensions,
+  View,
+} from "react-native";
 import useSWR from "swr";
 import BottomSheet from "../BottomSheet";
 import Emoji from "../Emoji";
@@ -55,9 +61,11 @@ const emojiPickerStyles = StyleSheet.create({
 export function EmojiPicker({
   children,
   setEmoji,
+  onClose,
 }: {
   children: ReactElement;
   setEmoji: (emoji: string) => void;
+  onClose?: () => void;
 }) {
   const ref = useRef<BottomSheetModal>(null);
   const [query, setQuery] = useState("");
@@ -67,7 +75,11 @@ export function EmojiPicker({
     setQuery("");
   }, []);
 
-  const handleClose = useCallback(() => ref.current?.close(), []);
+  const handleClose = useCallback(() => {
+    ref.current?.close();
+    if (onClose) onClose();
+  }, [onClose]);
+
   const trigger = cloneElement(children, { onPress: handleOpen });
 
   const { data, error } = useSWR(
@@ -145,6 +157,7 @@ export function EmojiPicker({
                   paddingHorizontal: 20,
                   fontSize: 20,
                 }}
+                autoFocus={Platform.OS !== "web"}
                 variant="filled+outlined"
                 placeholder="Find an emoji…"
                 onChangeText={(e) => setQuery(e.toLowerCase())}

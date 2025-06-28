@@ -27,6 +27,7 @@ export const ColumnMenuTrigger = memo(function ColumnMenuTrigger({
   const editButton = (
     <LabelEditModal
       label={label}
+      header="Edit label"
       onLabelUpdate={(newLabel) => {
         mutate(
           (oldData) => {
