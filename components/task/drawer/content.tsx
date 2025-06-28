@@ -737,7 +737,7 @@ export function TaskDrawerContent({
         onlyIf={() => true}
         steps={[
           {
-            text: "Tap and hold to instantly share your task",
+            text: "Tap to instantly share your task with others",
           },
           {
             text: "Mark your task as done",

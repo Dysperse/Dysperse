@@ -66,10 +66,7 @@ function TasksSettings({ updateUserSettings }: any) {
         }}
       >
         <ListItemButton disabled onPress={() => {}}>
-          <ListItemText
-            primary="Week start"
-            secondary="This setting affects recurring tasks"
-          />
+          <ListItemText primary="Week start" />
           <MenuPopover
             trigger={AccountMenuTrigger({
               text: capitalizeFirstLetter(
@@ -85,10 +82,7 @@ function TasksSettings({ updateUserSettings }: any) {
           />
         </ListItemButton>
         <ListItemButton disabled onPress={() => {}}>
-          <ListItemText
-            primary="Default notification"
-            secondary="Get reminders before a task starts"
-          />
+          <ListItemText primary="Due date reminders" />
           <MenuPopover
             trigger={AccountMenuTrigger({
               text: "3 notifications",
@@ -105,10 +99,7 @@ function TasksSettings({ updateUserSettings }: any) {
           />
         </ListItemButton>
         <ListItemButton disabled onPress={() => {}}>
-          <ListItemText
-            primary="Time display"
-            secondary="Choose how times are displayed in the app"
-          />
+          <ListItemText primary="Time display" />
           <MenuPopover
             trigger={AccountMenuTrigger({ text: "12 hour" })}
             options={[{ text: "12 hour" }, { text: "24 hour" }].map((e) => ({
@@ -122,10 +113,7 @@ function TasksSettings({ updateUserSettings }: any) {
           />
         </ListItemButton>
         <ListItemButton disabled onPress={() => {}}>
-          <ListItemText
-            primary="Maps provider"
-            secondary="Locations will open in this app"
-          />
+          <ListItemText primary="Maps provider" />
           <MenuPopover
             trigger={AccountMenuTrigger({
               text: `${capitalizeFirstLetter(
@@ -165,7 +153,11 @@ function TasksSettings({ updateUserSettings }: any) {
         >
           <ListItemText
             primary="Private tasks by default"
-            secondary="New tasks are private by default"
+            secondary={
+              session.user.privateTasks
+                ? "New tasks are private by default"
+                : "New tasks are shareable by default"
+            }
           />
           <Icon
             size={40}

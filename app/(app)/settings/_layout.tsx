@@ -228,28 +228,28 @@ export default function Layout() {
               }}
             >
               {!breakpoints.md && <SystemBars style="light" />}
-              {!breakpoints.md && (
-                <MenuButton
-                  back
-                  gradient
-                  gradientColors={
-                    pathname.includes("scan")
-                      ? ["rgba(0,0,0,0.5)", "transparent"]
-                      : undefined
-                  }
-                  iconColor={pathname.includes("scan") ? "#fff" : null}
-                  left={pathname !== "/settings"}
-                  icon={pathname === "/settings" ? "close" : "west"}
-                />
-              )}
               <JsStack
                 initialRouteName={breakpoints.md ? "account/index" : "index"}
                 id={undefined}
                 screenOptions={{
-                  headerShown: false,
-                  headerMode: "screen",
+                  headerShown: true,
                   cardOverlayEnabled: true,
                   gestureResponseDistance: width,
+                  header: ({ route }) =>
+                    !breakpoints.md && (
+                      <MenuButton
+                        back
+                        gradient
+                        gradientColors={
+                          route.name === "login/scan"
+                            ? ["rgba(0,0,0,0.5)", "transparent"]
+                            : undefined
+                        }
+                        iconColor={route.name === "login/scan" ? "#fff" : null}
+                        left={route.name !== "index"}
+                        icon={route.name === "index" ? "close" : "west"}
+                      />
+                    ),
                 }}
               >
                 {[

@@ -136,7 +136,7 @@ export const MenuButton = ({
             position: "absolute",
             top: 0,
             left: 0,
-            zIndex: 10,
+            zIndex: 1000,
             height: 150,
             overflow: "visible",
             width: "100%",

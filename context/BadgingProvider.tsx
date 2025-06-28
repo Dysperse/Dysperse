@@ -1,7 +1,9 @@
+import dayjs from "dayjs";
 import { setBadgeCountAsync } from "expo-notifications";
 import React, { createContext, useContext, useEffect, useRef } from "react";
 import { Platform } from "react-native";
 import useSWR from "swr";
+import { useUser } from "./useUser";
 
 const BadgingContext = createContext(null);
 export const useBadgingService = () => useContext(BadgingContext);
@@ -11,9 +13,12 @@ export const BadgingProvider = ({
 }: {
   children: React.ReactNode;
 }) => {
+  const { session } = useUser();
   const { data, mutate } = useSWR(["user/notifications/badge"]);
 
   const setBadge = async (count: number) => {
+    if (!dayjs(session?.user?.profile?.lastPlanned).isToday()) count++;
+
     if (Platform.OS === "web" && "setAppBadge" in navigator) {
       if (count > 0) navigator.setAppBadge(count);
       else navigator.clearAppBadge();

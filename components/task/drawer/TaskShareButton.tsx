@@ -1,11 +1,9 @@
 import { AttachStep } from "@/context/OnboardingProvider";
 import IconButton from "@/ui/IconButton";
-import MenuPopover from "@/ui/MenuPopover";
 import { setStringAsync } from "expo-clipboard";
-import { impactAsync, ImpactFeedbackStyle } from "expo-haptics";
 import { shareAsync } from "expo-sharing";
 import React, { useCallback } from "react";
-import { Platform, View } from "react-native";
+import { Platform } from "react-native";
 import Toast from "react-native-toast-message";
 import { useTaskDrawerContext } from "./context";
 
@@ -24,22 +22,18 @@ export function TaskShareButton() {
       });
   }, [link]);
 
-  const handleShare = useCallback(async () => {
-    try {
-      updateTask({ published: !task.published });
-      if (!task.published) handleCopy();
-      else Toast.show({ type: "success", text1: "Task sharing disabled" });
-    } catch (e) {
-      Toast.show({
-        type: "error",
-        text1: "Something went wrong. Please try again later.",
-      });
-    }
-  }, [task, updateTask, handleCopy]);
-
   return isReadOnly ? null : (
     <AttachStep index={0}>
-      <View>
+      <IconButton
+        onPress={() => {
+          updateTask({ published: true });
+          handleCopy();
+        }}
+        size={45}
+        icon="ios_share"
+        iconStyle={{ marginTop: -3 }}
+      />
+      {/* <View>
         <MenuPopover
           trigger={
             <IconButton
@@ -67,7 +61,7 @@ export function TaskShareButton() {
             },
           ]}
         />
-      </View>
+      </View> */}
     </AttachStep>
   );
 }

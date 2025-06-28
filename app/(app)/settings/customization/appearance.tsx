@@ -64,13 +64,13 @@ function ThemedSlide({
     <View
       style={{
         padding: 5,
-        width: breapoints.md ? "33.333%" : "50%",
+        width: breapoints.md ? "33.333%" : "100%",
       }}
     >
       <ColorThemeProvider theme={colors}>
         <Button
           onPress={handleSelect}
-          height={210}
+          height={100}
           backgroundColors={{
             default: colors[4],
             hovered: colors[5],
@@ -81,15 +81,17 @@ function ThemedSlide({
             hovered: colors[isSelected ? 10 : 5],
             pressed: colors[isSelected ? 9 : 6],
           }}
-          style={{
-            alignItems: "center",
-            flexDirection: "column",
-            paddingHorizontal: 10,
-            borderRadius: 20,
-            position: "relative",
-          }}
           variant="outlined"
-          containerStyle={{ borderRadius: 20, borderWidth: 2 }}
+          containerStyle={{
+            borderWidth: 2,
+            position: "relative",
+            borderRadius: 25,
+          }}
+          style={{
+            gap: 15,
+            paddingHorizontal: 25,
+            justifyContent: "flex-start",
+          }}
         >
           {isSelected && (
             <View
@@ -106,17 +108,14 @@ function ThemedSlide({
             </View>
           )}
           <Image
-            style={{ width: 100, height: 100 }}
+            style={{ width: 50, height: 50 }}
             source={{
               uri: `https://assets.dysperse.com/themes/${
                 isDark ? "dark/" : ""
               }${theme}.svg?`,
             }}
           />
-          <Text
-            weight={600}
-            style={{ fontSize: 20, textAlign: "center", marginBottom: -10 }}
-          >
+          <Text weight={600} style={{ fontSize: 20, color: colors[11] }}>
             {themeData.name}
           </Text>
         </Button>
@@ -274,3 +273,4 @@ export default function Page() {
     </SettingsScrollView>
   );
 }
+
