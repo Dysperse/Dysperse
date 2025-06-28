@@ -88,15 +88,16 @@ export default function Grid() {
                     borderStyle: "dashed",
                     borderRadius: 25,
                     alignItems: "center",
+                    flexDirection: "row",
+                    gap: 10,
                     justifyContent: "center",
                     padding: 20,
                   })}
                 >
-                  <Icon>edit</Icon>
+                  <Icon>stylus_note</Icon>
                   <Text
                     numberOfLines={1}
                     style={{
-                      marginTop: 10,
                       color: theme[11],
                     }}
                   >
