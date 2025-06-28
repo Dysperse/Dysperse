@@ -94,12 +94,12 @@ const Modal = (
 
   return (
     <BottomSheet
+      handleComponent={() => null}
       {...props}
       maxWidth={"100%"}
       snapPoints={["100%"]}
       sheetRef={props.sheetRef}
       onClose={handleClose}
-      handleComponent={() => null}
       // animateOnMount={
       //   Platform.OS === "web"
       //     ? props.animation === "BOTH" ||

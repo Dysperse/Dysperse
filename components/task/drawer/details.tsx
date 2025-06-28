@@ -261,13 +261,8 @@ function SubtaskList() {
                 <Button
                   icon="prompt_suggestion"
                   dense
-                  containerStyle={{
-                    marginRight: "auto",
-                    opacity: 0.6,
-                    marginLeft: 5,
-                    marginTop: 2,
-                  }}
-                  style={{ gap: 10 }}
+                  style={{ gap: 10, marginRight: "auto" }}
+                  containerStyle={{ opacity: 0.6 }}
                   text={
                     Object.keys(task.subtasks || {}).length === 0
                       ? "Create subtask"
@@ -390,7 +385,6 @@ function TaskDateMenu() {
   const addRecurrenceRef = useRef(null);
   const addDateRef = useRef(null);
   const menuRef = useRef(null);
-  const breakpoints = useResponsiveBreakpoints();
 
   return (
     !(isReadOnly && !(task.start || task.recurrenceRule)) && (
@@ -416,48 +410,40 @@ function TaskDateMenu() {
         />
         <MenuPopover
           menuProps={{
-            style: { marginRight: "auto" },
+            style: { marginRight: "auto", marginBottom: 2 },
             rendererProps: { placement: "top" },
-          }}
-          containerStyle={{
-            [breakpoints.md ? "marginTop" : "marginBottom"]: -10,
-            width: 190,
           }}
           trigger={
             <Button
-              containerStyle={{
-                marginRight: "auto",
-                opacity: 0.6,
-                marginLeft: 6,
-              }}
-              style={{ gap: 12 }}
+              style={{ gap: 10, marginRight: "auto" }}
+              containerStyle={{ opacity: 0.6 }}
               dense
-              height={"auto" as any}
-            >
-              <Icon size={20} style={{ marginTop: -3, flexShrink: 0 }}>
-                {task.start
+              icon={
+                task.start
                   ? "calendar_today"
                   : task.recurrenceRule
                   ? "loop"
-                  : "calendar_today"}
-              </Icon>
-              <View style={{ flexDirection: "column" }}>
-                <Text style={{ color: theme[11] }}>
-                  {dateName[0]}
-                  {dateName[1] && (
-                    <Text
-                      style={{
-                        color: theme[11],
-                        opacity: 0.6,
-                      }}
-                    >
-                      {" — "}
-                      {dateName[1]}
-                    </Text>
-                  )}
-                </Text>
-              </View>
-            </Button>
+                  : "calendar_today"
+              }
+              text={
+                <View style={{ flexDirection: "column" }}>
+                  <ButtonText weight={400}>
+                    {dateName[0]}
+                    {dateName[1] && (
+                      <ButtonText
+                        style={{
+                          color: theme[11],
+                          opacity: 0.6,
+                        }}
+                      >
+                        {" — "}
+                        {dateName[1]}
+                      </ButtonText>
+                    )}
+                  </ButtonText>
+                </View>
+              }
+            />
           }
           closeOnSelect
           menuRef={menuRef}
@@ -525,6 +511,26 @@ function TaskDateMenu() {
         />
       </>
     )
+  );
+}
+
+function TaskAttachmentsButton() {
+  return (
+    <Button
+      style={{ gap: 10 }}
+      containerStyle={{ opacity: 0.6, marginRight: "auto" }}
+      icon="note_stack"
+      dense
+      text="Attachments"
+      onPress={() => {
+        Toast.show({
+          type: "info",
+          text1: "Attachments are not yet implemented",
+          text2: "You can add attachments in the web app",
+          visibilityTime: 5000,
+        });
+      }}
+    />
   );
 }
 
@@ -598,22 +604,12 @@ function TaskLocationMenu() {
   ) : (
     <Button
       containerStyle={{
-        opacity: 0.6,
-        marginLeft: 14,
-        marginTop: 7,
         marginRight: "auto",
+        opacity: 0.6,
       }}
-      style={{
-        gap: 10,
-        alignItems: task.location ? "flex-start" : undefined,
-        justifyContent: "flex-start",
-        paddingHorizontal: 0,
-        paddingRight: 50,
-      }}
+      style={{ gap: 10, paddingTop: 3 }}
       dense
-      height={"auto" as any}
-      icon="near_me"
-      iconStyle={{ transform: [{ scale: 1.15 }], flexShrink: 0 }}
+      icon="location_on"
       text={task.location ? task.location.name : "Add location"}
       textProps={{ numberOfLines: undefined }}
     />
@@ -878,18 +874,16 @@ export function TaskDetails() {
   const editorRef = useRef(null);
 
   return (
-    <View style={{ gap: 2, marginTop: 5 }}>
+    <View style={{ paddingLeft: 3 }}>
       {!task.parentTaskId && (
         <View style={{ flex: 1 }}>
           <TaskDateMenu />
-          <TaskLocationMenu />
+          {/* <TaskLocationMenu /> */}
         </View>
       )}
       {(isReadOnly && task.subtasks?.length === 0) ||
       task.parentTaskId ? null : (
-        <View>
-          <SubtaskList />
-        </View>
+        <View>{/* <SubtaskList /> */}</View>
       )}
       <View>
         <TaskNote task={task} ref={editorRef} updateTask={updateTask} />

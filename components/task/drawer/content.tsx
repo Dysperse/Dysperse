@@ -1,11 +1,10 @@
 import MarkdownRenderer from "@/components/MarkdownRenderer";
 import LabelPicker from "@/components/labels/picker";
 import { STORY_POINT_SCALE } from "@/constants/workload";
-import { OnboardingContainer } from "@/context/OnboardingProvider";
+import { AttachStep, OnboardingContainer } from "@/context/OnboardingProvider";
 import { useUser } from "@/context/useUser";
 import { sendApiRequest } from "@/helpers/api";
 import { useHotkeys } from "@/helpers/useHotKeys";
-import { useResponsiveBreakpoints } from "@/helpers/useResponsiveBreakpoints";
 import AutoSizeTextArea from "@/ui/AutoSizeTextArea";
 import { Avatar } from "@/ui/Avatar";
 import { Button } from "@/ui/Button";
@@ -293,7 +292,6 @@ function AiExplanation({ task }) {
 }
 
 function TaskNameInput() {
-  const breakpoints = useResponsiveBreakpoints();
   const { task, updateTask, isReadOnly } = useTaskDrawerContext();
   const theme = useColorTheme();
   const [name, setName] = useState(task.name);
@@ -346,19 +344,23 @@ function TaskNameInput() {
           }
         }}
         disabled={isReadOnly}
+        // disable scroll
+        scrollEnabled={false}
         style={[
           {
-            fontFamily: "serifText800",
-            color: theme[12],
+            fontFamily: "serifText700",
+            color: theme[11],
             padding: 12,
-            paddingVertical: 10,
+            paddingVertical: 0,
+            marginTop: 10,
+            marginBottom: 3,
             borderRadius: 20,
             borderWidth: 2,
             shadowRadius: 0,
             borderColor: "transparent",
           },
         ]}
-        fontSize={breakpoints.md ? 35 : 30}
+        fontSize={35}
       />
     </>
   );
@@ -643,22 +645,25 @@ function TaskSidekickMenu() {
   );
 }
 
-export function TaskDrawerContent({
-  handleClose,
-  forceClose,
-}: {
-  handleClose: () => void;
-  forceClose?: (config?: any) => void;
-}) {
-  const { session } = useUser();
+function TaskHome({ labelPickerRef, forceClose }) {
   const theme = useColorTheme();
-  const breakpoints = useResponsiveBreakpoints();
   const labelColors = useLabelColors();
   const { task, updateTask, isReadOnly } = useTaskDrawerContext();
   const { id: collectionId } = useGlobalSearchParams();
   const rotate = useSharedValue(task.pinned ? -35 : 0);
-  const labelPickerRef = useRef(null);
+
   const SafeScrollView = forceClose ? BottomSheetScrollView : ScrollView;
+
+  // Rotate the pin icon by 45 degrees if the task is pinned using react-native-reanimated
+  const rotateStyle = useAnimatedStyle(() => {
+    return {
+      transform: [
+        {
+          rotate: `${rotate.value}deg`,
+        },
+      ],
+    };
+  });
 
   const handlePriorityChange = useCallback(() => {
     if (Platform.OS !== "web") impactAsync(ImpactFeedbackStyle.Light);
@@ -672,6 +677,173 @@ export function TaskDrawerContent({
     });
     updateTask({ pinned: !task.pinned });
   }, [task.pinned, updateTask, rotate]);
+
+  useHotkeys(["shift+1"], () => handlePriorityChange());
+
+  return (
+    <SafeScrollView
+      // bounces={false}
+      showsHorizontalScrollIndicator={false}
+      style={{
+        maxHeight: Dimensions.get("window").height - 200,
+      }}
+      onScrollBeginDrag={Keyboard.dismiss}
+    >
+      <View
+        style={{
+          paddingHorizontal: 15,
+          paddingTop: 45,
+          paddingBottom: 10,
+        }}
+      >
+        <View
+          style={{
+            gap: 10,
+            paddingHorizontal: 13,
+            flexDirection: "row",
+          }}
+        >
+          <Button
+            chip
+            large
+            variant="outlined"
+            disabled={isReadOnly}
+            onPress={handlePriorityChange}
+            icon={
+              <Animated.View style={rotateStyle}>
+                <Icon
+                  filled={task.pinned}
+                  style={{
+                    marginTop: -1,
+                    ...(task.pinned ? { color: labelColors.orange[11] } : {}),
+                  }}
+                >
+                  push_pin
+                </Icon>
+              </Animated.View>
+            }
+            backgroundColors={
+              task.pinned
+                ? {
+                    default: labelColors.orange[6],
+                    hovered: labelColors.orange[7],
+                    pressed: labelColors.orange[8],
+                  }
+                : {
+                    default: addHslAlpha(theme[11], 0),
+                    hovered: addHslAlpha(theme[11], 0.1),
+                    pressed: addHslAlpha(theme[11], 0.2),
+                  }
+            }
+            borderColors={
+              task.pinned
+                ? {
+                    default: addHslAlpha(labelColors.orange[11], 0),
+                    hovered: addHslAlpha(labelColors.orange[11], 0.1),
+                    pressed: addHslAlpha(labelColors.orange[11], 0.2),
+                  }
+                : {
+                    default: addHslAlpha(theme[11], 0.1),
+                    hovered: addHslAlpha(theme[11], 0.2),
+                    pressed: addHslAlpha(theme[11], 0.3),
+                  }
+            }
+            style={task.pinned && { borderColor: labelColors.orange[11] }}
+          />
+          {task && !task.parentTaskId && (
+            <LabelPicker
+              label={task?.label || undefined}
+              setLabel={(e: any) => {
+                updateTask({ labelId: e.id, label: e });
+              }}
+              onClose={() => {}}
+              sheetProps={{ sheetRef: labelPickerRef }}
+              defaultCollection={collectionId as any}
+            >
+              <Button
+                chip
+                disabled={isReadOnly}
+                icon={
+                  task.label?.emoji || task.collection?.emoji ? (
+                    <Emoji
+                      emoji={task?.label?.emoji || task.collection.emoji}
+                      size={20}
+                    />
+                  ) : (
+                    <Icon>tag</Icon>
+                  )
+                }
+                large
+                text={task?.label?.name || task?.collection?.name}
+                variant="outlined"
+                backgroundColors={{
+                  default: addHslAlpha(theme[11], 0),
+                  hovered: addHslAlpha(theme[11], 0.1),
+                  pressed: addHslAlpha(theme[11], 0.2),
+                }}
+                textStyle={{ fontSize: 15 }}
+              />
+            </LabelPicker>
+          )}
+          {!task.parentTaskId && <WorkloadChip />}
+          {task && !task.label && task.collectionId && (
+            <AiLabelSuggestion
+              watch={(key) => task[key]}
+              setValue={(key, value) => {
+                if (key === "label")
+                  updateTask({ label: value, labelId: value.id });
+              }}
+              style={{
+                borderColor: addHslAlpha(theme[11], 0.2),
+                borderWidth: 2,
+                margin: -0.5,
+                marginLeft: 1,
+                borderRadius: 10,
+              }}
+            />
+          )}
+        </View>
+        <TaskNameInput />
+        <TaskDetails />
+      </View>
+    </SafeScrollView>
+  );
+}
+
+function AttachmentPicker({ forceClose }) {
+  const theme = useColorTheme();
+  const { task } = useTaskDrawerContext();
+
+  const SafeScrollView = forceClose ? BottomSheetScrollView : ScrollView;
+
+  return (
+    <SafeScrollView
+      // bounces={false}
+      showsHorizontalScrollIndicator={false}
+      style={{
+        maxHeight: Dimensions.get("window").height - 200,
+        paddingHorizontal: 15,
+        paddingTop: 30,
+      }}
+      onScrollBeginDrag={Keyboard.dismiss}
+    >
+      <Text variant="eyebrow">Photo</Text>
+      <Text variant="eyebrow">Location</Text>
+      <Text variant="eyebrow">Subtask</Text>
+    </SafeScrollView>
+  );
+}
+
+export function TaskDrawerContent({
+  forceClose,
+}: {
+  forceClose?: (config?: any) => void;
+}) {
+  const theme = useColorTheme();
+  const { task, updateTask, isReadOnly } = useTaskDrawerContext();
+  const labelPickerRef = useRef(null);
+
+  const [view, setView] = useState<"HOME" | "ATTACH">("HOME");
 
   const handleDelete = useCallback(
     async (d) => {
@@ -715,19 +887,7 @@ export function TaskDrawerContent({
   );
 
   useHotkeys(["delete", "backspace"], () => handleDelete(true));
-  useHotkeys(["shift+1"], () => handlePriorityChange());
   useHotkeys(["shift+3"], () => labelPickerRef.current?.present());
-
-  // Rotate the pin icon by 45 degrees if the task is pinned using react-native-reanimated
-  const rotateStyle = useAnimatedStyle(() => {
-    return {
-      transform: [
-        {
-          rotate: `${rotate.value}deg`,
-        },
-      ],
-    };
-  });
 
   return (
     <>
@@ -749,193 +909,58 @@ export function TaskDrawerContent({
       >
         {() => (
           <>
-            <View
-              style={{
-                flexDirection: "row",
-                paddingHorizontal: 20,
-                left: 0,
-                paddingTop: breakpoints.md ? 0 : 10,
-              }}
-            >
-              <View
-                style={{
-                  paddingTop: isReadOnly ? 10 : breakpoints.md ? 20 : 10,
-                  flexDirection: "row",
-                  gap: 10,
-                  width: "100%",
-                  alignItems: "center",
-                }}
-              >
-                {forceClose && (
-                  <IconButton
-                    onPress={() => {
-                      handleClose();
-                      forceClose(
-                        breakpoints.md
-                          ? undefined
-                          : { overshootClamping: true, stiffness: 400 }
-                      );
-                    }}
-                    size={breakpoints.md ? 45 : 40}
-                    variant="outlined"
-                    icon="close"
-                    borderColors={{
-                      default: addHslAlpha(theme[11], 0.1),
-                      hovered: addHslAlpha(theme[11], 0.2),
-                      pressed: addHslAlpha(theme[11], 0.3),
-                    }}
-                  />
-                )}
-                <View
-                  style={{
-                    flex: 1,
-                    flexDirection: "row",
-                    justifyContent: "flex-end",
-                  }}
-                >
-                  {!isReadOnly && <TaskMoreMenu handleDelete={handleDelete} />}
-                  {session?.user?.betaTester && !isReadOnly && (
-                    <TaskSidekickMenu />
-                  )}
-                  {!task.parentTaskId && <TaskShareButton />}
-                  {!isReadOnly && <TaskCompleteButton />}
-                </View>
-              </View>
-            </View>
             <KeyboardAvoidingView behavior="height">
-              <SafeScrollView
-                // bounces={false}
-                showsHorizontalScrollIndicator={false}
-                style={{
-                  maxHeight: Dimensions.get("window").height - 200,
-                }}
-                onScrollBeginDrag={Keyboard.dismiss}
-              >
+              {view === "HOME" ? (
+                <TaskHome
+                  forceClose={forceClose}
+                  labelPickerRef={labelPickerRef}
+                />
+              ) : (
+                <AttachmentPicker forceClose={forceClose} />
+              )}
+              {!isReadOnly && (
                 <View
                   style={{
-                    padding: breakpoints.md ? 30 : 20,
-                    paddingVertical: breakpoints.md ? 30 : 25,
+                    padding: 20,
+                    flexDirection: "row",
+                    gap: 5,
+                    height: 90,
                   }}
                 >
-                  <ScrollView
-                    horizontal
-                    contentContainerStyle={{
-                      gap: 10,
-                      paddingHorizontal: breakpoints.md ? 45 : 40,
-                    }}
-                    style={{ marginHorizontal: -30 }}
-                    showsHorizontalScrollIndicator={false}
-                  >
+                  {view === "HOME" && <TaskShareButton />}
+
+                  {view === "HOME" && <TaskCompleteButton />}
+
+                  <AttachStep index={2} style={{ flex: 1 }}>
                     <Button
-                      chip
                       large
-                      variant="outlined"
-                      disabled={isReadOnly}
-                      onPress={handlePriorityChange}
-                      icon={
-                        <Animated.View style={rotateStyle}>
-                          <Icon
-                            filled={task.pinned}
-                            style={{
-                              marginTop: -3,
-                              ...(task.pinned
-                                ? { color: labelColors.orange[3] }
-                                : {}),
-                            }}
-                          >
-                            push_pin
-                          </Icon>
-                        </Animated.View>
-                      }
-                      backgroundColors={
-                        task.pinned
-                          ? {
-                              default: labelColors.orange[11],
-                              hovered: labelColors.orange[11],
-                              pressed: labelColors.orange[12],
-                            }
-                          : {
-                              default: addHslAlpha(theme[11], 0),
-                              hovered: addHslAlpha(theme[11], 0.1),
-                              pressed: addHslAlpha(theme[11], 0.2),
-                            }
-                      }
-                      borderColors={
-                        task.pinned
-                          ? {
-                              default: addHslAlpha(labelColors.orange[11], 0),
-                              hovered: addHslAlpha(labelColors.orange[11], 0.1),
-                              pressed: addHslAlpha(labelColors.orange[11], 0.2),
-                            }
-                          : {
-                              default: addHslAlpha(theme[11], 0.1),
-                              hovered: addHslAlpha(theme[11], 0.2),
-                              pressed: addHslAlpha(theme[11], 0.3),
-                            }
-                      }
+                      bold
+                      icon={view === "HOME" ? "note_stack_add" : "close"}
+                      onPress={() => {
+                        impactAsync(ImpactFeedbackStyle.Heavy);
+                        setView((t) => (t === "HOME" ? "ATTACH" : "HOME"));
+                      }}
+                      variant="filled"
+                      text={view === "HOME" ? undefined : "Attach"}
+                      iconPosition="end"
+                      containerStyle={{
+                        flex: 1,
+                        marginLeft: view === "ATTACH" ? "auto" : undefined,
+                      }}
                       style={
-                        task.pinned && { borderColor: labelColors.orange[11] }
+                        view === "ATTACH" && {
+                          marginHorizontal: 5,
+                        }
                       }
+                      backgroundColors={{
+                        default: addHslAlpha(theme[11], 0.1),
+                        hovered: addHslAlpha(theme[11], 0.2),
+                        pressed: addHslAlpha(theme[11], 0.3),
+                      }}
                     />
-                    {task && !task.parentTaskId && (
-                      <LabelPicker
-                        label={task?.label || undefined}
-                        setLabel={(e: any) => {
-                          updateTask({ labelId: e.id, label: e });
-                        }}
-                        onClose={() => {}}
-                        sheetProps={{ sheetRef: labelPickerRef }}
-                        defaultCollection={collectionId as any}
-                      >
-                        <Button
-                          chip
-                          disabled={isReadOnly}
-                          icon={
-                            task.label?.emoji || task.collection?.emoji ? (
-                              <Emoji
-                                emoji={
-                                  task?.label?.emoji || task.collection.emoji
-                                }
-                                size={20}
-                              />
-                            ) : (
-                              <Icon>tag</Icon>
-                            )
-                          }
-                          large
-                          text={task?.label?.name || task?.collection?.name}
-                          variant="outlined"
-                          backgroundColors={{
-                            default: addHslAlpha(theme[11], 0),
-                            hovered: addHslAlpha(theme[11], 0.1),
-                            pressed: addHslAlpha(theme[11], 0.2),
-                          }}
-                          textStyle={{ fontSize: 15 }}
-                        />
-                      </LabelPicker>
-                    )}
-                    {!task.parentTaskId && <WorkloadChip />}
-                    {task && !task.label && task.collectionId && (
-                      <AiLabelSuggestion
-                        watch={(key) => task[key]}
-                        setValue={(key, value) => {
-                          if (key === "label")
-                            updateTask({ label: value, labelId: value.id });
-                        }}
-                        style={{
-                          borderColor: addHslAlpha(theme[11], 0.2),
-                          borderWidth: 2,
-                          margin: -0.5,
-                          marginLeft: 1,
-                          borderRadius: 10,
-                        }}
-                      />
-                    )}
-                  </ScrollView>
-                  <TaskNameInput />
-                  <TaskDetails />
+                  </AttachStep>
                 </View>
-              </SafeScrollView>
+              )}
             </KeyboardAvoidingView>
           </>
         )}

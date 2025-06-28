@@ -3,10 +3,7 @@ import { AttachStep } from "@/context/OnboardingProvider";
 import { useUser } from "@/context/useUser";
 import { sendApiRequest } from "@/helpers/api";
 import { getTaskCompletionStatus } from "@/helpers/getTaskCompletionStatus";
-import { useResponsiveBreakpoints } from "@/helpers/useResponsiveBreakpoints";
-import Icon from "@/ui/Icon";
-import IconButton from "@/ui/IconButton";
-import Text from "@/ui/Text";
+import { Button } from "@/ui/Button";
 import { addHslAlpha, useColor } from "@/ui/color";
 import { useColorTheme } from "@/ui/color/theme-provider";
 import { useBottomSheet } from "@gorhom/bottom-sheet";
@@ -23,7 +20,6 @@ export function TaskCompleteButton() {
     useTaskDrawerContext();
   const green = useColor("green");
   const { animatedIndex } = useBottomSheet();
-  const breakpoints = useResponsiveBreakpoints();
 
   const isCompleted = getTaskCompletionStatus(task, dateRange);
   const badgingService = useBadgingService();
@@ -88,49 +84,32 @@ export function TaskCompleteButton() {
   return (
     !isReadOnly && (
       <AttachStep index={1}>
-        <IconButton
-          disabled={disabled}
-          style={{
-            borderWidth: 1,
+        <Button
+          large
+          onPress={handlePress}
+          bold
+          text={isCompleted ? "Complete!" : "Mark done"}
+          icon="check"
+          variant="filled"
+          iconPosition="end"
+          containerStyle={{
+            flexShrink: 0,
+            width: 170,
             opacity: disabled ? undefined : 1,
-            marginLeft: 5,
-            width: "auto",
-            borderRadius: 20,
-            width: breakpoints.md ? 140 : 70,
           }}
-          pressableStyle={{
-            flexDirection: "row",
-            gap: 10,
-            paddingHorizontal: 10,
-            paddingRight: breakpoints.md ? 14 : undefined,
+          textStyle={{
+            color: isCompleted ? green[4] : theme[11],
+          }}
+          iconStyle={{
+            color: isCompleted ? green[4] : theme[11],
+            marginRight: -5,
           }}
           backgroundColors={{
             default: isCompleted ? green[9] : addHslAlpha(theme[11], 0.1),
             hovered: isCompleted ? green[10] : addHslAlpha(theme[11], 0.2),
             pressed: isCompleted ? green[11] : addHslAlpha(theme[11], 0.3),
           }}
-          size={45}
-          onPress={handlePress}
-        >
-          <Icon
-            filled={isCompleted}
-            size={27}
-            style={{
-              color: isCompleted ? green[1] : theme[11],
-            }}
-          >
-            check
-          </Icon>
-          {breakpoints.md && (
-            <Text
-              style={{
-                color: isCompleted ? green[1] : theme[11],
-              }}
-            >
-              {isCompleted ? "Complete!" : "Mark done"}
-            </Text>
-          )}
-        </IconButton>
+        />
       </AttachStep>
     )
   );

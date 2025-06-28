@@ -1,6 +1,9 @@
 import { AttachStep } from "@/context/OnboardingProvider";
-import IconButton from "@/ui/IconButton";
+import { Button } from "@/ui/Button";
+import { addHslAlpha } from "@/ui/color";
+import { useColorTheme } from "@/ui/color/theme-provider";
 import { setStringAsync } from "expo-clipboard";
+import { impactAsync, ImpactFeedbackStyle } from "expo-haptics";
 import { shareAsync } from "expo-sharing";
 import React, { useCallback } from "react";
 import { Platform } from "react-native";
@@ -8,8 +11,8 @@ import Toast from "react-native-toast-message";
 import { useTaskDrawerContext } from "./context";
 
 export function TaskShareButton() {
+  const theme = useColorTheme();
   const { isReadOnly, task, updateTask } = useTaskDrawerContext();
-
   const link = `https://dys.us.to/${task.shortId || task.id}`;
 
   const handleCopy = useCallback(async () => {
@@ -23,15 +26,22 @@ export function TaskShareButton() {
   }, [link]);
 
   return isReadOnly ? null : (
-    <AttachStep index={0}>
-      <IconButton
+    <AttachStep index={0} style={{ flex: 1 }}>
+      <Button
+        large
+        bold
         onPress={() => {
+          impactAsync(ImpactFeedbackStyle.Heavy);
           updateTask({ published: true });
           handleCopy();
         }}
-        size={45}
         icon="ios_share"
-        iconStyle={{ marginTop: -3 }}
+        variant="filled"
+        backgroundColors={{
+          default: addHslAlpha(theme[11], 0.1),
+          hovered: addHslAlpha(theme[11], 0.2),
+          pressed: addHslAlpha(theme[11], 0.3),
+        }}
       />
       {/* <View>
         <MenuPopover
