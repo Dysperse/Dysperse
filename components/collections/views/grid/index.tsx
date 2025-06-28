@@ -138,7 +138,7 @@ export default function Grid() {
                         <Emoji
                           emoji={label.emoji}
                           size={50}
-                          style={{ marginBottom: 5 }}
+                          style={{ marginBottom: 10 }}
                         />
                       )}
                       <Text
