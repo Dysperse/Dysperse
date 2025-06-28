@@ -84,6 +84,8 @@ export function Grid() {
       onOrderChange={() => impactAsync(ImpactFeedbackStyle.Light)}
       onDragStart={() => impactAsync(ImpactFeedbackStyle.Medium)}
       onActiveItemDropped={(res) => {
+        console.log(res);
+        if (res.fromIndex === -1) return;
         const gridOrder = data.gridOrder;
         const { fromIndex, toIndex } = res;
         const item = gridOrder[fromIndex];
