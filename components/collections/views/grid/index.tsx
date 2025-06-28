@@ -1,7 +1,7 @@
 import { useCollectionContext } from "@/components/collections/context";
 import { useResponsiveBreakpoints } from "@/helpers/useResponsiveBreakpoints";
 import Emoji from "@/ui/Emoji";
-import IconButton from "@/ui/IconButton";
+import Icon from "@/ui/Icon";
 import Text from "@/ui/Text";
 import { addHslAlpha } from "@/ui/color";
 import { useColorTheme } from "@/ui/color/theme-provider";
@@ -41,6 +41,7 @@ export default function Grid() {
 
   if (Object.keys(data.entities).length > 0)
     displayLabels.push({ other: true });
+  displayLabels.push({ create: true });
   if (displayLabels.length % 2 !== 0) displayLabels.push({ empty: true });
   if (displayLabels.length < 4)
     displayLabels.push(
@@ -53,6 +54,7 @@ export default function Grid() {
   const itemsPerRow = displayLabels.length / rowCount;
   const rows = [];
   const isMobileHome = currentColumn === "HOME" && !breakpoints.md;
+
   for (let i = 0; i < rowCount; i++) {
     const row = displayLabels.slice(i * itemsPerRow, (i + 1) * itemsPerRow);
     rows.push(
@@ -69,8 +71,39 @@ export default function Grid() {
         >
           {row
             ?.filter((e) => e)
-            .map(
-              (label, i) =>
+            .map((label, i) =>
+              label.create ? (
+                <Pressable
+                  key={i}
+                  onPress={openLabelPicker}
+                  android_ripple={{ color: theme[7] }}
+                  style={({ pressed }: any) => ({
+                    flex: 1,
+                    width: 230,
+                    minWidth: 230,
+                    maxWidth: 230,
+                    minHeight: 5,
+                    borderWidth: 2,
+                    borderColor: theme[pressed ? 6 : 4],
+                    borderStyle: "dashed",
+                    borderRadius: 25,
+                    alignItems: "center",
+                    justifyContent: "center",
+                    padding: 20,
+                  })}
+                >
+                  <Icon>edit</Icon>
+                  <Text
+                    numberOfLines={1}
+                    style={{
+                      marginTop: 10,
+                      color: theme[11],
+                    }}
+                  >
+                    Edit
+                  </Text>
+                </Pressable>
+              ) : (
                 !label.empty && (
                   <View
                     style={{ borderRadius: 25, overflow: "hidden" }}
@@ -141,6 +174,7 @@ export default function Grid() {
                     </Pressable>
                   </View>
                 )
+              )
             )}
         </View>
       ) : (
@@ -262,24 +296,6 @@ export default function Grid() {
               </Animated.View>
             )}
           </View>
-          {(breakpoints.md || currentColumn === "HOME") && !isReadOnly && (
-            <View
-              style={{
-                height: "100%",
-                width: 100,
-                marginLeft: 15,
-                justifyContent: "center",
-                alignItems: "center",
-              }}
-            >
-              <IconButton
-                onPress={openLabelPicker}
-                size={50}
-                icon="add"
-                variant="outlined"
-              />
-            </View>
-          )}
         </ScrollView>
       )}
     </GridContext.Provider>
