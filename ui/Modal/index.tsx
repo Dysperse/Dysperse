@@ -95,6 +95,7 @@ const Modal = (
   return (
     <BottomSheet
       handleComponent={() => null}
+      stackBehavior="push"
       {...props}
       maxWidth={"100%"}
       snapPoints={["100%"]}
@@ -111,7 +112,6 @@ const Modal = (
       {...((props.animation !== "SCALE" || Platform.OS === "web") && {
         animationConfigs,
       })}
-      stackBehavior="push"
       enablePanDownToClose={
         props.disablePan ? false : props.animation !== "SCALE"
       }

@@ -1521,6 +1521,7 @@ const BottomSheetContent = ({
 
 export interface CreateTaskDrawerProps {
   children?: React.ReactNode;
+  stackBehavior?: "push" | "replace";
   sheetRef?: RefObject<BottomSheetModal>;
   defaultValues?: {
     date?: Dayjs;
@@ -1614,6 +1615,7 @@ const CreateTaskOuterContent = (props) => {
 
 const CreateTask = ({
   children,
+  stackBehavior = "push",
   defaultValues = {
     date: null,
     agendaOrder: null,
@@ -1656,6 +1658,7 @@ const CreateTask = ({
     <>
       {trigger}
       <Modal
+        stackBehavior={stackBehavior}
         transformCenter
         disablePan={breakpoints.md}
         maxWidth={breakpoints.md ? 700 : "100%"}
