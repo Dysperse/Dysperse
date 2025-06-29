@@ -936,13 +936,13 @@ function LocationSelector({ handleBack }) {
           coordinates: [latitude, longitude],
         },
       });
+      handleBack();
     } else {
       Toast.show({
         type: "error",
         text1: "Something went wrong",
       });
     }
-    handleBack();
     setLoading(false);
   };
 
