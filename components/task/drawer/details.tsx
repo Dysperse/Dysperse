@@ -562,11 +562,18 @@ function TaskLocationMenu() {
       height={"auto" as any}
       dense
     >
-      <Icon style={{ flexShrink: 0, transform: [{ scale: 1.1 }] }}>
+      <Icon
+        style={{
+          flexShrink: 0,
+          transform: [{ scale: 1.3 }, { translateX: -4 }],
+        }}
+      >
         near_me
       </Icon>
       <View>
-        <ButtonText numberOfLines={undefined}>{data.names?.name}</ButtonText>
+        <ButtonText numberOfLines={undefined}>
+          {data.names?.name || "Location"}
+        </ButtonText>
         <ButtonText numberOfLines={undefined} weight={300}>
           {[
             `${data.addresstags?.housenumber || ""} ${
@@ -874,11 +881,11 @@ export function TaskDetails() {
   const editorRef = useRef(null);
 
   return (
-    <View style={{ paddingLeft: 3 }}>
+    <View style={{ paddingLeft: 3, gap: 3 }}>
       {!task.parentTaskId && (
-        <View style={{ flex: 1 }}>
+        <View style={{ flex: 1, gap: 3 }}>
           <TaskDateMenu />
-          {/* <TaskLocationMenu /> */}
+          {task.location && <TaskLocationMenu />}
         </View>
       )}
       {(isReadOnly && task.subtasks?.length === 0) ||
