@@ -1013,6 +1013,7 @@ export function TaskDetails({ labelPickerRef }) {
                     <Emoji
                       emoji={task?.label?.emoji || task.collection.emoji}
                       size={20}
+                      style={{ marginHorizontal: 2.5 }}
                     />
                   ) : (
                     <Icon>tag</Icon>
@@ -1020,7 +1021,12 @@ export function TaskDetails({ labelPickerRef }) {
                 }
                 dense
                 style={{ gap: 10 }}
-                containerStyle={{ opacity: 0.6, marginRight: "auto" }}
+                containerStyle={{ marginRight: "auto" }}
+                textStyle={{ opacity: 0.6 }}
+                iconStyle={{
+                  opacity:
+                    task.label?.emoji || task.collection?.emoji ? 1 : 0.6,
+                }}
                 text={
                   task?.label?.name || task?.collection?.name || "Add label"
                 }
