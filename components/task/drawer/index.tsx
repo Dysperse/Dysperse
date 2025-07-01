@@ -85,6 +85,7 @@ function TaskDrawerWrapper({
   const theme = useColorTheme();
   const { forceClose } = useBottomSheet();
   const badgingService = useBadgingService();
+  const isDark = useDarkMode();
 
   const updateTask = useCallback(
     async (payload, sendRequest = true) => {
@@ -149,6 +150,7 @@ function TaskDrawerWrapper({
             marginTop: 15,
             borderRadius: 99,
           }}
+          tint={isDark ? "dark" : "light"}
         />
         {data?.id ? (
           <TaskDrawerContext.Provider

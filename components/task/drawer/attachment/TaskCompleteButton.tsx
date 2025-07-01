@@ -83,31 +83,31 @@ export function TaskCompleteButton() {
 
   return (
     !isReadOnly && (
-      <AttachStep index={1}>
+      <AttachStep index={1} style={{ flex: 1 }}>
         <Button
           large
           onPress={handlePress}
           bold
-          text={isCompleted ? "Complete!" : "Mark done"}
-          icon="check"
+          icon="done_outline"
           variant="filled"
           iconPosition="end"
           containerStyle={{
-            flexShrink: 0,
-            width: 170,
             opacity: disabled ? undefined : 1,
           }}
-          textStyle={{
-            color: isCompleted ? green[4] : theme[11],
-          }}
           iconStyle={{
-            color: isCompleted ? green[4] : theme[11],
+            color: isCompleted ? green[11] : theme[11],
             marginRight: -5,
           }}
           backgroundColors={{
-            default: isCompleted ? green[9] : addHslAlpha(theme[11], 0.1),
-            hovered: isCompleted ? green[10] : addHslAlpha(theme[11], 0.2),
-            pressed: isCompleted ? green[11] : addHslAlpha(theme[11], 0.3),
+            default: isCompleted
+              ? addHslAlpha(green[11], 0.2)
+              : addHslAlpha(theme[11], 0.1),
+            hovered: isCompleted
+              ? addHslAlpha(green[11], 0.3)
+              : addHslAlpha(theme[11], 0.2),
+            pressed: isCompleted
+              ? addHslAlpha(green[11], 0.4)
+              : addHslAlpha(theme[11], 0.3),
           }}
         />
       </AttachStep>

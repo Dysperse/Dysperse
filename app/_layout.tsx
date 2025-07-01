@@ -128,6 +128,7 @@ function Root() {
     symbols_outlined: require("../assets/fonts/symbols/outlined.ttf"),
     symbols_filled: require("../assets/fonts/symbols/filled.ttf"),
     symbols_bold_outlined: require("../assets/fonts/symbols/bold.ttf"),
+    symbols_bold_filled: require("../assets/fonts/symbols/boldFilled.ttf"),
   });
 
   const sidebarRef = useRef<any>(null);

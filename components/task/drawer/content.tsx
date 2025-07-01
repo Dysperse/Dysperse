@@ -1,7 +1,5 @@
 import MarkdownRenderer from "@/components/MarkdownRenderer";
 import { LocationPickerModal } from "@/components/collections/views/map";
-import LabelPicker from "@/components/labels/picker";
-import { STORY_POINT_SCALE } from "@/constants/workload";
 import { AttachStep, OnboardingContainer } from "@/context/OnboardingProvider";
 import { useUser } from "@/context/useUser";
 import { sendApiRequest } from "@/helpers/api";
@@ -21,16 +19,17 @@ import ModalHeader from "@/ui/ModalHeader";
 import SkeletonContainer from "@/ui/Skeleton/container";
 import { LinearSkeletonArray } from "@/ui/Skeleton/linear";
 import Text from "@/ui/Text";
-import { addHslAlpha } from "@/ui/color";
+import { addHslAlpha, useColor } from "@/ui/color";
 import { useColorTheme } from "@/ui/color/theme-provider";
 import { BottomSheetScrollView } from "@gorhom/bottom-sheet";
 import { FlashList } from "@shopify/flash-list";
+import { setStringAsync } from "expo-clipboard";
 import { impactAsync, ImpactFeedbackStyle } from "expo-haptics";
 import { Image } from "expo-image";
 import * as Location from "expo-location";
 import * as MediaLibrary from "expo-media-library";
-import { useGlobalSearchParams } from "expo-router";
-import React, { useCallback, useEffect, useRef, useState } from "react";
+import { shareAsync } from "expo-sharing";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { Dimensions, Keyboard, Platform, View } from "react-native";
 import { ScrollView } from "react-native-gesture-handler";
 import { KeyboardAvoidingView } from "react-native-keyboard-controller";
@@ -43,8 +42,7 @@ import Toast from "react-native-toast-message";
 import useSWR from "swr";
 import { useDebounce } from "use-debounce";
 import { useLabelColors } from "../../labels/useLabelColors";
-import CreateTask, { AiLabelSuggestion } from "../create";
-import { TaskShareButton } from "./TaskShareButton";
+import CreateTask from "../create";
 import { TaskCompleteButton } from "./attachment/TaskCompleteButton";
 import { useTaskDrawerContext } from "./context";
 import { TaskDetails } from "./details";
@@ -296,7 +294,7 @@ function AiExplanation({ task }) {
   );
 }
 
-function TaskNameInput() {
+export function TaskNameInput() {
   const { task, updateTask, isReadOnly } = useTaskDrawerContext();
   const theme = useColorTheme();
   const [name, setName] = useState(task.name);
@@ -371,139 +369,43 @@ function TaskNameInput() {
   );
 }
 
-function WorkloadChip() {
-  const theme = useColorTheme();
-  const { task, isReadOnly, updateTask } = useTaskDrawerContext();
-  const complexityScale = ["XS", "S", "M", "L", "XL"];
-  const legacyComplexityScale = [2, 4, 8, 16, 32];
-  const menuRef = useRef(null);
-
-  return (
-    !(isReadOnly && !task.storyPoints) && (
-      <MenuPopover
-        menuRef={menuRef}
-        containerStyle={{ width: 200 }}
-        options={
-          [
-            ...legacyComplexityScale.map((n) => ({
-              renderer: () => (
-                <MenuItem
-                  onPress={() => {
-                    updateTask({ storyPoints: n });
-                    menuRef.current?.close();
-                  }}
-                >
-                  <View
-                    style={{
-                      width: 30,
-                      height: 30,
-                      backgroundColor: addHslAlpha(
-                        theme[11],
-                        n === task.storyPoints ? 1 : 0.1
-                      ),
-                      borderRadius: 10,
-                      alignItems: "center",
-                      justifyContent: "center",
-                    }}
-                  >
-                    <Text
-                      style={{
-                        fontFamily: "mono",
-                        color: theme[n === task.storyPoints ? 1 : 11],
-                      }}
-                    >
-                      {
-                        complexityScale[
-                          legacyComplexityScale.findIndex((i) => i === n)
-                        ]
-                      }
-                    </Text>
-                  </View>
-                  <Text variant="menuItem">
-                    {
-                      STORY_POINT_SCALE[
-                        legacyComplexityScale.findIndex((i) => i === n)
-                      ]
-                    }
-                  </Text>
-                </MenuItem>
-              ),
-            })),
-            task.storyPoints && { divider: true },
-            task.storyPoints && {
-              renderer: () => (
-                <MenuItem
-                  onPress={() => {
-                    updateTask({ storyPoints: null });
-                    menuRef.current?.close();
-                  }}
-                >
-                  <View
-                    style={{
-                      width: 30,
-                      height: 30,
-                      backgroundColor: addHslAlpha(theme[11], 0.1),
-                      borderRadius: 10,
-                      alignItems: "center",
-                      justifyContent: "center",
-                    }}
-                  >
-                    <Icon style={{ color: theme[11] }}>remove</Icon>
-                  </View>
-                  <Text variant="menuItem">Clear</Text>
-                </MenuItem>
-              ),
-            },
-          ] as any
-        }
-        trigger={
-          <Button
-            chip
-            disabled={isReadOnly}
-            icon="exercise"
-            text={
-              STORY_POINT_SCALE[
-                legacyComplexityScale.findIndex((i) => i === task.storyPoints)
-              ]
-            }
-            large
-            backgroundColors={{
-              default: addHslAlpha(theme[11], task.storyPoints ? 0.1 : 0),
-              hovered: addHslAlpha(theme[11], 0.1),
-              pressed: addHslAlpha(theme[11], 0.2),
-            }}
-            borderColors={{
-              default: addHslAlpha(theme[11], 0.1),
-              hovered: addHslAlpha(theme[11], 0.2),
-              pressed: addHslAlpha(theme[11], 0.3),
-            }}
-            variant={!task.storyPoints ? "outlined" : "filled"}
-            iconStyle={{ marginTop: -3 }}
-          />
-        }
-      />
-    )
-  );
-}
-
 function TaskMoreMenu({ handleDelete }) {
   const theme = useColorTheme();
   const { session } = useUser();
-  const { task } = useTaskDrawerContext();
+  const { task, updateTask } = useTaskDrawerContext();
 
   return (
-    <>
+    <AttachStep index={3} style={{ flex: 1 }}>
       <MenuPopover
+        menuProps={{ rendererProps: { placement: "top" } }}
         options={[
+          {
+            icon: task.trash ? "restore_from_trash" : "delete",
+            text: task.trash ? "Restore from trash" : "Move to trash",
+            callback: handleDelete,
+          },
           session?.user?.betaTester && {
             icon: "content_copy",
             text: "Duplicate",
             callback: () => Toast.show({ type: "info", text1: "Coming soon!" }),
           },
           {
-            icon: task.trash ? "restore_from_trash" : "delete",
-            text: task.trash ? "Restore from trash" : "Move to trash",
-            callback: handleDelete,
+            icon: "ios_share",
+            text: "Share",
+            callback: () => {
+              impactAsync(ImpactFeedbackStyle.Heavy);
+              const link = `https://dys.us.to/${task.shortId || task.id}`;
+
+              setStringAsync(link);
+              shareAsync(link, { dialogTitle: "Dysperse" });
+              if (Platform.OS === "web")
+                Toast.show({
+                  type: "success",
+                  text1: "Copied link to clipboard!",
+                });
+
+              updateTask({ published: true });
+            },
           },
           task?.integrationParams && {
             renderer: () => (
@@ -523,9 +425,23 @@ function TaskMoreMenu({ handleDelete }) {
             ),
           },
         ]}
-        trigger={<IconButton icon="pending" size={45} />}
+        trigger={
+          <Button
+            large
+            bold
+            onPress={() => {
+              impactAsync(ImpactFeedbackStyle.Heavy);
+            }}
+            icon="pending"
+            backgroundColors={{
+              default: addHslAlpha(theme[11], 0.1),
+              hovered: addHslAlpha(theme[11], 0.2),
+              pressed: addHslAlpha(theme[11], 0.3),
+            }}
+          />
+        }
       />
-    </>
+    </AttachStep>
   );
 }
 
@@ -654,7 +570,6 @@ function TaskHome({ labelPickerRef, forceClose }) {
   const theme = useColorTheme();
   const labelColors = useLabelColors();
   const { task, updateTask, isReadOnly } = useTaskDrawerContext();
-  const { id: collectionId } = useGlobalSearchParams();
   const rotate = useSharedValue(task.pinned ? -35 : 0);
 
   const SafeScrollView = forceClose ? BottomSheetScrollView : ScrollView;
@@ -670,21 +585,6 @@ function TaskHome({ labelPickerRef, forceClose }) {
     };
   });
 
-  const handlePriorityChange = useCallback(() => {
-    if (Platform.OS !== "web") impactAsync(ImpactFeedbackStyle.Light);
-    rotate.value = withSpring(!task.pinned ? -35 : 0, {
-      mass: 1,
-      damping: 10,
-      stiffness: 200,
-      overshootClamping: false,
-      restDisplacementThreshold: 0.01,
-      restSpeedThreshold: 2,
-    });
-    updateTask({ pinned: !task.pinned });
-  }, [task.pinned, updateTask, rotate]);
-
-  useHotkeys(["shift+1"], () => handlePriorityChange());
-
   return (
     <SafeScrollView
       // bounces={false}
@@ -697,119 +597,12 @@ function TaskHome({ labelPickerRef, forceClose }) {
       <View
         style={{
           paddingHorizontal: 15,
-          paddingTop: 45,
+          paddingTop: 35,
           paddingBottom: 10,
         }}
       >
-        <View
-          style={{
-            gap: 10,
-            paddingHorizontal: 13,
-            flexDirection: "row",
-          }}
-        >
-          <Button
-            chip
-            large
-            variant="outlined"
-            disabled={isReadOnly}
-            onPress={handlePriorityChange}
-            icon={
-              <Animated.View style={rotateStyle}>
-                <Icon
-                  filled={task.pinned}
-                  style={{
-                    marginTop: -1,
-                    ...(task.pinned ? { color: labelColors.orange[11] } : {}),
-                  }}
-                >
-                  push_pin
-                </Icon>
-              </Animated.View>
-            }
-            backgroundColors={
-              task.pinned
-                ? {
-                    default: labelColors.orange[6],
-                    hovered: labelColors.orange[7],
-                    pressed: labelColors.orange[8],
-                  }
-                : {
-                    default: addHslAlpha(theme[11], 0),
-                    hovered: addHslAlpha(theme[11], 0.1),
-                    pressed: addHslAlpha(theme[11], 0.2),
-                  }
-            }
-            borderColors={
-              task.pinned
-                ? {
-                    default: addHslAlpha(labelColors.orange[11], 0),
-                    hovered: addHslAlpha(labelColors.orange[11], 0.1),
-                    pressed: addHslAlpha(labelColors.orange[11], 0.2),
-                  }
-                : {
-                    default: addHslAlpha(theme[11], 0.1),
-                    hovered: addHslAlpha(theme[11], 0.2),
-                    pressed: addHslAlpha(theme[11], 0.3),
-                  }
-            }
-            style={task.pinned && { borderColor: labelColors.orange[11] }}
-          />
-          {task && !task.parentTaskId && (
-            <LabelPicker
-              label={task?.label || undefined}
-              setLabel={(e: any) => {
-                updateTask({ labelId: e.id, label: e });
-              }}
-              onClose={() => {}}
-              sheetProps={{ sheetRef: labelPickerRef }}
-              defaultCollection={collectionId as any}
-            >
-              <Button
-                chip
-                disabled={isReadOnly}
-                icon={
-                  task.label?.emoji || task.collection?.emoji ? (
-                    <Emoji
-                      emoji={task?.label?.emoji || task.collection.emoji}
-                      size={20}
-                    />
-                  ) : (
-                    <Icon>tag</Icon>
-                  )
-                }
-                large
-                text={task?.label?.name || task?.collection?.name}
-                variant="outlined"
-                backgroundColors={{
-                  default: addHslAlpha(theme[11], 0),
-                  hovered: addHslAlpha(theme[11], 0.1),
-                  pressed: addHslAlpha(theme[11], 0.2),
-                }}
-                textStyle={{ fontSize: 15 }}
-              />
-            </LabelPicker>
-          )}
-          {!task.parentTaskId && <WorkloadChip />}
-          {task && !task.label && task.collectionId && (
-            <AiLabelSuggestion
-              watch={(key) => task[key]}
-              setValue={(key, value) => {
-                if (key === "label")
-                  updateTask({ label: value, labelId: value.id });
-              }}
-              style={{
-                borderColor: addHslAlpha(theme[11], 0.2),
-                borderWidth: 2,
-                margin: -0.5,
-                marginLeft: 1,
-                borderRadius: 10,
-              }}
-            />
-          )}
-        </View>
         <TaskNameInput />
-        <TaskDetails />
+        <TaskDetails labelPickerRef={labelPickerRef} />
       </View>
     </SafeScrollView>
   );
@@ -1043,6 +836,45 @@ function SubtaskCreation({ handleBack }) {
   );
 }
 
+function ComplexitySelector({ handleBack }) {
+  const theme = useColorTheme();
+  const { updateTask } = useTaskDrawerContext();
+  const complexityScale = ["XS", "S", "M", "L", "XL"];
+  const legacyComplexityScale = [2, 4, 8, 16, 32];
+
+  return (
+    <View
+      style={{
+        width: "100%",
+        flexDirection: "row",
+      }}
+    >
+      {legacyComplexityScale.map((n, i) => (
+        <View key={i} style={{ width: "20%", paddingHorizontal: 2 }}>
+          <Button
+            variant="filled"
+            large
+            textStyle={{ fontFamily: "mono" }}
+            text={complexityScale[i]}
+            onPress={() => {
+              updateTask({
+                storyPoints: n,
+                storyPointReason: `Set to ${complexityScale[i]}`,
+              });
+              handleBack();
+            }}
+            backgroundColors={{
+              default: addHslAlpha(theme[11], 0.1),
+              hovered: addHslAlpha(theme[11], 0.2),
+              pressed: addHslAlpha(theme[11], 0.3),
+            }}
+          />
+        </View>
+      ))}
+    </View>
+  );
+}
+
 function AttachmentPicker({ forceClose, handleBack }) {
   const SafeScrollView = forceClose ? BottomSheetScrollView : ScrollView;
 
@@ -1062,15 +894,82 @@ function AttachmentPicker({ forceClose, handleBack }) {
         Photo
       </Text>
       <PhotoSelection handleBack={handleBack} />
-      <Text variant="eyebrow" style={{ marginBottom: 5, marginTop: 20 }}>
+      <Text variant="eyebrow" style={{ marginBottom: 5, marginTop: 35 }}>
         Location
       </Text>
       <LocationSelector handleBack={handleBack} />
-      <Text variant="eyebrow" style={{ marginBottom: 5, marginTop: 20 }}>
+      <Text variant="eyebrow" style={{ marginBottom: 5, marginTop: 35 }}>
         Subtask
       </Text>
       <SubtaskCreation handleBack={handleBack} />
+      <Text variant="eyebrow" style={{ marginBottom: 5, marginTop: 35 }}>
+        Complexity
+      </Text>
+      <ComplexitySelector handleBack={handleBack} />
     </SafeScrollView>
+  );
+}
+
+function TaskPinButton() {
+  const { task, updateTask } = useTaskDrawerContext();
+  const rotate = useSharedValue(task.pinned ? -35 : 0);
+  const orange = useColor("tomato");
+
+  const theme = useColorTheme();
+
+  const handlePriorityChange = useCallback(() => {
+    if (Platform.OS !== "web") impactAsync(ImpactFeedbackStyle.Light);
+    rotate.value = withSpring(!task.pinned ? -35 : 0, {
+      mass: 1,
+      damping: 10,
+      stiffness: 200,
+      overshootClamping: false,
+      restDisplacementThreshold: 0.01,
+      restSpeedThreshold: 2,
+    });
+    updateTask({ pinned: !task.pinned });
+  }, [task.pinned, updateTask, rotate]);
+
+  useHotkeys(["shift+1"], () => handlePriorityChange());
+
+  const rotateStyle = useAnimatedStyle(() => {
+    return {
+      transform: [{ rotate: `${rotate.value}deg` }],
+    };
+  });
+
+  return (
+    <AttachStep index={1} style={{ flex: 1 }}>
+      <Button
+        large
+        onPress={handlePriorityChange}
+        icon={
+          <Animated.View style={rotateStyle}>
+            <Icon
+              bold
+              filled={task.pinned}
+              style={task.pinned ? { color: orange[11] } : {}}
+            >
+              push_pin
+            </Icon>
+          </Animated.View>
+        }
+        backgroundColors={
+          task.pinned
+            ? {
+                default: addHslAlpha(orange[11], 0.2),
+                hovered: addHslAlpha(orange[11], 0.3),
+                pressed: addHslAlpha(orange[11], 0.4),
+              }
+            : {
+                default: addHslAlpha(theme[11], 0.1),
+                hovered: addHslAlpha(theme[11], 0.2),
+                pressed: addHslAlpha(theme[11], 0.3),
+              }
+        }
+        style={task.pinned && { borderColor: orange[11] }}
+      />
+    </AttachStep>
   );
 }
 
@@ -1170,8 +1069,11 @@ export function TaskDrawerContent({
                     height: 90,
                   }}
                 >
-                  {view === "HOME" && <TaskShareButton />}
+                  {view === "HOME" && <TaskPinButton />}
                   {view === "HOME" && <TaskCompleteButton />}
+                  {view === "HOME" && (
+                    <TaskMoreMenu handleDelete={handleDelete} />
+                  )}
 
                   <AttachStep index={2} style={{ flex: 1 }}>
                     <Button
