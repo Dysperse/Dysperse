@@ -5,7 +5,7 @@
 > [!IMPORTANT]  
 > This repository contains versions from November 26, 2023 onwards, marking our transition to React Native. For access to earlier versions of Dysperse, please refer to the commit history before November 26, 2023 in our original [Dysperse/API](https://github.com/Dysperse/API) repository. Please note that the old repository is now used for server-side version control.
 
-<!-- # **Quick links**
+# **Quick links**
 
 - [Home page](https://dysperse.com)
 - [Launch app](https://go.dysperse.com)
@@ -18,9 +18,7 @@
 	<img src="https://get.microsoft.com/images/en-us%20dark.svg" width="200"/>
 </a>
 
-<br /> -->
-
-Your flexible, customizable productivity companion that adapts to your workflow.
+<br />
 
 ## What is Dysperse? ✨
 
