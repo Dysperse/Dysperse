@@ -85,6 +85,7 @@ function TaskDrawerWrapper({
   const theme = useColorTheme();
   const { forceClose } = useBottomSheet();
   const badgingService = useBadgingService();
+  const isDark = useDarkMode();
 
   const updateTask = useCallback(
     async (payload, sendRequest = true) => {
@@ -133,11 +134,24 @@ function TaskDrawerWrapper({
             Platform.OS === "android" ? 1 : 0.5
           ),
           marginTop: "auto",
-          borderRadius: 25,
         },
       ]}
     >
       <SafeBlurView>
+        <BlurView
+          style={{
+            width: 40,
+            height: 7,
+            marginBottom: -7 - 15,
+            backgroundColor: addHslAlpha(theme[11], 0.1),
+            overflow: "hidden",
+            zIndex: 99,
+            alignSelf: "center",
+            marginTop: 15,
+            borderRadius: 99,
+          }}
+          tint={isDark ? "dark" : "light"}
+        />
         {data?.id ? (
           <TaskDrawerContext.Provider
             value={{
@@ -289,6 +303,7 @@ export function TaskDrawer({
         innerStyles={{
           backgroundColor:
             Platform.OS === "android" ? undefined : "transparent",
+          borderRadius: 40,
           maxHeight: breakpoints.md ? height - 150 : height - 200,
         }}
         maxBackdropOpacity={breakpoints.md ? 0.05 : 0.1}

@@ -1,5 +1,7 @@
 import { Entity } from "@/components/collections/entity";
 import { LocationPickerModal } from "@/components/collections/views/map";
+import LabelPicker from "@/components/labels/picker";
+import { STORY_POINT_SCALE } from "@/constants/workload";
 import { AttachStep } from "@/context/OnboardingProvider";
 import { useUser } from "@/context/useUser";
 import { useResponsiveBreakpoints } from "@/helpers/useResponsiveBreakpoints";
@@ -7,6 +9,7 @@ import { Button, ButtonText } from "@/ui/Button";
 import { addHslAlpha } from "@/ui/color";
 import { useColorTheme } from "@/ui/color/theme-provider";
 import { DatePicker } from "@/ui/DatePicker";
+import Emoji from "@/ui/Emoji";
 import ErrorAlert from "@/ui/Error";
 import Icon from "@/ui/Icon";
 import IconButton from "@/ui/IconButton";
@@ -21,6 +24,7 @@ import Text from "@/ui/Text";
 import capitalizeFirstLetter from "@/utils/capitalizeFirstLetter";
 import dayjs from "dayjs";
 import { LinearGradient } from "expo-linear-gradient";
+import { useGlobalSearchParams } from "expo-router";
 import React, { useRef } from "react";
 import { Linking, Platform, View } from "react-native";
 import Toast from "react-native-toast-message";
@@ -261,13 +265,8 @@ function SubtaskList() {
                 <Button
                   icon="prompt_suggestion"
                   dense
-                  containerStyle={{
-                    marginRight: "auto",
-                    opacity: 0.6,
-                    marginLeft: 5,
-                    marginTop: 2,
-                  }}
-                  style={{ gap: 10 }}
+                  style={{ gap: 10, marginRight: "auto" }}
+                  containerStyle={{ opacity: 0.6 }}
                   text={
                     Object.keys(task.subtasks || {}).length === 0
                       ? "Create subtask"
@@ -390,7 +389,6 @@ function TaskDateMenu() {
   const addRecurrenceRef = useRef(null);
   const addDateRef = useRef(null);
   const menuRef = useRef(null);
-  const breakpoints = useResponsiveBreakpoints();
 
   return (
     !(isReadOnly && !(task.start || task.recurrenceRule)) && (
@@ -416,48 +414,40 @@ function TaskDateMenu() {
         />
         <MenuPopover
           menuProps={{
-            style: { marginRight: "auto" },
+            style: { marginRight: "auto", marginBottom: 2 },
             rendererProps: { placement: "top" },
-          }}
-          containerStyle={{
-            [breakpoints.md ? "marginTop" : "marginBottom"]: -10,
-            width: 190,
           }}
           trigger={
             <Button
-              containerStyle={{
-                marginRight: "auto",
-                opacity: 0.6,
-                marginLeft: 6,
-              }}
-              style={{ gap: 12 }}
+              style={{ gap: 10, marginRight: "auto" }}
+              containerStyle={{ opacity: 0.6 }}
               dense
-              height={"auto" as any}
-            >
-              <Icon size={20} style={{ marginTop: -3, flexShrink: 0 }}>
-                {task.start
+              icon={
+                task.start
                   ? "calendar_today"
                   : task.recurrenceRule
                   ? "loop"
-                  : "calendar_today"}
-              </Icon>
-              <View style={{ flexDirection: "column" }}>
-                <Text style={{ color: theme[11] }}>
-                  {dateName[0]}
-                  {dateName[1] && (
-                    <Text
-                      style={{
-                        color: theme[11],
-                        opacity: 0.6,
-                      }}
-                    >
-                      {" — "}
-                      {dateName[1]}
-                    </Text>
-                  )}
-                </Text>
-              </View>
-            </Button>
+                  : "calendar_today"
+              }
+              text={
+                <View style={{ flexDirection: "column" }}>
+                  <ButtonText weight={400}>
+                    {dateName[0]}
+                    {dateName[1] && (
+                      <ButtonText
+                        style={{
+                          color: theme[11],
+                          opacity: 0.6,
+                        }}
+                      >
+                        {" — "}
+                        {dateName[1]}
+                      </ButtonText>
+                    )}
+                  </ButtonText>
+                </View>
+              }
+            />
           }
           closeOnSelect
           menuRef={menuRef}
@@ -528,6 +518,26 @@ function TaskDateMenu() {
   );
 }
 
+function TaskAttachmentsButton() {
+  return (
+    <Button
+      style={{ gap: 10 }}
+      containerStyle={{ opacity: 0.6, marginRight: "auto" }}
+      icon="note_stack"
+      dense
+      text="Attachments"
+      onPress={() => {
+        Toast.show({
+          type: "info",
+          text1: "Attachments are not yet implemented",
+          text2: "You can add attachments in the web app",
+          visibilityTime: 5000,
+        });
+      }}
+    />
+  );
+}
+
 function TaskLocationMenu() {
   const { task, updateTask, isReadOnly } = useTaskDrawerContext();
   const { session } = useUser();
@@ -556,11 +566,18 @@ function TaskLocationMenu() {
       height={"auto" as any}
       dense
     >
-      <Icon style={{ flexShrink: 0, transform: [{ scale: 1.1 }] }}>
+      <Icon
+        style={{
+          flexShrink: 0,
+          transform: [{ scale: 1.3 }, { translateX: -4 }],
+        }}
+      >
         near_me
       </Icon>
       <View>
-        <ButtonText numberOfLines={undefined}>{data.names?.name}</ButtonText>
+        <ButtonText numberOfLines={undefined}>
+          {data.names?.name || "Location"}
+        </ButtonText>
         <ButtonText numberOfLines={undefined} weight={300}>
           {[
             `${data.addresstags?.housenumber || ""} ${
@@ -598,22 +615,12 @@ function TaskLocationMenu() {
   ) : (
     <Button
       containerStyle={{
-        opacity: 0.6,
-        marginLeft: 14,
-        marginTop: 7,
         marginRight: "auto",
+        opacity: 0.6,
       }}
-      style={{
-        gap: 10,
-        alignItems: task.location ? "flex-start" : undefined,
-        justifyContent: "flex-start",
-        paddingHorizontal: 0,
-        paddingRight: 50,
-      }}
+      style={{ gap: 10, paddingTop: 3 }}
       dense
-      height={"auto" as any}
-      icon="near_me"
-      iconStyle={{ transform: [{ scale: 1.15 }], flexShrink: 0 }}
+      icon="location_on"
       text={task.location ? task.location.name : "Add location"}
       textProps={{ numberOfLines: undefined }}
     />
@@ -873,28 +880,169 @@ function CanvasLiveInfo() {
   );
 }
 
-export function TaskDetails() {
-  const { task, updateTask, isReadOnly } = useTaskDrawerContext();
-  const editorRef = useRef(null);
+function TaskStoryPoints() {
+  const theme = useColorTheme();
+  const { task, updateTask } = useTaskDrawerContext();
+  const complexityScale = ["XS", "S", "M", "L", "XL"];
+  const legacyComplexityScale = [2, 4, 8, 16, 32];
+  const menuRef = useRef(null);
 
   return (
-    <View style={{ gap: 2, marginTop: 5 }}>
+    <MenuPopover
+      menuRef={menuRef}
+      containerStyle={{ width: 200 }}
+      menuProps={{
+        style: { marginBottom: -2 },
+      }}
+      options={
+        [
+          ...legacyComplexityScale.map((n) => ({
+            renderer: () => (
+              <MenuItem
+                onPress={() => {
+                  updateTask({ storyPoints: n });
+                  menuRef.current?.close();
+                }}
+              >
+                <View
+                  style={{
+                    width: 30,
+                    height: 30,
+                    backgroundColor: addHslAlpha(
+                      theme[11],
+                      n === task.storyPoints ? 1 : 0.1
+                    ),
+                    borderRadius: 10,
+                    alignItems: "center",
+                    justifyContent: "center",
+                  }}
+                >
+                  <Text
+                    style={{
+                      fontFamily: "mono",
+                      color: theme[n === task.storyPoints ? 1 : 11],
+                    }}
+                  >
+                    {
+                      complexityScale[
+                        legacyComplexityScale.findIndex((i) => i === n)
+                      ]
+                    }
+                  </Text>
+                </View>
+                <Text variant="menuItem">
+                  {
+                    STORY_POINT_SCALE[
+                      legacyComplexityScale.findIndex((i) => i === n)
+                    ]
+                  }
+                </Text>
+              </MenuItem>
+            ),
+          })),
+          task.storyPoints && { divider: true },
+          task.storyPoints && {
+            renderer: () => (
+              <MenuItem
+                onPress={() => {
+                  updateTask({ storyPoints: null });
+                  menuRef.current?.close();
+                }}
+              >
+                <View
+                  style={{
+                    width: 30,
+                    height: 30,
+                    backgroundColor: addHslAlpha(theme[11], 0.1),
+                    borderRadius: 10,
+                    alignItems: "center",
+                    justifyContent: "center",
+                  }}
+                >
+                  <Icon style={{ color: theme[11] }}>remove</Icon>
+                </View>
+                <Text variant="menuItem">Clear</Text>
+              </MenuItem>
+            ),
+          },
+        ] as any
+      }
+      trigger={
+        <Button
+          icon="exercise"
+          dense
+          style={{ gap: 10 }}
+          containerStyle={{ opacity: 0.6, marginRight: "auto" }}
+          text={
+            STORY_POINT_SCALE[
+              legacyComplexityScale.findIndex((i) => i === task.storyPoints)
+            ]
+          }
+        />
+      }
+    />
+  );
+}
+
+export function TaskDetails({ labelPickerRef }) {
+  const { task, updateTask, isReadOnly } = useTaskDrawerContext();
+  const editorRef = useRef(null);
+  const { id: collectionId } = useGlobalSearchParams();
+
+  return (
+    <View style={{ paddingLeft: 3, gap: 3, paddingTop: 5 }}>
+      {task.integration?.type === "NEW_CANVAS_LMS" && <CanvasLiveInfo />}
       {!task.parentTaskId && (
-        <View style={{ flex: 1 }}>
+        <View style={{ flex: 1, gap: 3 }}>
           <TaskDateMenu />
-          <TaskLocationMenu />
+          {task.location && <TaskLocationMenu />}
+
+          {task && !task.parentTaskId && (
+            <LabelPicker
+              label={task?.label || undefined}
+              setLabel={(e: any) => {
+                updateTask({ labelId: e.id, label: e });
+              }}
+              onClose={() => {}}
+              sheetProps={{ sheetRef: labelPickerRef }}
+              defaultCollection={collectionId as any}
+            >
+              <Button
+                icon={
+                  task.label?.emoji || task.collection?.emoji ? (
+                    <Emoji
+                      emoji={task?.label?.emoji || task.collection.emoji}
+                      size={20}
+                      style={{ marginHorizontal: 2.5 }}
+                    />
+                  ) : (
+                    <Icon>tag</Icon>
+                  )
+                }
+                dense
+                style={{ gap: 10 }}
+                containerStyle={{ marginRight: "auto" }}
+                textStyle={{ opacity: 0.6 }}
+                iconStyle={{
+                  opacity:
+                    task.label?.emoji || task.collection?.emoji ? 1 : 0.6,
+                }}
+                text={
+                  task?.label?.name || task?.collection?.name || "Add label"
+                }
+              />
+            </LabelPicker>
+          )}
         </View>
       )}
+      {task.storyPoints && <TaskStoryPoints />}
       {(isReadOnly && task.subtasks?.length === 0) ||
       task.parentTaskId ? null : (
-        <View>
-          <SubtaskList />
-        </View>
+        <View>{/* <SubtaskList /> */}</View>
       )}
       <View>
         <TaskNote task={task} ref={editorRef} updateTask={updateTask} />
       </View>
-      {task.integration?.type === "NEW_CANVAS_LMS" && <CanvasLiveInfo />}
     </View>
   );
 }

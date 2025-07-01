@@ -27,11 +27,14 @@ function Icon({
           overflow: Platform.OS == "web" ? "hidden" : "visible",
           maxWidth: size + 3,
           color: theme[11],
-          fontFamily: bold
-            ? "symbols_bold_outlined"
-            : filled
-            ? "symbols_filled"
-            : "symbols_outlined",
+          fontFamily:
+            bold && filled
+              ? "symbols_bold_filled"
+              : bold
+              ? "symbols_bold_outlined"
+              : filled
+              ? "symbols_filled"
+              : "symbols_outlined",
           fontSize: size,
           width: size,
           height: size,

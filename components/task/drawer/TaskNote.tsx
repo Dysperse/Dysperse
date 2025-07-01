@@ -185,6 +185,7 @@ function NoteInsertMenu({ isFocused, editorRef }) {
         closeOnSelect
         menuProps={{
           onClose: () => editorRef.current.focus(),
+          rendererProps: { placement: "top" },
         }}
         options={[
           {
@@ -222,12 +223,6 @@ function NoteInsertMenu({ isFocused, editorRef }) {
                 </MenuItem>
               </LinkModal>
             ),
-          },
-          { icon: "image", text: "Image", callback: pickImageAsync },
-          {
-            icon: "location_on",
-            text: "Location",
-            callback: () => Toast.show({ type: "info", text1: "Coming soon!" }),
           },
 
           {
@@ -450,12 +445,8 @@ export const TaskNote = ({
     <>
       <Button
         dense
-        containerStyle={{
-          marginRight: "auto",
-          opacity: 0.6,
-          marginLeft: 5,
-        }}
         style={{ gap: 10 }}
+        containerStyle={{ opacity: 0.6, marginRight: "auto" }}
         onPress={
           isLoading
             ? undefined
@@ -464,19 +455,17 @@ export const TaskNote = ({
                 if (!task.note) editorRef.current.focus();
               }
         }
-      >
-        <Icon size={20} style={{ marginTop: -3 }}>
-          sticky_note_2
-        </Icon>
-        <Text style={{ color: theme[11], marginLeft: 5 }}>
-          {task.note ? (collapsed ? "Show note" : "Hide note") : "Add a note"}
-        </Text>
-        {isLoading ? (
-          <Spinner size={15} style={{ marginLeft: -3 }} />
-        ) : (
-          task.note && <Icon style={{ marginLeft: -5 }}>expand_more</Icon>
-        )}
-      </Button>
+        icon={
+          isLoading ? (
+            <Spinner size={20} style={{ marginRight: 4 }} />
+          ) : (
+            "stylus_note"
+          )
+        }
+        text={
+          task.note ? (collapsed ? "Show note" : "Hide note") : "Add a note"
+        }
+      />
       <Animated.View
         style={[
           focusedStyles,

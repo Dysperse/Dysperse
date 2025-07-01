@@ -74,7 +74,6 @@ import VolumeBars from "./speech-recognition";
 function PinTask({ control }: any) {
   const orange = useColor("orange");
   const breakpoints = useResponsiveBreakpoints();
-
   const theme = useColorTheme();
 
   return (
@@ -91,7 +90,7 @@ function PinTask({ control }: any) {
             onChange(!value);
           }}
           variant="filled"
-          iconProps={{ filled: value }}
+          iconProps={{ bold: true, filled: value }}
           iconStyle={{
             transform: [{ rotate: "-30deg" }],
             color: value ? orange[11] : theme[11],
@@ -99,9 +98,9 @@ function PinTask({ control }: any) {
           backgroundColors={
             value
               ? {
-                  default: orange[6],
-                  hovered: orange[5],
-                  pressed: orange[4],
+                  default: addHslAlpha(orange[9], 0.3),
+                  hovered: addHslAlpha(orange[9], 0.3),
+                  pressed: addHslAlpha(orange[9], 0.4),
                 }
               : {
                   default: addHslAlpha(theme[9], 0.15),
@@ -1230,7 +1229,7 @@ function SpeechRecognition({ setValue }) {
         icon={recognizing ? <VolumeBars /> : "mic"}
         size={50}
         style={breakpoints.md ? undefined : { width: "100%" }}
-        iconProps={{ filled: recognizing }}
+        iconProps={{ filled: recognizing, bold: true }}
         iconStyle={{
           color: recognizing ? red[2] : theme[11],
         }}
@@ -1354,11 +1353,14 @@ const BottomSheetContent = ({
   useEffect(() => {
     if (!session.user.hintsViewed.includes("CREATE_TASK")) return;
     if (Platform.OS === "web") setTimeout(() => nameRef.current?.focus(), 100);
-    setTimeout(() => {
-      InteractionManager.runAfterInteractions(() => {
-        nameRef.current?.focus({ preventScroll: true });
-      });
-    }, 200);
+    setTimeout(
+      () => {
+        InteractionManager.runAfterInteractions(() => {
+          nameRef.current?.focus({ preventScroll: true });
+        });
+      },
+      Platform.OS === "web" ? 200 : 110
+    );
   }, [session, nameRef, breakpoints]);
 
   const onSubmit = async (data) => {
@@ -1521,6 +1523,7 @@ const BottomSheetContent = ({
 
 export interface CreateTaskDrawerProps {
   children?: React.ReactNode;
+  stackBehavior?: "push" | "replace";
   sheetRef?: RefObject<BottomSheetModal>;
   defaultValues?: {
     date?: Dayjs;
@@ -1614,6 +1617,7 @@ const CreateTaskOuterContent = (props) => {
 
 const CreateTask = ({
   children,
+  stackBehavior = "push",
   defaultValues = {
     date: null,
     agendaOrder: null,
@@ -1656,6 +1660,7 @@ const CreateTask = ({
     <>
       {trigger}
       <Modal
+        stackBehavior={stackBehavior}
         transformCenter
         disablePan={breakpoints.md}
         maxWidth={breakpoints.md ? 700 : "100%"}
