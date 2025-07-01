@@ -2,7 +2,6 @@ import { useSession } from "@/context/AuthProvider";
 import { sendApiRequest } from "@/helpers/api";
 import { useResponsiveBreakpoints } from "@/helpers/useResponsiveBreakpoints";
 import { Button } from "@/ui/Button";
-import SettingsScrollView from "@/ui/SettingsScrollView";
 import Text from "@/ui/Text";
 import { CameraView, useCameraPermissions } from "expo-camera";
 import * as Device from "expo-device";
@@ -26,10 +25,29 @@ export default function Page() {
   if (!permission.granted) {
     // Camera permissions are not granted yet
     return (
-      <SettingsScrollView>
-        <View style={[styles.container, { alignItems: "center", gap: 10 }]}>
-          <Text style={{ textAlign: "center", fontSize: 20 }} weight={700}>
-            We need your permission to show the camera
+      <View
+        style={{
+          flex: 1,
+          height: "100%",
+          overflow: "hidden",
+          backgroundColor: "#000",
+        }}
+      >
+        <View
+          style={[
+            styles.container,
+            {
+              alignItems: "center",
+              gap: 10,
+              paddingHorizontal: 40,
+            },
+          ]}
+        >
+          <Text
+            style={{ textAlign: "center", fontSize: 20, color: "#fff" }}
+            weight={700}
+          >
+            We need your permission{"\n"}to show the camera
           </Text>
           <Button
             onPress={requestPermission}
@@ -38,9 +56,16 @@ export default function Page() {
             iconPosition="end"
             icon="arrow_forward_ios"
             large
+            backgroundColors={{
+              default: "rgba(255,255,255,.2)",
+              hovered: "rgba(255,255,255,.3)",
+              pressed: "rgba(255,255,255,.4)",
+            }}
+            textStyle={{ color: "#fff" }}
+            iconStyle={{ color: "#fff" }}
           />
         </View>
-      </SettingsScrollView>
+      </View>
     );
   }
 
@@ -85,7 +110,7 @@ export default function Page() {
     <View
       style={{
         flex: 1,
-        borderRadius: 10,
+        height: "100%",
         overflow: "hidden",
       }}
     >

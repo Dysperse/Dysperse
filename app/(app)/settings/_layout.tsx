@@ -12,7 +12,7 @@ import type {
   StackCardInterpolationProps,
 } from "@react-navigation/stack";
 import { TransitionPresets } from "@react-navigation/stack";
-import { router, usePathname } from "expo-router";
+import { router } from "expo-router";
 import {
   Animated,
   Easing,
@@ -170,7 +170,6 @@ export function forFade({ current, next }) {
 
 export default function Layout() {
   const theme = useColorTheme();
-  const pathname = usePathname();
   const breakpoints = useResponsiveBreakpoints();
   const { height, width } = useWindowDimensions();
 
@@ -246,6 +245,9 @@ export default function Layout() {
                             : undefined
                         }
                         iconColor={route.name === "login/scan" ? "#fff" : null}
+                        iconBackgroundColor={
+                          route.name === "login/scan" ? "rgba(0,0,0,0.2)" : null
+                        }
                         left={route.name !== "index"}
                         icon={route.name === "index" ? "close" : "west"}
                       />

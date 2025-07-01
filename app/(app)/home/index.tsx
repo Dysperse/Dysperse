@@ -114,6 +114,7 @@ export const MenuButton = ({
   gradientColors,
   iconColor,
   left = false,
+  iconBackgroundColor,
 }: {
   gradient?: boolean;
   back?: boolean;
@@ -122,6 +123,7 @@ export const MenuButton = ({
   gradientColors?: string[];
   left?: boolean;
   iconColor?: string;
+  iconBackgroundColor?: string;
 }) => {
   const theme = useColorTheme();
   const { sidebarRef } = useSidebarContext();
@@ -181,6 +183,15 @@ export const MenuButton = ({
             { zIndex: 1 },
             addInsets && { marginTop: insets.top },
           ]}
+          backgroundColors={
+            iconBackgroundColor
+              ? {
+                  default: iconBackgroundColor,
+                  pressed: iconBackgroundColor,
+                  hovered: iconBackgroundColor,
+                }
+              : undefined
+          }
           icon={icon || (back ? "close" : <MenuIcon />)}
           iconStyle={iconColor ? { color: iconColor } : undefined}
           size={45}
