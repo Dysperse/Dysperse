@@ -185,6 +185,7 @@ function NoteInsertMenu({ isFocused, editorRef }) {
         closeOnSelect
         menuProps={{
           onClose: () => editorRef.current.focus(),
+          rendererProps: { placement: "top" },
         }}
         options={[
           {
@@ -222,12 +223,6 @@ function NoteInsertMenu({ isFocused, editorRef }) {
                 </MenuItem>
               </LinkModal>
             ),
-          },
-          { icon: "image", text: "Image", callback: pickImageAsync },
-          {
-            icon: "location_on",
-            text: "Location",
-            callback: () => Toast.show({ type: "info", text1: "Coming soon!" }),
           },
 
           {
