@@ -150,7 +150,14 @@ export function FriendActivity() {
                 </View>
               </TouchableOpacity>
             ) : !friend.user ? (
-              <View key={Math.random()} style={[styles.skeletonContainer]}>
+              <View
+                key={
+                  "placeholder" in friend
+                    ? `placeholder-${friend.placeholder}`
+                    : `placeholder-${i}`
+                }
+                style={[styles.skeletonContainer]}
+              >
                 <View
                   style={[
                     styles.skeletonCircle,

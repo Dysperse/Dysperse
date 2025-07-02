@@ -16,7 +16,8 @@ export default function TabParamsListener({
   const { data, mutate } = useSWR(["user/tabs"]);
 
   useEffect(() => {
-    const tab = data.find((tab: any) => tab.id === tab);
+    const tab = data?.find((t: any) => t.id === params.tab);
+    if (!tab) return;
 
     if (
       tab.params &&

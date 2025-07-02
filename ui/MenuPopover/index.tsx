@@ -232,15 +232,24 @@ function MenuPopover({
                   options
                     .filter((e) => e)
                     .map(
-                      ({
-                        icon,
-                        text,
-                        callback,
-                        renderer: Renderer = React.Fragment,
-                        ...props
-                      }: any) => (
-                        // TODO: Fix key
-                        <React.Fragment key={Math.random()}>
+                      (
+                        {
+                          icon,
+                          text,
+                          callback,
+                          renderer: Renderer = React.Fragment,
+                          ...props
+                        }: any,
+                        index
+                      ) => (
+                        <React.Fragment
+                          key={
+                            props.itemKey ??
+                            props.key ??
+                            text ??
+                            `option-${index}`
+                          }
+                        >
                           {props.divider ? (
                             <Divider
                               style={{
