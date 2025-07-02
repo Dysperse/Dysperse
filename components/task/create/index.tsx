@@ -90,7 +90,7 @@ function PinTask({ control }: any) {
             onChange(!value);
           }}
           variant="filled"
-          iconProps={{ bold: true, filled: value }}
+          iconProps={{ filled: value }}
           iconStyle={{
             transform: [{ rotate: "-30deg" }],
             color: value ? orange[11] : theme[11],
@@ -1229,7 +1229,7 @@ function SpeechRecognition({ setValue }) {
         icon={recognizing ? <VolumeBars /> : "mic"}
         size={50}
         style={breakpoints.md ? undefined : { width: "100%" }}
-        iconProps={{ filled: recognizing, bold: true }}
+        iconProps={{ filled: recognizing }}
         iconStyle={{
           color: recognizing ? red[2] : theme[11],
         }}
