@@ -28,7 +28,7 @@
       "distribution": "store",
       "android": {
         "image": "latest",
-        "buildType": "apk"
+        "buildType": "app-bundle"
       },
       "env": {
         "APP_VARIANT": "production"
