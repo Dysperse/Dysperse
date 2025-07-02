@@ -55,6 +55,10 @@ Transform how you view and organize your tasks with nine unique views:
 - _Matrix View_: Prioritize tasks by urgency and importance
 - _Workload View_: Sort tasks by an estimated difficulty
 
+**Extras:**
+
+- _Map View_: Visualize tasks on a map (great for travel planning!)
+
 Use labels across multiple collections - create one collection for all your AP courses (Calculus, English, Physics, APUSH) and another for just history classes (APUSH, World History). Share your collections as templates in the Dysverse, or add pin codes to keep them private.
 
 ### Smart features 💡
@@ -88,6 +92,8 @@ Use labels across multiple collections - create one collection for all your AP c
 - Google Calendar
 - Outlook Calendar
 
+_Currently, only Canvas and Spotify are available, others are work in progress!_
+
 ## Getting Started 🏁
 
 1. Install Dysperse from the Chrome Web Store
@@ -110,13 +116,11 @@ Start organizing your life with Dysperse today - where productivity meets flexib
 
 ---
 
-_Dysperse: Your tasks, your way._ ✨
-
 # Sponsors
 
 Dysperse wouldn't have been able to run without our amazing sponsors! <3
 
 | [Cloudflare](https://cloudflare.com/?utm_source=dysperse)                                            | [Neon](https://neon.tech?utm_source=dysperse)                                             |
 | ---------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------- |
-| [![image](https://dysperse.com/sponsors/cloudflare.png)](https://cloudflare.com?utm_source=dysperse) | [![image](https://dysperse.com/sponsors/neon.png)](https://neon.tech?utm_source=dysperse) |
+| [![image](https://dysperse.com/sponsors/cloudflare.svg)](https://cloudflare.com?utm_source=dysperse) | [![image](https://dysperse.com/sponsors/neon.svg)](https://neon.tech?utm_source=dysperse) |
 
