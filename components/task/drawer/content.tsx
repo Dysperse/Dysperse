@@ -42,7 +42,6 @@ import Animated, {
 import Toast from "react-native-toast-message";
 import useSWR from "swr";
 import { useDebounce } from "use-debounce";
-import { useLabelColors } from "../../labels/useLabelColors";
 import CreateTask from "../create";
 import { TaskCompleteButton } from "./attachment/TaskCompleteButton";
 import { useTaskDrawerContext } from "./context";
@@ -295,7 +294,7 @@ function AiExplanation({ task }) {
   );
 }
 
-export function TaskNameInput() {
+export function TaskNameInput({ fullscreen }: { fullscreen }) {
   const { task, updateTask, isReadOnly } = useTaskDrawerContext();
   const theme = useColorTheme();
   const [name, setName] = useState(task.name);
@@ -320,6 +319,7 @@ export function TaskNameInput() {
   const [debouncedName] = useDebounce(name, 300);
 
   const handleSave = () => {
+    fullscreen.value = 0;
     if (name === task.name) return;
     console.log("saved");
     setName(name.replaceAll("\n", ""));
@@ -348,8 +348,8 @@ export function TaskNameInput() {
           }
         }}
         disabled={isReadOnly}
-        // disable scroll
         scrollEnabled={false}
+        onFocus={() => (fullscreen.value = 1)}
         style={[
           {
             fontFamily: "serifText700",
@@ -567,28 +567,16 @@ function TaskSidekickMenu() {
   );
 }
 
-function TaskHome({ labelPickerRef, forceClose }) {
-  const theme = useColorTheme();
-  const labelColors = useLabelColors();
-  const { task, updateTask, isReadOnly } = useTaskDrawerContext();
-  const rotate = useSharedValue(task.pinned ? -35 : 0);
-
+function TaskHome({ labelPickerRef, forceClose, fullscreen }) {
   const SafeScrollView = forceClose ? BottomSheetScrollView : ScrollView;
 
-  // Rotate the pin icon by 45 degrees if the task is pinned using react-native-reanimated
-  const rotateStyle = useAnimatedStyle(() => {
-    return {
-      transform: [
-        {
-          rotate: `${rotate.value}deg`,
-        },
-      ],
-    };
-  });
+  const barStyle = useAnimatedStyle(() => ({
+    opacity: withSpring(fullscreen.value === 1 ? 0.5 : 1),
+    pointerEvents: fullscreen.value === 1 ? "none" : "auto",
+  }));
 
   return (
     <SafeScrollView
-      // bounces={false}
       showsHorizontalScrollIndicator={false}
       style={{
         maxHeight: Dimensions.get("window").height - 200,
@@ -602,8 +590,10 @@ function TaskHome({ labelPickerRef, forceClose }) {
           paddingBottom: 10,
         }}
       >
-        <TaskNameInput />
-        <TaskDetails labelPickerRef={labelPickerRef} />
+        <TaskNameInput fullscreen={fullscreen} />
+        <Animated.View style={[barStyle]}>
+          <TaskDetails labelPickerRef={labelPickerRef} />
+        </Animated.View>
       </View>
     </SafeScrollView>
   );
@@ -984,6 +974,13 @@ export function TaskDrawerContent({
 
   const [view, setView] = useState<"HOME" | "ATTACH">("HOME");
 
+  const fullscreen = useSharedValue(0);
+
+  const barStyle = useAnimatedStyle(() => ({
+    opacity: withSpring(fullscreen.value === 1 ? 0.5 : 1),
+    pointerEvents: fullscreen.value === 1 ? "none" : "auto",
+  }));
+
   const handleDelete = useCallback(
     async (d) => {
       try {
@@ -1051,6 +1048,7 @@ export function TaskDrawerContent({
             <KeyboardAvoidingView behavior="height">
               {view === "HOME" ? (
                 <TaskHome
+                  fullscreen={fullscreen}
                   forceClose={forceClose}
                   labelPickerRef={labelPickerRef}
                 />
@@ -1061,43 +1059,48 @@ export function TaskDrawerContent({
                 />
               )}
               {!isReadOnly && (
-                <View
-                  style={{
-                    padding: 20,
-                    flexDirection: "row",
-                    gap: 5,
-                    height: 90,
-                    flexShrink: 0,
-                  }}
-                >
-                  {view === "HOME" && (
-                    <TaskMoreMenu handleDelete={handleDelete} />
-                  )}
-                  <AttachStep index={2} style={{ flex: 1 }}>
-                    <Button
-                      large
-                      icon={view === "HOME" ? "note_stack_add" : "west"}
-                      onPress={() => {
-                        impactAsync(ImpactFeedbackStyle.Heavy);
-                        setView((t) => (t === "HOME" ? "ATTACH" : "HOME"));
-                      }}
-                      variant="filled"
-                      text={view === "HOME" ? undefined : "Attach"}
-                      iconPosition={view === "ATTACH" ? "start" : "end"}
-                      containerStyle={{
-                        flex: 1,
-                        marginRight: view === "ATTACH" ? "auto" : undefined,
-                      }}
-                      style={view === "ATTACH" && { marginHorizontal: 5 }}
-                      backgroundColors={{
-                        default: addHslAlpha(theme[11], 0.1),
-                        hovered: addHslAlpha(theme[11], 0.2),
-                        pressed: addHslAlpha(theme[11], 0.3),
-                      }}
-                    />
-                  </AttachStep>
-                  {view === "HOME" && <TaskPinButton />}
-                  {view === "HOME" && <TaskCompleteButton />}
+                <View onTouchStart={Keyboard.dismiss}>
+                  <Animated.View
+                    style={[
+                      barStyle,
+                      {
+                        padding: 20,
+                        flexDirection: "row",
+                        gap: 5,
+                        height: 90,
+                        flexShrink: 0,
+                      },
+                    ]}
+                  >
+                    {view === "HOME" && (
+                      <TaskMoreMenu handleDelete={handleDelete} />
+                    )}
+                    <AttachStep index={2} style={{ flex: 1 }}>
+                      <Button
+                        large
+                        icon={view === "HOME" ? "note_stack_add" : "west"}
+                        onPress={() => {
+                          impactAsync(ImpactFeedbackStyle.Heavy);
+                          setView((t) => (t === "HOME" ? "ATTACH" : "HOME"));
+                        }}
+                        variant="filled"
+                        text={view === "HOME" ? undefined : "Attach"}
+                        iconPosition={view === "ATTACH" ? "start" : "end"}
+                        containerStyle={{
+                          flex: 1,
+                          marginRight: view === "ATTACH" ? "auto" : undefined,
+                        }}
+                        style={view === "ATTACH" && { marginHorizontal: 5 }}
+                        backgroundColors={{
+                          default: addHslAlpha(theme[11], 0.1),
+                          hovered: addHslAlpha(theme[11], 0.2),
+                          pressed: addHslAlpha(theme[11], 0.3),
+                        }}
+                      />
+                    </AttachStep>
+                    {view === "HOME" && <TaskPinButton />}
+                    {view === "HOME" && <TaskCompleteButton />}
+                  </Animated.View>
                 </View>
               )}
             </KeyboardAvoidingView>
