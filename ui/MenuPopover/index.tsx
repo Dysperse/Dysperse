@@ -144,6 +144,10 @@ function MenuPopover({
       handleOpen();
       trigger.props?.onPress?.();
     },
+    onLongPress: () => {
+      handleOpen();
+      trigger.props?.onPress?.();
+    },
   });
   const s = useSharedValue(0);
 
@@ -188,7 +192,13 @@ function MenuPopover({
       }}
       renderer={renderers.Popover}
     >
-      <MenuTrigger disabled customStyles={{ TriggerTouchableComponent: View }}>
+      <MenuTrigger
+        triggerOnLongPress
+        disabled
+        customStyles={{
+          TriggerTouchableComponent: View,
+        }}
+      >
         {t}
       </MenuTrigger>
 

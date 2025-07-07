@@ -1,0 +1,152 @@
+diff --git a/node_modules/react-native-confetti-cannon/src/index.js b/node_modules/react-native-confetti-cannon/src/index.js
+index 7092e70..1a40e80 100644
+--- a/node_modules/react-native-confetti-cannon/src/index.js
++++ b/node_modules/react-native-confetti-cannon/src/index.js
+@@ -10,41 +10,41 @@ import { randomValue, randomColor } from './utils';
+ 
+ type Props = {|
+   count: number,
+-  origin: {
+-    x: number,
++    origin: {
++  x: number,
+     y: number
+-  },
+-  explosionSpeed?: number,
+-  fallSpeed?: number,
+-  colors?: Array<string>,
+-  fadeOut?: boolean,
+-  autoStart?: boolean,
+-  autoStartDelay?: number,
+-  onAnimationStart?: () => void,
+-  onAnimationResume?: () => void,
+-  onAnimationStop?: () => void,
+-  onAnimationEnd?: () => void,
+-  testID?: string
+-|};
++},
++explosionSpeed ?: number,
++  fallSpeed ?: number,
++  colors ?: Array < string >,
++  fadeOut ?: boolean,
++  autoStart ?: boolean,
++  autoStartDelay ?: number,
++  onAnimationStart ?: () => void,
++  onAnimationResume ?: () => void,
++  onAnimationStop ?: () => void,
++  onAnimationEnd ?: () => void,
++  testID ?: string
++    |};
+ 
+ type Item = {|
+   leftDelta: number,
+-  topDelta: number,
+-  swingDelta: number,
+-  speedDelta: {
+-    rotateX: number,
++    topDelta: number,
++      swingDelta: number,
++        speedDelta: {
++  rotateX: number,
+     rotateY: number,
+-    rotateZ: number
+-  },
+-  color: string
+-|};
++      rotateZ: number
++},
++color: string
++  |};
+ 
+ type State = {|
+-  items: Array<Item>
++  items: Array < Item >
+ |};
+ 
+ export const TOP_MIN = 0.7;
+-export const DEFAULT_COLORS: Array<string> =[
++export const DEFAULT_COLORS: Array<string> = [
+   '#e67e22',
+   '#2ecc71',
+   '#3498db',
+@@ -142,17 +142,17 @@ class Explosion extends React.PureComponent<Props, State> {
+       onAnimationResume && onAnimationResume();
+     } else {
+       this.sequence = Animated.sequence([
+-        Animated.timing(this.animation, {toValue: 0, duration: 0, useNativeDriver: true}),
++        Animated.timing(this.animation, { toValue: 0, duration: 0, useNativeDriver: true }),
+         Animated.timing(this.animation, {
+           toValue: 1,
+           duration: explosionSpeed,
+-          easing: Easing.out(Easing.quad),
++          easing: Easing.out(Easing.exp),
+           useNativeDriver: true
+         }),
+         Animated.timing(this.animation, {
+           toValue: 2,
+           duration: fallSpeed,
+-          easing: Easing.quad,
++          easing: Easing.exp,
+           useNativeDriver: true
+         }),
+       ]);
+@@ -160,7 +160,7 @@ class Explosion extends React.PureComponent<Props, State> {
+       onAnimationStart && onAnimationStart();
+     }
+ 
+-    this.sequence && this.sequence.start(({finished}: EndResult) => {
++    this.sequence && this.sequence.start(({ finished }: EndResult) => {
+       if (finished) {
+         onAnimationEnd && onAnimationEnd();
+       }
+@@ -180,41 +180,36 @@ class Explosion extends React.PureComponent<Props, State> {
+   render() {
+     const { origin, fadeOut } = this.props;
+     const { items } = this.state;
+-    const { height, width } = Dimensions.get('window');
+ 
+     return (
+       <React.Fragment>
+         {items.map((item: Item, index: number) => {
+           const left = this.animation.interpolate({
+             inputRange: [0, 1, 2],
+-            outputRange: [origin.x, item.leftDelta * width, item.leftDelta * width]
++            outputRange: [origin.x, item.leftDelta * 100, item.leftDelta * 100]
+           });
+           const top = this.animation.interpolate({
+             inputRange: [0, 1, 1 + item.topDelta, 2],
+-            outputRange: [-origin.y, -item.topDelta * height, 0, 0]
++            outputRange: [-origin.y, -item.topDelta * 100, 0, 0]
+           });
+           const rotateX = this.animation.interpolate({
+             inputRange: [0, 2],
+-            outputRange: ['0deg', `${item.speedDelta.rotateX * 360 * 10}deg`]
++            outputRange: ['0deg', `${item.speedDelta.rotateX * 360}deg`]
+           });
+           const rotateY = this.animation.interpolate({
+             inputRange: [0, 2],
+-            outputRange: ['0deg', `${item.speedDelta.rotateY * 360 * 5}deg`]
++            outputRange: ['0deg', `${item.speedDelta.rotateY * 360}deg`]
+           });
+           const rotateZ = this.animation.interpolate({
+             inputRange: [0, 2],
+-            outputRange: ['0deg', `${item.speedDelta.rotateZ * 360 * 2}deg`]
+-          });
+-          const translateX = this.animation.interpolate({
+-            inputRange: [0, 0.4, 1.2, 2],
+-            outputRange: [0, -(item.swingDelta * 30), (item.swingDelta * 30), 0]
++            outputRange: ['0deg', `${item.speedDelta.rotateZ * 360}deg`]
+           });
+           const opacity = this.animation.interpolate({
+-            inputRange: [0, 1, 1.8, 2],
+-            outputRange: [1, 1, 1, fadeOut ? 0 : 1]
++            inputRange: [0, 0.9, 1, 2],
++            outputRange: [1, 1, 0, 0]
+           });
+-          const containerTransform = [{translateX: left}, {translateY: top}];
+-          const transform = [{rotateX}, {rotateY}, {rotate: rotateZ}, {translateX}];
++          const containerTransform = [{ translateX: left }, { translateY: top }];
++          const transform = [{ rotateX }, { rotateY }, { rotate: rotateZ }];
+ 
+           if (Platform.OS === 'android') {
+             transform.push({ perspective: 100 });

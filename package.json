@@ -110,6 +110,7 @@
     "react-native-autogrow-textinput": "^5.4.0",
     "react-native-circular-progress": "^1.4.1",
     "react-native-collapsible": "^1.6.2",
+    "react-native-confetti-cannon": "^1.5.2",
     "react-native-controlled-mentions": "^2.2.5",
     "react-native-countdown-circle-timer": "^3.2.1",
     "react-native-edge-to-edge": "^1.4.3",

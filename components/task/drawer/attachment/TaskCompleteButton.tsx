@@ -10,6 +10,8 @@ import { useBottomSheet } from "@gorhom/bottom-sheet";
 import dayjs from "dayjs";
 import { impactAsync, ImpactFeedbackStyle } from "expo-haptics";
 import React from "react";
+import { View } from "react-native";
+import ConfettiCannon from "react-native-confetti-cannon";
 import Toast from "react-native-toast-message";
 import { useTaskDrawerContext } from "../context";
 
@@ -20,6 +22,7 @@ export function TaskCompleteButton() {
     useTaskDrawerContext();
   const green = useColor("green");
   const { animatedIndex } = useBottomSheet();
+  const [showConfetti, setShowConfetti] = React.useState(false);
 
   const isCompleted = getTaskCompletionStatus(task, dateRange);
   const badgingService = useBadgingService();
@@ -47,6 +50,8 @@ export function TaskCompleteButton() {
             ];
       }
       updateTask({ completionInstances: newArr }, false);
+
+      if (!isCompleted) setShowConfetti(true);
 
       sendApiRequest(
         sessionToken,
@@ -83,34 +88,63 @@ export function TaskCompleteButton() {
 
   return (
     !isReadOnly && (
-      <AttachStep index={1} style={{ flex: 1 }}>
-        <Button
-          large
-          onPress={handlePress}
-          bold
-          icon="done_outline"
-          variant="filled"
-          iconPosition="end"
-          containerStyle={{
-            opacity: disabled ? undefined : 1,
-          }}
-          iconStyle={{
-            color: isCompleted ? green[11] : theme[11],
-            marginRight: -5,
-          }}
-          backgroundColors={{
-            default: isCompleted
-              ? addHslAlpha(green[11], 0.2)
-              : addHslAlpha(theme[11], 0.1),
-            hovered: isCompleted
-              ? addHslAlpha(green[11], 0.3)
-              : addHslAlpha(theme[11], 0.2),
-            pressed: isCompleted
-              ? addHslAlpha(green[11], 0.4)
-              : addHslAlpha(theme[11], 0.3),
-          }}
-        />
-      </AttachStep>
+      <>
+        <AttachStep index={1} style={{ width: 120 }}>
+          <Button
+            bold
+            large
+            onPress={handlePress}
+            icon={isCompleted ? "celebration" : "east"}
+            text={isCompleted ? "Done!" : "Finish"}
+            variant="filled"
+            iconPosition="end"
+            containerStyle={{
+              opacity: disabled ? undefined : 1,
+            }}
+            iconStyle={{ color: isCompleted ? green[11] : theme[11] }}
+            textStyle={{ color: isCompleted ? green[11] : theme[11] }}
+            backgroundColors={{
+              default: isCompleted
+                ? addHslAlpha(green[11], 0.2)
+                : addHslAlpha(theme[11], 0.1),
+              hovered: isCompleted
+                ? addHslAlpha(green[11], 0.3)
+                : addHslAlpha(theme[11], 0.2),
+              pressed: isCompleted
+                ? addHslAlpha(green[11], 0.4)
+                : addHslAlpha(theme[11], 0.3),
+            }}
+          />
+        </AttachStep>
+        {showConfetti && (
+          <View
+            style={{
+              position: "absolute",
+              bottom: 0,
+              right: 0,
+              width: 150,
+              height: 150,
+              pointerEvents: "none",
+            }}
+          >
+            <ConfettiCannon
+              count={25}
+              origin={{ x: 50, y: 30 }}
+              fallSpeed={800}
+              colors={[
+                green[11],
+                green[10],
+                green[9],
+                green[8],
+                green[7],
+                green[6],
+              ]}
+              explosionSpeed={1000}
+              fadeOut
+            />
+          </View>
+        )}
+      </>
     )
   );
 }

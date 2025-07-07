@@ -33,6 +33,7 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { Dimensions, Keyboard, Platform, View } from "react-native";
 import { ScrollView } from "react-native-gesture-handler";
 import { KeyboardAvoidingView } from "react-native-keyboard-controller";
+
 import Animated, {
   useAnimatedStyle,
   useSharedValue,
@@ -381,7 +382,7 @@ function TaskMoreMenu({ handleDelete }) {
         options={[
           {
             icon: task.trash ? "restore_from_trash" : "delete",
-            text: task.trash ? "Restore from trash" : "Move to trash",
+            text: task.trash ? "Restore from trash" : "Delete",
             callback: handleDelete,
           },
           session?.user?.betaTester && {
@@ -425,10 +426,10 @@ function TaskMoreMenu({ handleDelete }) {
             ),
           },
         ]}
+        containerStyle={{ marginLeft: 27, width: 150 }}
         trigger={
           <Button
             large
-            bold
             onPress={() => {
               impactAsync(ImpactFeedbackStyle.Heavy);
             }}
@@ -946,7 +947,6 @@ function TaskPinButton() {
         icon={
           <Animated.View style={rotateStyle}>
             <Icon
-              bold
               filled={task.pinned}
               style={task.pinned ? { color: orange[11] } : {}}
             >
@@ -1067,35 +1067,28 @@ export function TaskDrawerContent({
                     flexDirection: "row",
                     gap: 5,
                     height: 90,
+                    flexShrink: 0,
                   }}
                 >
-                  {view === "HOME" && <TaskPinButton />}
-                  {view === "HOME" && <TaskCompleteButton />}
                   {view === "HOME" && (
                     <TaskMoreMenu handleDelete={handleDelete} />
                   )}
-
                   <AttachStep index={2} style={{ flex: 1 }}>
                     <Button
                       large
-                      bold
-                      icon={view === "HOME" ? "note_stack_add" : "close"}
+                      icon={view === "HOME" ? "note_stack_add" : "west"}
                       onPress={() => {
                         impactAsync(ImpactFeedbackStyle.Heavy);
                         setView((t) => (t === "HOME" ? "ATTACH" : "HOME"));
                       }}
                       variant="filled"
                       text={view === "HOME" ? undefined : "Attach"}
-                      iconPosition="end"
+                      iconPosition={view === "ATTACH" ? "start" : "end"}
                       containerStyle={{
                         flex: 1,
-                        marginLeft: view === "ATTACH" ? "auto" : undefined,
+                        marginRight: view === "ATTACH" ? "auto" : undefined,
                       }}
-                      style={
-                        view === "ATTACH" && {
-                          marginHorizontal: 5,
-                        }
-                      }
+                      style={view === "ATTACH" && { marginHorizontal: 5 }}
                       backgroundColors={{
                         default: addHslAlpha(theme[11], 0.1),
                         hovered: addHslAlpha(theme[11], 0.2),
@@ -1103,6 +1096,8 @@ export function TaskDrawerContent({
                       }}
                     />
                   </AttachStep>
+                  {view === "HOME" && <TaskPinButton />}
+                  {view === "HOME" && <TaskCompleteButton />}
                 </View>
               )}
             </KeyboardAvoidingView>
