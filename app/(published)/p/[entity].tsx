@@ -160,8 +160,7 @@ function AddToCalendar({ data }) {
       <MenuPopover
         trigger={
           <Button
-            containerStyle={{ marginTop: 10 }}
-            onPress={() => {}}
+            containerStyle={{ marginTop: 5 }}
             icon="calendar_today"
             text="Copy to Calendar"
             variant="filled"
