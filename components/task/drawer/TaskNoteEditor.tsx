@@ -10,7 +10,6 @@ import { EditorProvider, useCurrentEditor } from "@tiptap/react";
 import StarterKit from "@tiptap/starter-kit";
 import { useDOMImperativeHandle } from "expo/dom";
 import { forwardRef, useEffect, useImperativeHandle, useRef } from "react";
-import { useDebounce } from "use-debounce";
 
 const LIMIT = 3000;
 
@@ -26,7 +25,10 @@ const extensions = [
   }),
   Image,
   Placeholder.configure({
-    placeholder: "What's on your mind?",
+    placeholder:
+      typeof ReactNativeWebView === "undefined"
+        ? "Add a note..."
+        : "What's on your mind?",
   }),
 
   Dropcursor,
@@ -119,15 +121,28 @@ const EditorRef = ({ ref }) => {
 
 function Saver({ updateTask }) {
   const { editor } = useCurrentEditor();
-  const [debouncedSave] = useDebounce(async () => {
-    const content = editor.getHTML();
-    updateTask({ note: editor.isEmpty ? null : content });
-  }, 5000);
+  const saveRef = useRef(updateTask);
+
+  // Always keep the latest updateTask
+  useEffect(() => {
+    saveRef.current = updateTask;
+  }, [updateTask]);
+
+  // Debounced save function
+  const debouncedSave = useRef(
+    debounce(() => {
+      if (!editor) return;
+      const content = editor.getHTML();
+      saveRef.current({ note: editor.isEmpty ? null : content });
+    }, 500)
+  ).current;
 
   useEffect(() => {
-    const save = async () => {
+    if (!editor) return;
+
+    const save = () => {
       const content = editor.getHTML();
-      updateTask({ note: editor.isEmpty ? null : content });
+      saveRef.current({ note: editor.isEmpty ? null : content });
     };
 
     window.addEventListener("blur", () => editor.commands.blur());
@@ -139,9 +154,18 @@ function Saver({ updateTask }) {
       editor.off("blur", save);
       editor.off("update", debouncedSave);
     };
-  }, [editor, updateTask, debouncedSave]);
+  }, [editor, debouncedSave]);
 
   return null;
+}
+
+// Simple debounce utility
+function debounce(fn, delay) {
+  let timer;
+  return (...args) => {
+    clearTimeout(timer);
+    timer = setTimeout(() => fn(...args), delay);
+  };
 }
 
 function FormatMenuSetter({ setSelectionState }) {

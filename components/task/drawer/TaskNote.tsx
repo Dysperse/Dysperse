@@ -429,7 +429,7 @@ export const TaskNote = ({
 
   const focusedStyles = useAnimatedStyle(() => ({
     borderRadius: 10,
-    marginLeft: 35,
+    marginLeft: Platform.OS === "web" ? 0 : 35,
     position: "relative",
     backgroundColor: interpolateColor(
       isFocused.value,
@@ -445,29 +445,31 @@ export const TaskNote = ({
 
   return (
     <>
-      <Button
-        dense
-        style={{ gap: 10 }}
-        containerStyle={{ opacity: 0.6, marginRight: "auto" }}
-        onPress={
-          isLoading
-            ? undefined
-            : () => {
-                setCollapsed((c) => !c);
-                if (!task.note) editorRef.current.focus();
-              }
-        }
-        icon={
-          isLoading ? (
-            <Spinner size={20} style={{ marginRight: 4 }} />
-          ) : (
-            "stylus_note"
-          )
-        }
-        text={
-          task.note ? (collapsed ? "Show note" : "Hide note") : "Add a note"
-        }
-      />
+      {Platform.OS !== "web" && (
+        <Button
+          dense
+          style={{ gap: 10 }}
+          containerStyle={{ opacity: 0.6, marginRight: "auto" }}
+          onPress={
+            isLoading
+              ? undefined
+              : () => {
+                  setCollapsed((c) => !c);
+                  if (!task.note) editorRef.current.focus();
+                }
+          }
+          icon={
+            isLoading ? (
+              <Spinner size={20} style={{ marginRight: 4 }} />
+            ) : (
+              "stylus_note"
+            )
+          }
+          text={
+            task.note ? (collapsed ? "Show note" : "Hide note") : "Add a note"
+          }
+        />
+      )}
       <Animated.View
         style={[
           focusedStyles,
