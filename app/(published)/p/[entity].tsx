@@ -4,15 +4,18 @@ import { OnboardingProvider } from "@/context/OnboardingProvider";
 import { useResponsiveBreakpoints } from "@/helpers/useResponsiveBreakpoints";
 import Alert from "@/ui/Alert";
 import { ProfilePicture } from "@/ui/Avatar";
+import { Button } from "@/ui/Button";
 import { useColor } from "@/ui/color";
 import { ColorThemeProvider } from "@/ui/color/theme-provider";
 import Icon from "@/ui/Icon";
 import IconButton from "@/ui/IconButton";
 import Logo from "@/ui/logo";
+import MenuPopover from "@/ui/MenuPopover";
 import Spinner from "@/ui/Spinner";
 import Text from "@/ui/Text";
 import { toastConfig } from "@/ui/toast.config";
 import { BottomSheetModalProvider } from "@gorhom/bottom-sheet";
+import dayjs from "dayjs";
 import { setStringAsync } from "expo-clipboard";
 import { useLocalSearchParams } from "expo-router";
 import { shareAsync } from "expo-sharing";
@@ -23,6 +26,8 @@ import { MenuProvider } from "react-native-popup-menu";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import Toast from "react-native-toast-message";
 import useSWR from "swr";
+
+const ics = require("ics");
 
 const PublishedEntityContext = createContext(null);
 
@@ -110,6 +115,116 @@ const ErrorPage = () => {
   );
 };
 
+function AddToCalendar({ data }) {
+  const params = useLocalSearchParams();
+
+  const icalEvent: ics.EventAttributes = {
+    start: [
+      dayjs(data.start).year(),
+      dayjs(data.start).month() + 1,
+      dayjs(data.start).date(),
+      dayjs(data.start).hour(),
+      dayjs(data.start).minute(),
+    ],
+    duration: data.dateOnly
+      ? { hours: 1, minutes: 0 }
+      : {
+          hours: dayjs(data.end || data.start).diff(dayjs(data.start), "hours"),
+          minutes:
+            dayjs(data.end || data.start).diff(dayjs(data.start), "minutes") %
+            60,
+        },
+    title: data.name,
+    description: data.note,
+    location: data.location ? data.location.name : undefined,
+    categories: [data.label?.name],
+    status: "CONFIRMED",
+    organizer: {
+      name: data.space.members?.[0]?.user?.profile?.name,
+      email: data.space.members?.[0]?.user?.profile?.email,
+    },
+  };
+
+  return (
+    <View style={{ flexDirection: "row", gap: 10 }}>
+      <Button
+        containerStyle={{
+          marginTop: 10,
+        }}
+        onPress={() => {}}
+        icon={<Logo size={24} color="mint" />}
+        text="Add to Dysperse"
+        variant="filled"
+        style={{ paddingHorizontal: 17 }}
+      />
+      <MenuPopover
+        trigger={
+          <Button
+            containerStyle={{ marginTop: 10 }}
+            onPress={() => {}}
+            icon="calendar_today"
+            text="Copy to Calendar"
+            variant="outlined"
+          />
+        }
+        options={[
+          {
+            text: "Apple Calendar",
+            callback: () => {
+              ics.createEvent(icalEvent, (error, value) => {
+                if (error) {
+                  console.log(error);
+                  return;
+                }
+                // Convert to data url and open
+                const dataUrl = `data:text/calendar;charset=utf8,${encodeURIComponent(
+                  value
+                )}`;
+                Linking.openURL(dataUrl);
+              });
+            },
+          },
+          {
+            text: "Google Calendar",
+            callback: () =>
+              Linking.openURL(
+                `https://calendar.google.com/calendar/r/eventedit?${new URLSearchParams(
+                  {
+                    text: data.name,
+                    dates: `${new Date(data.start)
+                      .toISOString()
+                      .replace(/-|:|\.\d+/g, "")}/${new Date(
+                      data.end || data.start
+                    )
+                      .toISOString()
+                      .replace(/-|:|\.\d+/g, "")}`,
+                    details: data.note,
+                    location: data.location,
+                  }
+                )}`
+              ),
+          },
+          {
+            text: "Office 365",
+            callback: () =>
+              Linking.openURL(
+                `https://outlook.office.com/calendar/0/deeplink/compose?${new URLSearchParams(
+                  {
+                    subject: data.name,
+                    startdt: new Date(data.start).toISOString(),
+                    enddt: new Date(data.end || data.start).toISOString(),
+                    body: data.note || "",
+                    location: data.location || "",
+                  }
+                )}`
+              ),
+          },
+        ]}
+      />
+    </View>
+  );
+}
+
 export default function Page() {
   const insets = useSafeAreaInsets();
   const theme = useColor("mint");
@@ -151,7 +266,9 @@ export default function Page() {
                         style={{
                           width: 500,
                           maxWidth: "100%",
-                          backgroundColor: theme[3],
+                          backgroundColor: theme[2],
+                          borderWidth: 1,
+                          borderColor: theme[5],
                           borderRadius: 20,
                           marginBottom: 10,
                           padding: 20,
@@ -159,7 +276,7 @@ export default function Page() {
                           overflow: "hidden",
                         }}
                       >
-                        <Text style={{ textAlign: "center" }}>
+                        <Text>
                           You're viewing a task shared by{"  "}
                           <View
                             style={{
@@ -186,6 +303,8 @@ export default function Page() {
                             </Text>
                           </View>
                         </Text>
+
+                        <AddToCalendar data={data} />
                       </View>
                       <View
                         style={{

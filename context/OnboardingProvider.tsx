@@ -55,6 +55,7 @@ export const OnboardingTrigger = ({
   const { start } = useSpotlightTour();
   const { session, isLoading } = useUser();
   useEffect(() => {
+    if (!session?.user) return;
     if (onboarding.state === null && onlyIf() === true)
       InteractionManager.runAfterInteractions(() => {
         if (

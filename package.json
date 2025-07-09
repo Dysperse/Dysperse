@@ -91,6 +91,7 @@
     "expo-web-browser": "~14.2.0",
     "fuzzysort": "^3.1.0",
     "html-minifier": "^4.0.0",
+    "ics": "^3.8.1",
     "leaflet": "^1.9.4",
     "lexorank": "^1.0.5",
     "manuthecoder-react-native-spotlight-tour": "^1.0.0",
