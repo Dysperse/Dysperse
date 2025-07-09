@@ -147,7 +147,7 @@ function AddToCalendar({ data }) {
 
   return (
     <View style={{ flexDirection: "row", gap: 10 }}>
-      <Button
+      {/* <Button
         containerStyle={{
           marginTop: 10,
         }}
@@ -156,7 +156,7 @@ function AddToCalendar({ data }) {
         text="Add to Dysperse"
         variant="filled"
         style={{ paddingHorizontal: 17 }}
-      />
+      /> */}
       <MenuPopover
         trigger={
           <Button
@@ -164,7 +164,7 @@ function AddToCalendar({ data }) {
             onPress={() => {}}
             icon="calendar_today"
             text="Copy to Calendar"
-            variant="outlined"
+            variant="filled"
           />
         }
         options={[
