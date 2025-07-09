@@ -27,6 +27,7 @@ import Animated, {
 } from "react-native-reanimated";
 import Toast from "react-native-toast-message";
 import TaskNoteEditor from "./TaskNoteEditor";
+import { useTaskDrawerContext } from "./context";
 
 function LinkModal({ children, onSubmit }) {
   const modalRef = useRef(null);
@@ -422,8 +423,9 @@ export const TaskNote = ({
   const theme = useColorTheme();
   const { session } = useUser();
   const formatMenuRef = useRef(null);
+  const { isReadOnly } = useTaskDrawerContext();
   const isFocused = useSharedValue(0);
-  const [collapsed, setCollapsed] = useState(true);
+  const [collapsed, setCollapsed] = useState(Platform.OS !== "web");
 
   const focusedStyles = useAnimatedStyle(() => ({
     borderRadius: 10,
@@ -493,6 +495,7 @@ export const TaskNote = ({
           openLink={(href) => Linking.openURL(href)}
           onContainerFocus={onContainerFocus}
           showEditorWhenEmpty={showEditorWhenEmpty}
+          isReadOnly={isReadOnly}
           ref={editorRef}
           setSelectionState={(state) =>
             formatMenuRef.current.setSelectionState(state)

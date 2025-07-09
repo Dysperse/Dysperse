@@ -3,6 +3,7 @@ import { AttachStep } from "@/context/OnboardingProvider";
 import { useUser } from "@/context/useUser";
 import { sendApiRequest } from "@/helpers/api";
 import { getTaskCompletionStatus } from "@/helpers/getTaskCompletionStatus";
+import { useResponsiveBreakpoints } from "@/helpers/useResponsiveBreakpoints";
 import { Button } from "@/ui/Button";
 import { addHslAlpha, useColor } from "@/ui/color";
 import { useColorTheme } from "@/ui/color/theme-provider";
@@ -16,6 +17,7 @@ import Toast from "react-native-toast-message";
 import { useTaskDrawerContext } from "../context";
 
 export function TaskCompleteButton() {
+  const breakpoints = useResponsiveBreakpoints();
   const theme = useColorTheme();
   const { sessionToken } = useUser();
   const { task, updateTask, mutateList, isReadOnly, dateRange } =
@@ -89,7 +91,10 @@ export function TaskCompleteButton() {
   return (
     !isReadOnly && (
       <>
-        <AttachStep index={1} style={{ width: 120 }}>
+        <AttachStep
+          index={1}
+          style={{ minWidth: 120, flex: breakpoints.md ? 2 : undefined }}
+        >
           <Button
             bold
             large

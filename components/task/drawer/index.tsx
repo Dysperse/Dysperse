@@ -86,6 +86,7 @@ function TaskDrawerWrapper({
   const { forceClose } = useBottomSheet();
   const badgingService = useBadgingService();
   const isDark = useDarkMode();
+  const breakpoints = useResponsiveBreakpoints();
 
   const updateTask = useCallback(
     async (payload, sendRequest = true) => {
@@ -138,20 +139,22 @@ function TaskDrawerWrapper({
       ]}
     >
       <SafeBlurView>
-        <BlurView
-          style={{
-            width: 40,
-            height: 7,
-            marginBottom: -7 - 15,
-            backgroundColor: addHslAlpha(theme[11], 0.1),
-            overflow: "hidden",
-            zIndex: 99,
-            alignSelf: "center",
-            marginTop: 15,
-            borderRadius: 99,
-          }}
-          tint={isDark ? "dark" : "light"}
-        />
+        {!breakpoints.md && (
+          <BlurView
+            style={{
+              width: 40,
+              height: 7,
+              marginBottom: -7 - 15,
+              backgroundColor: addHslAlpha(theme[11], 0.1),
+              overflow: "hidden",
+              zIndex: 99,
+              alignSelf: "center",
+              marginTop: 15,
+              borderRadius: 99,
+            }}
+            tint={isDark ? "dark" : "light"}
+          />
+        )}
         {data?.id ? (
           <TaskDrawerContext.Provider
             value={{

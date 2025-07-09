@@ -34,6 +34,7 @@ import { Dimensions, Keyboard, Platform, View } from "react-native";
 import { ScrollView } from "react-native-gesture-handler";
 import { KeyboardAvoidingView } from "react-native-keyboard-controller";
 
+import { useResponsiveBreakpoints } from "@/helpers/useResponsiveBreakpoints";
 import Animated, {
   useAnimatedStyle,
   useSharedValue,
@@ -568,6 +569,7 @@ function TaskSidekickMenu() {
 }
 
 function TaskHome({ labelPickerRef, forceClose, fullscreen }) {
+  const breakpoints = useResponsiveBreakpoints();
   const SafeScrollView = forceClose ? BottomSheetScrollView : ScrollView;
 
   const barStyle = useAnimatedStyle(() => ({
@@ -586,7 +588,7 @@ function TaskHome({ labelPickerRef, forceClose, fullscreen }) {
       <View
         style={{
           paddingHorizontal: 15,
-          paddingTop: 35,
+          paddingTop: breakpoints.md ? 20 : 35,
           paddingBottom: 10,
         }}
       >

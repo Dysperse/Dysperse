@@ -372,8 +372,12 @@ function TaskDateMenu() {
         task.start
           ? dayjs(task.start).format(
               dayjs(task.start).isSame(dayjs(), "year")
-                ? "MMMM Do"
-                : "MMM Do, YYYY"
+                ? task.dateOnly
+                  ? "MMM Do"
+                  : "MMM Do [@] h:mm a"
+                : task.dateOnly
+                ? "MMM Do YYYY"
+                : "MMM Do YYYY [@] h:mm a"
             )
           : "Set due date",
         task.end &&
@@ -419,6 +423,7 @@ function TaskDateMenu() {
           }}
           trigger={
             <Button
+              disabled={isReadOnly}
               style={{ gap: 10, marginRight: "auto" }}
               containerStyle={{ opacity: 0.6 }}
               dense
@@ -614,6 +619,7 @@ function TaskLocationMenu() {
     </Button>
   ) : (
     <Button
+      disabled={isReadOnly}
       containerStyle={{
         marginRight: "auto",
         opacity: 0.6,
@@ -997,8 +1003,9 @@ export function TaskDetails({ labelPickerRef }) {
           <TaskDateMenu />
           {task.location && <TaskLocationMenu />}
 
-          {task && !task.parentTaskId && (
+          {task && !task.parentTaskId && !(isReadOnly && !task.label) && (
             <LabelPicker
+              disabled={isReadOnly}
               label={task?.label || undefined}
               setLabel={(e: any) => {
                 updateTask({ labelId: e.id, label: e });
@@ -1008,6 +1015,7 @@ export function TaskDetails({ labelPickerRef }) {
               defaultCollection={collectionId as any}
             >
               <Button
+                disabled={isReadOnly}
                 icon={
                   task.label?.emoji || task.collection?.emoji ? (
                     <Emoji

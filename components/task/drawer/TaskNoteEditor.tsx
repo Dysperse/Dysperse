@@ -175,6 +175,7 @@ export default forwardRef<any, object>(function TaskNoteEditor(
     setSelectionState,
     onContainerFocus,
     openLink,
+    isReadOnly,
   }: any,
   ref
 ) {
@@ -283,6 +284,7 @@ export default forwardRef<any, object>(function TaskNoteEditor(
       <EditorProvider
         extensions={extensions}
         content={content}
+        editable={!isReadOnly}
         slotAfter={<CharacterCounter theme={theme} />}
         editorContainerProps={{
           style: {

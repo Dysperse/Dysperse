@@ -1,5 +1,6 @@
 import { TaskDrawerContent } from "@/components/task/drawer/content";
 import { TaskDrawerContext } from "@/components/task/drawer/context";
+import { OnboardingProvider } from "@/context/OnboardingProvider";
 import { useResponsiveBreakpoints } from "@/helpers/useResponsiveBreakpoints";
 import Alert from "@/ui/Alert";
 import { ProfilePicture } from "@/ui/Avatar";
@@ -122,100 +123,103 @@ export default function Page() {
   if (!params.entity || error) return <ErrorPage />;
 
   return (
-    <PublishedEntityContext.Provider value={contextValue}>
-      <ColorThemeProvider setHTMLAttributes theme={theme}>
-        {!isLoading && !data?.name ? (
-          <ErrorPage />
-        ) : (
-          <BottomSheetModalProvider>
-            <MenuProvider>
-              <ScrollView
-                style={{
-                  backgroundColor: theme[1],
-                  height: 100,
-                }}
-                contentContainerStyle={{
-                  alignItems: "center",
-                  paddingBottom: 50,
-                  paddingHorizontal: 20,
-                }}
-              >
-                <Header />
-                {!data?.name ? (
-                  <Spinner />
-                ) : (
-                  <>
-                    <View
-                      style={{
-                        width: 500,
-                        maxWidth: "100%",
-                        backgroundColor: theme[3],
-                        borderRadius: 20,
-                        marginBottom: 10,
-                        padding: 20,
-                        paddingTop: 21,
-                        overflow: "hidden",
-                      }}
-                    >
-                      <Text style={{ textAlign: "center" }}>
-                        You're viewing a task shared by{"  "}
-                        <View
-                          style={{
-                            flexDirection: "row",
-                            gap: 5,
-                            transform: [{ translateY: -1 }],
-                          }}
-                        >
-                          {data.space.members?.[0]?.user?.profile?.name && (
-                            <ProfilePicture
-                              size={24}
-                              image={
-                                data.space.members?.[0]?.user?.profile?.picture
-                              }
-                              name={
-                                data.space.members?.[0]?.user?.profile?.name
-                              }
-                            />
-                          )}
-                          <Text weight={700}>
-                            {data.space.members?.[0]?.user?.profile?.name ||
-                              "an anonymous Dysperse user"}
-                          </Text>
-                        </View>
-                      </Text>
-                    </View>
-                    <View
-                      style={{
-                        width: 500,
-                        maxWidth: "100%",
-                        backgroundColor: theme[2],
-                        borderRadius: 20,
-                        borderWidth: 1,
-                        overflow: "hidden",
-                        borderColor: theme[5],
-                      }}
-                    >
-                      <TaskDrawerContext.Provider
-                        value={{
-                          dateRange: null,
-                          task: data,
-                          updateTask: () => {},
-                          mutateList: () => {},
-                          isReadOnly: true,
+    <OnboardingProvider>
+      <PublishedEntityContext.Provider value={contextValue}>
+        <ColorThemeProvider setHTMLAttributes theme={theme}>
+          {!isLoading && !data?.name ? (
+            <ErrorPage />
+          ) : (
+            <BottomSheetModalProvider>
+              <MenuProvider>
+                <ScrollView
+                  style={{
+                    backgroundColor: theme[1],
+                    height: 100,
+                  }}
+                  contentContainerStyle={{
+                    alignItems: "center",
+                    paddingBottom: 50,
+                    paddingHorizontal: 20,
+                  }}
+                >
+                  <Header />
+                  {!data?.name ? (
+                    <Spinner />
+                  ) : (
+                    <>
+                      <View
+                        style={{
+                          width: 500,
+                          maxWidth: "100%",
+                          backgroundColor: theme[3],
+                          borderRadius: 20,
+                          marginBottom: 10,
+                          padding: 20,
+                          paddingTop: 21,
+                          overflow: "hidden",
                         }}
                       >
-                        <TaskDrawerContent handleClose={() => {}} />
-                      </TaskDrawerContext.Provider>
-                    </View>
-                  </>
-                )}
-              </ScrollView>
-            </MenuProvider>
-          </BottomSheetModalProvider>
-        )}
-        <Toast topOffset={insets.top + 15} config={toastConfig(theme)} />
-      </ColorThemeProvider>
-    </PublishedEntityContext.Provider>
+                        <Text style={{ textAlign: "center" }}>
+                          You're viewing a task shared by{"  "}
+                          <View
+                            style={{
+                              flexDirection: "row",
+                              gap: 5,
+                              transform: [{ translateY: -1 }],
+                            }}
+                          >
+                            {data.space.members?.[0]?.user?.profile?.name && (
+                              <ProfilePicture
+                                size={24}
+                                image={
+                                  data.space.members?.[0]?.user?.profile
+                                    ?.picture
+                                }
+                                name={
+                                  data.space.members?.[0]?.user?.profile?.name
+                                }
+                              />
+                            )}
+                            <Text weight={700}>
+                              {data.space.members?.[0]?.user?.profile?.name ||
+                                "an anonymous Dysperse user"}
+                            </Text>
+                          </View>
+                        </Text>
+                      </View>
+                      <View
+                        style={{
+                          width: 500,
+                          maxWidth: "100%",
+                          backgroundColor: theme[2],
+                          borderRadius: 20,
+                          borderWidth: 1,
+                          overflow: "hidden",
+                          borderColor: theme[5],
+                        }}
+                      >
+                        <TaskDrawerContext.Provider
+                          value={{
+                            dateRange: null,
+                            task: data,
+                            updateTask: () => {},
+                            mutateList: () => {},
+                            isReadOnly: true,
+                          }}
+                        >
+                          <TaskDrawerContent handleClose={() => {}} />
+                        </TaskDrawerContext.Provider>
+                      </View>
+                    </>
+                  )}
+                </ScrollView>
+              </MenuProvider>
+            </BottomSheetModalProvider>
+          )}
+          <Toast topOffset={insets.top + 15} config={toastConfig(theme)} />
+        </ColorThemeProvider>
+      </PublishedEntityContext.Provider>
+    </OnboardingProvider>
   );
 }
 
