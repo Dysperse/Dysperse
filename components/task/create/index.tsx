@@ -129,7 +129,7 @@ function Footer({
   const collectionId = watch("collectionId");
   const date = watch("date");
   const end = watch("end");
-  const dateOnly = watch("dateOnly");
+  const location = watch("location");
   const parentTask = watch("parentTask");
 
   const legacyComplexityScale = [2, 4, 8, 16, 32];
@@ -199,6 +199,32 @@ function Footer({
                 ]
               }
               icon="exercise"
+            />
+          }
+        />
+      )}
+      {location && (
+        <MenuPopover
+          options={[
+            {
+              text: "Remove",
+              icon: "remove_circle",
+              callback: () => setValue("location", null),
+            },
+          ]}
+          menuProps={{
+            style: { marginRight: "auto" },
+          }}
+          trigger={
+            <Button
+              dense
+              style={{ gap: 10, opacity: 0.6 }}
+              text={`${
+                location?.name?.substring(0, 20)?.replaceAll(",", "") ||
+                "Location"
+              }...`}
+              icon="near_me"
+              iconStyle={{ transform: [{ scale: 1.1 }] }}
             />
           }
         />
