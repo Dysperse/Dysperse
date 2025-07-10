@@ -586,7 +586,7 @@ function TaskNameInput({
                 fontFamily: "serifText700",
                 color: theme[11],
                 paddingHorizontal: 7,
-                marginTop: 10,
+                marginTop: 5,
                 marginBottom: 3,
                 borderRadius: 20,
                 borderWidth: 2,
