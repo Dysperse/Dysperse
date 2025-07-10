@@ -182,10 +182,12 @@ function AppleAuth() {
                   text1: "We couldn't find an account with that email",
                 });
                 router.push({
-                  pathname: "/auth/join",
+                  pathname: "/auth/join/2",
                   params: {
                     email: credential.email,
-                    name: `${credential.fullName?.givenName} ${credential.fullName?.familyName}`,
+                    name: credential.fullName
+                      ? `${credential.fullName?.givenName} ${credential.fullName?.familyName}`
+                      : "John Doe",
                   },
                 });
               }
