@@ -1,6 +1,7 @@
 import LabelPicker from "@/components/labels/picker";
 import { useLabelColors } from "@/components/labels/useLabelColors";
 import { COLLECTION_VIEWS } from "@/components/layout/command-palette/list";
+import { STORY_POINT_SCALE } from "@/constants/workload";
 import { useBadgingService } from "@/context/BadgingProvider";
 import { AttachStep, OnboardingContainer } from "@/context/OnboardingProvider";
 import { useStorageContext } from "@/context/storageContext";
@@ -15,6 +16,7 @@ import Emoji from "@/ui/Emoji";
 import { GrowingTextInput } from "@/ui/GrowingTextInput";
 import Icon from "@/ui/Icon";
 import IconButton from "@/ui/IconButton";
+import MenuPopover from "@/ui/MenuPopover";
 import Modal from "@/ui/Modal";
 import Spinner from "@/ui/Spinner";
 import Text from "@/ui/Text";
@@ -123,12 +125,14 @@ function Footer({
   recurrenceRef: React.MutableRefObject<BottomSheetModal>;
   defaultValues;
 }) {
-  const recurrenceRule = watch("recurrenceRule");
+  const storyPoints = watch("storyPoints");
   const collectionId = watch("collectionId");
   const date = watch("date");
   const end = watch("end");
   const dateOnly = watch("dateOnly");
   const parentTask = watch("parentTask");
+
+  const legacyComplexityScale = [2, 4, 8, 16, 32];
 
   return (
     <View
@@ -173,6 +177,32 @@ function Footer({
           />
         </View>
       </AttachStep>
+      {storyPoints && (
+        <MenuPopover
+          options={[
+            {
+              text: "Remove",
+              icon: "remove_circle",
+              callback: () => setValue("storyPoints", null),
+            },
+          ]}
+          menuProps={{
+            style: { marginRight: "auto" },
+          }}
+          trigger={
+            <Button
+              dense
+              style={{ gap: 10, opacity: 0.6 }}
+              text={
+                STORY_POINT_SCALE[
+                  legacyComplexityScale.findIndex((i) => i === storyPoints)
+                ]
+              }
+              icon="exercise"
+            />
+          }
+        />
+      )}
     </View>
   );
 }
@@ -1036,6 +1066,7 @@ const BottomSheetContent = ({
             <Button
               icon={view === "HOME" ? "note_stack_add" : "west"}
               text={view === "HOME" ? undefined : "Attach"}
+              bold={view === "ATTACH"}
               height={50}
               onPress={() => {
                 Keyboard.dismiss();

@@ -765,6 +765,7 @@ export function TaskDrawerContent({
                           impactAsync(ImpactFeedbackStyle.Heavy);
                           setView((t) => (t === "HOME" ? "ATTACH" : "HOME"));
                         }}
+                        bold={view === "ATTACH"}
                         variant="filled"
                         text={view === "HOME" ? undefined : "Attach"}
                         iconPosition={view === "ATTACH" ? "start" : "end"}
