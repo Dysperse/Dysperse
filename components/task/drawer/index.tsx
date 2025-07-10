@@ -286,7 +286,6 @@ export function TaskDrawer({
       {trigger}
       <Modal
         animation={breakpoints.md ? "SCALE" : "BOTH"}
-        // disablePan={breakpoints.md}
         sheetRef={sheetRef}
         maxWidth={smallWidth ? 400 : 590}
         height="auto"

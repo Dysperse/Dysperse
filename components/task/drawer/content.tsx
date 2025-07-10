@@ -1,14 +1,14 @@
 import MarkdownRenderer from "@/components/MarkdownRenderer";
-import { LocationPickerModal } from "@/components/collections/views/map";
 import { AttachStep, OnboardingContainer } from "@/context/OnboardingProvider";
 import { useUser } from "@/context/useUser";
 import { sendApiRequest } from "@/helpers/api";
 import { useHotkeys } from "@/helpers/useHotKeys";
-import AutoSizeTextArea from "@/ui/AutoSizeTextArea";
+import { useResponsiveBreakpoints } from "@/helpers/useResponsiveBreakpoints";
 import { Avatar } from "@/ui/Avatar";
 import { Button } from "@/ui/Button";
 import Emoji from "@/ui/Emoji";
 import ErrorAlert from "@/ui/Error";
+import { GrowingTextInput } from "@/ui/GrowingTextInput";
 import Icon from "@/ui/Icon";
 import IconButton from "@/ui/IconButton";
 import { ListItemButton } from "@/ui/ListItemButton";
@@ -22,19 +22,13 @@ import Text from "@/ui/Text";
 import { addHslAlpha, useColor } from "@/ui/color";
 import { useColorTheme } from "@/ui/color/theme-provider";
 import { BottomSheetScrollView } from "@gorhom/bottom-sheet";
-import { FlashList } from "@shopify/flash-list";
 import { setStringAsync } from "expo-clipboard";
 import { impactAsync, ImpactFeedbackStyle } from "expo-haptics";
-import { Image } from "expo-image";
-import * as Location from "expo-location";
-import * as MediaLibrary from "expo-media-library";
 import { shareAsync } from "expo-sharing";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { Dimensions, Keyboard, Platform, View } from "react-native";
 import { ScrollView } from "react-native-gesture-handler";
 import { KeyboardAvoidingView } from "react-native-keyboard-controller";
-
-import { useResponsiveBreakpoints } from "@/helpers/useResponsiveBreakpoints";
 import Animated, {
   useAnimatedStyle,
   useSharedValue,
@@ -43,19 +37,10 @@ import Animated, {
 import Toast from "react-native-toast-message";
 import useSWR from "swr";
 import { useDebounce } from "use-debounce";
-import CreateTask from "../create";
-import { TaskCompleteButton } from "./attachment/TaskCompleteButton";
+import { TaskCompleteButton } from "./TaskCompleteButton";
+import { TaskAttachmentPicker } from "./attachment-picker";
 import { useTaskDrawerContext } from "./context";
 import { TaskDetails } from "./details";
-
-let AutoGrowingTextInput;
-
-if (Platform.OS !== "ios") {
-  AutoGrowingTextInput = () => null; // Provide a fallback or use a working alternative.
-} else {
-  AutoGrowingTextInput =
-    require("react-native-autogrow-textinput").AutoGrowingTextInput;
-}
 
 function AISubtask({ task, updateTask }) {
   const modalRef = useRef(null);
@@ -313,9 +298,6 @@ export function TaskNameInput({ fullscreen }: { fullscreen }) {
       keyboardDidHideListener.remove();
     };
   }, []);
-
-  const GrowingTextInput =
-    Platform.OS === "ios" ? AutoGrowingTextInput : AutoSizeTextArea;
 
   const [debouncedName] = useDebounce(name, 300);
 
@@ -601,308 +583,6 @@ function TaskHome({ labelPickerRef, forceClose, fullscreen }) {
   );
 }
 
-function PhotoSelection() {
-  const theme = useColorTheme();
-  const { task, updateTask } = useTaskDrawerContext();
-
-  const [photos, setPhotos] = useState([]);
-  const [permission, requestPermission] = MediaLibrary.usePermissions();
-
-  useEffect(() => {
-    const getPhotos = async () => {
-      if (!permission?.granted) {
-        const { status } = await requestPermission();
-        if (status !== "granted") return;
-      }
-
-      const assets = await MediaLibrary.getAssetsAsync({
-        mediaType: "photo",
-        first: 10,
-        sortBy: [["creationTime", false]], // false = descending
-      });
-
-      console.log("Assets:", assets.assets);
-
-      setPhotos(assets.assets);
-    };
-
-    getPhotos();
-  }, []);
-
-  return (
-    <View style={{ width: "100%" }}>
-      <FlashList
-        horizontal
-        data={photos}
-        keyExtractor={(item) => item.id}
-        showsHorizontalScrollIndicator={false}
-        ListHeaderComponent={() => (
-          <IconButton
-            size={100}
-            variant="filled"
-            backgroundColors={{
-              default: addHslAlpha(theme[11], 0.1),
-              hovered: addHslAlpha(theme[11], 0.2),
-              pressed: addHslAlpha(theme[11], 0.3),
-            }}
-            style={{ borderRadius: 20, marginRight: 7 }}
-            onPress={async () => {
-              const result = await MediaLibrary.launchImageLibraryAsync({
-                mediaTypes: MediaLibrary.MediaTypeOptions.Images,
-                allowsEditing: true,
-                aspect: [4, 3],
-                quality: 1,
-              });
-
-              if (!result.canceled) {
-                const asset = result.assets[0];
-                updateTask({
-                  attachments: [
-                    ...(task.attachments || []),
-                    { uri: asset.uri, type: "image" },
-                  ],
-                });
-              }
-            }}
-          >
-            <Icon size={40}>add</Icon>
-          </IconButton>
-        )}
-        renderItem={({ item }) => (
-          <IconButton
-            size={100}
-            variant="filled"
-            style={{ borderRadius: 20, marginRight: 7, overflow: "hidden" }}
-          >
-            <Image
-              source={{ uri: item.uri }}
-              style={{
-                width: "100%",
-                height: "100%",
-              }}
-            />
-          </IconButton>
-        )}
-      />
-    </View>
-  );
-}
-
-function LocationSelector({ handleBack }) {
-  const theme = useColorTheme();
-  const { task, updateTask } = useTaskDrawerContext();
-
-  const [loading, setLoading] = useState(false);
-
-  const handleCurrent = async () => {
-    setLoading(true);
-    const { status } = await Location.requestForegroundPermissionsAsync();
-    if (status === "granted") {
-      const location = await Location.getCurrentPositionAsync({});
-      const { latitude, longitude } = location.coords;
-      // const place = await Location.reverseGeocodeAsync({
-      //   latitude,
-      //   longitude,
-      // });
-      // fetch the place details with nominatim
-      const placeDetails = await fetch(
-        `https://nominatim.openstreetmap.org/reverse?lat=${latitude}&lon=${longitude}&format=json`
-      ).then((r) => r.json());
-      if (!placeDetails || !placeDetails.place_id) {
-        Toast.show({
-          type: "error",
-          text1: "Could not find location",
-        });
-        return;
-      }
-      updateTask({
-        location: {
-          placeId: placeDetails.place_id,
-          name: placeDetails.display_name,
-          coordinates: [latitude, longitude],
-        },
-      });
-      handleBack();
-    } else {
-      Toast.show({
-        type: "error",
-        text1: "Something went wrong",
-      });
-    }
-    setLoading(false);
-  };
-
-  return (
-    <>
-      <View style={{ width: "100%", flexDirection: "row", gap: 10 }}>
-        <Button
-          containerStyle={{ flex: 1 }}
-          variant="filled"
-          large
-          icon="near_me"
-          text="Current"
-          onPress={handleCurrent}
-          isLoading={loading}
-          iconStyle={{ transform: [{ scale: 1.3 }] }}
-          backgroundColors={{
-            default: addHslAlpha(theme[11], 0.1),
-            hovered: addHslAlpha(theme[11], 0.2),
-            pressed: addHslAlpha(theme[11], 0.3),
-          }}
-        />
-        <LocationPickerModal
-          hideSkip
-          defaultQuery={task.name.trim()}
-          closeOnSelect
-          onLocationSelect={(location) =>
-            updateTask({
-              location: {
-                placeId: location.place_id,
-                name: location.display_name,
-                coordinates: [location.lat, location.lon],
-              },
-            })
-          }
-        >
-          <Button
-            containerStyle={{ flex: 1 }}
-            backgroundColors={{
-              default: addHslAlpha(theme[11], 0.1),
-              hovered: addHslAlpha(theme[11], 0.2),
-              pressed: addHslAlpha(theme[11], 0.3),
-            }}
-            variant="filled"
-            large
-            icon="search"
-            text="Search"
-          />
-        </LocationPickerModal>
-      </View>
-    </>
-  );
-}
-
-function SubtaskCreation({ handleBack }) {
-  const theme = useColorTheme();
-  const { task, updateTask } = useTaskDrawerContext();
-
-  return (
-    <View style={{ width: "100%", flexDirection: "row", gap: 10 }}>
-      <CreateTask
-        stackBehavior="replace"
-        mutate={(t) => {
-          updateTask({
-            subtasks: {
-              ...task.subtasks,
-              [t.id]: t,
-            },
-          });
-        }}
-        onPress={() => {
-          if (Platform.OS === "web" && !localStorage.getItem("subtaskTip")) {
-            localStorage.setItem("subtaskTip", "true");
-            Toast.show({
-              type: "info",
-              text1: "Pro tip",
-              text2: "Tap twice on a task to open this popup",
-              visibilityTime: 5000,
-            });
-          }
-        }}
-        defaultValues={{ parentTask: task }}
-      >
-        <Button
-          containerStyle={{ flex: 1 }}
-          variant="filled"
-          large
-          icon="prompt_suggestion"
-          style={{ justifyContent: "flex-start", marginHorizontal: 5 }}
-          text="Create subtask"
-          backgroundColors={{
-            default: addHslAlpha(theme[11], 0.1),
-            hovered: addHslAlpha(theme[11], 0.2),
-            pressed: addHslAlpha(theme[11], 0.3),
-          }}
-        />
-      </CreateTask>
-    </View>
-  );
-}
-
-function ComplexitySelector({ handleBack }) {
-  const theme = useColorTheme();
-  const { updateTask } = useTaskDrawerContext();
-  const complexityScale = ["XS", "S", "M", "L", "XL"];
-  const legacyComplexityScale = [2, 4, 8, 16, 32];
-
-  return (
-    <View
-      style={{
-        width: "100%",
-        flexDirection: "row",
-      }}
-    >
-      {legacyComplexityScale.map((n, i) => (
-        <View key={i} style={{ width: "20%", paddingHorizontal: 2 }}>
-          <Button
-            variant="filled"
-            large
-            textStyle={{ fontFamily: "mono" }}
-            text={complexityScale[i]}
-            onPress={() => {
-              updateTask({
-                storyPoints: n,
-                storyPointReason: `Set to ${complexityScale[i]}`,
-              });
-              handleBack();
-            }}
-            backgroundColors={{
-              default: addHslAlpha(theme[11], 0.1),
-              hovered: addHslAlpha(theme[11], 0.2),
-              pressed: addHslAlpha(theme[11], 0.3),
-            }}
-          />
-        </View>
-      ))}
-    </View>
-  );
-}
-
-function AttachmentPicker({ forceClose, handleBack }) {
-  const SafeScrollView = forceClose ? BottomSheetScrollView : ScrollView;
-
-  return (
-    <SafeScrollView
-      // bounces={false}
-      showsHorizontalScrollIndicator={false}
-      style={{
-        maxHeight: Dimensions.get("window").height - 200,
-        paddingHorizontal: 15,
-        paddingTop: 30,
-        paddingBottom: 30,
-      }}
-      onScrollBeginDrag={Keyboard.dismiss}
-    >
-      <Text variant="eyebrow" style={{ marginBottom: 5 }}>
-        Photo
-      </Text>
-      <PhotoSelection handleBack={handleBack} />
-      <Text variant="eyebrow" style={{ marginBottom: 5, marginTop: 35 }}>
-        Location
-      </Text>
-      <LocationSelector handleBack={handleBack} />
-      <Text variant="eyebrow" style={{ marginBottom: 5, marginTop: 35 }}>
-        Subtask
-      </Text>
-      <SubtaskCreation handleBack={handleBack} />
-      <Text variant="eyebrow" style={{ marginBottom: 5, marginTop: 35 }}>
-        Complexity
-      </Text>
-      <ComplexitySelector handleBack={handleBack} />
-    </SafeScrollView>
-  );
-}
-
 function TaskPinButton() {
   const { task, updateTask } = useTaskDrawerContext();
   const rotate = useSharedValue(task.pinned ? -35 : 0);
@@ -1055,7 +735,7 @@ export function TaskDrawerContent({
                   labelPickerRef={labelPickerRef}
                 />
               ) : (
-                <AttachmentPicker
+                <TaskAttachmentPicker
                   handleBack={() => setView("HOME")}
                   forceClose={forceClose}
                 />

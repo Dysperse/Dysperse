@@ -310,20 +310,15 @@ const Task = memo(function Task({
     ],
   }));
 
-  const hasNote = useMemo(
-    () => task.note && getPreviewText(task.note).trim().length > 0,
-    [task.note]
-  );
+  const hasNote = task.note && getPreviewText(task.note).trim().length > 0;
 
-  const hasChip = useMemo(
-    () =>
-      (showLabel && task.label) ||
-      task.note ||
-      ((showRelativeTime || !task.dateOnly) && task.start) ||
-      task.pinned ||
-      task.recurrenceRule,
-    [task, showLabel, showRelativeTime]
-  );
+  const hasChip =
+    (showLabel && task.label) ||
+    task.note ||
+    ((showRelativeTime || !task.dateOnly) && task.start) ||
+    (showDate && task.start) ||
+    task.pinned ||
+    task.recurrenceRule;
 
   return (
     <>

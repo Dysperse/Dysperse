@@ -195,6 +195,14 @@ export function LocationPickerModal({
   defaultQuery = "",
   onClose,
   autoFocus,
+}: {
+  children: React.ReactElement;
+  onLocationSelect: (location: any) => void;
+  hideSkip?: boolean;
+  closeOnSelect?: boolean;
+  defaultQuery?: string;
+  onClose?: () => void;
+  autoFocus?: boolean;
 }) {
   const modalRef = useRef(null);
 

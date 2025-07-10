@@ -101,14 +101,6 @@ const Modal = (
       snapPoints={["100%"]}
       sheetRef={props.sheetRef}
       onClose={handleClose}
-      // animateOnMount={
-      //   Platform.OS === "web"
-      //     ? props.animation === "BOTH" ||
-      //       props.animation === "SLIDE" ||
-      //       props.animation === "NONE" ||
-      //       !props.animation
-      //     : undefined
-      // }
       {...((props.animation !== "SCALE" || Platform.OS === "web") && {
         animationConfigs,
       })}
@@ -127,7 +119,6 @@ const Modal = (
           height: "100%",
           padding: 15,
           paddingTop: insets.top,
-          paddingBottom: insets.bottom,
           alignItems: "center",
           justifyContent: "center",
           ...props.closeContainerStyles,

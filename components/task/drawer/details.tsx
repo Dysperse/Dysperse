@@ -352,7 +352,13 @@ function SubtaskList() {
   );
 }
 
-function TaskDateMenu() {
+export function TaskDateMenu({
+  onClose,
+  isTaskCreation,
+}: {
+  onClose?: any;
+  isTaskCreation?: boolean;
+}) {
   const theme = useColorTheme();
   const { task, updateTask, isReadOnly } = useTaskDrawerContext();
 
@@ -409,9 +415,11 @@ function TaskDateMenu() {
               ...(t.date && { start: t.date.toISOString() }),
             })
           }
+          onClose={onClose}
           ref={addDateRef}
         />
         <RecurrencePicker
+          onClose={onClose}
           value={recurrenceRule?.options}
           setValue={(value) => updateTask({ recurrenceRule: value })}
           ref={addRecurrenceRef}
@@ -476,15 +484,17 @@ function TaskDateMenu() {
                             <Icon>edit</Icon>
                             <Text variant="menuItem">Edit</Text>
                           </MenuItem>
-                          <TaskRescheduleButton
-                            menuRef={menuRef}
-                            task={task}
-                            updateTask={updateTask}
-                          />
+                          {!isTaskCreation && (
+                            <TaskRescheduleButton
+                              menuRef={menuRef}
+                              task={task}
+                              updateTask={updateTask}
+                            />
+                          )}
                         </View>
                       ),
                     },
-                    {
+                    Array.isArray(task.notifications) && {
                       renderer: () => (
                         <TaskNotificationsButton
                           task={task}
