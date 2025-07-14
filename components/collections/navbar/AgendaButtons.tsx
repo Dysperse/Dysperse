@@ -31,6 +31,7 @@ export function AgendaButtons({
   if (!agendaView) agendaView = mode || "week";
 
   const handlePrev = useCallback(async () => {
+    impactAsync(ImpactFeedbackStyle.Light);
     const t = dayjs(start).startOf(monthMode ? "month" : "week");
 
     const newParams = {
