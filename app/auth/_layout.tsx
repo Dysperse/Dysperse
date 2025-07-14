@@ -5,7 +5,7 @@ import { toastConfig } from "@/ui/toast.config";
 import { BottomSheetModalProvider } from "@gorhom/bottom-sheet";
 import { PortalProvider } from "@gorhom/portal";
 import { Redirect } from "expo-router";
-import { useWindowDimensions } from "react-native";
+import { Dimensions, Platform, useWindowDimensions } from "react-native";
 import { MenuProvider } from "react-native-popup-menu";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import Toast from "react-native-toast-message";
@@ -27,7 +27,8 @@ export default function Layout() {
             screenOptions={{
               header: () => null,
               headerTransparent: true,
-              gestureResponseDistance: width,
+              gestureResponseDistance:
+                Platform.OS === "ios" ? Dimensions.get("window").width : 50,
               gestureEnabled: true,
               cardStyle: { backgroundColor: theme[1] },
               cardOverlayEnabled: true,

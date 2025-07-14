@@ -168,7 +168,8 @@ export default function Layout() {
                 </View>
               ),
               gestureEnabled: true,
-              gestureResponseDistance: Dimensions.get("window").width,
+              gestureResponseDistance:
+                Platform.OS === "ios" ? Dimensions.get("window").width : 50,
               animation: "default",
               cardStyle: {
                 backgroundColor: theme[1],
@@ -188,7 +189,7 @@ export default function Layout() {
                 header: () => (
                   <View
                     style={{
-                      paddingTop: 20,
+                      paddingTop: 30,
                       alignItems: "center",
                     }}
                   >

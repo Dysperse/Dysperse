@@ -80,7 +80,9 @@ export function Greetings({
   ];
 
   const intro = planData
-    ? `${greeting}, ${name || session?.user.profile.name.split(" ")[0]}. It's`
+    ? `${greeting}${name ? ", " : ""}${
+        name || session?.user.profile.name.split(" ")[0] || ""
+      }. It's`
     : "";
 
   return (

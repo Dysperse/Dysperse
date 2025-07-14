@@ -59,7 +59,7 @@ function Content() {
 
   const [profileExists, setProfileExists] = useState<
     "empty" | "loading" | "error" | "available" | "taken"
-  >("empty");
+  >(store.email ? "available" : "empty");
 
   useEffect(() => {
     store.email = email;
@@ -137,14 +137,16 @@ function Content() {
         entering={FadeIn.delay(900)}
         style={{ gap: 10, marginTop: 10 }}
       >
-        <Text variant="eyebrow">Email</Text>
-        <TextField
-          inputMode="email"
-          variant="filled"
-          placeholder="barackobama@gmail.com"
-          onChangeText={setEmail}
-          autoComplete="email"
-        />
+        {!store.email && <Text variant="eyebrow">Email</Text>}
+        {!store.email && (
+          <TextField
+            inputMode="email"
+            variant="filled"
+            placeholder="barackobama@gmail.com"
+            onChangeText={setEmail}
+            autoComplete="email"
+          />
+        )}
         {email !== "" && profileExists !== "empty" && (
           <View
             style={{

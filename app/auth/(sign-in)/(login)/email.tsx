@@ -236,14 +236,29 @@ export function PasskeyModal({ children }: { children: any }) {
   return trigger;
 }
 
-function Email({ control, handleSubmit }: { control: any; handleSubmit }) {
+function Email({
+  showPassword,
+  control,
+  handleSubmit,
+  isLoading,
+  setStep,
+}: {
+  showPassword: boolean;
+  control: any;
+  handleSubmit: any;
+  isLoading: boolean;
+  setStep: any;
+}) {
   const theme = useColorTheme();
   const inputRef = useRef(null);
   const passwordRef = useRef(null);
 
-  const onFinish = () => {
-    setTimeout(handleSubmit, 100);
-  };
+  useEffect(() => {
+    if (showPassword) passwordRef.current?.focus();
+    else inputRef.current?.focus();
+  }, [showPassword]);
+
+  const onFinish = () => setTimeout(handleSubmit, 100);
 
   useEffect(() => {
     if (Platform.OS === "web") {
@@ -261,12 +276,11 @@ function Email({ control, handleSubmit }: { control: any; handleSubmit }) {
       keyboardShouldPersistTaps="handled"
       style={{
         flex: 1,
-        paddingHorizontal: 25,
         paddingTop: insets.top + 20,
       }}
       contentContainerStyle={{
-        justifyContent: "center",
         flexGrow: 1,
+        paddingTop: 20,
       }}
     >
       <View style={{ gap: 10 }}>
@@ -279,7 +293,6 @@ function Email({ control, handleSubmit }: { control: any; handleSubmit }) {
               marginTop: "auto",
             },
             !breakpoints.md && {
-              textAlign: "center",
               marginBottom: 10,
             },
           ]}
@@ -292,56 +305,80 @@ function Email({ control, handleSubmit }: { control: any; handleSubmit }) {
             required: true,
           }}
           render={({ field: { onChange, onBlur } }) => (
-            <TextField
-              style={{
-                height: 60,
-                fontFamily: "body_600",
-                borderRadius: 20,
-                fontSize: 20,
-                color: theme[11],
-                paddingHorizontal: 20,
-                borderWidth: 0,
-              }}
-              inputRef={inputRef}
-              placeholder="Email or username..."
-              onBlur={onBlur}
-              onChangeText={onChange}
-              onSubmitEditing={onFinish}
-              variant="filled+outlined"
-              autoComplete="email"
-              keyboardType="email-address"
-            />
+            <View style={{ position: "relative" }}>
+              <TextField
+                style={{
+                  height: 60,
+                  fontFamily: "body_600",
+                  borderRadius: 20,
+                  fontSize: 20,
+                  color: theme[11],
+                  paddingHorizontal: 20,
+                  borderWidth: 0,
+                  opacity: showPassword ? 0.4 : 1,
+                }}
+                autoFocus={!showPassword}
+                editable={!showPassword}
+                inputRef={inputRef}
+                placeholder="Email or username..."
+                onBlur={onBlur}
+                onChangeText={onChange}
+                onSubmitEditing={onFinish}
+                variant="filled+outlined"
+                autoComplete="email"
+                keyboardType="email-address"
+              />
+              {showPassword && (
+                <Button
+                  variant="filled"
+                  onPress={() => setStep("email")}
+                  text="Edit"
+                  containerStyle={{
+                    position: "absolute",
+                    right: 10,
+                    top: 10,
+                    height: 40,
+                    width: 40,
+                    borderRadius: 20,
+                  }}
+                  iconSize={20}
+                />
+              )}
+            </View>
           )}
           name="email"
         />
-        <Controller
-          control={control}
-          rules={{
-            required: true,
-          }}
-          render={({ field: { onChange, onBlur } }) => (
-            <TextField
-              style={{
-                height: 60,
-                fontFamily: "body_600",
-                borderRadius: 20,
-                borderWidth: 0,
-                fontSize: 20,
-                color: theme[11],
-                paddingHorizontal: 20,
-              }}
-              placeholder="Password..."
-              secureTextEntry
-              onBlur={onBlur}
-              onChangeText={onChange}
-              autoComplete="current-password"
-              onSubmitEditing={onFinish}
-              inputRef={passwordRef}
-              variant="filled+outlined"
-            />
-          )}
-          name="password"
-        />
+        {showPassword && (
+          <Controller
+            control={control}
+            rules={{
+              required: true,
+            }}
+            render={({ field: { onChange, onBlur } }) => (
+              <TextField
+                style={{
+                  height: 60,
+                  fontFamily: "body_600",
+                  borderRadius: 20,
+                  borderWidth: 0,
+                  fontSize: 20,
+                  color: theme[11],
+                  paddingHorizontal: 20,
+                }}
+                autoFocus
+                placeholder="Password..."
+                secureTextEntry
+                onBlur={onBlur}
+                onChangeText={onChange}
+                autoComplete="current-password"
+                onSubmitEditing={onFinish}
+                inputRef={passwordRef}
+                variant="filled+outlined"
+              />
+            )}
+            name="password"
+          />
+        )}
         <View
           style={{
             flexDirection: "row",
@@ -354,7 +391,7 @@ function Email({ control, handleSubmit }: { control: any; handleSubmit }) {
             variant="filled"
             height={60}
             onPress={onFinish}
-            isLoading={false}
+            isLoading={isLoading}
             text="Continue"
             icon="east"
             iconPosition="end"
@@ -363,14 +400,19 @@ function Email({ control, handleSubmit }: { control: any; handleSubmit }) {
             bold
           />
         </View>
-        <PasskeyAuth />
-        <Button
-          height={50}
-          onPress={() => router.push("/auth/forgot-password")}
-          isLoading={false}
-          text="Need help?"
-          containerStyle={{ marginTop: "auto" }}
-        />
+        {showPassword ? (
+          <Button
+            variant="outlined"
+            onPress={() => router.push("/auth/forgot-password")}
+            isLoading={false}
+            large
+            bold
+            text="Need help?"
+            containerStyle={{ marginTop: "auto" }}
+          />
+        ) : (
+          <PasskeyAuth />
+        )}
       </View>
     </KeyboardAwareScrollView>
   );
@@ -378,7 +420,14 @@ function Email({ control, handleSubmit }: { control: any; handleSubmit }) {
 
 export default function SignIn() {
   const { signIn, session } = useSession();
-  const [step, setStep] = useState<any>(0);
+  const [step, setStep] = useState<
+    | "email"
+    | "password"
+    | "2fa"
+    | "success"
+    | "credential-loading"
+    | "verifying"
+  >("email");
   const breakpoints = useResponsiveBreakpoints();
   const [token, setToken] = useState("");
 
@@ -397,13 +446,31 @@ export default function SignIn() {
     },
   });
 
+  const checkAccountExists = async (e) =>
+    sendApiRequest("", "GET", "user/profile", {
+      email: e,
+      basic: true,
+    }).then((data) => !data.error);
+
   const onSubmit = useCallback(
     async (data) => {
       try {
-        if (step === "email" || step === 0 || step === 3) {
-          setStep(1);
+        if (step === "email") {
+          setStep("credential-loading");
+          const t = await checkAccountExists(data.email);
+          if (!t) {
+            setStep("email");
+            router.push({
+              pathname: "/auth/join",
+              params: {
+                email: data.email,
+              },
+            });
+            return;
+          }
+          setStep("password");
         } else {
-          setStep(step === 3 ? 4 : 2);
+          setStep("verifying");
           let ip = "";
 
           await fetch("https://api.ipify.org?format=json")
@@ -434,13 +501,13 @@ export default function SignIn() {
           );
           if (sessionRequest.twoFactorRequired) {
             setToken(null);
-            if (step === 3) {
+            if (step === "2fa") {
               Toast.show({
                 type: "error",
                 text1: "Incorrect 2fa code",
               });
             }
-            setStep(3);
+            setStep("2fa");
             return;
           }
           if (!sessionRequest.session) {
@@ -448,10 +515,10 @@ export default function SignIn() {
               type: "error",
               text1: sessionRequest.error.includes("captcha")
                 ? sessionRequest.error
-                : "Incorrect email or password",
+                : "Incorrect password",
             });
             setToken("");
-            setStep(0);
+            setStep("password");
             return;
           }
           signIn(sessionRequest.session);
@@ -462,7 +529,7 @@ export default function SignIn() {
         alert(e);
         Toast.show({ type: "error" });
         setToken("");
-        setStep(0);
+        setStep("email");
       }
     },
     [signIn, step, token]
@@ -483,8 +550,8 @@ export default function SignIn() {
 
   return (
     <>
-      <View style={{ flex: 1 }}>
-        {step === 4 || step === 2 ? (
+      <View style={{ flex: 1, paddingHorizontal: 25 }}>
+        {step === "loading" ? (
           <View
             style={{
               flex: 1,
@@ -495,9 +562,17 @@ export default function SignIn() {
           >
             <Spinner />
           </View>
-        ) : step === 0 ? (
-          <Email control={control} handleSubmit={handleSubmit(onSubmit)} />
-        ) : step === 1 ? (
+        ) : step === "email" ||
+          step === "password" ||
+          step === "credential-loading" ? (
+          <Email
+            setStep={setStep}
+            isLoading={step === "credential-loading"}
+            showPassword={step === "password"}
+            control={control}
+            handleSubmit={handleSubmit(onSubmit)}
+          />
+        ) : step === "verifying" ? (
           <View style={authStyles.container}>
             <View
               style={{
@@ -550,6 +625,7 @@ export default function SignIn() {
                     color: theme[11],
                     fontFamily: "serifText700",
                     fontSize: 40,
+                    textAlign: "center",
                   },
                 ]}
               >
@@ -557,7 +633,13 @@ export default function SignIn() {
               </Text>
               <Text
                 weight={700}
-                style={{ color: theme[11], fontSize: 20, opacity: 0.6 }}
+                style={{
+                  color: theme[11],
+                  fontSize: 17,
+                  marginBottom: 10,
+                  opacity: 0.6,
+                  textAlign: "center",
+                }}
               >
                 Enter the code from your authenticator app
               </Text>

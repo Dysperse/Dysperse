@@ -1,5 +1,6 @@
 import { useResponsiveBreakpoints } from "@/helpers/useResponsiveBreakpoints";
 import { Button } from "@/ui/Button";
+import { addHslAlpha } from "@/ui/color";
 import { useColorTheme } from "@/ui/color/theme-provider";
 import Text from "@/ui/Text";
 import TextField from "@/ui/TextArea";
@@ -39,7 +40,7 @@ function Intro() {
             color: theme[11],
           }}
         >
-          Well, hello there.
+          Let's create your #dysperse account.
         </Text>
       </Animated.View>
       <Animated.View entering={FadeIn.delay(600)}>
@@ -48,6 +49,7 @@ function Intro() {
             opacity: 0.4,
             fontSize: breakpoints.md ? 25 : 20,
             marginBottom: 15,
+            marginTop: 5,
             color: theme[11],
           }}
           weight={600}
@@ -85,13 +87,17 @@ function Intro() {
       >
         <Button
           height={65}
-          variant="filled"
-          text="Next"
-          containerStyle={[!name.trim() && { opacity: 0.6 }, { flex: 1 }]}
+          variant={name.trim() ? "filled" : "outlined"}
+          text={name.trim() ? "Next" : "Skip"}
+          containerStyle={{ flex: 1 }}
           icon="east"
           iconPosition="end"
           bold
-          disabled={!name.trim()}
+          backgroundColors={{
+            default: addHslAlpha(theme[11], name.trim() ? 0.1 : 0),
+            pressed: addHslAlpha(theme[11], 0.2),
+            hovered: addHslAlpha(theme[11], 0.05),
+          }}
           onPress={() => router.push("/auth/join/2")}
         />
       </Animated.View>

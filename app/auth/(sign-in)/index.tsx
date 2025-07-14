@@ -203,8 +203,8 @@ function AppleAuth() {
 }
 
 export function PasskeyAuth() {
-  const isDark = useDarkMode();
   const breakpoints = useResponsiveBreakpoints();
+
   return (
     <PasskeyModal>
       <Button
@@ -265,16 +265,18 @@ export default function SignIn() {
         style={{
           opacity: 0.4,
           fontSize: breakpoints.md ? 25 : 20,
-          marginTop: Platform.OS === "android" ? 0 : 3,
           color: theme[11],
           textAlign: breakpoints.md ? "left" : "center",
+          marginBottom: 17,
+          marginTop: Platform.OS === "android" ? 0 : 5,
+          marginHorizontal: 20,
         }}
         weight={600}
       >
-        Choose a way to sign in below.{"\n"}
+        We’ll check if you have an account, and help create one if you don’t.
       </Text>
 
-      <View style={{ flexDirection: "row", gap: 10, marginTop: -10 }}>
+      <View style={{ flexDirection: "row", gap: 10 }}>
         <Button
           large
           bold
@@ -283,10 +285,10 @@ export default function SignIn() {
           onPress={() => router.push("/auth/email")}
           style={[{ gap: 15 }]}
           iconSize={30}
-          height={breakpoints.md ? undefined : 60}
+          height={breakpoints.md ? undefined : 70}
           containerStyle={[
             { flex: 1 },
-            !breakpoints.md && { borderRadius: 22 },
+            !breakpoints.md && { borderRadius: 20 },
           ]}
           variant="filled"
           iconStyle={{ color: !isDark ? "#fff" : "#000" }}
@@ -351,10 +353,10 @@ export default function SignIn() {
                 gap: 5,
               },
             ]}
-            height={breakpoints.md ? undefined : 60}
+            height={breakpoints.md ? undefined : 70}
             containerStyle={[
               { width: 80 },
-              !breakpoints.md && { borderRadius: 22 },
+              !breakpoints.md && { borderRadius: 20 },
             ]}
             iconSize={30}
             variant="filled"
@@ -400,22 +402,6 @@ export default function SignIn() {
           </QrModal>
         </View>
       )}
-
-      <Button
-        large
-        bold
-        text="Create an account"
-        onPress={() => router.push("/auth/join")}
-        style={[{ gap: 15 }]}
-        iconSize={30}
-        height={60}
-        containerStyle={[
-          !breakpoints.md && { borderRadius: 25, marginTop: 10 },
-        ]}
-        icon="east"
-        iconPosition="end"
-        variant="filled"
-      />
 
       {!breakpoints.md && <BannerImage />}
     </View>
