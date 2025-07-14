@@ -1,4 +1,5 @@
 import { COLLECTION_VIEWS } from "@/components/layout/command-palette/list";
+import { useResponsiveBreakpoints } from "@/helpers/useResponsiveBreakpoints";
 import { useColorTheme } from "@/ui/color/theme-provider";
 import Icon from "@/ui/Icon";
 import Text from "@/ui/Text";
@@ -10,6 +11,7 @@ import { MenuButton } from "../../home";
 
 export default function Page() {
   const theme = useColorTheme();
+  const breakpoints = useResponsiveBreakpoints();
 
   const order = [
     "list",
@@ -78,8 +80,8 @@ export default function Page() {
               <Text
                 style={{
                   color: theme[11],
-                  fontFamily: "serifText800",
-                  fontSize: 25,
+                  fontFamily: "serifText700",
+                  fontSize: breakpoints.md ? 20 : 16,
                 }}
               >
                 {capitalizeFirstLetter(order[i])}
@@ -88,7 +90,7 @@ export default function Page() {
                 style={{
                   marginTop: 3,
                   color: theme[11],
-                  fontSize: 20,
+                  fontSize: breakpoints.md ? 20 : 16,
                   opacity: 0.6,
                 }}
               >
@@ -97,7 +99,11 @@ export default function Page() {
             </View>
             <Image
               source={{ uri: `https://dysperse.com/views/${i + 1}.png` }}
-              style={{ width: 130, aspectRatio: 500 / 750, borderRadius: 20 }}
+              style={{
+                width: breakpoints.md ? 130 : 100,
+                aspectRatio: 500 / 750,
+                borderRadius: 20,
+              }}
             />
           </View>
         ))}
@@ -105,3 +111,4 @@ export default function Page() {
     </>
   );
 }
+
