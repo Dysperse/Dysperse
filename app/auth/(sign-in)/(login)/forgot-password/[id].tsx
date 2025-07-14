@@ -92,8 +92,8 @@ export default function Page() {
           }}
           weight={500}
         >
-          No worries! Enter your email or username and we'll send you a link to
-          reset your password.
+          No worries! Enter your email and we'll send you a link to reset your
+          password.
         </Text>
         <Controller
           control={control}
@@ -110,7 +110,7 @@ export default function Page() {
                 borderColor: error ? "red" : theme[6],
                 ...(Platform.OS === "web" && { outline: "none" }),
               }}
-              placeholder="Email or username"
+              placeholder="Email..."
               onBlur={onBlur}
               onChangeText={onChange}
               value={value}

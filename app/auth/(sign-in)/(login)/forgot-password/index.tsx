@@ -87,7 +87,7 @@ const Email = ({ form }: any) => {
               error && { borderColor: "red" },
               { marginTop: 10 },
             ]}
-            placeholder="Email or username"
+            placeholder="Email..."
             onChangeText={onChange}
             value={value || ""}
           />

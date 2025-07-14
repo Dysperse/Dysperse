@@ -234,7 +234,7 @@ function AddFriend({ friends, mutate, setView }) {
                 onBlur={onBlur}
                 value={value}
                 inputRef={(ref) => ref?.focus()}
-                placeholder="Find by email or username…"
+                placeholder="Find by email…"
                 style={{
                   flex: 1,
                   textAlign: "center",
@@ -600,3 +600,4 @@ export default function Page() {
     </View>
   );
 }
+

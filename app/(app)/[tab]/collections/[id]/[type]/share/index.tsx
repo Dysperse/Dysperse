@@ -44,7 +44,7 @@ function FriendEmailSelection({ setQuery }) {
     <View>
       <TextField
         inputRef={ref}
-        placeholder="Invite by email or username"
+        placeholder="Invite by email..."
         variant="filled+outlined"
         onChangeText={setQuery}
       />
@@ -75,7 +75,7 @@ function UserSearchResults({ selected, setSelected, query }) {
               Oh no!
             </Text>
             <Text style={{ opacity: 0.6 }}>
-              Couldn't find any users with that email or username.
+              Couldn't find any users with that email.
             </Text>
           </View>
         ) : (
