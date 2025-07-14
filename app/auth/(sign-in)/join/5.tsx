@@ -9,6 +9,7 @@ import ListItemText from "@/ui/ListItemText";
 import Spinner from "@/ui/Spinner";
 import Text from "@/ui/Text";
 import TextField from "@/ui/TextArea";
+import { useDidUpdate } from "@/utils/useDidUpdate";
 import dayjs from "dayjs";
 import { router, useLocalSearchParams } from "expo-router";
 import { useEffect, useRef, useState } from "react";
@@ -61,7 +62,7 @@ function Content() {
     "empty" | "loading" | "error" | "available" | "taken"
   >(store.email ? "available" : "empty");
 
-  useEffect(() => {
+  useDidUpdate(() => {
     store.email = email;
     store.password = password;
     store.confirmPassword = passwordConfirm;

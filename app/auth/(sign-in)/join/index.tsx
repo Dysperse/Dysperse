@@ -23,6 +23,7 @@ function Intro() {
   }, [store, name]);
 
   useEffect(() => {
+    console.log("params", params);
     if (params.name) store.name = params.name;
     if (params.email) store.email = params.email;
   }, [params, store]);
@@ -70,7 +71,7 @@ function Intro() {
           placeholder="Barack Obama"
           onSubmitEditing={() => {
             if (name.trim()) {
-              router.push("/auth/join");
+              router.push("/auth/join/2");
             }
           }}
           style={{
@@ -104,7 +105,7 @@ function Intro() {
             pressed: addHslAlpha(theme[11], 0.2),
             hovered: addHslAlpha(theme[11], 0.05),
           }}
-          onPress={() => router.push("/auth/join")}
+          onPress={() => router.push("/auth/join/2")}
         />
       </Animated.View>
     </View>
