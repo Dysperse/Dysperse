@@ -4,7 +4,7 @@ import { addHslAlpha } from "@/ui/color";
 import { useColorTheme } from "@/ui/color/theme-provider";
 import Text from "@/ui/Text";
 import TextField from "@/ui/TextArea";
-import { router } from "expo-router";
+import { router, useLocalSearchParams } from "expo-router";
 import { useEffect, useState } from "react";
 import { View } from "react-native";
 import { KeyboardAwareScrollView } from "react-native-keyboard-controller";
@@ -15,11 +15,17 @@ function Intro() {
   const theme = useColorTheme();
   const [name, setName] = useState("");
   const store = useSignupContext();
+  const params = useLocalSearchParams();
   const breakpoints = useResponsiveBreakpoints();
 
   useEffect(() => {
     store.name = name;
   }, [store, name]);
+
+  useEffect(() => {
+    if (params.name) store.name = params.name;
+    if (params.email) store.email = params.email;
+  }, [params, store]);
 
   return (
     <View
@@ -64,7 +70,7 @@ function Intro() {
           placeholder="Barack Obama"
           onSubmitEditing={() => {
             if (name.trim()) {
-              router.push("/auth/join/2");
+              router.push("/auth/join");
             }
           }}
           style={{
@@ -98,7 +104,7 @@ function Intro() {
             pressed: addHslAlpha(theme[11], 0.2),
             hovered: addHslAlpha(theme[11], 0.05),
           }}
-          onPress={() => router.push("/auth/join/2")}
+          onPress={() => router.push("/auth/join")}
         />
       </Animated.View>
     </View>
