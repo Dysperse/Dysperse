@@ -5,7 +5,7 @@ import { toastConfig } from "@/ui/toast.config";
 import { BottomSheetModalProvider } from "@gorhom/bottom-sheet";
 import { PortalProvider } from "@gorhom/portal";
 import { Redirect } from "expo-router";
-import { Dimensions, Platform, useWindowDimensions } from "react-native";
+import { Dimensions, Platform } from "react-native";
 import { MenuProvider } from "react-native-popup-menu";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import Toast from "react-native-toast-message";
@@ -13,7 +13,6 @@ import Toast from "react-native-toast-message";
 export default function Layout() {
   const theme = useColorTheme();
   const insets = useSafeAreaInsets();
-  const { width } = useWindowDimensions();
 
   const { sessionToken } = useUser();
   if (sessionToken) return <Redirect href="/(app)" />;
