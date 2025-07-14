@@ -159,7 +159,7 @@ export default function Page() {
                   color: theme[11],
                 }}
               >
-                It all starts with{breakpoints.md && "\n"}a task
+                It all starts with{breakpoints.md && "\n"} a task
               </Text>
 
               <PlusButton />
@@ -198,12 +198,12 @@ export default function Page() {
               <Text
                 weight={900}
                 style={{
-                  fontSize: breakpoints.md ? 30 : 20,
+                  fontSize: breakpoints.md ? 30 : 19,
                   lineHeight: breakpoints.md ? 36 : 25,
                   color: theme[11],
                 }}
               >
-                Sort labels into collections
+                Sort{"\n"}labels into collections
               </Text>
               <PlusButton />
             </Card>
@@ -222,7 +222,7 @@ export default function Page() {
                   color: theme[11],
                 }}
               >
-                Open tabs like your everyday browser
+                Open tabs and drag 'em around
               </Text>
 
               <PlusButton />
