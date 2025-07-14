@@ -236,6 +236,17 @@ export default function Page() {
             >
               Getting started
             </Text>
+            <Text
+              style={{
+                color: theme[11],
+                fontSize: 20,
+                opacity: 0.6,
+                marginTop: 10,
+              }}
+              weight={600}
+            >
+              Coming soon
+            </Text>
           </Card>
         </View>
       </ScrollView>
