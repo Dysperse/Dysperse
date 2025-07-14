@@ -148,7 +148,14 @@ function Content() {
   }, [getPlan]);
 
   return !planData ? (
-    <View style={{ alignItems: "center", gap: 5 }}>
+    <View
+      style={{
+        alignItems: "center",
+        gap: 5,
+        height: "100%",
+        justifyContent: "center",
+      }}
+    >
       <Spinner size={30} />
     </View>
   ) : (
