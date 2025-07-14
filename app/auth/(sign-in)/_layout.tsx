@@ -193,7 +193,7 @@ export default function Layout() {
                       alignItems: "center",
                     }}
                   >
-                    <Logo size={50} color="gray" />
+                    <Logo size={60} color="gray" />
                   </View>
                 ),
               }}

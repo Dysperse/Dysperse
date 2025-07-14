@@ -5,6 +5,7 @@ import OtpInput from "@/ui/OtpInput";
 import Spinner from "@/ui/Spinner";
 import Text from "@/ui/Text";
 import TextField from "@/ui/TextArea";
+import { addHslAlpha } from "@/ui/color";
 import { useColorTheme } from "@/ui/color/theme-provider";
 import Turnstile from "@/ui/turnstile";
 import { GoogleSignin } from "@react-native-google-signin/google-signin";
@@ -253,6 +254,8 @@ function Email({
   const inputRef = useRef(null);
   const passwordRef = useRef(null);
 
+  const [passwordVisible, setPasswordVisible] = useState(false);
+
   useEffect(() => {
     if (showPassword) passwordRef.current?.focus();
     else inputRef.current?.focus();
@@ -304,7 +307,7 @@ function Email({
           rules={{
             required: true,
           }}
-          render={({ field: { onChange, onBlur } }) => (
+          render={({ field: { value, onChange, onBlur } }) => (
             <View style={{ position: "relative" }}>
               <TextField
                 style={{
@@ -320,8 +323,9 @@ function Email({
                 autoFocus={!showPassword}
                 editable={!showPassword}
                 inputRef={inputRef}
-                placeholder="Email or username..."
+                placeholder="Email..."
                 onBlur={onBlur}
+                defaultValue={value}
                 onChangeText={onChange}
                 onSubmitEditing={onFinish}
                 variant="filled+outlined"
@@ -342,6 +346,11 @@ function Email({
                     borderRadius: 20,
                   }}
                   iconSize={20}
+                  backgroundColors={{
+                    default: addHslAlpha(theme[11], 0.1),
+                    pressed: addHslAlpha(theme[11], 0.2),
+                    hovered: addHslAlpha(theme[11], 0.05),
+                  }}
                 />
               )}
             </View>
@@ -355,26 +364,47 @@ function Email({
               required: true,
             }}
             render={({ field: { onChange, onBlur } }) => (
-              <TextField
-                style={{
-                  height: 60,
-                  fontFamily: "body_600",
-                  borderRadius: 20,
-                  borderWidth: 0,
-                  fontSize: 20,
-                  color: theme[11],
-                  paddingHorizontal: 20,
-                }}
-                autoFocus
-                placeholder="Password..."
-                secureTextEntry
-                onBlur={onBlur}
-                onChangeText={onChange}
-                autoComplete="current-password"
-                onSubmitEditing={onFinish}
-                inputRef={passwordRef}
-                variant="filled+outlined"
-              />
+              <View style={{ position: "relative" }}>
+                <TextField
+                  style={{
+                    height: 60,
+                    fontFamily: "body_600",
+                    borderRadius: 20,
+                    borderWidth: 0,
+                    fontSize: 20,
+                    color: theme[11],
+                    paddingHorizontal: 20,
+                  }}
+                  autoFocus
+                  placeholder="Password..."
+                  secureTextEntry={!passwordVisible}
+                  onBlur={onBlur}
+                  onChangeText={onChange}
+                  autoComplete="current-password"
+                  onSubmitEditing={onFinish}
+                  inputRef={passwordRef}
+                  variant="filled+outlined"
+                />
+                <Button
+                  variant="filled"
+                  onPress={() => setPasswordVisible(!passwordVisible)}
+                  text={passwordVisible ? "Hide" : "Show"}
+                  containerStyle={{
+                    position: "absolute",
+                    right: 10,
+                    top: 10,
+                    height: 40,
+                    width: 40,
+                    borderRadius: 20,
+                  }}
+                  backgroundColors={{
+                    default: addHslAlpha(theme[11], 0.1),
+                    pressed: addHslAlpha(theme[11], 0.2),
+                    hovered: addHslAlpha(theme[11], 0.05),
+                  }}
+                  iconSize={20}
+                />
+              </View>
             )}
             name="password"
           />
@@ -427,9 +457,9 @@ export default function SignIn() {
     | "success"
     | "credential-loading"
     | "verifying"
+    | "redirect"
   >("email");
   const breakpoints = useResponsiveBreakpoints();
-  const [token, setToken] = useState("");
 
   const theme = useColorTheme();
 
@@ -438,11 +468,12 @@ export default function SignIn() {
     cleanup: theme[2],
   });
 
-  const { control, handleSubmit } = useForm({
+  const { control, setValue, handleSubmit } = useForm({
     defaultValues: {
       email: "",
       password: "",
       twoFactorCode: "",
+      captchaToken: "",
     },
   });
 
@@ -469,8 +500,11 @@ export default function SignIn() {
             return;
           }
           setStep("password");
-        } else {
+        } else if (!data.captchaToken) {
           setStep("verifying");
+          return;
+        } else {
+          setStep("redirect");
           let ip = "";
 
           await fetch("https://api.ipify.org?format=json")
@@ -488,7 +522,6 @@ export default function SignIn() {
             {
               body: JSON.stringify({
                 ...data,
-                captchaToken: token,
                 deviceType: Device.deviceType,
                 ip,
                 deviceName:
@@ -499,8 +532,9 @@ export default function SignIn() {
               }),
             }
           );
+          setValue("captchaToken", "");
+
           if (sessionRequest.twoFactorRequired) {
-            setToken(null);
             if (step === "2fa") {
               Toast.show({
                 type: "error",
@@ -510,6 +544,7 @@ export default function SignIn() {
             setStep("2fa");
             return;
           }
+          console.log("Session Request", data, sessionRequest);
           if (!sessionRequest.session) {
             Toast.show({
               type: "error",
@@ -517,7 +552,6 @@ export default function SignIn() {
                 ? sessionRequest.error
                 : "Incorrect password",
             });
-            setToken("");
             setStep("password");
             return;
           }
@@ -528,19 +562,11 @@ export default function SignIn() {
         console.error(e);
         alert(e);
         Toast.show({ type: "error" });
-        setToken("");
         setStep("email");
       }
     },
-    [signIn, step, token]
+    [signIn, step]
   );
-
-  useEffect(() => {
-    if (step == 1 && token) {
-      setStep(0);
-      handleSubmit(onSubmit)();
-    }
-  }, [step, token, onSubmit, handleSubmit]);
 
   useEffect(() => {
     if (session) {
@@ -551,7 +577,7 @@ export default function SignIn() {
   return (
     <>
       <View style={{ flex: 1, paddingHorizontal: 25 }}>
-        {step === "loading" ? (
+        {step === "redirect" ? (
           <View
             style={{
               flex: 1,
@@ -604,13 +630,19 @@ export default function SignIn() {
                     textAlign: "center",
                     opacity: 0.6,
                     color: theme[11],
-                    fontSize: 15,
+                    fontSize: 17,
                   },
                 ]}
+                weight={600}
               >
                 Are you human? Let's find out...
               </Text>
-              <Turnstile setToken={setToken} />
+              <Turnstile
+                setToken={(e) => {
+                  setValue("captchaToken", e);
+                  handleSubmit(onSubmit)();
+                }}
+              />
             </View>
           </View>
         ) : (

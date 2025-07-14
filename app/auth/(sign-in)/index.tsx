@@ -254,12 +254,12 @@ export default function SignIn() {
       <Text
         style={{
           fontFamily: "serifText700",
-          fontSize: breakpoints.md ? 45 : 30,
+          fontSize: breakpoints.md ? 50 : 40,
           color: theme[11],
           textAlign: breakpoints.md ? "left" : "center",
         }}
       >
-        Welcome back!
+        Oh, hello.
       </Text>
       <Text
         style={{
