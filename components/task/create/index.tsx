@@ -923,7 +923,7 @@ const BottomSheetContent = ({
   const { session } = useUser();
   useEffect(() => {
     if (!session.user.hintsViewed.includes("CREATE_TASK")) return;
-    if (Platform.OS === "web") setTimeout(() => nameRef.current?.focus(), 100);
+    if (Platform.OS === "web") setTimeout(() => nameRef.current?.focus(), 0);
     setTimeout(
       () => {
         InteractionManager.runAfterInteractions(() => {
@@ -1280,10 +1280,9 @@ const CreateTask = ({
     <>
       {trigger}
       <Modal
-        animation={breakpoints.md ? "SCALE" : "BOTH"}
+        animation={breakpoints.md ? "SCALE" : "SLIDE"}
         sheetRef={ref}
         stackBehavior={stackBehavior}
-        // maxWidth={smallWidth ? 400 : 590}
         height="auto"
         onClose={() => ref.current?.dismiss()}
         transformCenter

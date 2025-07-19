@@ -8,7 +8,6 @@ import { useResponsiveBreakpoints } from "@/helpers/useResponsiveBreakpoints";
 import { Button, ButtonText } from "@/ui/Button";
 import { addHslAlpha } from "@/ui/color";
 import { useColorTheme } from "@/ui/color/theme-provider";
-import { DatePicker } from "@/ui/DatePicker";
 import Emoji from "@/ui/Emoji";
 import ErrorAlert from "@/ui/Error";
 import Icon from "@/ui/Icon";
@@ -32,84 +31,8 @@ import { RRule } from "rrule";
 import useSWR from "swr";
 import CreateTask from "../create";
 import { useTaskDrawerContext } from "./context";
+import { TaskDateModal } from "./date-modal";
 import { TaskNote } from "./TaskNote";
-
-function TaskRescheduleButton({ task, updateTask }) {
-  const sheetRef = useRef(null);
-  const handleSelect = (t, n) =>
-    updateTask({ start: dayjs(task.start).add(n, t).toISOString() });
-
-  const isSameDay = task.start && dayjs().isSame(dayjs(task.start), "day");
-
-  return (
-    <>
-      <MenuItem
-        onPress={() => sheetRef.current.present()}
-        containerStyle={{ minWidth: 0 }}
-      >
-        <Icon>dark_mode</Icon>
-      </MenuItem>
-      <Modal
-        animation="SCALE"
-        sheetRef={sheetRef}
-        innerStyles={{ padding: 20 }}
-        maxWidth={300}
-      >
-        <Text
-          style={{
-            textAlign: "center",
-            fontFamily: "serifText800",
-            fontSize: 35,
-            marginBottom: 20,
-            margin: 10,
-          }}
-        >
-          Snooze
-        </Text>
-        {[
-          {
-            text: isSameDay ? "Tomorrow" : "1 day",
-            callback: () => handleSelect("day", 1),
-          },
-          {
-            text: isSameDay ? "In 2 days" : "2 days",
-            callback: () => handleSelect("day", 2),
-          },
-          {
-            text: isSameDay ? "In 3 days" : "3 days",
-            callback: () => handleSelect("day", 3),
-          },
-          {
-            text: isSameDay ? "In 4 days" : "4 days",
-            callback: () => handleSelect("day", 5),
-          },
-          {
-            text: dayjs().isSame(dayjs(task.start), "week")
-              ? "Next week"
-              : "1 week",
-            callback: () => handleSelect("week", 1),
-          },
-          {
-            text: dayjs().isSame(dayjs(task.start), "month")
-              ? "Next month"
-              : "1 month",
-            callback: () => handleSelect("month", 1),
-          },
-        ].map(({ text, callback }) => (
-          <ListItemButton
-            key={text}
-            onPress={() => {
-              callback();
-              sheetRef.current.close();
-            }}
-          >
-            <ListItemText primary={text} />
-          </ListItemButton>
-        ))}
-      </Modal>
-    </>
-  );
-}
 
 export const notificationScale = [5, 10, 15, 30, 60, 120, 240, 480, 1440];
 export const notificationScaleText = [
@@ -397,41 +320,20 @@ export function TaskDateMenu({
       ];
 
   const addRecurrenceRef = useRef(null);
-  const addDateRef = useRef(null);
   const menuRef = useRef(null);
 
   return (
     !(isReadOnly && !(task.start || task.recurrenceRule)) && (
       <>
-        <DatePicker
-          value={{
-            date: dayjs(task?.start).isValid() ? task?.start : null,
-            dateOnly: task?.dateOnly,
-            end: dayjs(task?.end).isValid() ? task?.end : null,
-          }}
-          setValue={(t) =>
-            updateTask({
-              ...t,
-              ...(t.date && { start: t.date.toISOString() }),
-            })
-          }
-          onClose={onClose}
-          ref={addDateRef}
-        />
         <RecurrencePicker
           onClose={onClose}
           value={recurrenceRule?.options}
           setValue={(value) => updateTask({ recurrenceRule: value })}
           ref={addRecurrenceRef}
         />
-        <MenuPopover
-          menuProps={{
-            style: { marginRight: "auto", marginBottom: 2 },
-            rendererProps: { placement: "top" },
-          }}
-          trigger={
+        {task.start || task.recurrenceRule ? (
+          <TaskDateModal task={task} updateTask={updateTask}>
             <Button
-              disabled={isReadOnly}
               style={{ gap: 10, marginRight: "auto" }}
               containerStyle={{ opacity: 0.6 }}
               dense
@@ -461,73 +363,60 @@ export function TaskDateMenu({
                 </View>
               }
             />
-          }
-          closeOnSelect
-          menuRef={menuRef}
-          options={
-            isReadOnly
-              ? []
-              : [
-                  ...(((task.start || task.recurrenceRule) && [
+          </TaskDateModal>
+        ) : (
+          <MenuPopover
+            menuProps={{
+              style: { marginRight: "auto", marginBottom: 2 },
+              rendererProps: { placement: "top" },
+            }}
+            trigger={
+              <Button
+                disabled={isReadOnly}
+                style={{ gap: 10, marginRight: "auto" }}
+                containerStyle={{ opacity: 0.6 }}
+                dense
+                icon={task.recurrenceRule ? "loop" : "calendar_today"}
+                text={
+                  <View style={{ flexDirection: "column" }}>
+                    <ButtonText weight={400}>
+                      {dateName[0]}
+                      {dateName[1] && (
+                        <ButtonText
+                          style={{
+                            color: theme[11],
+                            opacity: 0.6,
+                          }}
+                        >
+                          {" — "}
+                          {dateName[1]}
+                        </ButtonText>
+                      )}
+                    </ButtonText>
+                  </View>
+                }
+              />
+            }
+            closeOnSelect
+            menuRef={menuRef}
+            options={
+              isReadOnly
+                ? []
+                : [
                     {
-                      renderer: () => (
-                        <View style={{ flexDirection: "row" }}>
-                          <MenuItem
-                            onPress={() => {
-                              menuRef.current.close();
-                              if (task.recurrenceRule)
-                                addRecurrenceRef.current.present();
-                              else addDateRef.current.present();
-                            }}
-                            containerStyle={{ flex: 1 }}
-                          >
-                            <Icon>edit</Icon>
-                            <Text variant="menuItem">Edit</Text>
-                          </MenuItem>
-                          {!isTaskCreation && (
-                            <TaskRescheduleButton
-                              menuRef={menuRef}
-                              task={task}
-                              updateTask={updateTask}
-                            />
-                          )}
-                        </View>
-                      ),
+                      icon: "loop",
+                      text: "Set repetition",
+                      callback: () => addRecurrenceRef.current.present(),
                     },
-                    Array.isArray(task.notifications) && {
-                      renderer: () => (
-                        <TaskNotificationsButton
-                          task={task}
-                          updateTask={updateTask}
-                        />
-                      ),
+                    {
+                      icon: "calendar_today",
+                      text: "Set due date",
+                      callback: () => updateTask({ start: dayjs().toDate() }),
                     },
-                  ]) ||
-                    []),
-                  ...((!task.recurrenceRule &&
-                    !task.start && [
-                      {
-                        icon: "loop",
-                        text: "Set repetition",
-                        callback: () => addRecurrenceRef.current.present(),
-                      },
-                      {
-                        icon: "calendar_today",
-                        text: "Set due date",
-                        callback: () => addDateRef.current.present(),
-                      },
-                    ]) ||
-                    []),
-                  (task.recurrenceRule || task.start) && {
-                    icon: "remove_circle",
-                    text: "Remove",
-                    callback: () => {
-                      updateTask({ recurrenceRule: null, start: null });
-                    },
-                  },
-                ]
-          }
-        />
+                  ]
+            }
+          />
+        )}
       </>
     )
   );
