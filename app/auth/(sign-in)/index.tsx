@@ -153,14 +153,14 @@ function AppleAuth() {
             height: "100%",
           }}
           onPress={async () => {
-            router.push({
-              pathname: "/auth/join",
-              params: {
-                email: "asdfasdf@asdf.com",
-                name: "",
-              },
-            });
-            if (1 === 1) return;
+            // router.push({
+            //   pathname: "/auth/join",
+            //   params: {
+            //     email: "asdfasdf@asdf.com",
+            //     name: "",
+            //   },
+            // });
+            // if (1 === 1) return;
             Toast.show({
               type: "loading",
               autoHide: false,
