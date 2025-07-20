@@ -17,7 +17,7 @@ import * as chrono from "chrono-node";
 import dayjs from "dayjs";
 import fuzzysort from "fuzzysort";
 import React, { cloneElement, useEffect, useRef, useState } from "react";
-import { View } from "react-native";
+import { Keyboard, View } from "react-native";
 import Animated, {
   useAnimatedStyle,
   useSharedValue,
@@ -620,12 +620,25 @@ function TaskDateModalContent({ task, updateTask }) {
   );
 }
 
+function OnClose({ onClose }) {
+  useEffect(() => {
+    return () => {
+      onClose();
+    };
+  }, [onClose]);
+
+  return null;
+}
+
 export function TaskDateModal({ onClose, children, task, updateTask }) {
   const sheetRef = useRef(null);
   const insets = useSafeAreaInsets();
 
   const trigger = cloneElement(children, {
-    onPress: () => sheetRef.current?.present(),
+    onPress: () => {
+      sheetRef.current?.present();
+      Keyboard.dismiss();
+    },
   });
 
   return (
@@ -643,6 +656,7 @@ export function TaskDateModal({ onClose, children, task, updateTask }) {
         onClose={onClose}
         sheetRef={sheetRef}
       >
+        <OnClose onClose={onClose} />
         <TaskDateModalContent task={task} updateTask={updateTask} />
       </BottomSheet>
     </>
