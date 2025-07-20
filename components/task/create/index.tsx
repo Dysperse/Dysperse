@@ -588,7 +588,7 @@ function TaskNameInput({
                 paddingHorizontal: 7,
                 marginTop: 5,
                 marginBottom: 3,
-                borderRadius: 20,
+                borderRadius: 0,
                 borderWidth: 2,
                 shadowRadius: 0,
                 borderColor: "transparent",
