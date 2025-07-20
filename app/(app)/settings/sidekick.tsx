@@ -130,7 +130,7 @@ function SidekickComingSoon({ style }: { style?: StyleProp<ViewStyle> }) {
         weight={900}
         style={{ opacity: 0.6, fontSize: 30, marginTop: 5, color: theme[12] }}
       >
-        arriving 2025
+        arriving 2026
       </Text>
     </ImageBackground>
   );
