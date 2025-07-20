@@ -239,6 +239,16 @@ export default function Page() {
             text="Follow us on Instagram"
             onPress={() => Linking.openURL("https://instagram.com/dysperse/")}
           />
+          <Button
+            large
+            bold
+            containerStyle={{ marginTop: 10 }}
+            icon="north_east"
+            iconPosition="end"
+            variant="filled"
+            text="Download our apps"
+            onPress={() => router.push("/settings/other/apps")}
+          />
         </View>
       </ScrollView>
     </Content>

@@ -34,6 +34,8 @@ export default function Page() {
           "Collections are groups of labels",
           "You can use the same label in multiple collections",
           'Use the "Everything" collection to see all your tasks, regardless of their label',
+          "Share collections with others to collaborate on tasks",
+          "Publish your collection as a template to share with the community",
         ].map((text, i) => (
           <View
             key={i}
