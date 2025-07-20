@@ -12,6 +12,7 @@ import Text from "@/ui/Text";
 import TextField from "@/ui/TextArea";
 import capitalizeFirstLetter from "@/utils/capitalizeFirstLetter";
 import { BottomSheetFlashList, useBottomSheet } from "@gorhom/bottom-sheet";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import * as chrono from "chrono-node";
 import dayjs from "dayjs";
 import fuzzysort from "fuzzysort";
@@ -41,6 +42,18 @@ function TaskDateModalContent({ task, updateTask }) {
   );
   const [timeMode, setTimeMode] = useState(false);
   const [search, setSearch] = useState("");
+  const [lastUsedDate, setLastUsedDate] = useState(null);
+
+  useEffect(() => {
+    AsyncStorage.getItem("lastUsedDate").then((date) => {
+      if (date) {
+        const parsedDate = dayjs(date);
+        if (parsedDate.isValid()) {
+          setLastUsedDate(parsedDate);
+        }
+      }
+    });
+  }, []);
 
   const hasRecurrence = view === "RECURRENCE" && task.recurrenceRule;
 
@@ -191,6 +204,12 @@ function TaskDateModalContent({ task, updateTask }) {
               search,
             }))
           : []),
+        lastUsedDate && {
+          icon: "history",
+          primary: "Last used date",
+          secondary: lastUsedDate.format("dddd, MMMM Do"),
+          value: lastUsedDate,
+        },
         {
           icon: "today",
           primary: "Today",
@@ -486,6 +505,14 @@ function TaskDateModalContent({ task, updateTask }) {
             <ListItemButton
               style={{ marginHorizontal: -10 }}
               onPress={() => {
+                // Save to lastUsedDate
+                if (view === "DATE" && !timeMode) {
+                  AsyncStorage.setItem(
+                    "lastUsedDate",
+                    item.value.toISOString()
+                  );
+                }
+
                 if (timeMode) {
                   setTimeMode(false);
                   if (view === "DATE") {
