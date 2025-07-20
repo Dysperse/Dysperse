@@ -359,7 +359,7 @@ function TaskMoreMenu({ handleDelete }) {
   const { task, updateTask } = useTaskDrawerContext();
 
   return (
-    <AttachStep index={3} style={{ flex: 1 }}>
+    <AttachStep index={2} style={{ flex: 1 }}>
       <MenuPopover
         menuProps={{ rendererProps: { placement: "top" } }}
         options={[
@@ -612,36 +612,34 @@ function TaskPinButton() {
   });
 
   return (
-    <AttachStep index={1} style={{ flex: 1 }}>
-      <Button
-        large
-        onPress={handlePriorityChange}
-        icon={
-          <Animated.View style={rotateStyle}>
-            <Icon
-              filled={task.pinned}
-              style={task.pinned ? { color: orange[11] } : {}}
-            >
-              push_pin
-            </Icon>
-          </Animated.View>
-        }
-        backgroundColors={
-          task.pinned
-            ? {
-                default: addHslAlpha(orange[11], 0.2),
-                hovered: addHslAlpha(orange[11], 0.3),
-                pressed: addHslAlpha(orange[11], 0.4),
-              }
-            : {
-                default: addHslAlpha(theme[11], 0.1),
-                hovered: addHslAlpha(theme[11], 0.2),
-                pressed: addHslAlpha(theme[11], 0.3),
-              }
-        }
-        style={task.pinned && { borderColor: orange[11] }}
-      />
-    </AttachStep>
+    <Button
+      large
+      onPress={handlePriorityChange}
+      icon={
+        <Animated.View style={rotateStyle}>
+          <Icon
+            filled={task.pinned}
+            style={task.pinned ? { color: orange[11] } : {}}
+          >
+            push_pin
+          </Icon>
+        </Animated.View>
+      }
+      backgroundColors={
+        task.pinned
+          ? {
+              default: addHslAlpha(orange[11], 0.2),
+              hovered: addHslAlpha(orange[11], 0.3),
+              pressed: addHslAlpha(orange[11], 0.4),
+            }
+          : {
+              default: addHslAlpha(theme[11], 0.1),
+              hovered: addHslAlpha(theme[11], 0.2),
+              pressed: addHslAlpha(theme[11], 0.3),
+            }
+      }
+      style={task.pinned && { borderColor: orange[11] }}
+    />
   );
 }
 
@@ -715,13 +713,19 @@ export function TaskDrawerContent({
         onlyIf={() => true}
         steps={[
           {
-            text: "Tap to instantly share your task with others",
+            text: "Set a due date for your task",
           },
           {
-            text: "Mark your task as done",
+            text: "Categorize your task with a label",
           },
           {
-            text: "Double-tap on any task to quickly create a subtask",
+            text: "Tap and hold to instantly share with others",
+          },
+          {
+            text: "You can double tap on any task to create a subtask",
+          },
+          {
+            text: "Mark your task as done!",
           },
         ]}
       >
@@ -757,7 +761,7 @@ export function TaskDrawerContent({
                     {view === "HOME" && (
                       <TaskMoreMenu handleDelete={handleDelete} />
                     )}
-                    <AttachStep index={2} style={{ flex: 1 }}>
+                    <AttachStep index={3} style={{ flex: 1 }}>
                       <Button
                         large
                         icon={view === "HOME" ? "note_stack_add" : "west"}

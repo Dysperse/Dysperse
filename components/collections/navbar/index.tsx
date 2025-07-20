@@ -298,20 +298,22 @@ const CollectionNavbar = memo(function CollectionNavbar({
       id="COLLECTION"
       onlyIf={() => type !== "matrix" && pathname.includes("collections")}
       delay={500}
-      steps={[
-        {
-          text: "Tap here to switch between views",
-        },
-        {
-          text: "Find the tasks you need by hitting ⌘ F",
-        },
-        {
-          text: "Edit, print, and import tasks to your collection",
-        },
-        id !== "all" && {
-          text: "Share or publish your collection as a template",
-        },
-      ]}
+      steps={
+        [
+          {
+            text: "Tap here to switch between views",
+          },
+          {
+            text: "Find the tasks you need by hitting ⌘ F",
+          },
+          {
+            text: "Edit, print, and import tasks to your collection",
+          },
+          id !== "all" && {
+            text: "Share or publish your collection as a template",
+          },
+        ].filter(Boolean) as any
+      }
     >
       {() => (
         <>

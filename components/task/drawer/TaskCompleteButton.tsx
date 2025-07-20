@@ -92,7 +92,7 @@ export function TaskCompleteButton() {
     !isReadOnly && (
       <>
         <AttachStep
-          index={1}
+          index={4}
           style={{ minWidth: 120, flex: breakpoints.md ? 2 : undefined }}
         >
           <Button

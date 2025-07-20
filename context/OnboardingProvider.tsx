@@ -42,6 +42,7 @@ export const OnboardingTrigger = ({
   id,
   onlyIf,
   onStart,
+  onBeforeStart,
   debug,
   delay,
 }: {
@@ -50,6 +51,7 @@ export const OnboardingTrigger = ({
   debug?: boolean;
   onStart?: () => void;
   delay?: number;
+  onBeforeStart?: () => void;
 }) => {
   const onboarding = useOnboardingState();
   const { start } = useSpotlightTour();
@@ -62,6 +64,7 @@ export const OnboardingTrigger = ({
           (debug || session.user.hintsViewed?.includes(id) === false) &&
           !isLoading
         ) {
+          onBeforeStart?.();
           setTimeout(() => {
             onboarding.state = id;
             onStart?.();
