@@ -1,9 +1,10 @@
+import { ArcSystemBar } from "@/components/layout/arcAnimations";
 import { useWebStatusBar } from "@/helpers/useWebStatusBar";
 import { useColorTheme } from "@/ui/color/theme-provider";
 import ErrorAlert from "@/ui/Error";
 import Spinner from "@/ui/Spinner";
 import { router, useLocalSearchParams } from "expo-router";
-import { StatusBar, View } from "react-native";
+import { View } from "react-native";
 import useSWR from "swr";
 import { LabelDetails } from "..";
 
@@ -27,7 +28,7 @@ export default function Page() {
 
   return (
     <>
-      <StatusBar barStyle="dark-content" />
+      <ArcSystemBar />
       {data ? (
         <LabelDetails
           mutateList={

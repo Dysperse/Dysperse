@@ -1,8 +1,9 @@
 import CommandPaletteContent from "@/components/command-palette/content";
+import { ArcSystemBar } from "@/components/layout/arcAnimations";
 import { useWebStatusBar } from "@/helpers/useWebStatusBar";
 import { useColorTheme } from "@/ui/color/theme-provider";
 import { router } from "expo-router";
-import { StatusBar, View } from "react-native";
+import { View } from "react-native";
 
 export default function Page() {
   const theme = useColorTheme();
@@ -17,7 +18,7 @@ export default function Page() {
 
   return (
     <>
-      <StatusBar barStyle="dark-content" />
+      <ArcSystemBar />
       <View
         style={{
           backgroundColor: theme[2],

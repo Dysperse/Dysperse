@@ -1,6 +1,6 @@
 import { JsStack } from "@/components/layout/_stack";
+import { ArcSystemBar } from "@/components/layout/arcAnimations";
 import { PlanContextProvider } from "@/context/planContext";
-import { useResponsiveBreakpoints } from "@/helpers/useResponsiveBreakpoints";
 import { useWebStatusBar } from "@/helpers/useWebStatusBar";
 import { useColorTheme } from "@/ui/color/theme-provider";
 import ConfirmationModal from "@/ui/ConfirmationModal";
@@ -11,7 +11,7 @@ import {
 } from "@react-navigation/stack";
 import { LinearGradient } from "expo-linear-gradient";
 import { router } from "expo-router";
-import { StatusBar, StyleSheet, View } from "react-native";
+import { StyleSheet, View } from "react-native";
 
 const styles = StyleSheet.create({
   navbar: {
@@ -92,7 +92,6 @@ function PlanNavbar({
 
 export default function Layout() {
   const theme = useColorTheme();
-  const breakpoints = useResponsiveBreakpoints();
 
   useWebStatusBar({
     active: "#000",
@@ -102,7 +101,7 @@ export default function Layout() {
   return (
     <>
       <PlanContextProvider>
-        {!breakpoints.md && <StatusBar barStyle="dark-content" />}
+        <ArcSystemBar />
         <JsStack
           id={undefined}
           screenOptions={{

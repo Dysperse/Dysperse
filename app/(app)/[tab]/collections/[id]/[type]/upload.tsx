@@ -1,4 +1,5 @@
 import { MenuButton } from "@/app/(app)/home";
+import { ArcSystemBar } from "@/components/layout/arcAnimations";
 import { useResponsiveBreakpoints } from "@/helpers/useResponsiveBreakpoints";
 import { Avatar } from "@/ui/Avatar";
 import { Button } from "@/ui/Button";
@@ -14,7 +15,7 @@ import Text from "@/ui/Text";
 import TextField from "@/ui/TextArea";
 import { LinearGradient } from "expo-linear-gradient";
 import { useState } from "react";
-import { StatusBar, View } from "react-native";
+import { View } from "react-native";
 import { ScrollView } from "react-native-gesture-handler";
 import { KeyboardAvoidingView } from "react-native-keyboard-controller";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
@@ -137,7 +138,7 @@ export default function Page() {
   return (
     <View style={{ flex: 1 }}>
       <MenuButton back gradient />
-      <StatusBar barStyle="dark-content" />
+      <ArcSystemBar />
       <KeyboardAvoidingView
         behavior="height"
         style={{

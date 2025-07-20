@@ -1,3 +1,4 @@
+import { ArcSystemBar } from "@/components/layout/arcAnimations";
 import { useUser } from "@/context/useUser";
 import { sendApiRequest } from "@/helpers/api";
 import { hslToHex } from "@/helpers/hslToHex";
@@ -17,7 +18,7 @@ import Text from "@/ui/Text";
 import { Image } from "expo-image";
 import { router } from "expo-router";
 import { default as React, useCallback } from "react";
-import { Platform, StatusBar, StyleSheet, View } from "react-native";
+import { Platform, StyleSheet, View } from "react-native";
 import { Pressable, ScrollView } from "react-native-gesture-handler";
 import ReorderableList, {
   ReorderableListReorderEvent,
@@ -279,7 +280,7 @@ export default function Page() {
     <>
       <MenuButton gradient back />
       <ScrollView>
-        <StatusBar barStyle="dark-content" />
+        <ArcSystemBar />
         <View style={{ paddingHorizontal: 30 }}>
           <Text
             style={{

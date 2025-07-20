@@ -1,11 +1,10 @@
 import { JsStack } from "@/components/layout/_stack";
-import { arcCard } from "@/components/layout/arcAnimations";
+import { arcCard, ArcSystemBar } from "@/components/layout/arcAnimations";
 import { useResponsiveBreakpoints } from "@/helpers/useResponsiveBreakpoints";
 import { useWebStatusBar } from "@/helpers/useWebStatusBar";
 import { useColorTheme } from "@/ui/color/theme-provider";
 import { ThemeProvider } from "@react-navigation/native";
 import { usePathname } from "expo-router";
-import { StatusBar } from "react-native";
 
 function StatusBarStyling() {
   const theme = useColorTheme();
@@ -18,7 +17,7 @@ function StatusBarStyling() {
     cleanup: theme[2],
   });
 
-  return isModal && <StatusBar barStyle="dark-content" />;
+  return isModal && <ArcSystemBar />;
 }
 
 export default function Layout() {

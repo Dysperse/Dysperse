@@ -1,4 +1,5 @@
 import { JsStack } from "@/components/layout/_stack";
+import { ArcSystemBar } from "@/components/layout/arcAnimations";
 import { forHorizontalIOS } from "@/components/layout/forHorizontalIOS";
 import { SettingsSidebar } from "@/components/settings/sidebar";
 import { useHotkeys } from "@/helpers/useHotKeys";
@@ -17,7 +18,6 @@ import {
   Animated,
   Easing,
   Platform,
-  StatusBar,
   useWindowDimensions,
   View,
 } from "react-native";
@@ -226,7 +226,7 @@ export default function Layout() {
                 dark: true,
               }}
             >
-              {!breakpoints.md && <StatusBar barStyle="dark-content" />}
+              <ArcSystemBar />
               <JsStack
                 initialRouteName={breakpoints.md ? "account/index" : "index"}
                 id={undefined}

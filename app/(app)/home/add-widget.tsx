@@ -1,4 +1,5 @@
 import { Widget } from "@/components/focus-panel/panel";
+import { ArcSystemBar } from "@/components/layout/arcAnimations";
 import { useUser } from "@/context/useUser";
 import { sendApiRequest } from "@/helpers/api";
 import { useWebStatusBar } from "@/helpers/useWebStatusBar";
@@ -12,7 +13,7 @@ import TextField from "@/ui/TextArea";
 import { router } from "expo-router";
 import { LexoRank } from "lexorank";
 import React, { useRef, useState } from "react";
-import { StatusBar, View } from "react-native";
+import { View } from "react-native";
 import { FlatList, ScrollView } from "react-native-gesture-handler";
 import Toast from "react-native-toast-message";
 import useSWR from "swr";
@@ -223,7 +224,7 @@ export default function Page() {
     <>
       <MenuButton gradient icon="arrow_back_ios_new" back left />
       <ScrollView>
-        <StatusBar barStyle="dark-content" />
+        <ArcSystemBar />
         <View style={{ paddingHorizontal: 30 }}>
           <Text
             style={{

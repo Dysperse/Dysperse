@@ -1,5 +1,6 @@
 import { IndeterminateProgressBar } from "@/components/IndeterminateProgressBar";
 import { ProfileModal } from "@/components/ProfileModal";
+import { ArcSystemBar } from "@/components/layout/arcAnimations";
 import { useSession } from "@/context/AuthProvider";
 import { useUser } from "@/context/useUser";
 import { sendApiRequest } from "@/helpers/api";
@@ -27,7 +28,7 @@ import { impactAsync, ImpactFeedbackStyle } from "expo-haptics";
 import { router } from "expo-router";
 import { useCallback, useEffect, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
-import { Keyboard, StatusBar, View } from "react-native";
+import { Keyboard, View } from "react-native";
 import { KeyboardAvoidingView } from "react-native-keyboard-controller";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import Toast from "react-native-toast-message";
@@ -483,7 +484,7 @@ export default function Page() {
           marginHorizontal: "auto",
         }}
       >
-        <StatusBar barStyle="light-content" />
+        <ArcSystemBar />
         {view === "search" ? (
           <AddFriend setView={setView} friends={data} mutate={mutate} />
         ) : (
