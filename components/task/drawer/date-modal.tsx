@@ -42,7 +42,9 @@ function TaskDateModalContent({ task, updateTask }) {
   );
   const [timeMode, setTimeMode] = useState(false);
   const [search, setSearch] = useState("");
+
   const [lastUsedDate, setLastUsedDate] = useState(null);
+  const [lastUsedTime, setLastUsedTime] = useState(null);
 
   useEffect(() => {
     AsyncStorage.getItem("lastUsedDate").then((date) => {
@@ -53,7 +55,15 @@ function TaskDateModalContent({ task, updateTask }) {
         }
       }
     });
-  }, []);
+    AsyncStorage.getItem("lastUsedTime").then((time) => {
+      if (time) {
+        const parsedTime = dayjs(time);
+        if (parsedTime.isValid()) {
+          setLastUsedTime(parsedTime);
+        }
+      }
+    });
+  }, [task]);
 
   const hasRecurrence = view === "RECURRENCE" && task.recurrenceRule;
 
@@ -102,6 +112,14 @@ function TaskDateModalContent({ task, updateTask }) {
 
   const dateList = timeMode
     ? [
+        lastUsedTime && {
+          icon: "history",
+          primary: "Last used time",
+          secondary: lastUsedTime.format("h:mm A"),
+          value: dayjs(view === "DATE" ? task.start : new Date())
+            .set("hour", lastUsedTime.hour())
+            .set("minute", lastUsedTime.minute()),
+        },
         {
           text: "+1",
           primary: "One hour from now",
@@ -123,7 +141,7 @@ function TaskDateModalContent({ task, updateTask }) {
             })
           )
           .flat(),
-      ]
+      ].filter((e) => e)
     : view === "RECURRENCE"
     ? [
         {
@@ -509,6 +527,12 @@ function TaskDateModalContent({ task, updateTask }) {
                 if (view === "DATE" && !timeMode) {
                   AsyncStorage.setItem(
                     "lastUsedDate",
+                    item.value.toISOString()
+                  );
+                }
+                if (timeMode) {
+                  AsyncStorage.setItem(
+                    "lastUsedTime",
                     item.value.toISOString()
                   );
                 }
