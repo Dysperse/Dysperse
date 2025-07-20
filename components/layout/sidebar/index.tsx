@@ -381,7 +381,7 @@ export const LogoButton = memo(function LogoButton({
               menuRef.current.close();
               if (!breakpoints.md || desktopCollapsed)
                 sidebarRef.current.closeDrawer();
-              router.push("/settings");
+              router.push(breakpoints.md ? "/settings/account" : "/settings");
             },
           },
           {

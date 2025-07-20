@@ -1,3 +1,4 @@
+import { ArcSystemBar } from "@/components/layout/arcAnimations";
 import { COLLECTION_VIEWS } from "@/components/layout/command-palette/list";
 import { useResponsiveBreakpoints } from "@/helpers/useResponsiveBreakpoints";
 import { useColorTheme } from "@/ui/color/theme-provider";
@@ -28,6 +29,7 @@ export default function Page() {
 
   return (
     <>
+      <ArcSystemBar />
       <MenuButton gradient back />
       <ScrollView
         keyboardShouldPersistTaps="handled"

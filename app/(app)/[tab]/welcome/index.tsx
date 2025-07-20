@@ -8,7 +8,7 @@ import Icon from "@/ui/Icon";
 import Logo from "@/ui/logo";
 import Text from "@/ui/Text";
 import { router } from "expo-router";
-import { StyleProp, View, ViewStyle } from "react-native";
+import { Linking, StyleProp, View, ViewStyle } from "react-native";
 import { ScrollView } from "react-native-gesture-handler";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { MenuButton } from "../../home";
@@ -159,7 +159,7 @@ export default function Page() {
                   color: theme[11],
                 }}
               >
-                It all starts with{breakpoints.md && "\n"} a task
+                It all starts with{breakpoints.md ? "\n" : " "}a task
               </Text>
 
               <PlusButton />
@@ -203,7 +203,7 @@ export default function Page() {
                   color: theme[11],
                 }}
               >
-                Sort{"\n"}labels into collections
+                Sort{!breakpoints.md ? "\n" : " "}labels into collections
               </Text>
               <PlusButton />
             </Card>
@@ -229,25 +229,16 @@ export default function Page() {
             </Card>
           </View>
 
-          <Card style={{ marginTop: 10 }} buttonProps={{ disabled: true }}>
-            <Text
-              weight={900}
-              style={{ fontSize: 30, lineHeight: 43, color: theme[11] }}
-            >
-              Getting started
-            </Text>
-            <Text
-              style={{
-                color: theme[11],
-                fontSize: 20,
-                opacity: 0.6,
-                marginTop: 10,
-              }}
-              weight={600}
-            >
-              Coming soon
-            </Text>
-          </Card>
+          <Button
+            large
+            bold
+            containerStyle={{ marginTop: 10 }}
+            icon="north_east"
+            iconPosition="end"
+            variant="filled"
+            text="Follow us on Instagram"
+            onPress={() => Linking.openURL("https://instagram.com/dysperse/")}
+          />
         </View>
       </ScrollView>
     </Content>

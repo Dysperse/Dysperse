@@ -1,3 +1,4 @@
+import { ArcSystemBar } from "@/components/layout/arcAnimations";
 import { useColorTheme } from "@/ui/color/theme-provider";
 import Icon from "@/ui/Icon";
 import Text from "@/ui/Text";
@@ -21,6 +22,7 @@ export default function Page() {
   return (
     <View>
       <MenuButton gradient back />
+      <ArcSystemBar />
       <ScrollView
         contentContainerStyle={{
           paddingTop: 100,
@@ -136,3 +138,4 @@ export default function Page() {
     </View>
   );
 }
+
