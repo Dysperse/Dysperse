@@ -330,40 +330,46 @@ export function TaskDateMenu({
           setValue={(value) => updateTask({ recurrenceRule: value })}
           ref={addRecurrenceRef}
         />
-        <TaskDateModal task={task} updateTask={updateTask} onClose={onClose}>
-          <AttachStep index={0}>
-            <Button
-              style={{ gap: 10, marginRight: "auto" }}
-              containerStyle={{ opacity: 0.6, marginBottom: 3 }}
-              dense
-              icon={
-                task.start
-                  ? "calendar_today"
-                  : task.recurrenceRule
-                  ? "loop"
-                  : "calendar_today"
-              }
-              text={
-                <View style={{ flexDirection: "column" }}>
-                  <ButtonText weight={400}>
-                    {dateName[0]}
-                    {dateName[1] && (
-                      <ButtonText
-                        style={{
-                          color: theme[11],
-                          opacity: 0.6,
-                        }}
-                      >
-                        {" — "}
-                        {dateName[1]}
-                      </ButtonText>
-                    )}
-                  </ButtonText>
-                </View>
-              }
-            />
-          </AttachStep>
-        </TaskDateModal>
+        <AttachStep index={0}>
+          <View>
+            <TaskDateModal
+              task={task}
+              updateTask={updateTask}
+              onClose={onClose}
+            >
+              <Button
+                style={{ gap: 10, marginRight: "auto" }}
+                containerStyle={{ opacity: 0.6, marginBottom: 3 }}
+                dense
+                icon={
+                  task.start
+                    ? "calendar_today"
+                    : task.recurrenceRule
+                    ? "loop"
+                    : "calendar_today"
+                }
+                text={
+                  <View style={{ flexDirection: "column" }}>
+                    <ButtonText weight={400}>
+                      {dateName[0]}
+                      {dateName[1] && (
+                        <ButtonText
+                          style={{
+                            color: theme[11],
+                            opacity: 0.6,
+                          }}
+                        >
+                          {" — "}
+                          {dateName[1]}
+                        </ButtonText>
+                      )}
+                    </ButtonText>
+                  </View>
+                }
+              />
+            </TaskDateModal>
+          </View>
+        </AttachStep>
       </>
     )
   );
@@ -860,33 +866,31 @@ export function TaskDetails({ labelPickerRef }) {
               sheetProps={{ sheetRef: labelPickerRef }}
               defaultCollection={collectionId as any}
             >
-              <AttachStep index={1}>
-                <Button
-                  disabled={isReadOnly}
-                  icon={
-                    task.label?.emoji || task.collection?.emoji ? (
-                      <Emoji
-                        emoji={task?.label?.emoji || task.collection.emoji}
-                        size={20}
-                        style={{ marginHorizontal: 2.5 }}
-                      />
-                    ) : (
-                      <Icon>tag</Icon>
-                    )
-                  }
-                  dense
-                  style={{ gap: 10 }}
-                  containerStyle={{ marginRight: "auto" }}
-                  textStyle={{ opacity: 0.6 }}
-                  iconStyle={{
-                    opacity:
-                      task.label?.emoji || task.collection?.emoji ? 1 : 0.6,
-                  }}
-                  text={
-                    task?.label?.name || task?.collection?.name || "Add label"
-                  }
-                />
-              </AttachStep>
+              <Button
+                disabled={isReadOnly}
+                icon={
+                  task.label?.emoji || task.collection?.emoji ? (
+                    <Emoji
+                      emoji={task?.label?.emoji || task.collection.emoji}
+                      size={20}
+                      style={{ marginHorizontal: 2.5 }}
+                    />
+                  ) : (
+                    <Icon>tag</Icon>
+                  )
+                }
+                dense
+                style={{ gap: 10 }}
+                containerStyle={{ marginRight: "auto" }}
+                textStyle={{ opacity: 0.6 }}
+                iconStyle={{
+                  opacity:
+                    task.label?.emoji || task.collection?.emoji ? 1 : 0.6,
+                }}
+                text={
+                  task?.label?.name || task?.collection?.name || "Add label"
+                }
+              />
             </LabelPicker>
           )}
         </View>

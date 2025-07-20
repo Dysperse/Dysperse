@@ -123,12 +123,17 @@ export const mutations = {
 
       mutate(
         (oldData) => {
-          return oldData.map((oldColumn) => {
-            // Check if the column contains the parentTaskId
-            if (
-              newTask.parentTaskId &&
-              oldColumn.entities[newTask.parentTaskId]
-            ) {
+          const colIndex = oldData.findIndex((column) =>
+            dayjs(newTask.start).isBetween(
+              column.start,
+              column.end,
+              "day",
+              "[]"
+            )
+          );
+
+          return oldData.map((oldColumn, oldColumnIndex) => {
+            if (newTask.parentTaskId && oldColumnIndex === colIndex) {
               return {
                 ...oldColumn,
                 entities: {
@@ -142,10 +147,7 @@ export const mutations = {
                   },
                 },
               };
-            } else if (
-              !newTask.parentTaskId &&
-              oldColumn.entities[newTask.id]
-            ) {
+            } else if (!newTask.parentTaskId && oldColumnIndex === colIndex) {
               // Add new task directly if there is no parentTaskId
               return {
                 ...oldColumn,
@@ -156,8 +158,8 @@ export const mutations = {
               };
             }
 
-            // Return the column as-is if it doesn't contain the parentTaskId
-            return oldColumn;
+            const { [newTask.id]: _, ...restEntities } = oldColumn.entities;
+            return { ...oldColumn, entities: restEntities };
           });
         },
         { revalidate: false }
@@ -165,3 +167,4 @@ export const mutations = {
     },
   },
 };
+

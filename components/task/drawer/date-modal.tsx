@@ -623,7 +623,7 @@ function TaskDateModalContent({ task, updateTask }) {
 function OnClose({ onClose }) {
   useEffect(() => {
     return () => {
-      onClose();
+      onClose?.();
     };
   }, [onClose]);
 
