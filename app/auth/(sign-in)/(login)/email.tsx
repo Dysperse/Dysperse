@@ -283,7 +283,7 @@ function Email({
       }}
       contentContainerStyle={{
         flexGrow: 1,
-        paddingTop: 20,
+        paddingTop: breakpoints.md ? 60 : 20,
       }}
     >
       <View style={{ gap: 10 }}>
@@ -294,9 +294,6 @@ function Email({
               fontSize: 30,
               color: theme[11],
               marginTop: "auto",
-            },
-            !breakpoints.md && {
-              marginBottom: 10,
             },
           ]}
         >

@@ -22,11 +22,14 @@ export const useSignupContext = () => useContext(SignupContext);
 export function BannerImage() {
   const theme = useColorTheme();
   const breakpoints = useResponsiveBreakpoints();
+  const insets = useSafeAreaInsets();
 
   return (
     <View
       style={{
         padding: breakpoints.md ? 10 : 0,
+        paddingTop: breakpoints.md ? insets.top : 0,
+        paddingBottom: breakpoints.md ? insets.bottom : 0,
         flex: breakpoints.md ? 0.8 : 1,
         marginTop: 10,
         height: "100%",

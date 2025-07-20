@@ -63,7 +63,6 @@ function Content() {
   >(store.email ? "available" : "empty");
 
   useDidUpdate(() => {
-    store.email = email;
     store.password = password;
     store.confirmPassword = passwordConfirm;
     store.allowMarketingEmails = allowMarketingEmails;
@@ -144,7 +143,10 @@ function Content() {
             inputMode="email"
             variant="filled"
             placeholder="barackobama@gmail.com"
-            onChangeText={setEmail}
+            onChangeText={(t) => {
+              setEmail(t);
+              store.email = t;
+            }}
             autoComplete="email"
           />
         )}

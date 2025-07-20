@@ -13,7 +13,7 @@ import dayjs from "dayjs";
 import { Image } from "expo-image";
 import { router, useLocalSearchParams } from "expo-router";
 import { useCallback, useEffect, useState } from "react";
-import { Platform, View } from "react-native";
+import { Platform, useWindowDimensions, View } from "react-native";
 import { KeyboardAwareScrollView } from "react-native-keyboard-controller";
 import Animated, { FadeIn } from "react-native-reanimated";
 import { useSignupContext } from "../_layout";
@@ -116,6 +116,7 @@ function Content() {
   const theme = useColorTheme();
   const params = useLocalSearchParams() as { name: string };
   const store = useSignupContext();
+  const { height } = useWindowDimensions();
   const breakpoints = useResponsiveBreakpoints();
 
   const [hasTouched, setHasTouched] = useState(false);
@@ -152,7 +153,7 @@ function Content() {
       style={{
         alignItems: "center",
         gap: 5,
-        height: "100%",
+        height,
         justifyContent: "center",
       }}
     >

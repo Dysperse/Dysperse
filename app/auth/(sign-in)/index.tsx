@@ -105,7 +105,7 @@ function QrLogin() {
   ) : error ? (
     <ErrorAlert message="Couldn't load an instant login QR code. Please try again later" />
   ) : (
-    <View style={{ marginHorizontal: "auto" }}>
+    <View style={{ marginHorizontal: "auto", marginBottom: 20 }}>
       <Spinner />
     </View>
   );
@@ -153,6 +153,14 @@ function AppleAuth() {
             height: "100%",
           }}
           onPress={async () => {
+            router.push({
+              pathname: "/auth/join",
+              params: {
+                email: "asdfasdf@asdf.com",
+                name: "",
+              },
+            });
+            if (1 === 1) return;
             Toast.show({
               type: "loading",
               autoHide: false,
@@ -211,24 +219,10 @@ export function PasskeyAuth() {
         large
         bold
         icon="vpn_key"
-        text={breakpoints.md ? "Passkey" : "Continue with Passkey"}
-        variant={breakpoints.md ? "filled" : "outlined"}
-        iconStyle={breakpoints.md ? { color: "#fff" } : undefined}
-        textStyle={breakpoints.md ? { color: "#fff" } : undefined}
-        style={
-          breakpoints.md
-            ? [
-                { justifyContent: "flex-start", paddingLeft: 25, gap: 15 },
-                !breakpoints.md && {
-                  flexDirection: "column",
-                  justifyContent: "center",
-                  gap: 5,
-                },
-              ]
-            : []
-        }
-        iconSize={breakpoints.md ? 30 : undefined}
-        height={breakpoints.md ? undefined : 60}
+        text="Continue with Passkey"
+        variant="outlined"
+        iconSize={undefined}
+        height={60}
         containerStyle={[{ flex: 1 }]}
       />
     </PasskeyModal>
@@ -256,7 +250,7 @@ export default function SignIn() {
           fontFamily: "serifText700",
           fontSize: breakpoints.md ? 50 : 40,
           color: theme[11],
-          textAlign: breakpoints.md ? "left" : "center",
+          textAlign: "center",
         }}
       >
         Oh, hello.
@@ -266,17 +260,25 @@ export default function SignIn() {
           opacity: 0.4,
           fontSize: breakpoints.md ? 25 : 20,
           color: theme[11],
-          textAlign: breakpoints.md ? "left" : "center",
+          textAlign: "center",
           marginBottom: 17,
           marginTop: Platform.OS === "android" ? 0 : 5,
           marginHorizontal: 20,
         }}
         weight={600}
       >
-        We’ll check if you have an account, and help create one if you don’t.
+        We’ll check if you have an account,{"\n"}and help create one if you
+        don’t.
       </Text>
 
-      <View style={{ flexDirection: "row", gap: 10 }}>
+      <View
+        style={{
+          flexDirection: "row",
+          gap: 10,
+          maxWidth: 500,
+          marginHorizontal: "auto",
+        }}
+      >
         <Button
           large
           bold
@@ -285,11 +287,8 @@ export default function SignIn() {
           onPress={() => router.push("/auth/email")}
           style={[{ gap: 15 }]}
           iconSize={30}
-          height={breakpoints.md ? undefined : 70}
-          containerStyle={[
-            { flex: 1 },
-            !breakpoints.md && { borderRadius: 20 },
-          ]}
+          height={70}
+          containerStyle={{ flex: 1, borderRadius: 20 }}
           variant="filled"
           iconStyle={{ color: !isDark ? "#fff" : "#000" }}
           textStyle={{ color: !isDark ? "#fff" : "#000" }}
@@ -346,18 +345,14 @@ export default function SignIn() {
             }
             iconStyle={{ marginBottom: Platform.OS === "web" ? 0 : -5 }}
             style={[
-              { justifyContent: "flex-start", paddingLeft: 25, gap: 15 },
               !breakpoints.md && {
                 flexDirection: "column",
                 justifyContent: "center",
                 gap: 5,
               },
             ]}
-            height={breakpoints.md ? undefined : 70}
-            containerStyle={[
-              { width: 80 },
-              !breakpoints.md && { borderRadius: 20 },
-            ]}
+            height={70}
+            containerStyle={[{ width: 80, borderRadius: 20 }]}
             iconSize={30}
             variant="filled"
             backgroundColors={{
@@ -367,25 +362,24 @@ export default function SignIn() {
             }}
           />
         </GoogleAuth>
-      </View>
-      {breakpoints.md && (
-        <View
-          style={{
-            flexDirection: "row",
-            gap: 10,
-            marginVertical: 10,
-          }}
-        >
-          <PasskeyAuth />
+        {breakpoints.md && (
           <QrModal>
             <Button
               large
               bold
-              icon="center_focus_weak"
+              icon="qr_code"
               text="QR code"
               variant="filled"
+              backgroundColors={{
+                default: isDark ? "#fff" : "#000",
+                hovered: isDark ? "#fff" : "#000",
+                pressed: isDark ? "#fff" : "#000",
+              }}
+              textStyle={{ color: !isDark ? "#fff" : "#000" }}
+              iconStyle={{ color: !isDark ? "#fff" : "#000" }}
+              android_ripple={{ color: isDark ? "#000" : "#fff" }}
               style={[
-                { justifyContent: "flex-start", paddingLeft: 25, gap: 15 },
+                { justifyContent: "flex-start", gap: 15 },
                 !breakpoints.md && {
                   flexDirection: "column",
                   justifyContent: "center",
@@ -393,15 +387,12 @@ export default function SignIn() {
                 },
               ]}
               iconSize={30}
-              height={breakpoints.md ? undefined : 60}
-              containerStyle={[
-                { flex: 1 },
-                !breakpoints.md && { borderRadius: 22 },
-              ]}
+              height={70}
+              containerStyle={[{ flex: 1 }, { borderRadius: 22 }]}
             />
           </QrModal>
-        </View>
-      )}
+        )}
+      </View>
 
       {!breakpoints.md && <BannerImage />}
     </View>
