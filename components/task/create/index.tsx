@@ -742,20 +742,17 @@ function SubTaskInformation({ watch }) {
 
   return (
     parentTask && (
-      <View
-        style={{
-          marginTop: -25,
-          marginHorizontal: -25,
-        }}
-      >
+      <View style={{ marginTop: -10, marginHorizontal: -10, marginBottom: 5 }}>
         <View
           style={{
             gap: 20,
             flexDirection: "row",
             alignItems: "center",
             paddingHorizontal: 20,
-            backgroundColor: addHslAlpha(theme[9], 0.05),
-            paddingVertical: 10,
+            borderWidth: 1,
+            borderColor: addHslAlpha(theme[11], 0.1),
+            paddingVertical: 5,
+            borderRadius: 99,
           }}
         >
           <Icon bold style={{ color: theme[11] }}>
