@@ -632,7 +632,7 @@ export function TaskDateModal({ children, task, updateTask }) {
     <>
       {trigger}
       <BottomSheet
-        snapPoints={["70%"]}
+        snapPoints={["75%"]}
         containerStyle={{
           marginTop: 40 + insets.top,
         }}
