@@ -1117,16 +1117,16 @@ const BottomSheetContent = ({
           {view === "HOME" && (
             <>
               <AttachStep
-                index={4}
-                style={breakpoints.md ? { marginLeft: "auto" } : { flex: 1 }}
-              >
-                <PinTask control={control} />
-              </AttachStep>
-              <AttachStep
                 index={3}
                 style={breakpoints.md ? undefined : { flex: 1 }}
               >
                 <SpeechRecognition setValue={setValue} />
+              </AttachStep>
+              <AttachStep
+                index={4}
+                style={breakpoints.md ? { marginLeft: "auto" } : { flex: 1 }}
+              >
+                <PinTask control={control} />
               </AttachStep>
               <SubmitButton
                 watch={watch}

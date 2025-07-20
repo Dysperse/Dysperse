@@ -7,8 +7,10 @@ import Icon from "@/ui/Icon";
 import IconButton from "@/ui/IconButton";
 import { ListItemButton } from "@/ui/ListItemButton";
 import ListItemText from "@/ui/ListItemText";
+import { RecurrencePicker } from "@/ui/RecurrencePicker";
 import Text from "@/ui/Text";
 import TextField from "@/ui/TextArea";
+import capitalizeFirstLetter from "@/utils/capitalizeFirstLetter";
 import { BottomSheetFlashList, useBottomSheet } from "@gorhom/bottom-sheet";
 import * as chrono from "chrono-node";
 import dayjs from "dayjs";
@@ -21,6 +23,7 @@ import Animated, {
   withSpring,
 } from "react-native-reanimated";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
+import { RRule } from "rrule";
 
 function TaskDateModalContent({ task, updateTask }) {
   const theme = useColorTheme();
@@ -30,19 +33,22 @@ function TaskDateModalContent({ task, updateTask }) {
   const viewPickerHidden = useSharedValue(0);
 
   const searchRef = useRef(null);
+  const recurrenceRef = useRef(null);
   const focusedRef = useRef(null);
 
-  const [view, setView] = useState<"DATE" | "RECURRENCE">("DATE");
+  const [view, setView] = useState<"DATE" | "RECURRENCE">(
+    task.recurrenceRule ? "RECURRENCE" : "DATE"
+  );
   const [timeMode, setTimeMode] = useState(false);
-
   const [search, setSearch] = useState("");
 
+  const hasRecurrence = view === "RECURRENCE" && task.recurrenceRule;
+
   const selectedDateStyle = useAnimatedStyle(() => ({
-    marginTop: withSpring(active.value ? -80 : 0, {
+    marginBottom: withSpring(active.value ? -70 : 10, {
       damping: 20,
       stiffness: 200,
     }),
-    marginBottom: 10,
     paddingHorizontal: 20,
     pointerEvents: !active.value ? "auto" : "none",
     opacity: withSpring(!active.value ? 1 : 0, {
@@ -93,7 +99,7 @@ function TaskDateModalContent({ task, updateTask }) {
           .map((_, hour) =>
             [...new Array(12)].map((__, slot) => {
               const minutes = slot * 5;
-              const time = dayjs(task.start)
+              const time = dayjs(view === "DATE" ? task.start : new Date())
                 .set("hour", hour)
                 .set("minute", minutes);
               return {
@@ -108,34 +114,69 @@ function TaskDateModalContent({ task, updateTask }) {
     : view === "RECURRENCE"
     ? [
         {
+          icon: "pan_tool",
+          primary: "Select from picker",
+          secondary: "Coming soon!",
+          recurrencePicker: true,
+        },
+        {
           icon: "view_day",
           primary: "Daily",
           secondary: "Every day",
-          value: dayjs().startOf("day"),
+          value: new RRule({
+            freq: RRule.DAILY,
+            dtstart: dayjs().startOf("day").toDate(),
+            interval: 1,
+          }).options,
         },
         {
           icon: "view_week",
           primary: "Weekly",
           secondary: `On ${dayjs().add(1, "week").format("dddd")}`,
-          value: dayjs().startOf("day"),
+          value: new RRule({
+            freq: RRule.WEEKLY,
+            dtstart: dayjs().startOf("day").toDate(),
+            interval: 1,
+            byweekday: [
+              RRule[dayjs().format("dddd").substring(0, 2).toUpperCase()],
+            ],
+          }).options,
         },
         {
           icon: "double_arrow",
           primary: "Every other week",
           secondary: `On ${dayjs().add(1, "week").format("dddd")}`,
-          value: dayjs().startOf("day"),
+          value: new RRule({
+            freq: RRule.WEEKLY,
+            dtstart: dayjs().startOf("day").toDate(),
+            interval: 2,
+            byweekday: [
+              RRule[dayjs().format("dddd").substring(0, 2).toUpperCase()],
+            ],
+          }).options,
         },
         {
           icon: "calendar_view_month",
           primary: "Monthly",
           secondary: `On the ${dayjs().add(1, "month").format("Do")}`,
-          value: dayjs().startOf("day"),
+          value: new RRule({
+            freq: RRule.MONTHLY,
+            dtstart: dayjs().startOf("day").toDate(),
+            interval: 1,
+            bymonthday: dayjs().add(1, "month").date(),
+          }).options,
         },
         {
           icon: "calendar_month",
           primary: "Yearly",
           secondary: `On ${dayjs().add(1, "year").format("MMMM Do")}`,
-          value: dayjs().startOf("day"),
+          value: new RRule({
+            freq: RRule.YEARLY,
+            dtstart: dayjs().startOf("day").toDate(),
+            interval: 1,
+            bymonth: dayjs().add(1, "year").month() + 1, // RRule months are 1-indexed
+            bymonthday: dayjs().add(1, "year").date(),
+          }).options,
         },
       ]
     : [
@@ -300,80 +341,104 @@ function TaskDateModalContent({ task, updateTask }) {
           ))}
         </Animated.View>
       </View>
-      {(view === "RECURRENCE" && task.recurrenceRule) ||
-        (view === "DATE" && task.start && (
-          <Animated.View style={selectedDateStyle}>
-            <ListItemButton disabled variant="filled">
-              <ListItemText
-                primary={
-                  timeMode && task.dateOnly
-                    ? "Select a time"
-                    : dayjs(task.start).format(!timeMode ? "dddd" : "h:mm A")
+      {(hasRecurrence || (view === "DATE" && task.start)) && (
+        <Animated.View style={selectedDateStyle}>
+          <ListItemButton disabled variant="filled">
+            <ListItemText
+              primary={
+                timeMode && task.dateOnly
+                  ? "Select a time"
+                  : hasRecurrence
+                  ? capitalizeFirstLetter(
+                      new RRule(task.recurrenceRule)
+                        ?.toText()
+                        .replace("every day", "Daily")
+                        .replace("every week", "Weekly")
+                        .replace("every month", "Monthly")
+                        .replace("every year", "Yearly")
+                        .split("at")?.[0]
+                    )
+                  : dayjs(task.start).format(!timeMode ? "dddd" : "h:mm A")
+              }
+              secondary={
+                hasRecurrence
+                  ? undefined
+                  : dayjs(task.start).format("MMMM Do, YYYY")
+              }
+              primaryProps={{
+                style: { color: theme[11], fontSize: 20 },
+                weight: 800,
+              }}
+              secondaryProps={{
+                style: {
+                  color: theme[11],
+                  fontSize: 15,
+                  marginTop: -5,
+                  opacity: 0.5,
+                },
+              }}
+            />
+            <View
+              style={{
+                flexDirection: "row-reverse",
+                gap: 5,
+              }}
+            >
+              <Button
+                backgroundColors={{
+                  default: theme[4],
+                  hovered: theme[5],
+                  pressed: theme[6],
+                }}
+                icon={timeMode && !task.dateOnly && "check"}
+                text={
+                  timeMode && !task.dateOnly
+                    ? undefined
+                    : task.dateOnly
+                    ? !timeMode
+                      ? "Add time"
+                      : "Cancel"
+                    : view === "RECURRENCE"
+                    ? dayjs(
+                        new RRule(task.recurrenceRule).options.dtstart
+                      ).format("h:mm A")
+                    : dayjs(task.start).format("h:mm A")
                 }
-                secondary={dayjs(task.start).format("MMMM Do, YYYY")}
-                primaryProps={{
-                  style: { color: theme[11], fontSize: 20 },
-                  weight: 800,
-                }}
-                secondaryProps={{
-                  style: {
-                    color: theme[11],
-                    fontSize: 15,
-                    marginTop: -5,
-                    opacity: 0.5,
-                  },
-                }}
+                onPress={() => setTimeMode(!timeMode)}
+                containerStyle={{ minWidth: 0 }}
+                style={{ paddingHorizontal: 15 }}
               />
-              <View
-                style={{
-                  flexDirection: "row-reverse",
-                  gap: 5,
-                }}
-              >
+              {!timeMode ? (
                 <Button
-                  backgroundColors={{
-                    default: theme[4],
-                    hovered: theme[5],
-                    pressed: theme[6],
-                  }}
-                  icon={timeMode && !task.dateOnly && "check"}
-                  text={
-                    timeMode && !task.dateOnly
-                      ? undefined
-                      : task.dateOnly
-                      ? !timeMode
-                        ? "Add time"
-                        : "Cancel"
-                      : dayjs(task.start).format("h:mm A")
+                  variant="outlined"
+                  icon="delete"
+                  onPress={() =>
+                    updateTask({
+                      start: null,
+                      end: null,
+                      recurrenceRule: null,
+                      dateOnly: true,
+                    })
                   }
-                  onPress={() => setTimeMode(!timeMode)}
                   containerStyle={{ minWidth: 0 }}
                   style={{ paddingHorizontal: 15 }}
                 />
-                {!timeMode ? (
+              ) : (
+                !task.dateOnly && (
                   <Button
                     variant="outlined"
-                    icon="delete"
-                    onPress={() => updateTask({ start: null })}
-                    containerStyle={{ minWidth: 0 }}
-                    style={{ paddingHorizontal: 15 }}
+                    onPress={() => {
+                      updateTask({ dateOnly: true });
+                    }}
+                    text="Clear time"
                   />
-                ) : (
-                  !task.dateOnly && (
-                    <Button
-                      variant="outlined"
-                      onPress={() => {
-                        updateTask({ dateOnly: true });
-                      }}
-                      text="Clear time"
-                    />
-                  )
-                )}
-              </View>
-            </ListItemButton>
-          </Animated.View>
-        ))}
-      <View style={{ paddingHorizontal: 20, marginBottom: 5 }}>
+                )
+              )}
+            </View>
+          </ListItemButton>
+        </Animated.View>
+      )}
+      <View style={{ paddingHorizontal: 20, paddingBottom: 5 }}>
         <TextField
           bottomSheet
           variant="filled"
@@ -403,34 +468,69 @@ function TaskDateModalContent({ task, updateTask }) {
         />
       </View>
 
+      <RecurrencePicker
+        value={task.recurrenceRule}
+        setValue={(t) => console.log(t)}
+        ref={recurrenceRef}
+      />
+
       <BottomSheetFlashList
         keyboardShouldPersistTaps="handled"
         data={filteredData}
         contentContainerStyle={{
-          paddingHorizontal: 20,
+          paddingHorizontal: 12,
           paddingBottom: 150,
         }}
         renderItem={({ item }) => {
           return (
             <ListItemButton
               style={{ marginHorizontal: -10 }}
+              disabled={item.recurrencePicker}
               onPress={() => {
                 if (timeMode) {
                   setTimeMode(false);
-                  updateTask({
-                    dateOnly: false,
-                    start: dayjs(task.start)
-                      .set("hour", item.value.hour())
-                      .set("minute", item.value.minute())
-                      .toDate(),
-                  });
+                  if (view === "DATE") {
+                    updateTask({
+                      dateOnly: false,
+                      start: dayjs(task.start)
+                        .set("hour", item.value.hour())
+                        .set("minute", item.value.minute())
+                        .toDate(),
+                    });
+                  } else {
+                    updateTask({
+                      dateOnly: false,
+                      recurrenceRule: new RRule({
+                        ...task.recurrenceRule,
+                        dtstart: dayjs(task.recurrenceRule?.dtstart)
+                          .set("hour", item.value.hour())
+                          .set("minute", item.value.minute())
+                          .toDate(),
+                      }).options,
+                    });
+                  }
                 } else {
-                  forceClose();
-                  updateTask({
-                    start: item.value.toDate(),
-                  });
+                  if (item.recurrencePicker) {
+                    recurrenceRef.current.present();
+                  } else {
+                    if (view === "RECURRENCE") {
+                      updateTask({
+                        recurrenceRule: item.value,
+                        start: null,
+                        end: null,
+                      });
+                    } else {
+                      updateTask({
+                        start: item.value.toDate(),
+                        recurrenceRule: null,
+                      });
+                    }
+
+                    forceClose();
+                  }
                 }
               }}
+              style={item.recurrencePicker ? { opacity: 0.5 } : {}}
             >
               <Avatar
                 disabled

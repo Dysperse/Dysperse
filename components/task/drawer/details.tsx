@@ -331,92 +331,38 @@ export function TaskDateMenu({
           setValue={(value) => updateTask({ recurrenceRule: value })}
           ref={addRecurrenceRef}
         />
-        {task.start || task.recurrenceRule ? (
-          <TaskDateModal task={task} updateTask={updateTask}>
-            <Button
-              style={{ gap: 10, marginRight: "auto" }}
-              containerStyle={{ opacity: 0.6 }}
-              dense
-              icon={
-                task.start
-                  ? "calendar_today"
-                  : task.recurrenceRule
-                  ? "loop"
-                  : "calendar_today"
-              }
-              text={
-                <View style={{ flexDirection: "column" }}>
-                  <ButtonText weight={400}>
-                    {dateName[0]}
-                    {dateName[1] && (
-                      <ButtonText
-                        style={{
-                          color: theme[11],
-                          opacity: 0.6,
-                        }}
-                      >
-                        {" — "}
-                        {dateName[1]}
-                      </ButtonText>
-                    )}
-                  </ButtonText>
-                </View>
-              }
-            />
-          </TaskDateModal>
-        ) : (
-          <MenuPopover
-            menuProps={{
-              style: { marginRight: "auto", marginBottom: 2 },
-              rendererProps: { placement: "top" },
-            }}
-            trigger={
-              <Button
-                disabled={isReadOnly}
-                style={{ gap: 10, marginRight: "auto" }}
-                containerStyle={{ opacity: 0.6 }}
-                dense
-                icon={task.recurrenceRule ? "loop" : "calendar_today"}
-                text={
-                  <View style={{ flexDirection: "column" }}>
-                    <ButtonText weight={400}>
-                      {dateName[0]}
-                      {dateName[1] && (
-                        <ButtonText
-                          style={{
-                            color: theme[11],
-                            opacity: 0.6,
-                          }}
-                        >
-                          {" — "}
-                          {dateName[1]}
-                        </ButtonText>
-                      )}
-                    </ButtonText>
-                  </View>
-                }
-              />
+        <TaskDateModal task={task} updateTask={updateTask}>
+          <Button
+            style={{ gap: 10, marginRight: "auto" }}
+            containerStyle={{ opacity: 0.6, marginBottom: 3 }}
+            dense
+            icon={
+              task.start
+                ? "calendar_today"
+                : task.recurrenceRule
+                ? "loop"
+                : "calendar_today"
             }
-            closeOnSelect
-            menuRef={menuRef}
-            options={
-              isReadOnly
-                ? []
-                : [
-                    {
-                      icon: "loop",
-                      text: "Set repetition",
-                      callback: () => addRecurrenceRef.current.present(),
-                    },
-                    {
-                      icon: "calendar_today",
-                      text: "Set due date",
-                      callback: () => updateTask({ start: dayjs().toDate() }),
-                    },
-                  ]
+            text={
+              <View style={{ flexDirection: "column" }}>
+                <ButtonText weight={400}>
+                  {dateName[0]}
+                  {dateName[1] && (
+                    <ButtonText
+                      style={{
+                        color: theme[11],
+                        opacity: 0.6,
+                      }}
+                    >
+                      {" — "}
+                      {dateName[1]}
+                    </ButtonText>
+                  )}
+                </ButtonText>
+              </View>
             }
           />
-        )}
+        </TaskDateModal>
       </>
     )
   );
