@@ -574,7 +574,7 @@ function TaskNameInput({
                 e.nativeEvent.key === "Escape"
               ) {
                 e.preventDefault();
-                handleSubmitButtonClick();
+                if (e.nativeEvent.key === "Enter") handleSubmitButtonClick();
               }
             }}
             scrollEnabled={false}
