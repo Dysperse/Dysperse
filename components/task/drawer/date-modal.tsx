@@ -116,7 +116,7 @@ function TaskDateModalContent({ task, updateTask }) {
         {
           icon: "pan_tool",
           primary: "Select from picker",
-          secondary: "Coming soon!",
+          secondary: "Advanced recurrence options",
           recurrencePicker: true,
         },
         {
@@ -470,7 +470,7 @@ function TaskDateModalContent({ task, updateTask }) {
 
       <RecurrencePicker
         value={task.recurrenceRule}
-        setValue={(t) => console.log(t)}
+        setValue={(t) => updateTask({ recurrenceRule: t })}
         ref={recurrenceRef}
       />
 
@@ -478,14 +478,13 @@ function TaskDateModalContent({ task, updateTask }) {
         keyboardShouldPersistTaps="handled"
         data={filteredData}
         contentContainerStyle={{
-          paddingHorizontal: 12,
+          paddingHorizontal: 20,
           paddingBottom: 150,
         }}
         renderItem={({ item }) => {
           return (
             <ListItemButton
               style={{ marginHorizontal: -10 }}
-              disabled={item.recurrencePicker}
               onPress={() => {
                 if (timeMode) {
                   setTimeMode(false);
@@ -530,7 +529,6 @@ function TaskDateModalContent({ task, updateTask }) {
                   }
                 }
               }}
-              style={item.recurrencePicker ? { opacity: 0.5 } : {}}
             >
               <Avatar
                 disabled

@@ -536,8 +536,6 @@ export const RecurrencePicker = ({
               <Ends value={localValue} setValue={setLocalValue} />
             </View>
           )}
-
-          <AtTime value={localValue} setValue={setLocalValue} />
           <Preview value={localValue} />
         </View>
       </BottomSheetScrollView>
