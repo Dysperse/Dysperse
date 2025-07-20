@@ -2,6 +2,7 @@ import { useUser } from "@/context/useUser";
 import { useResponsiveBreakpoints } from "@/helpers/useResponsiveBreakpoints";
 import BottomSheet from "@/ui/BottomSheet";
 import { Button } from "@/ui/Button";
+import { addHslAlpha } from "@/ui/color";
 import { useColorTheme } from "@/ui/color/theme-provider";
 import ErrorAlert from "@/ui/Error";
 import Icon from "@/ui/Icon";
@@ -126,6 +127,7 @@ const messages = [
 function ShareProgress() {
   const theme = useColorTheme();
   const ref = useRef(null);
+  const breakpoints = useResponsiveBreakpoints();
   const insets = useSafeAreaInsets();
   const [size, setSize] = useState("LARGE");
   const [capture, setCapture] = useState(false);
@@ -161,9 +163,18 @@ function ShareProgress() {
           pressed: theme[6],
         }}
       />
-      <BottomSheet sheetRef={ref} snapPoints={[size === "SMALL" ? 470 : 680]}>
+      <BottomSheet
+        sheetRef={ref}
+        snapPoints={[size === "SMALL" ? 470 : 680]}
+        containerStyle={{
+          maxWidth: 500,
+          width: "100%",
+          marginLeft: "50%",
+          transform: [{ translateX: "-50%" }],
+        }}
+      >
         <View style={{ height: "100%" }}>
-          <ModalHeader title="Share" noPaddingTop subtitle="Coming soon!" />
+          <ModalHeader title="Share" noPaddingTop />
           <View
             style={{
               alignItems: "center",
@@ -283,7 +294,7 @@ function ShareProgress() {
                     iconSize={20}
                     disabled
                   />
-                  <Button
+                  {/* <Button
                     chip
                     text="7"
                     icon="local_fire_department"
@@ -305,7 +316,7 @@ function ShareProgress() {
                       borderRadius: 10,
                     }}
                     disabled
-                  />
+                  /> */}
                 </View>
 
                 {size === "LARGE" && <View style={{ flex: 1 }} />}
@@ -319,32 +330,29 @@ function ShareProgress() {
               marginTop: 20,
             }}
           >
-            <Button
-              text="Small"
-              backgroundColors={{
-                default: theme[size === "SMALL" ? 4 : 2],
-                hovered: theme[5],
-                pressed: theme[6],
-              }}
-              onPress={() => {
-                setSize("SMALL");
-                impactAsync(ImpactFeedbackStyle.Medium);
-              }}
-            />
-            <Button
-              text="Large"
-              backgroundColors={{
-                default: theme[size === "LARGE" ? 4 : 2],
-                hovered: theme[5],
-                pressed: theme[6],
-              }}
-              onPress={() => {
-                setSize("LARGE");
-                impactAsync(ImpactFeedbackStyle.Medium);
-              }}
-            />
+            {["SMALL", "LARGE"].map((sz) => (
+              <Button
+                key={sz}
+                text={sz.charAt(0) + sz.slice(1).toLowerCase()}
+                backgroundColors={{
+                  default: addHslAlpha(theme[5], size === sz ? 0.5 : 0),
+                  hovered: theme[5],
+                  pressed: theme[6],
+                }}
+                bold={size === sz}
+                onPress={() => {
+                  setSize(sz);
+                  impactAsync(ImpactFeedbackStyle.Medium);
+                }}
+              />
+            ))}
           </View>
-          <View style={{ padding: 20, paddingBottom: 10 + insets.bottom }}>
+          <View
+            style={{
+              padding: 20,
+              paddingBottom: (breakpoints.md ? 50 : 10) + insets.bottom,
+            }}
+          >
             <Button
               text="Share"
               icon="ios_share"
