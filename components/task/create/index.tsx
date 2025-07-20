@@ -20,7 +20,11 @@ import MenuPopover from "@/ui/MenuPopover";
 import Modal from "@/ui/Modal";
 import Spinner from "@/ui/Spinner";
 import Text from "@/ui/Text";
-import { BottomSheetModal, useBottomSheet } from "@gorhom/bottom-sheet";
+import {
+  BottomSheetModal,
+  BottomSheetScrollView,
+  useBottomSheet,
+} from "@gorhom/bottom-sheet";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import dayjs, { Dayjs } from "dayjs";
 import { BlurView } from "expo-blur";
@@ -1012,10 +1016,6 @@ const BottomSheetContent = ({
       ]}
     >
       <BlurView
-        style={{
-          gap: 20,
-          flexDirection: "column",
-        }}
         intensity={Platform.OS === "android" ? 0 : 60}
         tint={
           Platform.OS === "ios"
@@ -1027,115 +1027,120 @@ const BottomSheetContent = ({
             : "systemUltraThinMaterialLight"
         }
       >
-        {view === "HOME" ? (
-          <View style={{ padding: 20, paddingBottom: 0 }}>
-            <SubTaskInformation watch={watch} />
-            <View style={{ flexDirection: "column", zIndex: 0 }}>
-              <TaskNameInput
-                disabled={!session.user.hintsViewed.includes("CREATE_TASK")}
-                // hintRef={hintRef}
-                // submitRef={submitRef}
-                // reset={reset}
-                // watch={watch}
-                control={control}
-                handleSubmitButtonClick={handleSubmitButtonClick}
-                nameRef={nameRef}
-                // setValue={setValue}
-              />
-              <Footer
-                defaultValues={defaultValues}
-                dateRef={dateRef}
-                recurrenceRef={recurrenceRef}
-                setValue={setValue}
-                watch={watch}
-                nameRef={nameRef}
-                labelMenuRef={labelMenuRef}
-                control={control}
-              />
+        <BottomSheetScrollView
+          contentContainerStyle={{ gap: 20 }}
+          style={{ flexGrow: 1 }}
+        >
+          {view === "HOME" ? (
+            <View style={{ padding: 20, paddingBottom: 0 }}>
+              <SubTaskInformation watch={watch} />
+              <View style={{ flexDirection: "column", zIndex: 0 }}>
+                <TaskNameInput
+                  disabled={!session.user.hintsViewed.includes("CREATE_TASK")}
+                  // hintRef={hintRef}
+                  // submitRef={submitRef}
+                  // reset={reset}
+                  // watch={watch}
+                  control={control}
+                  handleSubmitButtonClick={handleSubmitButtonClick}
+                  nameRef={nameRef}
+                  // setValue={setValue}
+                />
+                <Footer
+                  defaultValues={defaultValues}
+                  dateRef={dateRef}
+                  recurrenceRef={recurrenceRef}
+                  setValue={setValue}
+                  watch={watch}
+                  nameRef={nameRef}
+                  labelMenuRef={labelMenuRef}
+                  control={control}
+                />
+              </View>
+              <TaskAttachments watch={watch} setValue={setValue} />
             </View>
-            <TaskAttachments watch={watch} setValue={setValue} />
-          </View>
-        ) : (
-          <TaskDrawerContext.Provider
-            value={{
-              task: control._formValues,
-              updateTask: (t) => {
-                Object.keys(t).forEach((key: any) => {
-                  setValue(key, t[key]);
-                });
-              },
-              mutateList,
-              isReadOnly: false,
+          ) : (
+            <TaskDrawerContext.Provider
+              value={{
+                task: control._formValues,
+                updateTask: (t) => {
+                  Object.keys(t).forEach((key: any) => {
+                    setValue(key, t[key]);
+                  });
+                },
+                mutateList,
+                isReadOnly: false,
+              }}
+            >
+              <TaskAttachmentPicker
+                handleBack={() => {
+                  setView("HOME");
+                  setTimeout(() => nameRef.current?.focus(), 20);
+                }}
+                isTaskCreation
+                forceClose={forceClose}
+              />
+            </TaskDrawerContext.Provider>
+          )}
+
+          <View
+            style={{
+              gap: 5,
+              flexDirection: "row",
+              alignItems: "center",
+              padding: 20,
+              paddingTop: 0,
             }}
           >
-            <TaskAttachmentPicker
-              handleBack={() => {
-                setView("HOME");
-                setTimeout(() => nameRef.current?.focus(), 20);
-              }}
-              isTaskCreation
-              forceClose={forceClose}
-            />
-          </TaskDrawerContext.Provider>
-        )}
-
-        <View
-          style={{
-            gap: 5,
-            flexDirection: "row",
-            alignItems: "center",
-            padding: 20,
-            paddingTop: 0,
-          }}
-        >
-          <AttachStep index={2} style={{ flex: 1 }}>
-            <Button
-              icon={view === "HOME" ? "note_stack_add" : "west"}
-              text={view === "HOME" ? undefined : "Attach"}
-              bold={view === "ATTACH"}
-              height={50}
-              onPress={() => {
-                Keyboard.dismiss();
-                impactAsync(ImpactFeedbackStyle.Heavy);
-                setView((t) => (t === "HOME" ? "ATTACH" : "HOME"));
-                setTimeout(() => nameRef.current?.focus(), 20);
-              }}
-              containerStyle={
-                view === "HOME"
-                  ? { paddingHorizontal: 0, minWidth: 0 }
-                  : { marginRight: "auto" }
-              }
-              style={view === "ATTACH" && { paddingHorizontal: 20 }}
-              variant="filled"
-              backgroundColors={{
-                default: addHslAlpha(theme[9], 0.15),
-                hovered: addHslAlpha(theme[9], 0.25),
-                pressed: addHslAlpha(theme[9], 0.35),
-              }}
-            />
-          </AttachStep>
-          {view === "HOME" && (
-            <>
-              <AttachStep
-                index={3}
-                style={breakpoints.md ? undefined : { flex: 1 }}
-              >
-                <SpeechRecognition setValue={setValue} />
-              </AttachStep>
-              <AttachStep
-                index={4}
-                style={breakpoints.md ? { marginLeft: "auto" } : { flex: 1 }}
-              >
-                <PinTask control={control} />
-              </AttachStep>
-              <SubmitButton
-                watch={watch}
-                ref={submitRef}
-                onSubmit={handleSubmitButtonClick}
+            <AttachStep index={2} style={{ flex: 1 }}>
+              <Button
+                icon={view === "HOME" ? "note_stack_add" : "west"}
+                text={view === "HOME" ? undefined : "Attach"}
+                bold={view === "ATTACH"}
+                height={50}
+                onPress={() => {
+                  Keyboard.dismiss();
+                  impactAsync(ImpactFeedbackStyle.Heavy);
+                  setView((t) => (t === "HOME" ? "ATTACH" : "HOME"));
+                  setTimeout(() => nameRef.current?.focus(), 20);
+                }}
+                containerStyle={
+                  view === "HOME"
+                    ? { paddingHorizontal: 0, minWidth: 0 }
+                    : { marginRight: "auto" }
+                }
+                style={view === "ATTACH" && { paddingHorizontal: 20 }}
+                variant="filled"
+                backgroundColors={{
+                  default: addHslAlpha(theme[9], 0.15),
+                  hovered: addHslAlpha(theme[9], 0.25),
+                  pressed: addHslAlpha(theme[9], 0.35),
+                }}
               />
-            </>
-          )}
-        </View>
+            </AttachStep>
+            {view === "HOME" && (
+              <>
+                <AttachStep
+                  index={3}
+                  style={breakpoints.md ? undefined : { flex: 1 }}
+                >
+                  <SpeechRecognition setValue={setValue} />
+                </AttachStep>
+                <AttachStep
+                  index={4}
+                  style={breakpoints.md ? { marginLeft: "auto" } : { flex: 1 }}
+                >
+                  <PinTask control={control} />
+                </AttachStep>
+                <SubmitButton
+                  watch={watch}
+                  ref={submitRef}
+                  onSubmit={handleSubmitButtonClick}
+                />
+              </>
+            )}
+          </View>
+        </BottomSheetScrollView>
       </BlurView>
     </Pressable>
   );
@@ -1301,7 +1306,9 @@ const CreateTask = ({
           backgroundColor:
             Platform.OS === "android" ? undefined : "transparent",
           borderRadius: 40,
-          maxHeight: breakpoints.md ? height - 150 : height - 200,
+          maxHeight: breakpoints.md
+            ? height - 150
+            : height - Keyboard.metrics().height - 100,
         }}
         maxBackdropOpacity={breakpoints.md ? 0.05 : 0.1}
       >
