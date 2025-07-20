@@ -48,10 +48,10 @@ import {
   Keyboard,
   Platform,
   Pressable,
+  StatusBar,
   useWindowDimensions,
   View,
 } from "react-native";
-import { SystemBars } from "react-native-edge-to-edge";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import DrawerLayout from "react-native-gesture-handler/ReanimatedDrawerLayout";
 import { MenuProvider } from "react-native-popup-menu";
@@ -323,8 +323,12 @@ export default function AppLayout() {
                                     progressValue={progressValue}
                                   >
                                     <LastStateRestore />
-                                    <SystemBars
-                                      style={!isDark ? "dark" : "light"}
+                                    <StatusBar
+                                      barStyle={
+                                        !isDark
+                                          ? "dark-content"
+                                          : "light-content"
+                                      }
                                     />
                                     <JsStack
                                       id={undefined}

@@ -17,8 +17,7 @@ import Text from "@/ui/Text";
 import { Image } from "expo-image";
 import { router } from "expo-router";
 import { default as React, useCallback } from "react";
-import { Platform, StyleSheet, View } from "react-native";
-import { SystemBars } from "react-native-edge-to-edge";
+import { Platform, StatusBar, StyleSheet, View } from "react-native";
 import { Pressable, ScrollView } from "react-native-gesture-handler";
 import ReorderableList, {
   ReorderableListReorderEvent,
@@ -280,7 +279,7 @@ export default function Page() {
     <>
       <MenuButton gradient back />
       <ScrollView>
-        <SystemBars style="light" />
+        <StatusBar barStyle="dark-content" />
         <View style={{ paddingHorizontal: 30 }}>
           <Text
             style={{

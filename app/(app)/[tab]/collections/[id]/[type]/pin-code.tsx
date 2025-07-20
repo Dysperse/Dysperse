@@ -8,7 +8,7 @@ import OtpInput from "@/ui/OtpInput";
 import Text from "@/ui/Text";
 import { router } from "expo-router";
 import { useState } from "react";
-import { SystemBars } from "react-native-edge-to-edge";
+import { StatusBar } from "react-native";
 import Toast from "react-native-toast-message";
 
 function Content() {
@@ -113,7 +113,7 @@ function Content() {
 export default function Page() {
   return (
     <CollectionMenuLayout title="PIN code">
-      <SystemBars style="light" />
+      <StatusBar barStyle="dark-content" />
       <Content />
     </CollectionMenuLayout>
   );

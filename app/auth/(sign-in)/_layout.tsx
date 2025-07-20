@@ -12,8 +12,7 @@ import { Image, ImageBackground } from "expo-image";
 import { LinearGradient } from "expo-linear-gradient";
 import { router } from "expo-router";
 import { createContext, useContext, useRef } from "react";
-import { Dimensions, Platform, View } from "react-native";
-import { SystemBars } from "react-native-edge-to-edge";
+import { Dimensions, Platform, StatusBar, View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 const SignupContext = createContext(null);
@@ -123,7 +122,7 @@ export default function Layout() {
 
   return (
     <SignupContext.Provider value={signupData.current}>
-      <SystemBars style="auto" />
+      <StatusBar barStyle="default" />
       <View
         style={{
           flexDirection: breakpoints.md ? "row" : "column-reverse",

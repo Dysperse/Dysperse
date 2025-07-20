@@ -6,8 +6,7 @@ import {
   StackNavigationOptions,
   TransitionPresets,
 } from "@react-navigation/stack";
-import { Animated, Platform } from "react-native";
-import { SystemBars } from "react-native-edge-to-edge";
+import { Animated, Platform, StatusBar } from "react-native";
 
 const { add, multiply } = Animated;
 
@@ -128,6 +127,10 @@ export const ArcSystemBar = () => {
   const breakpoints = useResponsiveBreakpoints();
   const isDark = useDarkMode();
 
-  return <SystemBars style={!breakpoints.md || isDark ? "light" : "dark"} />;
+  return (
+    <StatusBar
+      barStyle={!breakpoints.md || isDark ? "light-content" : "dark-content"}
+    />
+  );
 };
 

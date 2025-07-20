@@ -11,8 +11,7 @@ import {
 } from "@react-navigation/stack";
 import { LinearGradient } from "expo-linear-gradient";
 import { router } from "expo-router";
-import { StyleSheet, View } from "react-native";
-import { SystemBars } from "react-native-edge-to-edge";
+import { StatusBar, StyleSheet, View } from "react-native";
 
 const styles = StyleSheet.create({
   navbar: {
@@ -103,7 +102,7 @@ export default function Layout() {
   return (
     <>
       <PlanContextProvider>
-        {!breakpoints.md && <SystemBars style="light" />}
+        {!breakpoints.md && <StatusBar barStyle="dark-content" />}
         <JsStack
           id={undefined}
           screenOptions={{

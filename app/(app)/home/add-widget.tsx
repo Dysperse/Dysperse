@@ -12,8 +12,7 @@ import TextField from "@/ui/TextArea";
 import { router } from "expo-router";
 import { LexoRank } from "lexorank";
 import React, { useRef, useState } from "react";
-import { View } from "react-native";
-import { SystemBars } from "react-native-edge-to-edge";
+import { StatusBar, View } from "react-native";
 import { FlatList, ScrollView } from "react-native-gesture-handler";
 import Toast from "react-native-toast-message";
 import useSWR from "swr";
@@ -224,7 +223,7 @@ export default function Page() {
     <>
       <MenuButton gradient icon="arrow_back_ios_new" back left />
       <ScrollView>
-        <SystemBars style="light" />
+        <StatusBar barStyle="dark-content" />
         <View style={{ paddingHorizontal: 30 }}>
           <Text
             style={{

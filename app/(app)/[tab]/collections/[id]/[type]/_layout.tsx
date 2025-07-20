@@ -5,7 +5,7 @@ import { useWebStatusBar } from "@/helpers/useWebStatusBar";
 import { useColorTheme } from "@/ui/color/theme-provider";
 import { ThemeProvider } from "@react-navigation/native";
 import { usePathname } from "expo-router";
-import { SystemBars } from "react-native-edge-to-edge";
+import { StatusBar } from "react-native";
 
 function StatusBarStyling() {
   const theme = useColorTheme();
@@ -18,7 +18,7 @@ function StatusBarStyling() {
     cleanup: theme[2],
   });
 
-  return isModal && <SystemBars style="light" />;
+  return isModal && <StatusBar barStyle="dark-content" />;
 }
 
 export default function Layout() {

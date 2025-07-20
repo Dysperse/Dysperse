@@ -2,8 +2,7 @@ import CommandPaletteContent from "@/components/command-palette/content";
 import { useWebStatusBar } from "@/helpers/useWebStatusBar";
 import { useColorTheme } from "@/ui/color/theme-provider";
 import { router } from "expo-router";
-import { View } from "react-native";
-import { SystemBars } from "react-native-edge-to-edge";
+import { StatusBar, View } from "react-native";
 
 export default function Page() {
   const theme = useColorTheme();
@@ -18,7 +17,7 @@ export default function Page() {
 
   return (
     <>
-      <SystemBars style="light" />
+      <StatusBar barStyle="dark-content" />
       <View
         style={{
           backgroundColor: theme[2],

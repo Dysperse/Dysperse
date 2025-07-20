@@ -216,7 +216,38 @@ export default function Grid() {
                     },
                   ]}
                 >
-                  {label.empty ? null : label.other ? (
+                  {label.empty ? null : label.create ? (
+                    <Pressable
+                      onPress={openLabelPicker}
+                      android_ripple={{ color: theme[7] }}
+                      style={({ pressed }: any) => ({
+                        flex: 1,
+                        width: 400,
+                        minWidth: 400,
+                        maxWidth: 400,
+                        minHeight: 5,
+                        borderWidth: 2,
+                        borderColor: theme[pressed ? 6 : 4],
+                        borderStyle: "dashed",
+                        borderRadius: 25,
+                        alignItems: "center",
+                        flexDirection: "row",
+                        gap: 10,
+                        justifyContent: "center",
+                        padding: 20,
+                      })}
+                    >
+                      <Icon>stylus_note</Icon>
+                      <Text
+                        numberOfLines={1}
+                        style={{
+                          color: theme[11],
+                        }}
+                      >
+                        Edit
+                      </Text>
+                    </Pressable>
+                  ) : label.other ? (
                     <Column grid entities={data.entities || []} index={i} />
                   ) : (
                     <Column key={label.id} grid label={label} index={i} />

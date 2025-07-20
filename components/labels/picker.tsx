@@ -504,6 +504,12 @@ export default function LabelPicker({
         onClose={handleClose}
         maxWidth={(breakpoints.md ? 450 : "100%") as any}
         snapPoints={["90%"]}
+        containerStyle={{
+          maxWidth: 500,
+          width: "100%",
+          marginLeft: "50%",
+          transform: [{ translateX: "-50%" }],
+        }}
         {...sheetProps}
       >
         <LabelPickerContent

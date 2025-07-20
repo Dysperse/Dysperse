@@ -635,6 +635,10 @@ export function TaskDateModal({ children, task, updateTask }) {
         snapPoints={["75%"]}
         containerStyle={{
           marginTop: 40 + insets.top,
+          maxWidth: 500,
+          width: "100%",
+          marginLeft: "50%",
+          transform: [{ translateX: "-50%" }],
         }}
         sheetRef={sheetRef}
       >

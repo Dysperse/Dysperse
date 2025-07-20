@@ -91,6 +91,7 @@ export default ({ config }: ConfigContext): ExpoConfig =>
           : process.env.GOOGLE_SERVICE_PLIST,
       },
       android: {
+        edgeToEdgeEnabled: true,
         googleServicesFile: IS_DEV
           ? process.env.GOOGLE_SERVICES_DEV
           : process.env.GOOGLE_SERVICES,

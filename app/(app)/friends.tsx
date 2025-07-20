@@ -27,8 +27,7 @@ import { impactAsync, ImpactFeedbackStyle } from "expo-haptics";
 import { router } from "expo-router";
 import { useCallback, useEffect, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
-import { Keyboard, View } from "react-native";
-import { SystemBars } from "react-native-edge-to-edge";
+import { Keyboard, StatusBar, View } from "react-native";
 import { KeyboardAvoidingView } from "react-native-keyboard-controller";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import Toast from "react-native-toast-message";
@@ -484,7 +483,7 @@ export default function Page() {
           marginHorizontal: "auto",
         }}
       >
-        <SystemBars style="light" />
+        <StatusBar barStyle="light-content" />
         {view === "search" ? (
           <AddFriend setView={setView} friends={data} mutate={mutate} />
         ) : (

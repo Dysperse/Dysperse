@@ -17,10 +17,10 @@ import {
   Animated,
   Easing,
   Platform,
+  StatusBar,
   useWindowDimensions,
   View,
 } from "react-native";
-import { SystemBars } from "react-native-edge-to-edge";
 import { MenuButton } from "../home";
 
 function conditional(condition, main, fallback) {
@@ -226,7 +226,7 @@ export default function Layout() {
                 dark: true,
               }}
             >
-              {!breakpoints.md && <SystemBars style="light" />}
+              {!breakpoints.md && <StatusBar barStyle="dark-content" />}
               <JsStack
                 initialRouteName={breakpoints.md ? "account/index" : "index"}
                 id={undefined}

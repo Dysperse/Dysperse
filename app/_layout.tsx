@@ -32,7 +32,6 @@ import { useFonts } from "expo-font";
 import * as SplashScreen from "expo-splash-screen";
 import React, { useEffect, useRef, useState } from "react";
 import { Platform, StatusBar, useWindowDimensions } from "react-native";
-import { SystemBars } from "react-native-edge-to-edge";
 import "react-native-gesture-handler";
 import { KeyboardProvider } from "react-native-keyboard-controller";
 import { useSharedValue } from "react-native-reanimated";
@@ -175,7 +174,9 @@ function Root() {
               <ColorThemeProvider theme={theme}>
                 <SidebarContext.Provider value={sidebarContextValue}>
                   <SWRWrapper>
-                    <SystemBars style={isDark ? "dark" : "light"} />
+                    <StatusBar
+                      barStyle={!isDark ? "dark-content" : "light-content"}
+                    />
                     <JsStack
                       id={undefined}
                       screenOptions={{

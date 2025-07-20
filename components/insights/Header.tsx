@@ -5,7 +5,7 @@ import { useResponsiveBreakpoints } from "@/helpers/useResponsiveBreakpoints";
 import { useWebStatusBar } from "@/helpers/useWebStatusBar";
 import { useColorTheme } from "@/ui/color/theme-provider";
 import { router } from "expo-router";
-import { SystemBars } from "react-native-edge-to-edge";
+import { StatusBar } from "react-native";
 
 export function Header() {
   const theme = useColorTheme();
@@ -27,7 +27,7 @@ export function Header() {
 
   return (
     <>
-      <SystemBars style="light" />
+      <StatusBar barStyle="dark-content" />
       <MenuButton gradient back />
     </>
   );
