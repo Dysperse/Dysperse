@@ -320,7 +320,6 @@ export function TaskDateMenu({
       ];
 
   const addRecurrenceRef = useRef(null);
-  const menuRef = useRef(null);
 
   return (
     !(isReadOnly && !(task.start || task.recurrenceRule)) && (
@@ -331,7 +330,7 @@ export function TaskDateMenu({
           setValue={(value) => updateTask({ recurrenceRule: value })}
           ref={addRecurrenceRef}
         />
-        <TaskDateModal task={task} updateTask={updateTask}>
+        <TaskDateModal task={task} updateTask={updateTask} onClose={onClose}>
           <Button
             style={{ gap: 10, marginRight: "auto" }}
             containerStyle={{ opacity: 0.6, marginBottom: 3 }}

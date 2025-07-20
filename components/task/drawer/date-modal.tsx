@@ -620,7 +620,7 @@ function TaskDateModalContent({ task, updateTask }) {
   );
 }
 
-export function TaskDateModal({ children, task, updateTask }) {
+export function TaskDateModal({ onClose, children, task, updateTask }) {
   const sheetRef = useRef(null);
   const insets = useSafeAreaInsets();
 
@@ -640,6 +640,7 @@ export function TaskDateModal({ children, task, updateTask }) {
           marginLeft: "50%",
           transform: [{ translateX: "-50%" }],
         }}
+        onClose={onClose}
         sheetRef={sheetRef}
       >
         <TaskDateModalContent task={task} updateTask={updateTask} />
