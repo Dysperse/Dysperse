@@ -265,10 +265,10 @@ function Email({
 
   useEffect(() => {
     if (Platform.OS === "web") {
-      inputRef.current.setAttribute("name", "email");
-      passwordRef.current.setAttribute("name", "password");
+      inputRef.current?.setAttribute("name", "email");
+      passwordRef.current?.setAttribute("name", "password");
     }
-  });
+  }, [showPassword, passwordVisible]);
 
   const insets = useSafeAreaInsets();
   const breakpoints = useResponsiveBreakpoints();
