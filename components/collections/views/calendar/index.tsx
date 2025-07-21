@@ -287,7 +287,7 @@ function Date({ mutate, day, events, theme, dIdx, wIdx }) {
           marginHorizontal: 10,
           borderRadius: 50,
         }}
-        bottomInset={insets.bottom + 10}
+        bottomInset={insets.bottom}
       >
         <View
           style={{
