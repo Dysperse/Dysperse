@@ -257,8 +257,10 @@ function Email({
   const [passwordVisible, setPasswordVisible] = useState(false);
 
   useEffect(() => {
-    if (showPassword) passwordRef.current?.focus();
-    else inputRef.current?.focus();
+    setTimeout(() => {
+      if (showPassword) passwordRef.current?.focus();
+      else inputRef.current?.focus();
+    }, 800);
   }, [showPassword]);
 
   const onFinish = () => setTimeout(handleSubmit, 100);
@@ -317,7 +319,6 @@ function Email({
                   borderWidth: 0,
                   opacity: showPassword ? 0.4 : 1,
                 }}
-                autoFocus={!showPassword}
                 editable={!showPassword}
                 inputRef={inputRef}
                 placeholder="Email..."

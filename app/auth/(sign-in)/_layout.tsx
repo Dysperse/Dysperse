@@ -30,8 +30,7 @@ export function BannerImage() {
         paddingTop: breakpoints.md ? insets.top : 0,
         paddingBottom: breakpoints.md ? insets.bottom : 0,
         flex: breakpoints.md ? 0.8 : 1,
-        marginTop: 10,
-        height: "100%",
+        marginVertical: breakpoints.md ? 10 : 0,
       }}
     >
       <ImageBackground

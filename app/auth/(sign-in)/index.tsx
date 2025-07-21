@@ -275,6 +275,7 @@ export default function SignIn() {
         style={{
           flexDirection: "row",
           gap: 10,
+          width: "100%",
           maxWidth: 500,
           marginHorizontal: "auto",
         }}
@@ -379,7 +380,7 @@ export default function SignIn() {
               iconStyle={{ color: !isDark ? "#fff" : "#000" }}
               android_ripple={{ color: isDark ? "#000" : "#fff" }}
               style={[
-                { justifyContent: "flex-start", gap: 15 },
+                { gap: 15 },
                 !breakpoints.md && {
                   flexDirection: "column",
                   justifyContent: "center",
