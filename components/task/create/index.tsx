@@ -570,6 +570,7 @@ function TaskNameInput({
             blurOnSubmit
             enterKeyHint="done"
             defaultValue={value}
+            value={value}
             bounces={false}
             onSubmitEditing={handleSubmitButtonClick}
             onKeyPress={(e) => {
