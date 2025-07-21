@@ -555,6 +555,7 @@ function TaskNameInput({
   nameRef: any;
 }) {
   const theme = useColorTheme();
+  const { forceClose } = useBottomSheet();
 
   return (
     <Controller
@@ -574,12 +575,13 @@ function TaskNameInput({
             bounces={false}
             onSubmitEditing={handleSubmitButtonClick}
             onKeyPress={(e) => {
-              if (
-                e.nativeEvent.key === "Enter" ||
-                e.nativeEvent.key === "Escape"
-              ) {
+              if (e.nativeEvent.key === "Enter") {
                 e.preventDefault();
-                if (e.nativeEvent.key === "Enter") handleSubmitButtonClick();
+                handleSubmitButtonClick();
+              }
+              if (e.nativeEvent.key === "Escape") {
+                e.preventDefault();
+                forceClose();
               }
             }}
             scrollEnabled={false}
