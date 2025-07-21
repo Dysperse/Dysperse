@@ -46,7 +46,7 @@ const RenderSuggestions: FC<MentionSuggestionsProps & { suggestions: any }> = ({
   }
 
   const keyboardHeight = isKeyboardVisible
-    ? Keyboard.metrics()?.height ?? 0
+    ? Keyboard.metrics?.()?.height ?? 0
     : 0;
 
   return (

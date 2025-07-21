@@ -293,7 +293,7 @@ function Email({
               fontFamily: "serifText700",
               fontSize: 30,
               color: theme[11],
-              marginTop: "auto",
+              marginTop: Platform.OS === "web" ? 100 : "auto",
             },
           ]}
         >

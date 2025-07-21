@@ -1307,7 +1307,7 @@ const CreateTask = ({
           borderRadius: 40,
           maxHeight: breakpoints.md
             ? height - 150
-            : height - (Keyboard?.metrics()?.height || 0) - 100,
+            : height - (Keyboard?.metrics?.()?.height || 0) - 100,
         }}
         maxBackdropOpacity={breakpoints.md ? 0.05 : 0.1}
       >
