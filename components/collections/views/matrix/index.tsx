@@ -446,7 +446,7 @@ export default function Matrix() {
             {() => (
               <>
                 <View style={[styles.row, { gap: breakpoints.md ? 20 : 10 }]}>
-                  <Label size={100} y="Important" />
+                  <Label size={80} y="Overdue" />
                   {breakpoints.md ? (
                     <AttachStep index={0} style={{ flex: 1, height: "100%" }}>
                       <Cell
@@ -488,7 +488,7 @@ export default function Matrix() {
                   )}
                 </View>
                 <View style={[styles.row, { gap: breakpoints.md ? 20 : 10 }]}>
-                  <Label size={150} y="Less important" />
+                  <Label size={90} y="Upcoming" />
                   {breakpoints.md ? (
                     <AttachStep index={2} style={{ flex: 1, height: "100%" }}>
                       <Cell
