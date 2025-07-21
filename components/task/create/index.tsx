@@ -60,7 +60,6 @@ import Animated, {
   useSharedValue,
   withSpring,
 } from "react-native-reanimated";
-import { useSafeAreaInsets } from "react-native-safe-area-context";
 import Toast from "react-native-toast-message";
 import useSWR from "swr";
 import { TaskAttachmentPicker } from "../drawer/attachment-picker";
@@ -1277,7 +1276,6 @@ const CreateTask = ({
   const breakpoints = useResponsiveBreakpoints();
   const { session } = useUser();
   const hintRef = useRef(null);
-  const insets = useSafeAreaInsets();
 
   if (!session) return null;
 
@@ -1285,7 +1283,6 @@ const CreateTask = ({
     <>
       {trigger}
       <Modal
-        bottomInset={insets.bottom}
         animation={breakpoints.md ? "SCALE" : "SLIDE"}
         sheetRef={ref}
         stackBehavior={stackBehavior}
