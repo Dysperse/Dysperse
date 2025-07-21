@@ -304,7 +304,10 @@ const CollectionNavbar = memo(function CollectionNavbar({
             text: "Tap here to switch between views",
           },
           {
-            text: "Find the tasks you need by hitting ⌘ F",
+            text:
+              Platform.OS === "web"
+                ? "Find the tasks you need by hitting ⌘ F"
+                : "Search for tasks and narrow results down with filters",
           },
           {
             text: "Edit, print, and import tasks to your collection",
