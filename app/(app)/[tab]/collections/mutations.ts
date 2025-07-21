@@ -119,7 +119,7 @@ export const mutations = {
     },
     update: (mutate) => (newTask) => {
       if (!newTask) return;
-      if (newTask.recurrenceRule) return mutate();
+      if (newTask.recurrenceRule || newTask.parentTaskId) return mutate();
 
       mutate(
         (oldData) => {
