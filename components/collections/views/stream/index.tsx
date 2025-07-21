@@ -255,15 +255,19 @@ export default function Stream() {
         return (
           !t.completionInstances.length &&
           dayjs(t.start).isBefore(dayjs()) &&
-          (!t.dateOnly || !dayjs(t.start).isToday())
+          (!t.dateOnly || !dayjs(t.start).isToday()) &&
+          !t.parentTaskId
         );
       else if (_view === "upcoming")
         return (
           dayjs(t.start).isAfter(dayjs().startOf("day")) &&
-          !t.completionInstances.length
+          !t.completionInstances.length &&
+          !t.parentTaskId
         );
       else if (_view === "completed")
-        return t.completionInstances.length && !t.recurrenceRule;
+        return (
+          t.completionInstances.length && !t.recurrenceRule && !t.parentTaskId
+        );
       else if (_view === "unscheduled")
         return (
           !t.start &&
@@ -271,7 +275,8 @@ export default function Stream() {
           t.completionInstances.length === 0 &&
           !t.parentTaskId
         );
-      else if (_view === "repeating") return t.recurrenceRule;
+      else if (_view === "repeating")
+        return t.recurrenceRule && !t.parentTaskId;
     });
 
   return (
