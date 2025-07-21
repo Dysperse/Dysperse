@@ -1026,6 +1026,7 @@ const BottomSheetContent = ({
       >
         <BottomSheetScrollView
           keyboardShouldPersistTaps="handled"
+          bounces={false}
           contentContainerStyle={{ gap: 20 }}
           style={{ flexGrow: 1 }}
         >
