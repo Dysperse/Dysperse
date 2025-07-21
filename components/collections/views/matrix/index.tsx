@@ -543,9 +543,9 @@ export default function Matrix() {
           }
           name={
             currentColumn == "pinnedImportant"
-              ? "Urgent & important"
+              ? "Urgent & overdue"
               : currentColumn == "important"
-              ? "Important"
+              ? "Overdue"
               : currentColumn == "pinned"
               ? "Urgent"
               : "Least priority"
