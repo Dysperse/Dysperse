@@ -85,7 +85,7 @@ export default function Page() {
   //   });
   // };
 
-  const name = session.user?.profile?.name?.split(" ")[0];
+  const name = session.user?.profile?.name?.split(" ")?.[0];
 
   return (
     <Content noPaddingTop>
@@ -115,7 +115,8 @@ export default function Page() {
             }}
             aria-valuetext="web-blur"
           >
-            Hey there, {name}
+            Hey there{name ? ", " : "!"}
+            {name}
           </Text>
           <Text
             numberOfLines={1}
