@@ -578,8 +578,7 @@ function TaskNameInput({
               if (e.nativeEvent.key === "Enter") {
                 e.preventDefault();
                 handleSubmitButtonClick();
-              }
-              if (e.nativeEvent.key === "Escape") {
+              } else if (e.nativeEvent.key === "Escape") {
                 e.preventDefault();
                 forceClose();
               }
