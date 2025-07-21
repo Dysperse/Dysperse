@@ -146,7 +146,7 @@ const Modal = (
             ...props.closeContainerStyles,
           },
         ]}
-        // onPress={handleClose}
+        onTouchEnd={handleClose}
       >
         <Pressable
           onPress={(e) => e.stopPropagation()}
