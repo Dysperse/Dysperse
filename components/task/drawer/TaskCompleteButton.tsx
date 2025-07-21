@@ -93,7 +93,7 @@ export function TaskCompleteButton() {
       <>
         <AttachStep
           index={4}
-          style={{ minWidth: 120, flex: breakpoints.md ? 2 : undefined }}
+          style={{ width: 120, flex: breakpoints.md ? 2 : undefined }}
         >
           <Button
             bold

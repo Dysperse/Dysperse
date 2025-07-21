@@ -18,7 +18,7 @@ export function TaskAttachmentPicker({
     <SafeScrollView
       showsHorizontalScrollIndicator={false}
       style={{
-        maxHeight: Dimensions.get("window").height - 200,
+        maxHeight: Dimensions.get("window").height - 300,
         paddingHorizontal: 15,
         paddingTop: 30,
         paddingBottom: isTaskCreation ? 10 : 30,

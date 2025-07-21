@@ -150,6 +150,7 @@ export const normalizeRecurrenceRuleObject = (rule) => {
     ...(rule.dtstart && { dtstart: dayjs(rule.dtstart).toDate() }),
   });
 };
+
 function SubtaskList() {
   const { task, updateTask, isReadOnly } = useTaskDrawerContext();
   const theme = useColorTheme();

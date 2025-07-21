@@ -555,7 +555,7 @@ function TaskHome({ labelPickerRef, forceClose, fullscreen }) {
   const SafeScrollView = forceClose ? BottomSheetScrollView : ScrollView;
 
   const barStyle = useAnimatedStyle(() => ({
-    opacity: withSpring(fullscreen.value === 1 ? 0.5 : 1),
+    opacity: withSpring(fullscreen.value === 1 ? 0.4 : 1),
     pointerEvents: fullscreen.value === 1 ? "none" : "auto",
   }));
 
@@ -563,7 +563,7 @@ function TaskHome({ labelPickerRef, forceClose, fullscreen }) {
     <SafeScrollView
       showsHorizontalScrollIndicator={false}
       style={{
-        maxHeight: Dimensions.get("window").height - 200,
+        maxHeight: Dimensions.get("window").height - 300,
       }}
       onScrollBeginDrag={Keyboard.dismiss}
     >
@@ -657,7 +657,7 @@ export function TaskDrawerContent({
   const fullscreen = useSharedValue(0);
 
   const barStyle = useAnimatedStyle(() => ({
-    opacity: withSpring(fullscreen.value === 1 ? 0.5 : 1),
+    opacity: withSpring(fullscreen.value === 1 ? 0.4 : 1),
     pointerEvents: fullscreen.value === 1 ? "none" : "auto",
   }));
 
