@@ -119,7 +119,7 @@ const ReorderColumn = ({
     <Pressable
       onLongPress={Platform.OS !== "web" && drag}
       style={{
-        width: list ? undefined : 320,
+        width: list ? undefined : 250,
         height: list ? undefined : "100%",
         borderRadius: 20,
         backgroundColor: theme[3],

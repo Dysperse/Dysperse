@@ -266,7 +266,10 @@ export default function Stream() {
         return t.completionInstances.length && !t.recurrenceRule;
       else if (_view === "unscheduled")
         return (
-          !t.start && !t.recurrenceRule && t.completionInstances.length === 0
+          !t.start &&
+          !t.recurrenceRule &&
+          t.completionInstances.length === 0 &&
+          !t.parentTaskId
         );
       else if (_view === "repeating") return t.recurrenceRule;
     });
