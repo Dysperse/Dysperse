@@ -25,6 +25,7 @@ import {
   View,
   useWindowDimensions,
 } from "react-native";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 import Toast from "react-native-toast-message";
 import useSWR from "swr";
 import { TaskDrawerContent } from "./content";
@@ -265,6 +266,7 @@ export function TaskDrawer({
   }, [isReadOnly]);
 
   const tappedRef = useRef(0);
+  const insets = useSafeAreaInsets();
 
   const handleRefTap = () => {
     tappedRef.current++;

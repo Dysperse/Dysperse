@@ -1,6 +1,7 @@
 import { memo, useCallback, useEffect, useMemo } from "react";
 import {
   InteractionManager,
+  Keyboard,
   Platform,
   Pressable,
   useWindowDimensions,
@@ -92,6 +93,24 @@ const Modal = (
     []
   );
 
+  const paddingValue = useSharedValue(insets.bottom);
+  useEffect(() => {
+    Keyboard.addListener("keyboardWillHide", () => {
+      paddingValue.value = insets.bottom;
+    });
+    Keyboard.addListener("keyboardWillShow", () => {
+      paddingValue.value = 15;
+    });
+  }, [insets, paddingValue]);
+
+  const paddingStyle = useAnimatedStyle(() => ({
+    paddingBottom: withSpring(paddingValue.value, {
+      overshootClamping: true,
+      stiffness: 200,
+      damping: 20,
+    }),
+  }));
+
   return (
     <BottomSheet
       handleComponent={() => null}
@@ -113,17 +132,21 @@ const Modal = (
       backgroundStyle={{ backgroundColor: "transparent" }}
     >
       <SetSharedValue value={state} from={0} to={1} />
-      <Pressable
-        style={{
-          width: "100%",
-          height: "100%",
-          padding: 15,
-          paddingTop: insets.top,
-          alignItems: "center",
-          justifyContent: "center",
-          ...props.closeContainerStyles,
-        }}
-        onPress={handleClose}
+      <Animated.View
+        style={[
+          paddingStyle,
+          {
+            width: "100%",
+            height: "100%",
+            padding: 15,
+            paddingTop: insets.top,
+            paddingBottom: insets.bottom,
+            alignItems: "center",
+            justifyContent: "center",
+            ...props.closeContainerStyles,
+          },
+        ]}
+        // onPress={handleClose}
       >
         <Pressable
           onPress={(e) => e.stopPropagation()}
@@ -160,7 +183,7 @@ const Modal = (
           </Animated.View>
           {props.outerContent}
         </Pressable>
-      </Pressable>
+      </Animated.View>
     </BottomSheet>
   );
 };
