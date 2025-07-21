@@ -111,6 +111,8 @@ const Modal = (
     }),
   }));
 
+  const AnimatedPressable = Animated.createAnimatedComponent(Pressable);
+
   return (
     <BottomSheet
       handleComponent={() => null}
@@ -132,7 +134,7 @@ const Modal = (
       backgroundStyle={{ backgroundColor: "transparent" }}
     >
       <SetSharedValue value={state} from={0} to={1} />
-      <Animated.View
+      <AnimatedPressable
         style={[
           paddingStyle,
           {
@@ -146,7 +148,7 @@ const Modal = (
             ...props.closeContainerStyles,
           },
         ]}
-        onTouchEnd={handleClose}
+        onPress={handleClose}
       >
         <Pressable
           onPress={(e) => e.stopPropagation()}
@@ -183,7 +185,7 @@ const Modal = (
           </Animated.View>
           {props.outerContent}
         </Pressable>
-      </Animated.View>
+      </AnimatedPressable>
     </BottomSheet>
   );
 };
