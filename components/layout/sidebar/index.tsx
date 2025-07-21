@@ -793,6 +793,7 @@ function SecondarySidebar({ scrollRef }) {
           setTimeout(() => {
             router.dismissAll();
             router.replace("/");
+            impactAsync(ImpactFeedbackStyle.Light);
             if (Platform.OS !== "web") impactAsync(ImpactFeedbackStyle.Soft);
             InteractionManager.runAfterInteractions(() => {
               sidebarRef?.current?.openDrawer?.();

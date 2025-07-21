@@ -924,7 +924,7 @@ const BottomSheetContent = ({
   const { session } = useUser();
   useEffect(() => {
     if (!session.user.hintsViewed.includes("CREATE_TASK")) return;
-    if (Platform.OS === "web") setTimeout(() => nameRef.current?.focus(), 0);
+    if (Platform.OS === "web") setTimeout(() => nameRef.current?.focus(), 100);
     setTimeout(
       () => {
         InteractionManager.runAfterInteractions(() => {
@@ -1091,7 +1091,10 @@ const BottomSheetContent = ({
               paddingTop: 0,
             }}
           >
-            <AttachStep index={2} style={{ flex: 1 }}>
+            <AttachStep
+              index={2}
+              style={{ flex: Platform.OS === "web" ? undefined : 1 }}
+            >
               <Button
                 icon={view === "HOME" ? "note_stack_add" : "west"}
                 text={view === "HOME" ? undefined : "Attach"}
@@ -1105,7 +1108,9 @@ const BottomSheetContent = ({
                 }}
                 containerStyle={
                   view === "HOME"
-                    ? { paddingHorizontal: 0, minWidth: 0 }
+                    ? Platform.OS === "web"
+                      ? { width: 50, minWidth: 0 }
+                      : { paddingHorizontal: 0, minWidth: 0 }
                     : { marginRight: "auto" }
                 }
                 style={view === "ATTACH" && { paddingHorizontal: 20 }}
