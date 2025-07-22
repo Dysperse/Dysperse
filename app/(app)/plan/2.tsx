@@ -117,6 +117,7 @@ export default function Page() {
         ].filter((t) => {
           return (
             !t.completionInstances.length &&
+            !t.trash &&
             dayjs(t.start).isBefore(dayjs().startOf("day"))
           );
         })
