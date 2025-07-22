@@ -266,8 +266,6 @@ const CreateTaskLabelInput = memo(function CreateTaskLabelInput({
         >
           {!label?.id && collectionId ? (
             <Button
-              chip
-              dense
               style={{ gap: 10, opacity: 0.5 }}
               icon={
                 collectionData ? (
@@ -284,7 +282,6 @@ const CreateTaskLabelInput = memo(function CreateTaskLabelInput({
               height={35}
               textStyle={{ fontSize: 15 }}
               containerStyle={{ borderRadius: 15 }}
-              variant="outlined"
               text={
                 collectionData
                   ? collectionData.find((e) => e.id === collectionId)?.name
