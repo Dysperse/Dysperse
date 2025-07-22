@@ -11,7 +11,7 @@ import { useBottomSheet } from "@gorhom/bottom-sheet";
 import dayjs from "dayjs";
 import { impactAsync, ImpactFeedbackStyle } from "expo-haptics";
 import React from "react";
-import { View } from "react-native";
+import { Platform, View } from "react-native";
 import ConfettiCannon from "react-native-confetti-cannon";
 import Toast from "react-native-toast-message";
 import { useTaskDrawerContext } from "./context";
@@ -93,7 +93,10 @@ export function TaskCompleteButton() {
       <>
         <AttachStep
           index={4}
-          style={{ width: 120, flex: breakpoints.md ? 2 : undefined }}
+          style={{
+            width: 120,
+            flex: breakpoints.md ? 2 : Platform.OS === "web" ? 2 : 0,
+          }}
         >
           <Button
             bold
