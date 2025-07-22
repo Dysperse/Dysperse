@@ -612,34 +612,36 @@ function TaskPinButton() {
   });
 
   return (
-    <Button
-      large
-      onPress={handlePriorityChange}
-      icon={
-        <Animated.View style={rotateStyle}>
-          <Icon
-            filled={task.pinned}
-            style={task.pinned ? { color: orange[11] } : {}}
-          >
-            push_pin
-          </Icon>
-        </Animated.View>
-      }
-      backgroundColors={
-        task.pinned
-          ? {
-              default: addHslAlpha(orange[11], 0.2),
-              hovered: addHslAlpha(orange[11], 0.3),
-              pressed: addHslAlpha(orange[11], 0.4),
-            }
-          : {
-              default: addHslAlpha(theme[11], 0.1),
-              hovered: addHslAlpha(theme[11], 0.2),
-              pressed: addHslAlpha(theme[11], 0.3),
-            }
-      }
-      style={task.pinned && { borderColor: orange[11] }}
-    />
+    <View style={{ flex: 1 }}>
+      <Button
+        large
+        onPress={handlePriorityChange}
+        icon={
+          <Animated.View style={rotateStyle}>
+            <Icon
+              filled={task.pinned}
+              style={task.pinned ? { color: orange[11] } : {}}
+            >
+              push_pin
+            </Icon>
+          </Animated.View>
+        }
+        backgroundColors={
+          task.pinned
+            ? {
+                default: addHslAlpha(orange[11], 0.2),
+                hovered: addHslAlpha(orange[11], 0.3),
+                pressed: addHslAlpha(orange[11], 0.4),
+              }
+            : {
+                default: addHslAlpha(theme[11], 0.1),
+                hovered: addHslAlpha(theme[11], 0.2),
+                pressed: addHslAlpha(theme[11], 0.3),
+              }
+        }
+        style={task.pinned && { borderColor: orange[11] }}
+      />
+    </View>
   );
 }
 
