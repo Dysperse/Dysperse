@@ -379,14 +379,7 @@ export default function SignIn() {
               textStyle={{ color: !isDark ? "#fff" : "#000" }}
               iconStyle={{ color: !isDark ? "#fff" : "#000" }}
               android_ripple={{ color: isDark ? "#000" : "#fff" }}
-              style={[
-                { gap: 15 },
-                !breakpoints.md && {
-                  flexDirection: "column",
-                  justifyContent: "center",
-                  gap: 5,
-                },
-              ]}
+              style={[{ gap: 15 }]}
               iconSize={30}
               height={70}
               containerStyle={[{ flex: 1 }, { borderRadius: 22 }]}
@@ -395,7 +388,7 @@ export default function SignIn() {
         )}
       </View>
 
-      {!breakpoints.md && <BannerImage />}
+      {!breakpoints.lg && <BannerImage />}
     </View>
   );
 }

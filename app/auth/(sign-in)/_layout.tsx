@@ -26,10 +26,10 @@ export function BannerImage() {
   return (
     <View
       style={{
-        padding: breakpoints.md ? 10 : 0,
-        paddingTop: breakpoints.md ? insets.top : 0,
-        paddingBottom: breakpoints.md ? insets.bottom : 0,
-        flex: breakpoints.md ? 0.8 : 1,
+        padding: breakpoints.lg ? 10 : 0,
+        paddingTop: breakpoints.lg ? insets.top : 0,
+        paddingBottom: breakpoints.lg ? insets.bottom : 0,
+        flex: breakpoints.lg ? 0.8 : 1,
         marginVertical: 10,
       }}
     >
@@ -124,11 +124,11 @@ export default function Layout() {
       <StatusBar barStyle="default" />
       <View
         style={{
-          flexDirection: breakpoints.md ? "row" : "column-reverse",
+          flexDirection: breakpoints.lg ? "row" : "column-reverse",
           flex: 1,
         }}
       >
-        {breakpoints.md && <BannerImage />}
+        {breakpoints.lg && <BannerImage />}
         <View style={{ flex: 1 }}>
           <JsStack
             id={undefined}
@@ -174,8 +174,8 @@ export default function Layout() {
               animation: "default",
               cardStyle: {
                 backgroundColor: theme[1],
-                paddingTop: breakpoints.md ? insets.top + 20 : insets.top,
-                paddingBottom: breakpoints.md
+                paddingTop: breakpoints.lg ? insets.top + 20 : insets.top,
+                paddingBottom: breakpoints.lg
                   ? insets.bottom + 20
                   : insets.bottom,
               },
