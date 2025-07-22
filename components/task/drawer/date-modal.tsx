@@ -59,7 +59,7 @@ function TaskDateModalContent({ task, updateTask }) {
       if (time) {
         const parsedTime = dayjs(time);
         if (parsedTime.isValid()) {
-          setLastUsedTime(parsedTime);
+          setLastUsedTime(parsedTime.toISOString());
         }
       }
     });
@@ -662,3 +662,4 @@ export function TaskDateModal({ onClose, children, task, updateTask }) {
     </>
   );
 }
+
