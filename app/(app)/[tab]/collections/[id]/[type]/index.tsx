@@ -571,10 +571,13 @@ function NativeProtection() {
 }
 
 function Protection() {
+  const isDark = useDarkMode();
+  const [showProtection, setShowProtection] = useState(false);
+
   useEffect(() => {
     const update = () => {
       const isInactive = document.hidden || !document.hasFocus();
-      document.body.classList[isInactive ? "add" : "remove"]("protected");
+      setShowProtection(isInactive);
     };
 
     update();
@@ -590,7 +593,23 @@ function Protection() {
     };
   }, []);
 
-  return null;
+  return (
+    <BlurView
+      style={{
+        position: "absolute",
+        top: 0,
+        left: 0,
+        right: 0,
+        bottom: 0,
+        zIndex: 1000,
+        display: showProtection ? "flex" : "none",
+        borderRadius: 20,
+        overflow: "hidden",
+      }}
+      intensity={50}
+      tint={isDark ? "dark" : "light"}
+    />
+  );
 }
 
 export default function Page({ isPublic }: { isPublic: boolean }) {
