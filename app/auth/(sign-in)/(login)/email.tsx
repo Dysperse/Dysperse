@@ -1,5 +1,6 @@
 import { useResponsiveBreakpoints } from "@/helpers/useResponsiveBreakpoints";
 import { useWebStatusBar } from "@/helpers/useWebStatusBar";
+import Alert from "@/ui/Alert";
 import { Button } from "@/ui/Button";
 import OtpInput from "@/ui/OtpInput";
 import Spinner from "@/ui/Spinner";
@@ -299,14 +300,21 @@ function Email({
             },
           ]}
         >
-          Sign in with email
+          What's your email?
         </Text>
         <Controller
           control={control}
           rules={{
             required: true,
+            pattern: {
+              value: /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/,
+              message: "⚠️  Invalid email address",
+            },
           }}
-          render={({ field: { value, onChange, onBlur } }) => (
+          render={({
+            field: { value, onChange, onBlur },
+            fieldState: { error },
+          }) => (
             <View style={{ position: "relative" }}>
               <TextField
                 style={{
@@ -321,7 +329,7 @@ function Email({
                 }}
                 editable={!showPassword}
                 inputRef={inputRef}
-                placeholder="Email..."
+                placeholder="hello@dysperse.com"
                 onBlur={onBlur}
                 defaultValue={value}
                 onChangeText={onChange}
@@ -350,6 +358,9 @@ function Email({
                     hovered: addHslAlpha(theme[11], 0.05),
                   }}
                 />
+              )}
+              {error?.message?.trim?.() && (
+                <Alert subtitle={error.message} style={{ marginTop: 10 }} />
               )}
             </View>
           )}

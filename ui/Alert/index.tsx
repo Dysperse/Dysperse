@@ -48,10 +48,12 @@ export default function Alert({
         style,
       ]}
     >
-      <Emoji
-        emoji={emoji}
-        size={direction === "row" ? (dense ? 24 : 30) : 50}
-      />
+      {emoji && (
+        <Emoji
+          emoji={emoji}
+          size={direction === "row" ? (dense ? 24 : 30) : 50}
+        />
+      )}
       <View style={{ flex: 1 }}>
         <Text
           style={{
@@ -79,3 +81,4 @@ export default function Alert({
     </View>
   );
 }
+

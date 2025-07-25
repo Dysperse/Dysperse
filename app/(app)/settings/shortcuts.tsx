@@ -13,6 +13,15 @@ export default function Page() {
 
   const shortcuts = [
     {
+      name: "Layout",
+      shorcuts: [
+        {
+          keys: "ctrl+s",
+          action: "Toggle sidebar",
+        },
+      ],
+    },
+    {
       name: "Tab management",
       shorcuts: [
         {

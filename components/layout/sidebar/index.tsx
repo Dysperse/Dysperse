@@ -346,6 +346,7 @@ export const LogoButton = memo(function LogoButton({
                     paddingLeft: 3,
                     gap: 0,
                     paddingVertical: 10,
+                    borderRadius: 20,
                   },
                   Platform.OS === "web" &&
                     ({ WebkitAppRegion: "no-drag" } as any),
