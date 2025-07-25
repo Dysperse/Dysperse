@@ -54,7 +54,7 @@ import {
   useWindowDimensions,
   View,
 } from "react-native";
-import { ScrollView } from "react-native-gesture-handler";
+import { FlatList, ScrollView } from "react-native-gesture-handler";
 import Animated, {
   useAnimatedStyle,
   useSharedValue,
@@ -62,6 +62,7 @@ import Animated, {
 } from "react-native-reanimated";
 import Toast from "react-native-toast-message";
 import useSWR from "swr";
+import { useDebounce } from "use-debounce";
 import { TaskAttachmentPicker } from "../drawer/attachment-picker";
 import { TaskDrawerContext } from "../drawer/context";
 import { TaskDateMenu } from "../drawer/details";
@@ -80,7 +81,7 @@ function PinTask({ control }: any) {
         <IconButton
           icon="push_pin"
           size={50}
-          style={breakpoints.md ? { marginLeft: "auto" } : { width: "100%" }}
+          style={Platform.OS === "web" ? undefined : { width: "100%" }}
           onPress={() => {
             if (Platform.OS !== "web") impactAsync(ImpactFeedbackStyle.Heavy);
             onChange(!value);
@@ -310,142 +311,57 @@ const CreateTaskLabelInput = memo(function CreateTaskLabelInput({
   );
 });
 
-function NlpProcessor({
-  watch,
-  value,
-  setValue,
-  onChange,
-  suggestions,
-}: {
-  watch: any;
-  value: string;
-  setValue: any;
-  onChange: any;
-  suggestions: any;
-}) {
-  const dateValue = watch("date");
+const timeProcessor = (taskName: string, taskDate) => {
+  const regex =
+    /(?:at|from|during|after|before|by)\s((1[0-2]|0?[1-9])(?::([0-5][0-9]))?(am|pm)?)/i;
 
-  useEffect(() => {
-    if (value.includes("\n")) {
-      onChange(value.replaceAll("\n", ""));
-    }
-    const replacementString = Platform.OS === "web" ? "@" : "/";
-    suggestions.forEach((suggestion) => {
-      if (
-        value.includes(suggestion.name) &&
-        !value.includes(
-          `${replacementString}[${suggestion.name}](${suggestion.id})`
-        )
-      ) {
-        setValue(suggestion.value[0], suggestion.value[1]);
-        onChange(
-          value.replace(
-            suggestion.name,
-            `${replacementString}[${suggestion.name}](${suggestion.id})`
-          )
-        );
-      }
-    });
-    const regex =
-      /(?:at|from|during|after|before|by)\s((1[0-2]|0?[1-9])(?::([0-5][0-9]))?(am|pm)?)\s/i;
-    if (
-      dayjs(dateValue).isValid() &&
-      value.match(regex) &&
-      !value.includes("](time-prediction)")
-    ) {
-      const match = value.match(regex);
-      // 0: "at 10:00pm ", 1: "10:00", 2: "10", 3: "00", 4: "pm"
-      const [_, __, hour, minutes] = match;
-      let amPm = match[4];
+  if (
+    dayjs(taskDate).isValid() &&
+    taskName.match(regex) &&
+    !taskName.includes("](time-prediction)")
+  ) {
+    const match = taskName.match(regex);
+    // 0: "at 10:00pm ", 1: "10:00", 2: "10", 3: "00", 4: "pm"
+    const [_, __, hour, minutes] = match;
+    let amPm = match[4];
 
-      if (!amPm) {
-        // make these values sensitive to a typical human day
-        amPm = {
-          "1": "pm",
-          "2": "pm",
-          "3": "pm",
-          "4": "pm",
-          "5": "pm",
-          "6": "pm",
-          "7": "pm",
-          "8": "pm",
-          "9": "pm",
-          "10": "pm",
-          "11": "am",
-          "12": "pm",
-        }[hour];
-      }
-
-      onChange(
-        value.replace(
-          match[0],
-          `${replacementString}[${match[0]}](time-prediction)`
-        )
-      );
-
-      setValue("dateOnly", false);
-      setValue(
-        "date",
-        dayjs(dateValue)
-          .hour((Number(hour) % 12) + (amPm === "pm" ? 12 : 0))
-          .minute(Number(minutes) || 0)
-          .second(0)
-          .millisecond(0)
-      );
+    if (!amPm) {
+      // make these values sensitive to a typical human day
+      amPm = {
+        "1": "pm",
+        "2": "pm",
+        "3": "pm",
+        "4": "pm",
+        "5": "pm",
+        "6": "pm",
+        "7": "pm",
+        "8": "pm",
+        "9": "pm",
+        "10": "pm",
+        "11": "am",
+        "12": "pm",
+      }[hour];
     }
 
-    if (value.includes(" ](time-prediction)")) {
-      onChange(value.replace(" ](time-prediction)", "](time-prediction) "));
-    }
+    const value = dayjs(taskDate)
+      .hour((Number(hour) % 12) + (amPm === "pm" ? 12 : 0))
+      .minute(Number(minutes) || 0)
+      .second(0)
+      .millisecond(0);
 
-    if (
-      /for [0-9]\s*(h|d|w|hour|hours|day|week)\s/.test(value) &&
-      !value.includes("](end)")
-    ) {
-      const match = value.match(/for [0-9]\s*(h|d|w|hour|hours|day|week)/);
-      onChange(
-        value.replace(match[0], `${replacementString}[${match[0]}](end)`)
-      );
-    }
-    if (value.includes("h](end)our")) {
-      onChange(value.replace(/([0-9])\s*h\]\(end\)our/, "$1 hour](end)"));
-    }
-  }, [value, suggestions, onChange, dateValue, setValue]);
+    if (taskDate && dayjs(taskDate).isSame(value)) return;
 
-  return null;
-}
-
-function LabelNlpProcessor({
-  value,
-  onChange,
-  label,
-  setValue,
-}: {
-  value: string;
-  onChange: any;
-  label: any;
-  setValue;
-}) {
-  useEffect(() => {
-    const regex =
-      /__LABEL__{([0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12})}__/g;
-
-    value.match(regex)?.forEach((match) => {
-      const id = match.replace(/__LABEL__{([0-9a-f-]+)}__/, "$1");
-      const str = `${Platform.OS === "web" ? "@" : "#"}[${
-        label.find((e) => e.id === id)?.name
-      }](${match})${Platform.OS === "web" ? "" : " "}`;
-
-      onChange(value.replace(str, ""));
-      setValue(
-        "label",
-        label.find((e) => e.id === id)
-      );
-    });
-  }, [value, label, onChange, setValue]);
-
-  return null;
-}
+    return {
+      value: {
+        dateOnly: false,
+        date: value.format("YYYY-MM-DD HH:mm:ss"),
+      },
+      display: {
+        text: "Time: " + value.format("h:mm A"),
+      },
+    };
+  }
+};
 
 const TimeSuggestion = ({
   value,
@@ -476,7 +392,7 @@ const TimeSuggestion = ({
       const importantSuggestion = await AsyncStorage.getItem(
         "importantSuggestion"
       );
-      const noteSuggestion = await AsyncStorage.getItem("noteSuggestion");
+
       const tagSuggestion = await AsyncStorage.getItem("tagSuggestion");
       const tmwSuggestion = await AsyncStorage.getItem("tmwSuggestion");
 
@@ -540,16 +456,61 @@ const TimeSuggestion = ({
   return null;
 };
 
+function NlpProcessor({
+  value,
+  watch,
+  setValue,
+}: {
+  value: string;
+  watch?: any;
+  setValue;
+}) {
+  const date = watch("date");
+  const [debouncedName] = useDebounce(value, 300);
+
+  const [suggestions, setSuggestions] = useState([]);
+
+  useEffect(() => {
+    setSuggestions([timeProcessor(debouncedName, date)].filter(Boolean));
+  }, [debouncedName, date]);
+
+  return (
+    <FlatList
+      keyboardShouldPersistTaps="handled"
+      horizontal
+      data={suggestions}
+      renderItem={({ item }) => (
+        <Button
+          chip
+          dense
+          variant="outlined"
+          icon="magic_button"
+          text={item.display.text}
+          onPress={() => {
+            for (const key in item.value) {
+              setValue(key, item.value[key]);
+            }
+          }}
+        />
+      )}
+    />
+  );
+}
+
 function TaskNameInput({
   disabled,
   handleSubmitButtonClick,
   control,
   nameRef,
+  watch,
+  setValue,
 }: {
   disabled: boolean;
   handleSubmitButtonClick: () => void;
   control: any;
   nameRef: any;
+  watch;
+  setValue;
 }) {
   const theme = useColorTheme();
   const { forceClose } = useBottomSheet();
@@ -561,6 +522,7 @@ function TaskNameInput({
       name="name"
       render={({ field: { onChange, value } }) => (
         <>
+          <NlpProcessor setValue={setValue} value={value} watch={watch} />
           <GrowingTextInput
             ref={nameRef}
             selectionColor={theme[11]}
@@ -836,7 +798,7 @@ function SpeechRecognition({ setValue }) {
         variant="filled"
         icon={recognizing ? <VolumeBars /> : "mic"}
         size={50}
-        style={breakpoints.md ? undefined : { width: "100%" }}
+        style={Platform.OS === "web" ? undefined : { width: "100%" }}
         iconProps={{ filled: recognizing }}
         iconStyle={{
           color: recognizing ? red[2] : theme[11],
@@ -1034,15 +996,12 @@ const BottomSheetContent = ({
               <SubTaskInformation watch={watch} />
               <View style={{ flexDirection: "column", zIndex: 0 }}>
                 <TaskNameInput
+                  watch={watch}
+                  setValue={setValue}
                   disabled={!session.user.hintsViewed.includes("CREATE_TASK")}
-                  // hintRef={hintRef}
-                  // submitRef={submitRef}
-                  // reset={reset}
-                  // watch={watch}
                   control={control}
                   handleSubmitButtonClick={handleSubmitButtonClick}
                   nameRef={nameRef}
-                  // setValue={setValue}
                 />
                 <Footer
                   defaultValues={defaultValues}
@@ -1125,13 +1084,13 @@ const BottomSheetContent = ({
               <>
                 <AttachStep
                   index={3}
-                  style={breakpoints.md ? undefined : { flex: 1 }}
+                  style={Platform.OS === "web" ? undefined : { flex: 1 }}
                 >
                   <SpeechRecognition setValue={setValue} />
                 </AttachStep>
                 <AttachStep
                   index={4}
-                  style={breakpoints.md ? { marginLeft: "auto" } : { flex: 1 }}
+                  style={Platform.OS === "web" ? undefined : { flex: 1 }}
                 >
                   <PinTask control={control} />
                 </AttachStep>
