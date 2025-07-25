@@ -893,7 +893,7 @@ const BottomSheetContent = ({
   const { session } = useUser();
   useEffect(() => {
     if (!session.user.hintsViewed.includes("CREATE_TASK")) return;
-    if (Platform.OS === "web") setTimeout(() => nameRef.current?.focus(), 50);
+    if (Platform.OS === "web") setTimeout(() => nameRef.current?.focus(), 100);
     setTimeout(
       () => {
         InteractionManager.runAfterInteractions(() => {
