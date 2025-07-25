@@ -1,4 +1,5 @@
 import { dysperseCalendarTheme } from "@/components/collections/navbar/AgendaCalendarMenu";
+import { useUser } from "@/context/useUser";
 import { useResponsiveBreakpoints } from "@/helpers/useResponsiveBreakpoints";
 import {
   Calendar,
@@ -33,6 +34,7 @@ export const TimeInput = ({
   style?: StyleProp<TextStyle>;
   ref: RefObject<TextInput>;
 }) => {
+  const { session } = useUser();
   const [value, setValue] = useState(defaultValue?.format?.("h:mm A") || "");
 
   return (
@@ -51,10 +53,12 @@ export const TimeInput = ({
             dayjs(defaultValue)
               .hour(parseInt(hours))
               .minute(parseInt(minutes))
-              .format("h:mm A")
+              .format(session.user.militaryTime ? "H:mm" : "h:mm A")
           );
         } else {
-          setValue(defaultValue.format("h:mm A"));
+          setValue(
+            defaultValue.format(session.user.militaryTime ? "H:mm" : "h:mm A")
+          );
           Toast.show({
             type: "error",
             text1: "Please type a valid time",
