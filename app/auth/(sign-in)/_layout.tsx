@@ -1,7 +1,7 @@
 import { JsStack } from "@/components/layout/_stack";
 import { forHorizontalIOS } from "@/components/layout/forHorizontalIOS";
 import { useResponsiveBreakpoints } from "@/helpers/useResponsiveBreakpoints";
-import { addHslAlpha } from "@/ui/color";
+import { addHslAlpha, useDarkMode } from "@/ui/color";
 import { useColorTheme } from "@/ui/color/theme-provider";
 import IconButton from "@/ui/IconButton";
 import Logo from "@/ui/logo";
@@ -75,6 +75,7 @@ export default function Layout() {
   const breakpoints = useResponsiveBreakpoints();
   const theme = useColorTheme();
   const insets = useSafeAreaInsets();
+  const isDark = useDarkMode();
 
   const signupData = useRef({
     name: "",
@@ -121,7 +122,7 @@ export default function Layout() {
 
   return (
     <SignupContext.Provider value={signupData.current}>
-      <StatusBar barStyle="default" />
+      <StatusBar barStyle={isDark ? "light-content" : "dark-content"} />
       <View
         style={{
           flexDirection: breakpoints.lg ? "row" : "column-reverse",
