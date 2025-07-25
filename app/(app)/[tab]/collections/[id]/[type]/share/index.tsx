@@ -277,77 +277,79 @@ const FriendModal = ({ children, onComplete }) => {
             </View>
             <FriendEmailSelection setQuery={setQuery} />
           </View>
-          <BottomSheetFlashList
-            numColumns={3}
-            data={
-              data
-                ? filteredData.length === 0
-                  ? query
-                    ? [{ type: "userSearch" }]
-                    : [{ type: "noFriends" }]
-                  : [
-                      ...filteredData.map((friend) => ({
-                        type: "friend",
-                        friend: friend.user,
-                      })),
-                      ...selected
-                        .filter(
-                          (i) => !data.find((f) => f.user.email === i.email)
-                        )
-                        .map((i) => ({
-                          type: "selected",
-                          friend: i,
+          <View style={{ flex: 1 }}>
+            <BottomSheetFlashList
+              numColumns={3}
+              data={
+                data
+                  ? filteredData.length === 0
+                    ? query
+                      ? [{ type: "userSearch" }]
+                      : [{ type: "noFriends" }]
+                    : [
+                        ...filteredData.map((friend) => ({
+                          type: "friend",
+                          friend: friend.user,
                         })),
-                    ]
-                : error
-                ? [{ type: "error" }]
-                : [{ type: "loading" }]
-            }
-            keyExtractor={(item, index) =>
-              item.type === "friend" || item.type === "selected"
-                ? item.friend.email
-                : item.type + index
-            }
-            renderItem={({ item }) => {
-              if (item.type === "friend" || item.type === "selected") {
-                return (
-                  <FriendUser
-                    friend={item.friend}
-                    selected={selected}
-                    setSelected={setSelected}
-                  />
-                );
+                        ...selected
+                          .filter(
+                            (i) => !data.find((f) => f.user.email === i.email)
+                          )
+                          .map((i) => ({
+                            type: "selected",
+                            friend: i,
+                          })),
+                      ]
+                  : error
+                  ? [{ type: "error" }]
+                  : [{ type: "loading" }]
               }
-              if (item.type === "userSearch") {
-                return (
-                  <UserSearchResults
-                    selected={selected}
-                    setSelected={setSelected}
-                    query={query}
-                  />
-                );
+              keyExtractor={(item, index) =>
+                item.type === "friend" || item.type === "selected"
+                  ? item.friend.email
+                  : item.type + index
               }
-              if (item.type === "noFriends") {
-                return (
-                  <Text>
-                    You have no friends yet. Invite someone to join you on your
-                    journey.
-                  </Text>
-                );
-              }
-              if (item.type === "error") {
-                return <ErrorAlert />;
-              }
-              if (item.type === "loading") {
-                return <Spinner />;
-              }
-              return null;
-            }}
-            contentContainerStyle={friendModalStyles.listContainer}
-            keyboardShouldPersistTaps="handled"
-            onScrollBeginDrag={Keyboard.dismiss}
-            style={{ flex: 1 }}
-          />
+              renderItem={({ item }) => {
+                if (item.type === "friend" || item.type === "selected") {
+                  return (
+                    <FriendUser
+                      friend={item.friend}
+                      selected={selected}
+                      setSelected={setSelected}
+                    />
+                  );
+                }
+                if (item.type === "userSearch") {
+                  return (
+                    <UserSearchResults
+                      selected={selected}
+                      setSelected={setSelected}
+                      query={query}
+                    />
+                  );
+                }
+                if (item.type === "noFriends") {
+                  return (
+                    <Text>
+                      You have no friends yet. Invite someone to join you on
+                      your journey.
+                    </Text>
+                  );
+                }
+                if (item.type === "error") {
+                  return <ErrorAlert />;
+                }
+                if (item.type === "loading") {
+                  return <Spinner />;
+                }
+                return null;
+              }}
+              contentContainerStyle={friendModalStyles.listContainer}
+              keyboardShouldPersistTaps="handled"
+              onScrollBeginDrag={Keyboard.dismiss}
+              style={{ flex: 1 }}
+            />
+          </View>
         </View>
       </BottomSheet>
     </>
