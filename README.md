@@ -120,7 +120,7 @@ Start organizing your life with Dysperse today - where productivity meets flexib
 
 Dysperse wouldn't have been able to run without our amazing sponsors! <3
 
-| [Cloudflare](https://cloudflare.com/?utm_source=dysperse)                                            | [Neon](https://neon.tech?utm_source=dysperse)                                             |
-| ---------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------- |
-| [![image](https://dysperse.com/sponsors/cloudflare.svg)](https://cloudflare.com?utm_source=dysperse) | [![image](https://dysperse.com/sponsors/neon.svg)](https://neon.tech?utm_source=dysperse) |
+| [Cloudflare](https://cloudflare.com/?utm_source=dysperse)                                            | [Neon](https://neon.tech?utm_source=dysperse)                                             | [Vercel](https://vercel.com/oss?utm_source=dysperse.com)                                             |
+| ---------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------- |
+| [![image](https://dysperse.com/sponsors/cloudflare.svg)](https://cloudflare.com?utm_source=dysperse) | [![image](https://dysperse.com/sponsors/neon.svg)](https://neon.tech?utm_source=dysperse) | [![Vercel OSS Program](https://vercel.com/oss/program-badge.svg)](https://vercel.com/oss?utm_source=dysperse.com) 
 
