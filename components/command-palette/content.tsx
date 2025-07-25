@@ -722,6 +722,7 @@ export default function CommandPaletteContent({ handleClose, defaultFilter }) {
                 justifyContent: "center",
                 alignItems: "center",
                 borderLeftWidth: 1,
+                padding: 20,
                 borderColor: theme[5],
               }}
             >

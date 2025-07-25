@@ -22,7 +22,7 @@ function ThemedSlide({
   themeData: { name: string; description: string };
 }) {
   const { sessionToken, mutate, session } = useUser();
-  const breapoints = useResponsiveBreakpoints();
+  const breakpoints = useResponsiveBreakpoints();
   const colors = useColor(theme);
   const isDark = useDarkMode();
 
@@ -64,7 +64,7 @@ function ThemedSlide({
     <View
       style={{
         padding: 5,
-        width: breapoints.md ? "33.333%" : "100%",
+        width: breakpoints.lg ? "33.333%" : breakpoints.md ? "50%" : "100%",
       }}
     >
       <ColorThemeProvider theme={colors}>
@@ -115,9 +115,11 @@ function ThemedSlide({
               }${theme}.svg?`,
             }}
           />
-          <Text weight={600} style={{ fontSize: 20, color: colors[11] }}>
-            {themeData.name}
-          </Text>
+          <View style={{ flex: 1 }}>
+            <Text weight={600} style={{ fontSize: 20, color: colors[11] }}>
+              {themeData.name}
+            </Text>
+          </View>
         </Button>
       </ColorThemeProvider>
     </View>
@@ -125,8 +127,6 @@ function ThemedSlide({
 }
 
 function AppIconSection() {
-  const { session, mutate } = useUser();
-
   return (
     <>
       <Text style={settingStyles.heading}>App icon</Text>
