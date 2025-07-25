@@ -105,7 +105,7 @@ export function LastStateRestore() {
       } else {
         router.replace("/home");
       }
-    } else {
+    } else if (!lastViewedTab) {
       router.replace("/home");
     }
   }, []);
@@ -310,11 +310,11 @@ export default function AppLayout() {
                                     },
                                   }}
                                 >
+                                  <LastStateRestore />
                                   <AppContainer
                                     key={desktopCollapsed.toString()}
                                     progressValue={progressValue}
                                   >
-                                    <LastStateRestore />
                                     <StatusBar
                                       barStyle={
                                         !isDark

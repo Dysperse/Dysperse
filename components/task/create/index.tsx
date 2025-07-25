@@ -70,7 +70,6 @@ import VolumeBars from "./speech-recognition";
 
 function PinTask({ control }: any) {
   const orange = useColor("orange");
-  const breakpoints = useResponsiveBreakpoints();
   const theme = useColorTheme();
 
   return (
@@ -1098,7 +1097,11 @@ const BottomSheetContent = ({
                 </AttachStep>
                 <AttachStep
                   index={4}
-                  style={Platform.OS === "web" ? undefined : { flex: 1 }}
+                  style={
+                    Platform.OS === "web"
+                      ? { marginRight: "auto" }
+                      : { flex: 1 }
+                  }
                 >
                   <PinTask control={control} />
                 </AttachStep>

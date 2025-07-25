@@ -95,8 +95,10 @@ const HomeButton = memo(function HomeButton({ isHome }: { isHome: boolean }) {
   }, [sidebarRef, breakpoints]);
 
   useEffect(() => {
-    if (breakpoints.md) sidebarRef.current?.openDrawer?.();
-  }, [breakpoints.md]);
+    if (breakpoints.md && !desktopCollapsed) {
+      sidebarRef.current?.openDrawer?.();
+    }
+  }, [desktopCollapsed, sidebarRef, breakpoints]);
 
   const theme = useColorTheme();
   useHotkeys("ctrl+0", () => router.replace("/home"));
@@ -671,6 +673,9 @@ const PrimarySidebar = memo(function PrimarySidebar({ progressValue }: any) {
         setDesktopCollapsed(!desktopCollapsed);
         InteractionManager.runAfterInteractions(() => {
           sidebarRef.current[desktopCollapsed ? "openDrawer" : "closeDrawer"]();
+          // setTimeout(() => {
+          //   router.replace("/");
+          // }, 10);
         });
         AsyncStorage.setItem(
           "desktopCollapsed",
@@ -683,7 +688,7 @@ const PrimarySidebar = memo(function PrimarySidebar({ progressValue }: any) {
     [desktopCollapsed, setDesktopCollapsed, sidebarRef, breakpoints]
   );
 
-  useHotkeys("`", toggleHidden, {});
+  useHotkeys("ctrl+s", toggleHidden);
   const pathname = usePathname();
 
   return (
