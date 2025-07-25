@@ -1,85 +1,19 @@
 import { dysperseCalendarTheme } from "@/components/collections/navbar/AgendaCalendarMenu";
-import { useUser } from "@/context/useUser";
 import { useResponsiveBreakpoints } from "@/helpers/useResponsiveBreakpoints";
 import {
   Calendar,
   fromDateId,
   toDateId,
 } from "@marceloterreiro/flash-calendar";
-import convertTime from "convert-time";
-import dayjs, { Dayjs } from "dayjs";
+import dayjs from "dayjs";
 import { RefObject, useEffect, useState } from "react";
-import { Platform, StyleProp, TextStyle, View } from "react-native";
-import { TextInput } from "react-native-gesture-handler";
-import Toast from "react-native-toast-message";
+import { Platform, View } from "react-native";
 import { Button, ButtonText } from "../Button";
 import { addHslAlpha } from "../color";
 import { useColorTheme } from "../color/theme-provider";
 import IconButton from "../IconButton";
 import Modal from "../Modal";
 import Text from "../Text";
-import TextField from "../TextArea";
-
-export const TimeInput = ({
-  value: defaultValue,
-  setValue: setDefaultValue,
-  valueKey = "date",
-  style,
-  ref,
-}: {
-  value: Dayjs;
-  setValue: (key: string, value: Dayjs) => void;
-  valueKey?: "date" | "end";
-  style?: StyleProp<TextStyle>;
-  ref: RefObject<TextInput>;
-}) => {
-  const { session } = useUser();
-  const [value, setValue] = useState(defaultValue?.format?.("h:mm A") || "");
-
-  return (
-    <TextField
-      selectTextOnFocus
-      onBlur={(e) => {
-        const n = e.nativeEvent.text.toLowerCase();
-        if (convertTime(n)) {
-          const [hours, minutes] = convertTime(n).split(":");
-          setDefaultValue({
-            [valueKey]: dayjs(defaultValue)
-              .hour(parseInt(hours))
-              .minute(parseInt(minutes)),
-          });
-          setValue(
-            dayjs(defaultValue)
-              .hour(parseInt(hours))
-              .minute(parseInt(minutes))
-              .format(session.user.militaryTime ? "H:mm" : "h:mm A")
-          );
-        } else {
-          setValue(
-            defaultValue.format(session.user.militaryTime ? "H:mm" : "h:mm A")
-          );
-          Toast.show({
-            type: "error",
-            text1: "Please type a valid time",
-          });
-        }
-      }}
-      inputRef={ref}
-      variant="filled+outlined"
-      style={[
-        {
-          flex: 1,
-          textAlign: "center",
-          height: 50,
-        },
-        style,
-      ]}
-      placeholder="12:00"
-      value={value}
-      onChangeText={(e) => setValue(e)}
-    />
-  );
-};
 
 function CalendarPreview({
   value,
