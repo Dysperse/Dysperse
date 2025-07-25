@@ -386,9 +386,6 @@ const TimeSuggestion = ({
     const setMessage = async () => {
       if (value !== "") hasTypedRef.current = true;
 
-      const regex =
-        /(?:at|from|during|after|before|by)\s((1[0-2]|0?[1-9])(?::([0-5][0-9]))?(am|pm)?)/i;
-
       const importantSuggestion = await AsyncStorage.getItem(
         "importantSuggestion"
       );
@@ -397,16 +394,11 @@ const TimeSuggestion = ({
       const tmwSuggestion = await AsyncStorage.getItem("tmwSuggestion");
 
       hintRef?.current?.setMessage?.(
-        value.match(regex) && !value.includes("](time-prediction)") && date
-          ? {
-              text: "Typing a date? Hit [space] to confirm",
-              icon: "emoji_objects",
-            }
-          : Object.keys(COLLECTION_VIEWS).find(
-              (e) => e === type && COLLECTION_VIEWS[e].type === "Time Based"
-            ) &&
-            !date &&
-            !parentTask
+        Object.keys(COLLECTION_VIEWS).find(
+          (e) => e === type && COLLECTION_VIEWS[e].type === "Time Based"
+        ) &&
+          !date &&
+          !parentTask
           ? {
               text: `This task won't appear in ${type} view without a date`,
               icon: "info",
@@ -452,7 +444,18 @@ const TimeSuggestion = ({
     };
 
     setMessage();
-  }, [value, hintRef, date, label, pathname, type, isDirty, parentTask]);
+  }, [
+    value,
+    hintRef,
+    date,
+    label,
+    pathname,
+    type,
+    isDirty,
+    parentTask,
+    collectionId,
+    id,
+  ]);
   return null;
 };
 
