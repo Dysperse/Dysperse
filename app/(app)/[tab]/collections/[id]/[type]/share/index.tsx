@@ -49,6 +49,7 @@ function FriendEmailSelection({ setQuery }) {
   return (
     <View>
       <TextField
+        bottomSheet
         inputRef={ref}
         placeholder="Invite by email..."
         variant="filled+outlined"
