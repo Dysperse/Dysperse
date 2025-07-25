@@ -534,7 +534,7 @@ export const Header = memo(function Header() {
   return (
     <View
       style={{
-        marginTop: 10,
+        marginTop: 5,
         marginBottom: 10,
         gap: 10,
         ...(Platform.OS === "web" && ({ WebkitAppRegion: "no-drag" } as any)),
