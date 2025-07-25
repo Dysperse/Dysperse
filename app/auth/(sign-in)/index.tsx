@@ -239,10 +239,10 @@ export default function SignIn() {
       style={{
         flex: 1,
         justifyContent: "center",
-        padding: breakpoints.md ? 40 : 20,
         paddingTop: breakpoints.md ? 40 : 10,
         paddingBottom: 0,
-        paddingLeft: breakpoints.md ? 60 : undefined,
+        padding: breakpoints.md ? 40 : 20,
+        paddingLeft: breakpoints.md ? 40 : undefined,
       }}
     >
       <Text
@@ -276,7 +276,6 @@ export default function SignIn() {
           flexDirection: "row",
           gap: 10,
           width: "100%",
-          maxWidth: 500,
           marginHorizontal: "auto",
         }}
       >
@@ -300,6 +299,29 @@ export default function SignIn() {
           }}
           android_ripple={{ color: isDark ? "#000" : "#fff" }}
         />
+        {breakpoints.md && (
+          <QrModal>
+            <Button
+              large
+              bold
+              icon="qr_code"
+              text="QR code"
+              variant="filled"
+              backgroundColors={{
+                default: isDark ? "#fff" : "#000",
+                hovered: isDark ? "#fff" : "#000",
+                pressed: isDark ? "#fff" : "#000",
+              }}
+              textStyle={{ color: !isDark ? "#fff" : "#000" }}
+              iconStyle={{ color: !isDark ? "#fff" : "#000" }}
+              android_ripple={{ color: isDark ? "#000" : "#fff" }}
+              style={[{ gap: 15 }]}
+              iconSize={30}
+              height={70}
+              containerStyle={[{ flex: 1 }, { borderRadius: 22 }]}
+            />
+          </QrModal>
+        )}
         <AppleAuth />
         <GoogleAuth
           onNewAccount={(d) => {
@@ -363,29 +385,6 @@ export default function SignIn() {
             }}
           />
         </GoogleAuth>
-        {breakpoints.md && (
-          <QrModal>
-            <Button
-              large
-              bold
-              icon="qr_code"
-              text="QR code"
-              variant="filled"
-              backgroundColors={{
-                default: isDark ? "#fff" : "#000",
-                hovered: isDark ? "#fff" : "#000",
-                pressed: isDark ? "#fff" : "#000",
-              }}
-              textStyle={{ color: !isDark ? "#fff" : "#000" }}
-              iconStyle={{ color: !isDark ? "#fff" : "#000" }}
-              android_ripple={{ color: isDark ? "#000" : "#fff" }}
-              style={[{ gap: 15 }]}
-              iconSize={30}
-              height={70}
-              containerStyle={[{ flex: 1 }, { borderRadius: 22 }]}
-            />
-          </QrModal>
-        )}
       </View>
 
       {!breakpoints.lg && <BannerImage />}

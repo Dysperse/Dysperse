@@ -100,7 +100,7 @@ function Content() {
     <View
       style={{
         padding: 20,
-        paddingTop: 100,
+        paddingTop: 115,
         paddingHorizontal: 30,
         flex: 1,
         justifyContent: "center",

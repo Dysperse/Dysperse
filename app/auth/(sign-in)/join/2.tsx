@@ -1,4 +1,4 @@
-import { Greetings, styles } from "@/app/(app)/plan";
+import { styles } from "@/app/(app)/plan";
 import weatherCodes from "@/components/focus-panel/widgets/weather/weatherCodes.json";
 import { sendApiRequest } from "@/helpers/api";
 import { useResponsiveBreakpoints } from "@/helpers/useResponsiveBreakpoints";
@@ -171,14 +171,26 @@ function Content() {
     >
       <Animated.View entering={FadeIn.delay(300)}>
         <Text variant="eyebrow">2/5</Text>
-        <Greetings name={store.name.split(" ")[0]} planData={planData} />
+        <Text
+          style={[
+            styles.title,
+            {
+              marginTop: 15,
+              marginLeft: -3,
+              fontSize: breakpoints.md ? 40 : 30,
+              lineHeight: breakpoints.md ? 55 : 30,
+              color: theme[11],
+            },
+          ]}
+        >
+          {`Nice to meet you, ${store.name || params.name || "friend"}! `}
+        </Text>
       </Animated.View>
       <Animated.View entering={FadeIn.delay(900)}>
         <Text
           style={{
             opacity: 0.4,
             fontSize: breakpoints.md ? 25 : 17,
-            marginTop: 15,
             marginBottom: 15,
             color: theme[11],
           }}

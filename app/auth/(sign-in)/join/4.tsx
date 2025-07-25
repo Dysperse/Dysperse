@@ -32,9 +32,8 @@ function Color() {
       style={{
         padding: 20,
         paddingHorizontal: 30,
-        paddingTop: 100,
+        paddingTop: 115,
         flex: 1,
-        justifyContent: "center",
       }}
     >
       <Animated.View entering={FadeIn.delay(300)}>
