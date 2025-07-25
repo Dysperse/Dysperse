@@ -3,8 +3,8 @@ import { taskInputStyles } from "@/components/signup/TaskCreator";
 import { TaskImportantChip, TaskLabelChip } from "@/components/task";
 import Checkbox from "@/components/task/Checkbox";
 import CreateTask from "@/components/task/create";
-import TaskDatePicker from "@/components/task/create/TaskDatePicker";
 import { TaskDrawer } from "@/components/task/drawer";
+import { TaskDateModal } from "@/components/task/drawer/date-modal";
 import { normalizeRecurrenceRuleObject } from "@/components/task/drawer/details";
 import { STORY_POINT_SCALE } from "@/constants/workload";
 import { useBadgingService } from "@/context/BadgingProvider";
@@ -110,10 +110,15 @@ function CurrentTaskFooter({
       }}
     >
       <View style={[taskStyles.footer, { gap: 5 }]}>
-        <TaskDatePicker
-          setValue={(date) => handleEdit("start", date)}
-          watch={() => task.start}
-          dueDateOnly
+        <TaskDateModal
+          // setValue={(date) => handleEdit("start", date)}
+          onClose={() => {}}
+          task={task}
+          updateTask={(task) => {
+            for (const key in task) {
+              handleEdit(key, task[key]);
+            }
+          }}
         >
           <Button
             style={[taskStyles.footerButton, { flexDirection: "column" }]}
@@ -139,10 +144,10 @@ function CurrentTaskFooter({
           >
             <Icon bold>calendar_today</Icon>
             <Text style={{ color: theme[11] }} weight={700} numberOfLines={1}>
-              Snooze
+              Schedule
             </Text>
           </Button>
-        </TaskDatePicker>
+        </TaskDateModal>
         <Button
           style={[taskStyles.footerButton, { flexDirection: "column" }]}
           backgroundColors={{

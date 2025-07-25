@@ -1,8 +1,5 @@
 import { settingStyles } from "@/components/settings/settingsStyles";
-import {
-  notificationScale,
-  notificationScaleText,
-} from "@/components/task/drawer/details";
+
 import { useUser } from "@/context/useUser";
 import { sendApiRequest } from "@/helpers/api";
 import { Button, ButtonText } from "@/ui/Button";
@@ -81,7 +78,7 @@ function TasksSettings({ updateUserSettings }: any) {
             }))}
           />
         </ListItemButton>
-        <ListItemButton disabled onPress={() => {}}>
+        {/* <ListItemButton disabled onPress={() => {}}>
           <ListItemText primary="Due date reminders" />
           <MenuPopover
             trigger={AccountMenuTrigger({
@@ -97,11 +94,13 @@ function TasksSettings({ updateUserSettings }: any) {
                 Toast.show({ type: "info", text1: "Coming soon" }),
             }))}
           />
-        </ListItemButton>
+        </ListItemButton> */}
         <ListItemButton disabled onPress={() => {}}>
           <ListItemText primary="Time display" />
           <MenuPopover
-            trigger={AccountMenuTrigger({ text: "12 hour" })}
+            trigger={AccountMenuTrigger({
+              text: session.user.militaryTime ? "24 hour" : "12 hour",
+            })}
             options={[{ text: "12 hour" }, { text: "24 hour" }].map((e) => ({
               ...e,
               selected: session.user.militaryTime

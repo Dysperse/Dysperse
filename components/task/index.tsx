@@ -1,5 +1,6 @@
 import { useSelectionContext } from "@/context/SelectionContext";
 import { useGlobalTaskContext } from "@/context/globalTaskContext";
+import { useUser } from "@/context/useUser";
 import { getTaskCompletionStatus } from "@/helpers/getTaskCompletionStatus";
 import { useResponsiveBreakpoints } from "@/helpers/useResponsiveBreakpoints";
 import { Avatar } from "@/ui/Avatar";
@@ -278,6 +279,7 @@ const Task = memo(function Task({
 }) {
   const theme = useColorTheme();
   const blue = useColor("blue");
+  const { session } = useUser();
 
   const breakpoints = useResponsiveBreakpoints();
   const isCompleted = getTaskCompletionStatus(task, task.recurrenceDay);
@@ -460,7 +462,11 @@ const Task = memo(function Task({
                           task.dateOnly
                             ? "MMM Do"
                             : dayjs(task.start).minute() === 0
-                            ? "MMM Do [@] h a"
+                            ? session.user.militaryTime
+                              ? "MMM Do [@] H a"
+                              : "MMM Do [@] h a"
+                            : session.user.militaryTime
+                            ? "MMM Do [@] H:mm"
                             : "MMM Do [@] h:mm a"
                         )}
                         icon={<Icon>calendar_today</Icon>}

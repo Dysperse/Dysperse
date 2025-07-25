@@ -284,6 +284,7 @@ export function TaskDateMenu({
   isTaskCreation?: boolean;
 }) {
   const theme = useColorTheme();
+  const { session } = useUser();
   const { task, updateTask, isReadOnly } = useTaskDrawerContext();
 
   const recurrenceRule =
@@ -304,9 +305,13 @@ export function TaskDateMenu({
               dayjs(task.start).isSame(dayjs(), "year")
                 ? task.dateOnly
                   ? "MMM Do"
+                  : session.user.militaryTime
+                  ? "MMM Do [@] H:mm"
                   : "MMM Do [@] h:mm a"
                 : task.dateOnly
                 ? "MMM Do YYYY"
+                : session.user.militaryTime
+                ? "MMM Do YYYY [@] H:mm"
                 : "MMM Do YYYY [@] h:mm a"
             )
           : "Set due date",
@@ -314,10 +319,26 @@ export function TaskDateMenu({
           (task.dateOnly
             ? dayjs(task.start).isSame(dayjs(task.end), "day")
               ? "All day"
-              : dayjs(task.end).format("MMM Do h:mm a").replace(":00", "")
+              : dayjs(task.end)
+                  .format(
+                    session.user.militaryTime
+                      ? "MMM Do [@] H:mm"
+                      : "MMM Do [@] h:mm a"
+                  )
+                  .replace(":00", "")
             : dayjs(task.start).isSame(dayjs(task.end), "day")
-            ? dayjs(task.start).format("[until] h:mm a").replace(":00", "")
-            : dayjs(task.end).format("MMM Do h:mm a").replace(":00", "")),
+            ? dayjs(task.start)
+                .format(
+                  session.user.militaryTime ? "[until] H:mm" : "[until] h:mm a"
+                )
+                .replace(":00", "")
+            : dayjs(task.end)
+                .format(
+                  session.user.militaryTime
+                    ? "MMM Do [@] H:mm"
+                    : "MMM Do [@] h:mm a"
+                )
+                .replace(":00", "")),
       ];
 
   const addRecurrenceRef = useRef(null);
@@ -526,6 +547,7 @@ function TaskLocationMenu() {
 }
 
 function CanvasLiveInfo() {
+  const { session } = useUser();
   const { task } = useTaskDrawerContext();
   const theme = useColorTheme();
   const breakpoints = useResponsiveBreakpoints();
@@ -670,7 +692,7 @@ function CanvasLiveInfo() {
           <Icon>lock</Icon>
           <ListItemText
             primary={`Unlocks ${dayjs(data.unlock_at).format(
-              "MMM Do, h:mm A"
+              session.user.militaryTime ? "MMM Do, H:mm" : "MMM Do, h:mm A"
             )}`}
             secondary={dayjs(data.unlock_at).fromNow()}
           />
@@ -694,7 +716,9 @@ function CanvasLiveInfo() {
         <ListItemButton disabled pressableStyle={{ paddingVertical: 0 }}>
           <Icon>lock</Icon>
           <ListItemText
-            primary={`Locks on ${dayjs(data.lock_at).format("MMM Do, h:mm A")}`}
+            primary={`Locks on ${dayjs(data.lock_at).format(
+              session.user.militaryTime ? "MMM Do, H:mm" : "MMM Do, h:mm A"
+            )}`}
             secondary={dayjs(data.lock_at).fromNow()}
           />
         </ListItemButton>

@@ -141,7 +141,7 @@ export function Greetings({
           }}
           numberOfLines={1}
         >
-          {dayjs().format("h:mm A")}
+          {dayjs().format(session.user.militaryTime ? "H:mm" : "h:mm A")}
         </Text>
       </View>
       {"  and currently ".split(" ").map((word, index) => (

@@ -1,3 +1,4 @@
+import { useUser } from "@/context/useUser";
 import { Avatar } from "@/ui/Avatar";
 import BottomSheet from "@/ui/BottomSheet";
 import { Button } from "@/ui/Button";
@@ -32,6 +33,7 @@ function TaskDateModalContent({ task, updateTask }) {
 
   const active = useSharedValue(0);
   const viewPickerHidden = useSharedValue(0);
+  const { session } = useUser();
 
   const searchRef = useRef(null);
   const recurrenceRef = useRef(null);
@@ -110,12 +112,14 @@ function TaskDateModalContent({ task, updateTask }) {
     viewPickerHidden.value = timeMode ? 1 : 0;
   }, [timeMode]);
 
-  const dateList = timeMode
+  const dateList: any = timeMode
     ? [
         lastUsedTime && {
           icon: "history",
           primary: "Last used time",
-          secondary: lastUsedTime.format("h:mm A"),
+          secondary: lastUsedTime.format(
+            session.user.militaryTime ? "H:mm" : "h:mm A"
+          ),
           value: dayjs(view === "DATE" ? task.start : new Date())
             .set("hour", lastUsedTime.hour())
             .set("minute", lastUsedTime.minute()),
@@ -123,7 +127,9 @@ function TaskDateModalContent({ task, updateTask }) {
         {
           text: "+1",
           primary: "One hour from now",
-          secondary: dayjs().add(1, "hour").format("h:mm A"),
+          secondary: dayjs()
+            .add(1, "hour")
+            .format(session.user.militaryTime ? "H:mm" : "h:mm A"),
           value: dayjs().add(1, "hour"),
         },
         ...[...new Array(24)]
@@ -135,7 +141,9 @@ function TaskDateModalContent({ task, updateTask }) {
                 .set("minute", minutes);
               return {
                 text: time.format("hh"),
-                primary: time.format("h:mm a"),
+                primary: time.format(
+                  session.user.militaryTime ? "H:mm" : "h:mm A"
+                ),
                 value: time,
               };
             })
@@ -217,7 +225,9 @@ function TaskDateModalContent({ task, updateTask }) {
               primary: date.format("dddd, MMMM Do"),
               secondary: task?.dateOnly
                 ? "From search"
-                : date.format("[at] h:mm A"),
+                : date.format(
+                    session.user.militaryTime ? "[at] H:mm" : "[at] h:mm A"
+                  ),
               value: date,
               search,
             }))
@@ -374,7 +384,7 @@ function TaskDateModalContent({ task, updateTask }) {
                 pressed: addHslAlpha(theme[9], 0.3),
               }}
               containerStyle={{ width: label === "Date" ? 80 : 140 }}
-              height={"100%"}
+              height={"100%" as any}
               text={label}
               onPress={() => {
                 setView(label.toUpperCase() as "DATE" | "RECURRENCE");
@@ -401,7 +411,13 @@ function TaskDateModalContent({ task, updateTask }) {
                         .replace("every year", "Yearly")
                         .split("at")?.[0]
                     )
-                  : dayjs(task.start).format(!timeMode ? "dddd" : "h:mm A")
+                  : dayjs(task.start).format(
+                      !timeMode
+                        ? "dddd"
+                        : session.user.militaryTime
+                        ? "H:mm"
+                        : "h:mm A"
+                    )
               }
               secondary={
                 hasRecurrence
@@ -444,8 +460,10 @@ function TaskDateModalContent({ task, updateTask }) {
                     : view === "RECURRENCE"
                     ? dayjs(
                         new RRule(task.recurrenceRule).options.dtstart
-                      ).format("h:mm A")
-                    : dayjs(task.start).format("h:mm A")
+                      ).format(session.user.militaryTime ? "H:mm" : "h:mm A")
+                    : dayjs(task.start).format(
+                        session.user.militaryTime ? "H:mm" : "h:mm A"
+                      )
                 }
                 onPress={() => setTimeMode(!timeMode)}
                 containerStyle={{ minWidth: 0 }}
@@ -524,7 +542,7 @@ function TaskDateModalContent({ task, updateTask }) {
           paddingHorizontal: 20,
           paddingBottom: 150,
         }}
-        renderItem={({ item }) => {
+        renderItem={({ item }: any) => {
           return (
             <ListItemButton
               style={{ marginHorizontal: -10 }}

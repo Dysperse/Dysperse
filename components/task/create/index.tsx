@@ -311,7 +311,7 @@ const CreateTaskLabelInput = memo(function CreateTaskLabelInput({
   );
 });
 
-const timeProcessor = (taskName: string, taskDate) => {
+const timeProcessor = (session, taskName: string, taskDate) => {
   const regex =
     /(?:at|from|during|after|before|by)\s((1[0-2]|0?[1-9])(?::([0-5][0-9]))?(am|pm)?)/i;
 
@@ -357,7 +357,9 @@ const timeProcessor = (taskName: string, taskDate) => {
         date: value.format("YYYY-MM-DD HH:mm:ss"),
       },
       display: {
-        text: "Time: " + value.format("h:mm A"),
+        text:
+          "Time: " +
+          value.format(session.user.militaryTime ? "H:mm" : "h:mm A"),
       },
     };
   }
@@ -468,14 +470,17 @@ function NlpProcessor({
   watch?: any;
   setValue;
 }) {
+  const { session } = useUser();
   const date = watch("date");
   const [debouncedName] = useDebounce(value, 300);
 
   const [suggestions, setSuggestions] = useState([]);
 
   useEffect(() => {
-    setSuggestions([timeProcessor(debouncedName, date)].filter(Boolean));
-  }, [debouncedName, date]);
+    setSuggestions(
+      [timeProcessor(session, debouncedName, date)].filter(Boolean)
+    );
+  }, [debouncedName, date, session]);
 
   return (
     <FlatList

@@ -1,3 +1,4 @@
+import { useUser } from "@/context/useUser";
 import { hslToHex } from "@/helpers/hslToHex";
 import { Avatar } from "@/ui/Avatar";
 import BottomSheet from "@/ui/BottomSheet";
@@ -25,6 +26,7 @@ import timezones from "timezones-list";
 import { useFocusPanelContext } from "../../context";
 
 const Time = () => {
+  const { session } = useUser();
   const theme = useColorTheme();
   const [time, setTime] = useState(dayjs());
 
@@ -50,7 +52,7 @@ const Time = () => {
             fontFamily: "serifText700",
           }}
         >
-          {time.format("hh:mm A")}
+          {time.format(session.user.militaryTime ? "HH:mm" : "hh:mm A")}
         </Text>
       </View>
       <Text

@@ -1,3 +1,4 @@
+import { useUser } from "@/context/useUser";
 import { Avatar } from "@/ui/Avatar";
 import { Button } from "@/ui/Button";
 import Icon from "@/ui/Icon";
@@ -24,6 +25,7 @@ export default function WeatherWidget({
   widget: any;
   handlePin: any;
 }) {
+  const { session } = useUser();
   const { drawerRef } = useFocusPanelContext();
   const [location, setLocation] = useState(null);
   const [permissionStatus, setPermissionStatus] =
@@ -339,7 +341,7 @@ export default function WeatherWidget({
                     >
                       {dayjs(
                         data.daily[showSunrise ? "sunrise" : "sunset"][0]
-                      ).format("h:mm")}
+                      ).format(session.user.militaryTime ? "H:mm" : "h:mm A")}
                     </Text>
                     <Text
                       style={{
@@ -474,3 +476,4 @@ export default function WeatherWidget({
     </Pressable>
   );
 }
+

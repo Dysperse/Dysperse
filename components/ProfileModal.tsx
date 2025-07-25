@@ -1,3 +1,4 @@
+import { useUser } from "@/context/useUser";
 import { ProfilePicture } from "@/ui/Avatar";
 import { Button } from "@/ui/Button";
 import ErrorAlert from "@/ui/Error";
@@ -19,6 +20,7 @@ import Toast from "react-native-toast-message";
 import useSWR from "swr";
 
 function ProfileModalContent({ email }) {
+  const { session } = useUser();
   const { data, error } = useSWR(["user/profile", { email }]);
   const theme = useColor(data?.profile?.theme || "gray");
 
@@ -77,7 +79,9 @@ function ProfileModalContent({ email }) {
             <ListItemButton variant="filled">
               <Icon>location_on</Icon>
               <ListItemText
-                primary={dayjs().tz(data.timeZone).format("h:mm A")}
+                primary={dayjs()
+                  .tz(data.timeZone)
+                  .format(session.user.militaryTime ? "H:mm" : "h:mm A")}
                 secondary="Local time"
               />
             </ListItemButton>
