@@ -9,7 +9,6 @@ import Toast from "react-native-toast-message";
 import { RRule } from "rrule";
 import { Button, ButtonText } from "../Button";
 import { useColorTheme } from "../color/theme-provider";
-import { TimeInput } from "../DatePicker";
 import Icon from "../Icon";
 import IconButton from "../IconButton";
 import { ListItemButton } from "../ListItemButton";
@@ -414,39 +413,6 @@ function Preview({ value }) {
           />
         </View>
       )}
-    </View>
-  );
-}
-
-function AtTime({ value, setValue }) {
-  const atTimeRef = useRef(null);
-  const atTime = value?.byhour ? value?.byhour[0] : 9;
-
-  return (
-    <View>
-      <Text variant="eyebrow" style={{ marginTop: 20, marginBottom: 5 }}>
-        Time
-      </Text>
-      <TimeInput
-        ref={atTimeRef}
-        value={dayjs()
-          .hour(atTime)
-          .minute(value?.byminute ? value?.byminute[0] : 0)}
-        setValue={(key, timeValue: any) => {
-          setValue({
-            ...value,
-            byhour: [dayjs(timeValue).hour()],
-            byminute: [dayjs(timeValue).minute()],
-            bysecond: [0],
-          });
-        }}
-        style={{
-          borderWidth: 0,
-          minHeight: 50,
-          borderRadius: 999,
-          fontFamily: "body_900",
-        }}
-      />
     </View>
   );
 }

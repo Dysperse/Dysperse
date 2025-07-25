@@ -49,7 +49,7 @@ function Content() {
   const store = useSignupContext();
   const breakpoints = useResponsiveBreakpoints();
 
-  const [email, setEmail] = useState("");
+  const [email, setEmail] = useState(store.email || "");
   const [password, setPassword] = useState("");
   const [passwordConfirm, setPasswordConfirm] = useState("");
   const [birthday, setBirthday] = useState(null);
@@ -67,7 +67,7 @@ function Content() {
     store.confirmPassword = passwordConfirm;
     store.allowMarketingEmails = allowMarketingEmails;
     store.birthday = birthday;
-  }, [store, email, password, passwordConfirm, allowMarketingEmails, birthday]);
+  }, [store, password, passwordConfirm, allowMarketingEmails, birthday]);
 
   const debouncedEmail = useDebouncedValue(email, 500);
 
@@ -148,6 +148,7 @@ function Content() {
               store.email = t;
             }}
             autoComplete="email"
+            defaultValue={store.email}
           />
         )}
         {email !== "" && profileExists !== "empty" && (
@@ -225,7 +226,6 @@ function Content() {
         <DatePicker
           value={{
             date: birthday,
-            dateOnly: true,
           }}
           setValue={(v) => setBirthday(v.date ? dayjs(v.date) : null)}
           ref={pickerRef}
