@@ -10,6 +10,7 @@ import { sendApiRequest } from "@/helpers/api";
 import { useHotkeys } from "@/helpers/useHotKeys";
 import { useResponsiveBreakpoints } from "@/helpers/useResponsiveBreakpoints";
 import { Avatar, ProfilePicture } from "@/ui/Avatar";
+import BottomSheet from "@/ui/BottomSheet";
 import Emoji from "@/ui/Emoji";
 import ErrorAlert from "@/ui/Error";
 import Icon from "@/ui/Icon";
@@ -17,16 +18,21 @@ import IconButton from "@/ui/IconButton";
 import { ListItemButton } from "@/ui/ListItemButton";
 import ListItemText from "@/ui/ListItemText";
 import MenuPopover from "@/ui/MenuPopover";
-import Modal from "@/ui/Modal";
 import Spinner from "@/ui/Spinner";
 import Text from "@/ui/Text";
 import TextField from "@/ui/TextArea";
 import { useColorTheme } from "@/ui/color/theme-provider";
 import capitalizeFirstLetter from "@/utils/capitalizeFirstLetter";
-import { BottomSheetModal } from "@gorhom/bottom-sheet";
+import { BottomSheetFlashList, BottomSheetModal } from "@gorhom/bottom-sheet";
 import { router, useLocalSearchParams, usePathname } from "expo-router";
 import { cloneElement, useEffect, useRef, useState } from "react";
-import { Pressable, ScrollView, StyleSheet, View } from "react-native";
+import {
+  Keyboard,
+  Pressable,
+  ScrollView,
+  StyleSheet,
+  View,
+} from "react-native";
 import Toast from "react-native-toast-message";
 import useSWR from "swr";
 
@@ -143,7 +149,7 @@ const FriendUser = ({ friend, selected, setSelected }) => {
       style={({ pressed, hovered }) => [
         friendModalStyles.user,
         {
-          width: "33.333%",
+          width: "100%",
           paddingHorizontal: breakpoints.md ? 20 : 10,
           backgroundColor: theme[pressed ? 4 : hovered ? 3 : 2],
         },
@@ -228,85 +234,122 @@ const FriendModal = ({ children, onComplete }) => {
   return (
     <>
       {trigger}
-      <Modal
-        animation="SCALE"
+      <BottomSheet
+        snapPoints={["75%"]}
+        containerStyle={{
+          marginTop: 40,
+          maxWidth: 500,
+          width: "100%",
+          marginLeft: "50%",
+          transform: [{ translateX: "-50%" }],
+        }}
         onClose={() => ref.current?.close()}
         sheetRef={ref}
       >
-        <View style={{ padding: 20, paddingBottom: 0 }}>
-          <View style={friendModalStyles.header}>
-            <Text style={{ fontSize: 30 }} weight={900}>
-              Select friends
-            </Text>
-            <IconButton
-              icon={
-                isLoading ? (
-                  <Spinner color={theme[1]} size={24} />
-                ) : (
-                  <Icon style={{ color: theme[1] }}>north</Icon>
-                )
-              }
-              style={[
-                {
-                  width: 50,
-                },
-                selected.length === 0 && { opacity: 0.5 },
-              ]}
-              backgroundColors={{
-                default: theme[10],
-                hovered: theme[9],
-                pressed: theme[8],
-              }}
-              disabled={selected.length === 0 || isLoading}
-              onPress={handleSubmit}
-            />
+        <View style={{ height: "100%" }}>
+          <View style={{ padding: 20, paddingBottom: 0 }}>
+            <View style={friendModalStyles.header}>
+              <Text style={{ fontSize: 30 }} weight={900}>
+                Select friends
+              </Text>
+              <IconButton
+                icon={
+                  isLoading ? (
+                    <Spinner color={theme[1]} size={24} />
+                  ) : (
+                    <Icon style={{ color: theme[1] }}>north</Icon>
+                  )
+                }
+                style={[
+                  {
+                    width: 50,
+                  },
+                  selected.length === 0 && { opacity: 0.5 },
+                ]}
+                backgroundColors={{
+                  default: theme[10],
+                  hovered: theme[9],
+                  pressed: theme[8],
+                }}
+                disabled={selected.length === 0 || isLoading}
+                onPress={handleSubmit}
+              />
+            </View>
+            <FriendEmailSelection setQuery={setQuery} />
           </View>
-          <FriendEmailSelection setQuery={setQuery} />
+          <BottomSheetFlashList
+            numColumns={3}
+            data={
+              data
+                ? filteredData.length === 0
+                  ? query
+                    ? [{ type: "userSearch" }]
+                    : [{ type: "noFriends" }]
+                  : [
+                      ...filteredData.map((friend) => ({
+                        type: "friend",
+                        friend: friend.user,
+                      })),
+                      ...selected
+                        .filter(
+                          (i) => !data.find((f) => f.user.email === i.email)
+                        )
+                        .map((i) => ({
+                          type: "selected",
+                          friend: i,
+                        })),
+                    ]
+                : error
+                ? [{ type: "error" }]
+                : [{ type: "loading" }]
+            }
+            keyExtractor={(item, index) =>
+              item.type === "friend" || item.type === "selected"
+                ? item.friend.email
+                : item.type + index
+            }
+            renderItem={({ item }) => {
+              if (item.type === "friend" || item.type === "selected") {
+                return (
+                  <FriendUser
+                    friend={item.friend}
+                    selected={selected}
+                    setSelected={setSelected}
+                  />
+                );
+              }
+              if (item.type === "userSearch") {
+                return (
+                  <UserSearchResults
+                    selected={selected}
+                    setSelected={setSelected}
+                    query={query}
+                  />
+                );
+              }
+              if (item.type === "noFriends") {
+                return (
+                  <Text>
+                    You have no friends yet. Invite someone to join you on your
+                    journey.
+                  </Text>
+                );
+              }
+              if (item.type === "error") {
+                return <ErrorAlert />;
+              }
+              if (item.type === "loading") {
+                return <Spinner />;
+              }
+              return null;
+            }}
+            contentContainerStyle={friendModalStyles.listContainer}
+            keyboardShouldPersistTaps="handled"
+            onScrollBeginDrag={Keyboard.dismiss}
+            style={{ flex: 1 }}
+          />
         </View>
-        <ScrollView contentContainerStyle={friendModalStyles.listContainer}>
-          {data ? (
-            filteredData.length === 0 ? (
-              query ? (
-                <UserSearchResults
-                  selected={selected}
-                  setSelected={setSelected}
-                  query={query}
-                />
-              ) : (
-                <Text>
-                  You have no friends yet. Invite someone to join you on your
-                  journey.
-                </Text>
-              )
-            ) : (
-              filteredData.map((friend) => (
-                <FriendUser
-                  friend={friend.user}
-                  selected={selected}
-                  setSelected={setSelected}
-                  key={friend.user.email}
-                />
-              ))
-            )
-          ) : error ? (
-            <ErrorAlert />
-          ) : (
-            <Spinner />
-          )}
-          {data &&
-            filteredData.length > 0 &&
-            selected
-              .filter((i) => !data.find((f) => f.user.email === i.email))
-              .map((i) => (
-                <FriendUser
-                  friend={i}
-                  selected={selected}
-                  setSelected={setSelected}
-                  key={i.email}
-                />
-              ))}
-        </ScrollView>
-      </Modal>
+      </BottomSheet>
     </>
   );
 };
