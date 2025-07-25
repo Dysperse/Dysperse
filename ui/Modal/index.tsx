@@ -1,7 +1,6 @@
 import { memo, useCallback, useEffect, useMemo } from "react";
 import {
   InteractionManager,
-  Keyboard,
   Platform,
   Pressable,
   useWindowDimensions,
@@ -94,14 +93,14 @@ const Modal = (
   );
 
   const paddingValue = useSharedValue(insets.bottom);
-  useEffect(() => {
-    Keyboard.addListener("keyboardWillHide", () => {
-      paddingValue.value = insets.bottom;
-    });
-    Keyboard.addListener("keyboardWillShow", () => {
-      paddingValue.value = 15;
-    });
-  }, [insets, paddingValue]);
+  // useEffect(() => {
+  //   Keyboard.addListener("keyboardDidHide", () => {
+  //     paddingValue.value = insets.bottom;
+  //   });
+  //   Keyboard.addListener("keyboardDidShow", () => {
+  //     paddingValue.value = 15+ (Keyboard?.metrics?.()?.height || 0);
+  //   });
+  // }, [insets, paddingValue]);
 
   const paddingStyle = useAnimatedStyle(() => ({
     paddingBottom: withSpring(paddingValue.value, {
@@ -136,7 +135,7 @@ const Modal = (
       <SetSharedValue value={state} from={0} to={1} />
       <AnimatedPressable
         style={[
-          paddingStyle,
+          // paddingStyle,
           {
             width: "100%",
             height: "100%",
