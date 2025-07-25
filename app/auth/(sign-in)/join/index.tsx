@@ -25,7 +25,10 @@ function Intro() {
   useEffect(() => {
     console.log("params", params);
     if (params.name) store.name = params.name;
-    if (params.email) store.email = params.email;
+    if (params.email) {
+      store.email = params.email;
+      store.prefilledEmail = true;
+    }
   }, [params, store]);
 
   return (
@@ -47,7 +50,7 @@ function Intro() {
             color: theme[11],
           }}
         >
-          Let's create your #dysperse account.
+          Let's create your{"\n"}#dysperse account.
         </Text>
       </Animated.View>
       <Animated.View entering={FadeIn.delay(600)}>

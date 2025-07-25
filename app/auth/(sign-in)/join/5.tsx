@@ -137,8 +137,8 @@ function Content() {
         entering={FadeIn.delay(900)}
         style={{ gap: 10, marginTop: 10 }}
       >
-        {!store.email && <Text variant="eyebrow">Email</Text>}
-        {!store.email && (
+        {!store.prefilledEmail && <Text variant="eyebrow">Email</Text>}
+        {!store.prefilledEmail && (
           <TextField
             inputMode="email"
             variant="filled"

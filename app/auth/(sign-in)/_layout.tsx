@@ -130,7 +130,7 @@ export default function Layout() {
         }}
       >
         {breakpoints.lg && <BannerImage />}
-        <View style={{ flex: 1, maxWidth: 600 }}>
+        <View style={{ flex: 1, maxWidth: breakpoints.lg ? 600 : undefined }}>
           <JsStack
             id={undefined}
             screenOptions={{
