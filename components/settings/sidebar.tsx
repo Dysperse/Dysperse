@@ -65,7 +65,7 @@ function EscapeSettings() {
 
   return (
     breakpoints.md && (
-      <View style={{ marginTop: -50, marginBottom: 10 }}>
+      <View style={{ marginTop: -30, marginBottom: 15 }}>
         <IconButton
           icon="west"
           size={45}
