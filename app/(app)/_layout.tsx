@@ -163,9 +163,6 @@ export default function AppLayout() {
     }
   }, [theme, breakpoints.md]);
 
-  const sidebarWidth =
-    !pathname.includes("settings/") && !pathname.includes("create") ? width : 0;
-
   useEffect(() => {
     if (session && !isUserLoading && !sessionData?.user) {
       Toast.show({
@@ -192,12 +189,11 @@ export default function AppLayout() {
   const renderNavigationView = (v: any) => {
     progressValue.current = v;
 
-    return !breakpoints.md ||
-      (!pathname.includes("settings/") && !pathname.includes("create")) ? (
+    return (
       <Pressable style={{ flex: 1 }}>
         {sessionData?.user && <Sidebar progressValue={v} />}
       </Pressable>
-    ) : null;
+    );
   };
 
   const drawerLocked =
@@ -288,20 +284,16 @@ export default function AppLayout() {
                                 overlayColor="transparent"
                                 drawerWidth={
                                   breakpoints.md &&
-                                  pathname.startsWith("/settings")
-                                    ? 0
-                                    : pathname.includes("/everything")
+                                  pathname.includes("/everything")
                                     ? SECONDARY_SIDEBAR_WIDTH
                                     : ORIGINAL_SIDEBAR_WIDTH
                                 }
                                 edgeWidth={
                                   breakpoints.md
-                                    ? pathname.startsWith("/settings")
-                                      ? 0
-                                      : ORIGINAL_SIDEBAR_WIDTH
+                                    ? ORIGINAL_SIDEBAR_WIDTH
                                     : pathname.includes("grid")
                                     ? 10000
-                                    : sidebarWidth
+                                    : width
                                 }
                                 renderNavigationView={renderNavigationView}
                               >
@@ -396,7 +388,6 @@ export default function AppLayout() {
                                       <JsStack.Screen
                                         name="settings"
                                         options={{
-                                          cardStyle: { padding: 0 },
                                           gestureEnabled: true,
                                           detachPreviousScreen: false,
                                           gestureResponseDistance: 9999,

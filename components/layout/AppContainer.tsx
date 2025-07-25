@@ -118,9 +118,7 @@ const AppContainer = memo(
               }
             : {
                 flex: 1,
-                marginLeft: pathname.includes("settings")
-                  ? 0
-                  : pathname.includes("/everything")
+                marginLeft: pathname.includes("/everything")
                   ? SECONDARY_SIDEBAR_WIDTH
                   : ORIGINAL_SIDEBAR_WIDTH,
                 marginRight: 0,

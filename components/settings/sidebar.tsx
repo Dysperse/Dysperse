@@ -4,6 +4,7 @@ import { useResponsiveBreakpoints } from "@/helpers/useResponsiveBreakpoints";
 import ConfirmationModal from "@/ui/ConfirmationModal";
 import Divider from "@/ui/Divider";
 import Icon from "@/ui/Icon";
+import IconButton from "@/ui/IconButton";
 import { ListItemButton } from "@/ui/ListItemButton";
 import ListItemText from "@/ui/ListItemText";
 import Text from "@/ui/Text";
@@ -47,6 +48,34 @@ const styles = StyleSheet.create({
   },
   sectionItem: { borderRadius: 99 },
 });
+
+function EscapeSettings() {
+  const breakpoints = useResponsiveBreakpoints();
+
+  const handleBack = () => {
+    // if (router.canGoBack()) return router.back();
+    router.replace("/");
+  };
+
+  useHotkeys("esc", handleBack, {
+    enabled: breakpoints.md,
+    ignoreEventWhen: () =>
+      document.querySelectorAll('[aria-modal="true"]').length > 0,
+  });
+
+  return (
+    breakpoints.md && (
+      <View style={{ marginTop: -50, marginBottom: 10 }}>
+        <IconButton
+          icon="west"
+          size={45}
+          variant="filled"
+          onPress={handleBack}
+        />
+      </View>
+    )
+  );
+}
 
 export function SettingsSidebar({ forceShow }: { forceShow?: boolean }) {
   const breakpoints = useResponsiveBreakpoints();
@@ -293,6 +322,7 @@ export function SettingsSidebar({ forceShow }: { forceShow?: boolean }) {
           marginBottom: 20,
         }}
       >
+        <EscapeSettings />
         {!breakpoints.md && (
           <Text
             style={[

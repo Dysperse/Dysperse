@@ -6,9 +6,11 @@ export default function Page() {
   return (
     <Content
       style={{ flex: 1, justifyContent: "center", alignItems: "center" }}
+      noPaddingTop
     >
       <Spinner />
       <LastStateRestore />
     </Content>
   );
 }
+

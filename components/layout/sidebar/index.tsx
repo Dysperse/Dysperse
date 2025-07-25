@@ -1,4 +1,5 @@
 import { useSidebarContext } from "@/components/layout/sidebar/context";
+import { SettingsSidebar } from "@/components/settings/sidebar";
 import { useSession } from "@/context/AuthProvider";
 import { AttachStep, OnboardingContainer } from "@/context/OnboardingProvider";
 import { useUser } from "@/context/useUser";
@@ -733,28 +734,36 @@ const PrimarySidebar = memo(function PrimarySidebar({ progressValue }: any) {
             },
           ]}
         >
-          <View
-            style={[
-              styles.header,
-              !breakpoints.md && { marginTop: insets.top },
-            ]}
-          >
-            <LogoButton toggleHidden={toggleHidden} />
-            <Header />
-          </View>
-          <View
-            style={{
-              flex: 1,
-              paddingHorizontal: 15,
-              width: "100%",
-              marginBottom:
-                !breakpoints.md || Platform.OS === "web" ? insets.bottom : -8,
-              height: "100%",
-            }}
-          >
-            <OpenTabsList />
-            <FocusPanel />
-          </View>
+          {pathname.includes("settings") && breakpoints.md ? (
+            <SettingsSidebar />
+          ) : (
+            <>
+              <View
+                style={[
+                  styles.header,
+                  !breakpoints.md && { marginTop: insets.top },
+                ]}
+              >
+                <LogoButton toggleHidden={toggleHidden} />
+                <Header />
+              </View>
+              <View
+                style={{
+                  flex: 1,
+                  paddingHorizontal: 15,
+                  width: "100%",
+                  marginBottom:
+                    !breakpoints.md || Platform.OS === "web"
+                      ? insets.bottom
+                      : -8,
+                  height: "100%",
+                }}
+              >
+                <OpenTabsList />
+                <FocusPanel />
+              </View>
+            </>
+          )}
         </Animated.View>
       )}
     </OnboardingContainer>
