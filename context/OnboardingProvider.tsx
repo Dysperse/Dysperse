@@ -57,33 +57,51 @@ export const OnboardingTrigger = ({
   const { start } = useSpotlightTour();
   const { session, isLoading } = useUser();
   useEffect(() => {
-    if (!session?.user) return;
-    if (onboarding.state === null && onlyIf() === true)
-      InteractionManager.runAfterInteractions(() => {
-        if (
-          (debug || session.user.hintsViewed?.includes(id) === false) &&
-          !isLoading
-        ) {
-          onBeforeStart?.();
-          setTimeout(() => {
-            onboarding.state = id;
-            onStart?.();
-            onboarding.setState(id);
-            try {
-              start();
+    let isMounted = true;
+    const run = async () => {
+      if (!session?.user) return;
+      const condition = await onlyIf();
+      if (onboarding.state === null && condition === true)
+        InteractionManager.runAfterInteractions(() => {
+          if (
+            (debug || session.user.hintsViewed?.includes(id) === false) &&
+            !isLoading
+          ) {
+            onBeforeStart?.();
+            setTimeout(() => {
+              if (!isMounted) return;
               onboarding.state = id;
-            } catch (e) {
-              console.error("Error starting onboarding:", e);
-            }
-          }, delay || 0);
-        }
-      });
+              onStart?.();
+              onboarding.setState(id);
+              try {
+                start();
+                onboarding.state = id;
+              } catch (e) {
+                console.error("Error starting onboarding:", e);
+              }
+            }, delay || 0);
+          }
+        });
+    };
+    run();
     return () => {
+      isMounted = false;
       if (onboarding.state === id) {
         onboarding.clearState();
       }
     };
-  }, [id, onboarding, start, debug]);
+  }, [
+    id,
+    onboarding,
+    start,
+    debug,
+    delay,
+    isLoading,
+    onBeforeStart,
+    onStart,
+    onlyIf,
+    session?.user,
+  ]);
   return null;
 };
 
@@ -92,7 +110,7 @@ export function OnboardingContainer(
     children: (t: SpotlightTour) => React.ReactNode;
     id: "SIDEBAR";
     debug?: boolean;
-    onlyIf?: () => boolean;
+    onlyIf?: () => boolean | Promise<boolean>;
     onStart?: () => void;
   }
 ) {

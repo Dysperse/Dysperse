@@ -15,8 +15,9 @@ export default function Page() {
       <Text
         style={{
           fontFamily: "serifText700",
-          fontSize: breakpoints.md ? 45 : 35,
+          fontSize: breakpoints.md ? 40 : 30,
           marginTop: 10,
+          textAlign: "center",
           color: theme[11],
         }}
       >
@@ -28,6 +29,7 @@ export default function Page() {
           fontSize: breakpoints.md ? 25 : 20,
           marginTop: 5,
           marginBottom: 15,
+          textAlign: "center",
           color: theme[11],
         }}
         weight={600}
@@ -52,3 +54,4 @@ export default function Page() {
     </View>
   );
 }
+

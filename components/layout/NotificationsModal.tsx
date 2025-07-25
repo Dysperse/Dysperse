@@ -2,6 +2,7 @@ import {
   SubscribeButton,
   useDeviceNotificationState,
 } from "@/app/(app)/settings/customization/notifications";
+import { useUser } from "@/context/useUser";
 import { Button } from "@/ui/Button";
 import Emoji from "@/ui/Emoji";
 import Modal from "@/ui/Modal";
@@ -13,6 +14,7 @@ import { View } from "react-native";
 import useSWR from "swr";
 
 export default function NotificationsModal() {
+  const { session } = useUser();
   const t = useDeviceNotificationState();
   const ref = useRef<BottomSheetModal>(null);
   const { data, mutate } = useSWR(["user/notifications"]);
@@ -29,7 +31,7 @@ export default function NotificationsModal() {
   }, [t]);
 
   useEffect(() => {
-    show();
+    if (session.user.hintsViewed.includes("SIDEBAR")) show();
   }, [show]);
 
   const handleDismiss = () => {

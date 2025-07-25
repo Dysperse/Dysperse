@@ -1,10 +1,10 @@
 import { useUser } from "@/context/useUser";
-import Icon from "@/ui/Icon";
-import Text from "@/ui/Text";
+import { Button, ButtonText } from "@/ui/Button";
 import { useColorTheme } from "@/ui/color/theme-provider";
+import Icon from "@/ui/Icon";
 import { router } from "expo-router";
 import { memo } from "react";
-import { Platform, Pressable, View } from "react-native";
+import { Platform, View } from "react-native";
 import useSWR from "swr";
 
 const ReleaseModal = memo(() => {
@@ -33,31 +33,32 @@ const ReleaseModal = memo(() => {
             justifyContent: "center",
             alignItems: "center",
             zIndex: 99,
+            marginBottom: 20,
             ...(Platform.OS === "web" &&
               ({ WebkitAppRegion: "no-drag" } as any)),
           }}
         >
-          <Pressable
+          <Button
             onPress={() => router.push("/release")}
-            style={({ pressed, hovered }) => ({
-              padding: 10,
-              borderRadius: 20,
-              gap: 10,
-              alignItems: "center",
-              backgroundColor: theme[pressed ? 12 : hovered ? 11 : 10],
-              flexDirection: "row",
-            })}
+            variant="filled"
+            large
+            bold
+            style={{ paddingHorizontal: 10 }}
           >
-            <Icon style={{ color: theme[2] }}>celebration</Icon>
+            <Icon>celebration</Icon>
             <View style={{ flex: 1 }}>
-              <Text style={{ color: theme[2], fontSize: 17 }} weight={900}>
-                Dysperse was updated!
-              </Text>
-              <Text style={{ color: theme[2], fontSize: 13 }} weight={500}>
+              <ButtonText
+                weight={700}
+                numberOfLines={2}
+                style={{ fontSize: 12 }}
+              >
+                New update ready!
+              </ButtonText>
+              <ButtonText style={{ fontSize: 12 }} weight={400}>
                 Tap to see what's new
-              </Text>
+              </ButtonText>
             </View>
-          </Pressable>
+          </Button>
         </View>
       )}
     </>
@@ -65,3 +66,4 @@ const ReleaseModal = memo(() => {
 });
 
 export default ReleaseModal;
+
