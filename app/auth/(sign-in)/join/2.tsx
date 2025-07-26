@@ -1,19 +1,17 @@
 import { styles } from "@/app/(app)/plan";
 import weatherCodes from "@/components/focus-panel/widgets/weather/weatherCodes.json";
-import { sendApiRequest } from "@/helpers/api";
 import { useResponsiveBreakpoints } from "@/helpers/useResponsiveBreakpoints";
 import { Button } from "@/ui/Button";
 import { useColor, useDarkMode } from "@/ui/color";
 import { useColorTheme } from "@/ui/color/theme-provider";
 import Icon from "@/ui/Icon";
-import Spinner from "@/ui/Spinner";
 import Text from "@/ui/Text";
 import TextField from "@/ui/TextArea";
 import dayjs from "dayjs";
 import { Image } from "expo-image";
 import { router, useLocalSearchParams } from "expo-router";
-import { useCallback, useEffect, useState } from "react";
-import { Platform, useWindowDimensions, View } from "react-native";
+import { useState } from "react";
+import { Platform, View } from "react-native";
 import { KeyboardAwareScrollView } from "react-native-keyboard-controller";
 import Animated, { FadeIn } from "react-native-reanimated";
 import { useSignupContext } from "../_layout";
@@ -116,50 +114,11 @@ function Content() {
   const theme = useColorTheme();
   const params = useLocalSearchParams() as { name: string };
   const store = useSignupContext();
-  const { height } = useWindowDimensions();
   const breakpoints = useResponsiveBreakpoints();
 
   const [hasTouched, setHasTouched] = useState(false);
 
-  const [planData, setPlanData] = useState(null);
-
-  const getPlan = useCallback(async () => {
-    const ip = await fetch("https://api.ipify.org?format=json")
-      .then((res) => res.json())
-      .then((res) => res.ip);
-    const device = await sendApiRequest("-1", "GET", "user/sessions/device", {
-      ip,
-    });
-    const { latitude, longitude } = device.location;
-    const weather = await fetch(
-      `https://api.open-meteo.com/v1/forecast?latitude=${latitude}&longitude=${longitude}&current=temperature_2m,is_day,weather_code&temperature_unit=fahrenheit`
-    ).then((res) => res.json());
-    return { device, weather };
-  }, []);
-
-  useEffect(() => {
-    getPlan()
-      .then(setPlanData)
-      .catch(() =>
-        setPlanData({
-          device: null,
-          weather: null,
-        })
-      );
-  }, [getPlan]);
-
-  return !planData ? (
-    <View
-      style={{
-        alignItems: "center",
-        gap: 5,
-        height,
-        justifyContent: "center",
-      }}
-    >
-      <Spinner size={30} />
-    </View>
-  ) : (
+  return (
     <View
       style={{
         padding: 20,
