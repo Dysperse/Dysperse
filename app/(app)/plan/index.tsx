@@ -381,7 +381,10 @@ export default function Page() {
                   default: theme[9],
                 }
           }
-          containerStyle={{ width: "100%" }}
+          containerStyle={[
+            { width: "100%" },
+            (!planData || !hasPermission) && { opacity: 0.5 },
+          ]}
           height={70}
         >
           <ButtonText
