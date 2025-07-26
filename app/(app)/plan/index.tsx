@@ -282,14 +282,7 @@ export default function Page() {
       colors={[theme[2], theme[3], theme[4], theme[3], theme[2]]}
       style={[styles.container, { paddingBottom: insets.bottom }]}
     >
-      {!hasPermission ? (
-        <PermissionScreen
-          onSuccess={() => {
-            console.log("Permission granted");
-            setHasPermission(true);
-          }}
-        />
-      ) : !planData ? (
+      {!planData || hasPermission === null ? (
         <View
           style={{
             flex: 1,
@@ -299,6 +292,13 @@ export default function Page() {
         >
           <Spinner />
         </View>
+      ) : !hasPermission ? (
+        <PermissionScreen
+          onSuccess={() => {
+            console.log("Permission granted");
+            setHasPermission(true);
+          }}
+        />
       ) : (
         <>
           <View style={{ paddingHorizontal: 25, marginTop: 20 }}>
