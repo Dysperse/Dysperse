@@ -61,7 +61,7 @@ function TaskDateModalContent({ task, updateTask }) {
       if (time) {
         const parsedTime = dayjs(time);
         if (parsedTime.isValid()) {
-          setLastUsedTime(parsedTime.toISOString());
+          setLastUsedTime(parsedTime);
         }
       }
     });
@@ -114,7 +114,7 @@ function TaskDateModalContent({ task, updateTask }) {
 
   const dateList: any = timeMode
     ? [
-        lastUsedTime && {
+        dayjs(lastUsedTime).isValid() && {
           icon: "history",
           primary: "Last used time",
           secondary: lastUsedTime.format(
