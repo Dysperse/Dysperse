@@ -163,8 +163,8 @@ function Tab({
             >
               <Emoji emoji={tab.collection?.emoji || tab.label?.emoji} />
             </Avatar>
-            {badgeData?.collections.find((t) => t.id === tab.collectionId) &&
-              badgeData.collections.find((t) => t.id === tab.collectionId)
+            {badgeData?.collections?.find((t) => t.id === tab.collectionId) &&
+              badgeData.collections?.find((t) => t.id === tab.collectionId)
                 .total > 0 && (
                 <View
                   style={{
@@ -189,12 +189,12 @@ function Tab({
                     weight={900}
                   >
                     {Math.min(
-                      badgeData.collections.find(
+                      badgeData.collections?.find(
                         (t) => t.id === tab.collectionId
                       ).total,
                       9
                     )}
-                    {badgeData.collections.find(
+                    {badgeData.collections?.find(
                       (t) => t.id === tab.collectionId && t.total > 9
                     ) && "+"}
                   </Text>

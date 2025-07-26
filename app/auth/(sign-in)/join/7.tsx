@@ -58,13 +58,16 @@ export default function Page() {
   }, [handleSignup]);
 
   return (
-    <View style={{ flexGrow: 1, justifyContent: "center" }}>
+    <View
+      style={{ flexGrow: 1, justifyContent: "center", paddingHorizontal: 20 }}
+    >
       <Text
         style={{
           fontFamily: "serifText700",
           fontSize: breakpoints.md ? 45 : 35,
           marginTop: 10,
           color: theme[11],
+          textAlign: "center",
         }}
       >
         Hang tight...
@@ -76,6 +79,7 @@ export default function Page() {
           marginTop: 5,
           marginBottom: 15,
           color: theme[11],
+          textAlign: "center",
         }}
         weight={600}
       >
@@ -89,6 +93,7 @@ export default function Page() {
             backgroundColor: theme[2],
             padding: 20,
             borderRadius: 20,
+            justifyContent: "center",
           }}
         >
           <Spinner size={30} />

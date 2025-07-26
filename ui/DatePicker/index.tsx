@@ -7,7 +7,7 @@ import {
 } from "@marceloterreiro/flash-calendar";
 import dayjs from "dayjs";
 import { RefObject, useEffect, useState } from "react";
-import { Platform, View } from "react-native";
+import { View } from "react-native";
 import { Button, ButtonText } from "../Button";
 import { addHslAlpha } from "../color";
 import { useColorTheme } from "../color/theme-provider";
@@ -266,8 +266,6 @@ export const DatePicker = ({
           style={{
             paddingTop: 10,
             gap: 10,
-            minHeight:
-              Platform.OS === "web" ? undefined : localValue.date ? 450 : 310,
           }}
         >
           <CalendarPreview

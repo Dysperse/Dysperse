@@ -39,7 +39,7 @@ export default function Page() {
       <View
         style={{
           width: 300,
-          marginRight: "auto",
+          marginHorizontal: "auto",
         }}
       >
         <Turnstile

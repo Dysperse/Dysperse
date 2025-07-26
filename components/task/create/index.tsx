@@ -266,7 +266,7 @@ const CreateTaskLabelInput = memo(function CreateTaskLabelInput({
         >
           {!label?.id && collectionId ? (
             <Button
-              style={{ gap: 10, opacity: 0.5 }}
+              style={{ gap: 15, opacity: 0.6 }}
               icon={
                 collectionData ? (
                   <Emoji

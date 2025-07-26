@@ -162,9 +162,13 @@ const Scratch = () => {
           render={({ field: { onChange, value } }) => (
             <TextField
               inputRef={nameRef}
-              placeholder={`${
+              placeholder={
                 session?.user?.profile?.name?.split(" ")?.[0]
-              }'s collection`}
+                  ? `${
+                      session?.user?.profile?.name?.split(" ")?.[0]
+                    }'s collection`
+                  : "Untitled collection"
+              }
               value={value}
               onSubmitEditing={handleSubmit(onSubmit)}
               onChangeText={onChange}

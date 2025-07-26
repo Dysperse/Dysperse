@@ -204,14 +204,27 @@ export function CreateLabelModal({
                         key={color}
                         onPress={() => onChange(color)}
                         style={() => ({
-                          width: 30,
-                          height: 30,
-                          borderRadius: 999,
-                          backgroundColor: colors[color][7],
-                          borderWidth: 3,
-                          borderColor: colors[color][color === value ? 11 : 7],
+                          borderRadius: 15,
+                          backgroundColor: colors[color][6],
+                          borderWidth: 2,
+                          height: 35,
+                          width: `${100 / 5}%`,
+                          borderColor: color[2],
+                          alignItems: "center",
+                          justifyContent: "center",
                         })}
-                      />
+                      >
+                        {value === color && (
+                          <Icon
+                            style={{
+                              color: colors[color][11],
+                            }}
+                            bold
+                          >
+                            done_outline
+                          </Icon>
+                        )}
+                      </Pressable>
                     ))}
                   </View>
                 )}

@@ -344,7 +344,6 @@ function LabelPickerContent({
           ListEmptyComponent={
             <View
               style={{
-                // height: "100%",
                 justifyContent: "center",
                 alignItems: "center",
                 paddingVertical: 70,
@@ -352,7 +351,13 @@ function LabelPickerContent({
                 gap: 5,
               }}
             >
-              <Text style={{ fontSize: 30, marginTop: 10 }}>
+              <Text
+                style={{
+                  fontSize: 30,
+                  marginTop: 10,
+                  fontFamily: "serifText700",
+                }}
+              >
                 {query ? "No labels found" : "No labels yet"}
               </Text>
               <Text style={{ opacity: 0.6, textAlign: "center" }}>
@@ -362,10 +367,13 @@ function LabelPickerContent({
               </Text>
               {query === "" && (
                 <CreateLabelModal mutate={mutate}>
-                  <Button>
-                    <Icon>add</Icon>
-                    <ButtonText>Create one</ButtonText>
-                  </Button>
+                  <Button
+                    variant="filled"
+                    containerStyle={{ marginTop: 5 }}
+                    large
+                    text="Create one"
+                    icon="add"
+                  />
                 </CreateLabelModal>
               )}
             </View>
