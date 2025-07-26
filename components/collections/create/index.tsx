@@ -188,7 +188,7 @@ const Scratch = () => {
           onPress={handleSubmit(onSubmit)}
           icon={
             loading ? (
-              <View style={{ padding: 5 }}>
+              <View style={{ padding: 2 }}>
                 <Spinner color={theme[1]} />
               </View>
             ) : (
