@@ -59,6 +59,7 @@ function Agenda() {
   const listRef = useRef<FlatList>(null);
   const theme = useColorTheme();
   const alreadyScrolled = useRef(null);
+  const closeTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   useEffect(() => {
     InteractionManager.runAfterInteractions(() => {
@@ -150,7 +151,10 @@ function Agenda() {
                 <AgendaCalendarMenu
                   handleMenuClose={() => {
                     state.value = 1;
-                    setTimeout(() => setOpen(false), 1000);
+                    closeTimeoutRef.current = setTimeout(() => {
+                      setOpen(false);
+                      closeTimeoutRef.current = null;
+                    }, 1000);
                   }}
                 />
               )}
@@ -167,6 +171,10 @@ function Agenda() {
               <AgendaButtons
                 weekMode
                 handleMenuOpen={() => {
+                  if (closeTimeoutRef.current) {
+                    clearTimeout(closeTimeoutRef.current);
+                    closeTimeoutRef.current = null;
+                  }
                   state.value = 0;
                   setOpen(true);
                 }}

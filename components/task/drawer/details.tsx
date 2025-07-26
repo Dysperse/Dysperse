@@ -361,7 +361,7 @@ export function TaskDateMenu({
             >
               <Button
                 style={{ gap: 10, marginRight: "auto" }}
-                containerStyle={{ opacity: 0.6, marginBottom: 3 }}
+                containerStyle={{ opacity: 0.6 }}
                 dense
                 icon={
                   task.start
