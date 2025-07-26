@@ -2,7 +2,7 @@ import { CreateLabelModal } from "@/components/labels/createModal";
 import { useLabelColors } from "@/components/labels/useLabelColors";
 import { useResponsiveBreakpoints } from "@/helpers/useResponsiveBreakpoints";
 import BottomSheet, { DBottomSheetProps } from "@/ui/BottomSheet";
-import { Button, ButtonText } from "@/ui/Button";
+import { Button } from "@/ui/Button";
 import Emoji from "@/ui/Emoji";
 import ErrorAlert from "@/ui/Error";
 import Icon from "@/ui/Icon";
@@ -30,7 +30,7 @@ import React, {
   useRef,
   useState,
 } from "react";
-import { Pressable, View } from "react-native";
+import { Pressable, useWindowDimensions, View } from "react-native";
 import Animated, {
   useAnimatedStyle,
   useSharedValue,
@@ -54,6 +54,7 @@ const Search = ({ query, setQuery, autoFocus }) => {
     <TextField
       enterKeyHint="search"
       value={query}
+      bottomSheet
       onChangeText={setQuery}
       style={{
         backgroundColor: theme[3],
@@ -138,7 +139,13 @@ function CollectionChips({
   );
 }
 
-const CloseButton = memo(function CloseButton({ onClose }: { onClose: any }) {
+const CloseButton = memo(function CloseButton({
+  data,
+  onClose,
+}: {
+  data;
+  onClose: any;
+}) {
   const { forceClose } = useBottomSheet();
   const breakpoints = useResponsiveBreakpoints();
   const [loading, setLoading] = useState(false);
@@ -153,17 +160,17 @@ const CloseButton = memo(function CloseButton({ onClose }: { onClose: any }) {
   }, [forceClose, onClose, breakpoints]);
 
   return (
-    <Button
-      onPress={handleClose}
-      // disabled={disabled}
-      containerStyle={{ marginLeft: "auto" }}
-      variant="filled"
-      style={{ paddingHorizontal: 20 }}
-      isLoading={loading}
-    >
-      <ButtonText>Done</ButtonText>
-      <Icon>check</Icon>
-    </Button>
+    data.length > 0 && (
+      <Button
+        onPress={handleClose}
+        containerStyle={{ marginLeft: "auto" }}
+        variant="filled"
+        style={{ paddingHorizontal: 20 }}
+        isLoading={loading}
+      >
+        <Icon>check</Icon>
+      </Button>
+    )
   );
 });
 
@@ -232,7 +239,7 @@ function LabelPickerContent({
         paddingBottom: 0,
       }}
     >
-      {multiple && (
+      {multiple && data.length > 0 && (
         <View
           style={{
             flexDirection: "row",
@@ -244,53 +251,53 @@ function LabelPickerContent({
           <Text weight={900} style={{ fontSize: 25, textAlign: "center" }}>
             Select labels
           </Text>
-
-          <CloseButton onClose={onClose} />
         </View>
       )}
-      <View style={[labelPickerStyles.searchBox]}>
-        {!hideBack && (
-          <IconButton
-            onPress={handleClose}
-            icon="close"
-            size={50}
-            variant="filled"
-          />
-        )}
-        <Search query={query} setQuery={setQuery} autoFocus={autoFocus} />
-        <Animated.View style={hideCreateStyle}>
-          <CreateLabelModal
-            collectionId={selectedCollection}
-            mutate={mutate}
-            onClose={() => searchRef.current?.focus()}
-            onCreate={(item) => {
-              if (multiple && Array.isArray(label)) {
-                if (label.includes(item.id) && typeof label === "object") {
-                  setLabel(label.filter((id) => id !== item.id));
-                } else {
-                  setLabel([...label, item.id]);
-                }
-              } else {
-                setLabel(item.id === (label as any)?.id ? null : item);
-                setTimeout(handleClose, 0);
-              }
-            }}
-          >
-            <Button
+      {data.length > 0 && (
+        <View style={[labelPickerStyles.searchBox]}>
+          {!hideBack && (
+            <IconButton
               onPress={handleClose}
-              icon="add"
-              height={50}
-              text="New"
-              bold
+              icon="close"
+              size={50}
               variant="filled"
-              containerStyle={{ flex: 1 }}
             />
-          </CreateLabelModal>
-        </Animated.View>
-      </View>
+          )}
+          <Search query={query} setQuery={setQuery} autoFocus={autoFocus} />
+          <Animated.View style={hideCreateStyle}>
+            <CreateLabelModal
+              collectionId={selectedCollection}
+              mutate={mutate}
+              onClose={() => searchRef.current?.focus()}
+              onCreate={(item) => {
+                if (multiple && Array.isArray(label)) {
+                  if (label.includes(item.id) && typeof label === "object") {
+                    setLabel(label.filter((id) => id !== item.id));
+                  } else {
+                    setLabel([...label, item.id]);
+                  }
+                } else {
+                  setLabel(item.id === (label as any)?.id ? null : item);
+                  setTimeout(handleClose, 0);
+                }
+              }}
+            >
+              <Button
+                onPress={handleClose}
+                icon="add"
+                height={50}
+                text="New"
+                bold
+                variant="filled"
+                containerStyle={{ flex: 1 }}
+              />
+            </CreateLabelModal>
+          </Animated.View>
+        </View>
+      )}
       <LinearGradient
         colors={[theme[2], addHslAlpha(theme[2], 0)]}
-        style={{ height: 40, zIndex: 99, marginBottom: -40, width: "100%" }}
+        style={{ height: 30, zIndex: 99, marginBottom: -30, width: "100%" }}
       />
       {Array.isArray(data) ? (
         <BottomSheetFlashList
@@ -340,21 +347,21 @@ function LabelPickerContent({
               </View>
             </>
           }
-          contentContainerStyle={{ paddingBottom: 100, paddingTop: 10 }}
+          contentContainerStyle={{ paddingBottom: 100 }}
           ListEmptyComponent={
             <View
               style={{
                 justifyContent: "center",
                 alignItems: "center",
-                paddingVertical: 70,
                 paddingHorizontal: 20,
                 gap: 5,
+                height: "100%",
+                marginTop: -20,
               }}
             >
               <Text
                 style={{
                   fontSize: 30,
-                  marginTop: 10,
                   fontFamily: "serifText700",
                 }}
               >
@@ -429,7 +436,7 @@ function LabelPickerContent({
                   }
                 />
                 {((label as any)?.id == item.id || multiple) && (
-                  <Icon filled size={30}>
+                  <Icon filled={isSelected} size={30}>
                     {isSelected ? "check_circle" : "circle"}
                   </Icon>
                 )}
@@ -485,6 +492,7 @@ export default function LabelPicker({
 }) {
   const _ref = useRef<BottomSheetModal>(null);
   const ref = sheetProps.sheetRef || _ref;
+  const { height } = useWindowDimensions();
 
   const handleOpen = useCallback(() => {
     onOpen?.();
@@ -511,7 +519,7 @@ export default function LabelPicker({
         sheetRef={ref}
         onClose={handleClose}
         maxWidth={(breakpoints.md ? 450 : "100%") as any}
-        snapPoints={["90%"]}
+        snapPoints={[height / 2]}
         containerStyle={{
           maxWidth: 500,
           width: "100%",

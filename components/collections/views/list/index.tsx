@@ -193,9 +193,9 @@ export default function List() {
               style={{
                 width: 600,
                 maxWidth: "100%",
-                paddingHorizontal: 20,
+                paddingHorizontal: item.create || item.header ? 20 : 10,
                 marginHorizontal: "auto",
-                marginBottom: 10,
+                marginBottom: item.create || item.header ? 10 : 0,
               }}
             >
               <ListItem

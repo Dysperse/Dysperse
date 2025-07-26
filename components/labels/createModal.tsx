@@ -196,7 +196,6 @@ export function CreateLabelModal({
                       alignItems: "center",
                       flexWrap: "wrap",
                       marginTop: 10,
-                      gap: 10,
                     }}
                   >
                     {Object.keys(colors).map((color) => (
@@ -209,7 +208,7 @@ export function CreateLabelModal({
                           borderWidth: 2,
                           height: 35,
                           width: `${100 / 5}%`,
-                          borderColor: color[2],
+                          borderColor: colors[color][2],
                           alignItems: "center",
                           justifyContent: "center",
                         })}

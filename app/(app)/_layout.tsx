@@ -283,7 +283,6 @@ export default function AppLayout() {
                                 }
                                 overlayColor="transparent"
                                 drawerWidth={
-                                  breakpoints.md &&
                                   pathname.includes("/everything")
                                     ? SECONDARY_SIDEBAR_WIDTH
                                     : ORIGINAL_SIDEBAR_WIDTH
