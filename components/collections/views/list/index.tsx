@@ -195,7 +195,7 @@ export default function List() {
                 maxWidth: "100%",
                 paddingHorizontal: 20,
                 marginHorizontal: "auto",
-                marginBottom: item.header ? 10 : 0,
+                marginBottom: 10,
               }}
             >
               <ListItem
