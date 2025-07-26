@@ -114,7 +114,7 @@ function TaskDateModalContent({ task, updateTask }) {
 
   const dateList: any = timeMode
     ? [
-        dayjs(lastUsedTime).isValid() && {
+        lastUsedTime && {
           icon: "history",
           primary: "Last used time",
           secondary: lastUsedTime.format(
