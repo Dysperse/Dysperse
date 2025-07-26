@@ -53,7 +53,7 @@ const TaskInput = ({ control }) => {
             }}
           >
             {[
-              { emoji: "1F6CF", text: "Make my bed" },
+              { emoji: "1F634", text: "Make my bed" },
               { emoji: "1F3C3", text: "Exercise" },
               { emoji: "2615", text: "Coffee" },
               { emoji: "1F9F9", text: "Organize my space" },
