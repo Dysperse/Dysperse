@@ -689,7 +689,10 @@ export default function CommandPaletteContent({ handleClose, defaultFilter }) {
       <View style={{ flexDirection: "row", flex: 1 }}>
         {(!preview || breakpoints.md) && (
           <KeyboardAvoidingView
-            style={{ flex: breakpoints.md ? 1.5 : 1 }}
+            style={{
+              flex: breakpoints.md ? 1.5 : 1,
+              width: "100%",
+            }}
             behavior="height"
           >
             <CommandPaletteList

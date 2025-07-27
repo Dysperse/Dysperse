@@ -86,6 +86,7 @@ const WebAnimationComponent = ({ children }) => {
 
 export function LastStateRestore() {
   const { data } = useSWR(["user/tabs"]);
+  const breakpoints = useResponsiveBreakpoints();
   const pathname = usePathname();
   const { fullscreen, tab: currentTab } = useGlobalSearchParams();
 
@@ -105,7 +106,9 @@ export function LastStateRestore() {
       } else {
         router.replace("/home");
       }
-    } else if (!lastViewedTab) {
+    }
+    // weird sidebar bug when opening/closing
+    else if (!lastViewedTab || !breakpoints.md) {
       router.replace("/home");
     }
   }, []);

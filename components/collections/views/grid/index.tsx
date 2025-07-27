@@ -104,77 +104,87 @@ export default function Grid() {
                     Edit
                   </Text>
                 </Pressable>
+              ) : label.empty ? (
+                <Pressable
+                  android_ripple={{ color: theme[7] }}
+                  style={{
+                    flex: 1,
+                    width: 230,
+                    minWidth: 230,
+                    maxWidth: 230,
+                    minHeight: 5,
+                    borderWidth: 2,
+                    borderColor: theme[3],
+                    borderStyle: "dashed",
+                    borderRadius: 25,
+                    alignItems: "center",
+                    justifyContent: "center",
+                    padding: 20,
+                  }}
+                ></Pressable>
               ) : (
-                !label.empty && (
-                  <View
-                    style={{ borderRadius: 25, overflow: "hidden" }}
-                    key={i}
+                <View style={{ borderRadius: 25, overflow: "hidden" }} key={i}>
+                  <Pressable
+                    android_ripple={{ color: theme[7] }}
+                    onPress={() => {
+                      scrollRef.current?.scrollTo({ x: 0 });
+                      setCurrentColumn(
+                        label.other
+                          ? "OTHER"
+                          : data.gridOrder.findIndex((l) => l == label.id)
+                      );
+                    }}
+                    style={({ pressed }: any) => ({
+                      flex: 1,
+                      width: 230,
+                      minWidth: 230,
+                      maxWidth: 230,
+                      minHeight: 5,
+                      borderWidth: 2,
+                      borderColor: theme[pressed ? 6 : 4],
+                      backgroundColor: theme[pressed ? 3 : 2],
+                      borderRadius: 25,
+                      alignItems: "center",
+                      justifyContent: "center",
+                      padding: 20,
+                    })}
                   >
-                    <Pressable
-                      android_ripple={{ color: theme[7] }}
-                      onPress={() => {
-                        scrollRef.current?.scrollTo({ x: 0 });
-                        setCurrentColumn(
-                          label.other
-                            ? "OTHER"
-                            : data.gridOrder.findIndex((l) => l == label.id)
-                        );
+                    {label.emoji && (
+                      <Emoji
+                        emoji={label.emoji}
+                        size={50}
+                        style={{ marginBottom: 10 }}
+                      />
+                    )}
+                    <Text
+                      numberOfLines={1}
+                      style={{
+                        fontSize: 20,
+                        marginTop: 5,
+                        fontFamily: "serifText700",
                       }}
-                      style={({ pressed }: any) => ({
-                        flex: 1,
-                        width: 230,
-                        minWidth: 230,
-                        maxWidth: 230,
-                        minHeight: 5,
-                        borderWidth: 2,
-                        borderColor: theme[pressed ? 6 : 4],
-                        borderRadius: 25,
-                        alignItems: "center",
-                        justifyContent: "center",
-                        padding: 20,
-                      })}
                     >
-                      {label.emoji && (
-                        <Emoji
-                          emoji={label.emoji}
-                          size={50}
-                          style={{ marginBottom: 10 }}
-                        />
-                      )}
-                      <Text
-                        numberOfLines={1}
-                        style={{
-                          fontSize: 20,
-                          marginTop: 5,
-                          fontFamily: "serifText700",
-                        }}
-                      >
-                        {label.name || "Unlabeled"}
-                      </Text>
-                      {(label.entities || data.entities) && (
-                        <Text
-                          weight={300}
-                          style={{ marginTop: 2, opacity: 0.7 }}
-                        >
-                          {
-                            Object.values(
-                              label.entities || data.entities
-                            )?.filter?.(
-                              (e) => e.completionInstances.length === 0
-                            )?.length
-                          }
-                          {" item"}
-                          {Object.values(
+                      {label.name || "Unlabeled"}
+                    </Text>
+                    {(label.entities || data.entities) && (
+                      <Text weight={300} style={{ marginTop: 2, opacity: 0.7 }}>
+                        {
+                          Object.values(
                             label.entities || data.entities
                           )?.filter?.((e) => e.completionInstances.length === 0)
-                            ?.length !== 1
-                            ? "s"
-                            : ""}
-                        </Text>
-                      )}
-                    </Pressable>
-                  </View>
-                )
+                            ?.length
+                        }
+                        {" item"}
+                        {Object.values(
+                          label.entities || data.entities
+                        )?.filter?.((e) => e.completionInstances.length === 0)
+                          ?.length !== 1
+                          ? "s"
+                          : ""}
+                      </Text>
+                    )}
+                  </Pressable>
+                </View>
               )
             )}
         </View>

@@ -4,6 +4,7 @@ import Icon from "@/ui/Icon";
 import MenuPopover from "@/ui/MenuPopover";
 import Text from "@/ui/Text";
 import { useColorTheme } from "@/ui/color/theme-provider";
+import { impactAsync, ImpactFeedbackStyle } from "expo-haptics";
 import { useEffect, useState } from "react";
 import { View } from "react-native";
 import Animated, {
@@ -20,6 +21,7 @@ const CoinFlip = () => {
   const animation = useSharedValue(1);
 
   const flipCoin = () => {
+    impactAsync(ImpactFeedbackStyle.Light);
     animation.value = withSequence(
       withSpring(0.9, {
         overshootClamping: true,
@@ -27,6 +29,7 @@ const CoinFlip = () => {
       withSpring(1, {})
     );
     setTimeout(() => {
+      impactAsync(ImpactFeedbackStyle.Medium);
       const coin = Math.random() < 0.5 ? "Heads" : "Tails";
       setResult(coin);
     }, 200);
@@ -100,6 +103,7 @@ const Dice = () => {
   const animation = useSharedValue(0);
 
   const rollDice = () => {
+    impactAsync(ImpactFeedbackStyle.Light);
     animation.value = withSequence(
       withSpring(0.9, {
         overshootClamping: true,
@@ -107,6 +111,7 @@ const Dice = () => {
       withSpring(1, {})
     );
     setTimeout(() => {
+      impactAsync(ImpactFeedbackStyle.Medium);
       const dice = Math.floor(Math.random() * 6) + 1;
       setResult(dice);
     }, 200);
