@@ -156,20 +156,65 @@ function SubtaskList() {
   const theme = useColorTheme();
 
   return (
-    <>
-      {!isReadOnly && (
-        <>
-          <AttachStep index={2}>
-            <View>
+    Object.keys(task.subtasks || {}).length > 0 && (
+      <>
+        {!isReadOnly && (
+          <>
+            <AttachStep index={2}>
+              <View>
+                <CreateTask
+                  mutate={(t) => {
+                    updateTask({
+                      subtasks: {
+                        ...task.subtasks,
+                        [t.id]: t,
+                      },
+                    });
+                  }}
+                  onPress={() => {
+                    if (
+                      Platform.OS === "web" &&
+                      !localStorage.getItem("subtaskTip")
+                    ) {
+                      localStorage.setItem("subtaskTip", "true");
+                      Toast.show({
+                        type: "info",
+                        text1: "Pro tip",
+                        text2: "Tap twice on a task to open this popup",
+                        visibilityTime: 5000,
+                      });
+                    }
+                  }}
+                  defaultValues={{ parentTask: task }}
+                >
+                  <Button
+                    icon="prompt_suggestion"
+                    dense
+                    style={{ gap: 10, marginRight: "auto" }}
+                    containerStyle={{ opacity: 0.6 }}
+                    text={
+                      Object.keys(task.subtasks || {}).length === 0
+                        ? "Create subtask"
+                        : `${Object.keys(task.subtasks || {}).length} subtask${
+                            Object.keys(task.subtasks || {}).length > 1
+                              ? "s"
+                              : ""
+                          }`
+                    }
+                  />
+                </CreateTask>
+              </View>
+            </AttachStep>
+            {Object.keys(task.subtasks || {}).length > 0 && (
               <CreateTask
-                mutate={(t) => {
+                mutate={(t) =>
                   updateTask({
                     subtasks: {
                       ...task.subtasks,
                       [t.id]: t,
                     },
-                  });
-                }}
+                  })
+                }
                 onPress={() => {
                   if (
                     Platform.OS === "web" &&
@@ -186,93 +231,53 @@ function SubtaskList() {
                 }}
                 defaultValues={{ parentTask: task }}
               >
-                <Button
-                  icon="prompt_suggestion"
-                  dense
-                  style={{ gap: 10, marginRight: "auto" }}
-                  containerStyle={{ opacity: 0.6 }}
-                  text={
-                    Object.keys(task.subtasks || {}).length === 0
-                      ? "Create subtask"
-                      : `${Object.keys(task.subtasks || {}).length} subtask${
-                          Object.keys(task.subtasks || {}).length > 1 ? "s" : ""
-                        }`
-                  }
-                />
+                <ListItemButton
+                  pressableStyle={{ gap: 10, paddingVertical: 10 }}
+                  style={{ marginLeft: 15, marginBottom: -5 }}
+                >
+                  <Icon size={35} style={{ color: theme[12], opacity: 0.5 }}>
+                    add_circle
+                  </Icon>
+                  <ListItemText
+                    primary="Create subtask"
+                    primaryProps={{ weight: 400 }}
+                  />
+                </ListItemButton>
               </CreateTask>
-            </View>
-          </AttachStep>
-          {Object.keys(task.subtasks || {}).length > 0 && (
-            <CreateTask
-              mutate={(t) =>
-                updateTask({
-                  subtasks: {
-                    ...task.subtasks,
-                    [t.id]: t,
-                  },
-                })
-              }
-              onPress={() => {
-                if (
-                  Platform.OS === "web" &&
-                  !localStorage.getItem("subtaskTip")
-                ) {
-                  localStorage.setItem("subtaskTip", "true");
-                  Toast.show({
-                    type: "info",
-                    text1: "Pro tip",
-                    text2: "Tap twice on a task to open this popup",
-                    visibilityTime: 5000,
-                  });
-                }
-              }}
-              defaultValues={{ parentTask: task }}
-            >
-              <ListItemButton
-                pressableStyle={{ gap: 10, paddingVertical: 10 }}
-                style={{ marginLeft: 15, marginBottom: -5 }}
-              >
-                <Icon size={35} style={{ color: theme[12], opacity: 0.5 }}>
-                  add_circle
-                </Icon>
-                <ListItemText
-                  primary="Create subtask"
-                  primaryProps={{ weight: 400 }}
-                />
-              </ListItemButton>
-            </CreateTask>
-          )}
-        </>
-      )}
-      <View
-        style={{
-          marginBottom: Object.keys(task.subtasks || {}).length === 0 ? 0 : 10,
-        }}
-      >
-        {typeof task.subtasks === "object" &&
-          Object.values(task.subtasks)
-            .filter((t) => !t.trash)
-            .map((t: any) => (
-              <Entity
-                dense
-                isReadOnly={isReadOnly}
-                item={t}
-                onTaskUpdate={(newTask) => {
-                  updateTask(
-                    {
-                      subtasks: {
-                        ...task.subtasks,
-                        [t.id]: newTask,
+            )}
+          </>
+        )}
+        <View
+          style={{
+            marginBottom:
+              Object.keys(task.subtasks || {}).length === 0 ? 0 : 10,
+          }}
+        >
+          {typeof task.subtasks === "object" &&
+            Object.values(task.subtasks)
+              .filter((t) => !t.trash)
+              .map((t: any) => (
+                <Entity
+                  dense
+                  isReadOnly={isReadOnly}
+                  item={t}
+                  onTaskUpdate={(newTask) => {
+                    updateTask(
+                      {
+                        subtasks: {
+                          ...task.subtasks,
+                          [t.id]: newTask,
+                        },
                       },
-                    },
-                    false
-                  );
-                }}
-                key={t.id}
-              />
-            ))}
-      </View>
-    </>
+                      false
+                    );
+                  }}
+                  key={t.id}
+                />
+              ))}
+        </View>
+      </>
+    )
   );
 }
 
@@ -394,26 +399,6 @@ export function TaskDateMenu({
         </AttachStep>
       </>
     )
-  );
-}
-
-function TaskAttachmentsButton() {
-  return (
-    <Button
-      style={{ gap: 10 }}
-      containerStyle={{ opacity: 0.6, marginRight: "auto" }}
-      icon="note_stack"
-      dense
-      text="Attachments"
-      onPress={() => {
-        Toast.show({
-          type: "info",
-          text1: "Attachments are not yet implemented",
-          text2: "You can add attachments in the web app",
-          visibilityTime: 5000,
-        });
-      }}
-    />
   );
 }
 
@@ -875,57 +860,56 @@ export function TaskDetails({ labelPickerRef }) {
   return (
     <View style={{ paddingLeft: 3, gap: 3, paddingTop: 5 }}>
       {task.integration?.type === "NEW_CANVAS_LMS" && <CanvasLiveInfo />}
-      {!task.parentTaskId && (
-        <View style={{ flex: 1, gap: 3 }}>
-          <TaskDateMenu />
-          {task.location && <TaskLocationMenu />}
-
-          {task && !task.parentTaskId && !(isReadOnly && !task.label) && (
-            <LabelPicker
-              disabled={isReadOnly}
-              label={task?.label || undefined}
-              setLabel={(e: any) => {
-                updateTask({ labelId: e.id, label: e });
-              }}
-              onClose={() => {}}
-              sheetProps={{ sheetRef: labelPickerRef }}
-              defaultCollection={collectionId as any}
-            >
-              <Button
+      <View style={{ flex: 1, gap: 3 }}>
+        {!task.parentTaskId && (
+          <>
+            <TaskDateMenu />
+            {task.location && <TaskLocationMenu />}
+            {task && !task.parentTaskId && !(isReadOnly && !task.label) && (
+              <LabelPicker
                 disabled={isReadOnly}
-                icon={
-                  task.label?.emoji || task.collection?.emoji ? (
-                    <Emoji
-                      emoji={task?.label?.emoji || task.collection.emoji}
-                      size={20}
-                      style={{ marginHorizontal: 2.5 }}
-                    />
-                  ) : (
-                    <Icon>tag</Icon>
-                  )
-                }
-                dense
-                style={{ gap: 10 }}
-                containerStyle={{ marginRight: "auto" }}
-                textStyle={{ opacity: 0.6 }}
-                iconStyle={{
-                  opacity:
-                    task.label?.emoji || task.collection?.emoji ? 1 : 0.6,
+                label={task?.label || undefined}
+                setLabel={(e: any) => {
+                  updateTask({ labelId: e.id, label: e });
                 }}
-                text={
-                  task?.label?.name || task?.collection?.name || "Add label"
-                }
-              />
-            </LabelPicker>
-          )}
-        </View>
-      )}
-      {task.storyPoints && <TaskStoryPoints />}
-      {(isReadOnly && task.subtasks?.length === 0) ||
-      task.parentTaskId ? null : (
-        <View>{/* <SubtaskList /> */}</View>
-      )}
-      <View>
+                onClose={() => {}}
+                sheetProps={{ sheetRef: labelPickerRef }}
+                defaultCollection={collectionId as any}
+              >
+                <Button
+                  disabled={isReadOnly}
+                  icon={
+                    task.label?.emoji || task.collection?.emoji ? (
+                      <Emoji
+                        emoji={task?.label?.emoji || task.collection.emoji}
+                        size={20}
+                        style={{ marginHorizontal: 2.5 }}
+                      />
+                    ) : (
+                      <Icon>tag</Icon>
+                    )
+                  }
+                  dense
+                  style={{ gap: 10 }}
+                  containerStyle={{ marginRight: "auto" }}
+                  textStyle={{ opacity: 0.6 }}
+                  iconStyle={{
+                    opacity:
+                      task.label?.emoji || task.collection?.emoji ? 1 : 0.6,
+                  }}
+                  text={
+                    task?.label?.name || task?.collection?.name || "Add label"
+                  }
+                />
+              </LabelPicker>
+            )}
+          </>
+        )}
+        {task.storyPoints && <TaskStoryPoints />}
+        {(isReadOnly && task.subtasks?.length === 0) ||
+        task.parentTaskId ? null : (
+          <SubtaskList />
+        )}
         <TaskNote task={task} ref={editorRef} updateTask={updateTask} />
       </View>
     </View>

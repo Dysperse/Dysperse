@@ -71,7 +71,7 @@ function CollectionSidekick() {
     />
   ) : (
     <SidekickComingSoonModal>
-      <IconButton icon="raven" />
+      <IconButton size={40} icon="raven" />
     </SidekickComingSoonModal>
   );
 }

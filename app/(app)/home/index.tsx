@@ -1,3 +1,13 @@
+import BatteryWidget from "@/components/focus-panel/widgets/battery";
+import Clock from "@/components/focus-panel/widgets/clock";
+import Magic8Ball from "@/components/focus-panel/widgets/magic-8-ball";
+import Quotes from "@/components/focus-panel/widgets/quotes";
+import Randomizer from "@/components/focus-panel/widgets/randomizer";
+import Spotify from "@/components/focus-panel/widgets/spotify";
+import TopStocks from "@/components/focus-panel/widgets/top-stocks";
+import UpNext from "@/components/focus-panel/widgets/up-next";
+import WeatherWidget from "@/components/focus-panel/widgets/weather/widget";
+import WordOfTheDay from "@/components/focus-panel/widgets/word-of-the-day";
 import { Actions } from "@/components/home/actions";
 import { FriendActivity } from "@/components/home/friend-activity";
 import { Greeting } from "@/components/home/greeting";
@@ -24,7 +34,7 @@ import { ImageBackground as ExpoImageBackground } from "expo-image";
 import { LinearGradient } from "expo-linear-gradient";
 import { router } from "expo-router";
 import { LexoRank } from "lexorank";
-import { Fragment, lazy, memo } from "react";
+import { Fragment, memo } from "react";
 import {
   Dimensions,
   Keyboard,
@@ -36,29 +46,6 @@ import { KeyboardAwareScrollView } from "react-native-keyboard-controller";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import Toast from "react-native-toast-message";
 import useSWR from "swr";
-
-const Magic8Ball = lazy(
-  () => import("@/components/focus-panel/widgets/magic-8-ball")
-);
-const Clock = lazy(() => import("@/components/focus-panel/widgets/clock"));
-const Quotes = lazy(() => import("@/components/focus-panel/widgets/quotes"));
-const Spotify = lazy(() => import("@/components/focus-panel/widgets/spotify"));
-const UpNext = lazy(() => import("@/components/focus-panel/widgets/up-next"));
-const BatteryWidget = lazy(
-  () => import("@/components/focus-panel/widgets/battery")
-);
-const TopStocks = lazy(
-  () => import("@/components/focus-panel/widgets/top-stocks")
-);
-const WeatherWidget = lazy(
-  () => import("@/components/focus-panel/widgets/weather/widget")
-);
-const WordOfTheDay = lazy(
-  () => import("@/components/focus-panel/widgets/word-of-the-day")
-);
-const Randomizer = lazy(
-  () => import("@/components/focus-panel/widgets/randomizer")
-);
 
 export const HOME_PATTERNS = [
   "dots",

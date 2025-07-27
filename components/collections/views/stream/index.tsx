@@ -11,6 +11,7 @@ import Text from "@/ui/Text";
 import { addHslAlpha } from "@/ui/color";
 import { useColorTheme } from "@/ui/color/theme-provider";
 import capitalizeFirstLetter from "@/utils/capitalizeFirstLetter";
+import { TEMPORARY_CONTENT_INSET_FIX } from "@/utils/temporary-scrolling-bug-fix";
 import { FlashList } from "@shopify/flash-list";
 import dayjs from "dayjs";
 import { impactAsync, ImpactFeedbackStyle } from "expo-haptics";
@@ -139,32 +140,39 @@ function StreamColumn({ view, mutate, filteredTasks, index }) {
           pointerEvents: "none",
         }}
       />
-      <FlashList
-        key={view}
-        refreshControl={
-          <RefreshControl refreshing={false} onRefresh={() => mutate()} />
-        }
-        ListEmptyComponent={() => <ColumnEmptyComponent offset={index} />}
-        centerContent={filteredTasks.length === 0}
-        data={filteredTasks}
-        estimatedItemSize={113}
-        contentContainerStyle={{
-          padding: 5,
-          paddingHorizontal: breakpoints.md ? 5 : 15,
-          paddingTop: 20,
-          paddingBottom: insets.bottom + 15,
-        }}
-        renderItem={({ item }) => (
-          <Entity
-            isReadOnly={isReadOnly}
-            showRelativeTime={view !== "unscheduled"}
-            showLabel
-            item={item}
-            onTaskUpdate={(newData) => onTaskUpdate(newData, item)}
-          />
-        )}
-        keyExtractor={(i, d) => `${i.id}-${d}`}
-      />
+      {filteredTasks.length === 0 ? (
+        <View
+          style={{ flex: 1, alignItems: "center", justifyContent: "center" }}
+        >
+          <ColumnEmptyComponent offset={index} />
+        </View>
+      ) : (
+        <FlashList
+          contentInset={TEMPORARY_CONTENT_INSET_FIX()}
+          key={view}
+          refreshControl={
+            <RefreshControl refreshing={false} onRefresh={() => mutate()} />
+          }
+          data={filteredTasks}
+          estimatedItemSize={113}
+          contentContainerStyle={{
+            padding: 5,
+            paddingHorizontal: breakpoints.md ? 5 : 15,
+            paddingTop: 20,
+            paddingBottom: insets.bottom + 15,
+          }}
+          renderItem={({ item }) => (
+            <Entity
+              isReadOnly={isReadOnly}
+              showRelativeTime={view !== "unscheduled"}
+              showLabel
+              item={item}
+              onTaskUpdate={(newData) => onTaskUpdate(newData, item)}
+            />
+          )}
+          keyExtractor={(i, d) => `${i.id}-${d}`}
+        />
+      )}
     </View>
   );
 }

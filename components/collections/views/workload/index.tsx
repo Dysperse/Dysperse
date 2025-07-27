@@ -86,14 +86,21 @@ function StoryPointShape({ selected, index, onPress }) {
       >
         <Icon
           size={50}
-          filled={index > -1}
-          style={{ color: theme[selected ? 11 : 5] }}
+          filled
+          style={{
+            color: theme[selected ? 11 : 5],
+            transform: [{ rotate: index === -1 ? "45deg" : "0deg" }],
+          }}
         >
           {index === -1
             ? "circle"
-            : ["circle", "square", "thermostat_carbon", "pentagon", "hexagon"][
-                index
-              ]}
+            : [
+                "kid_star",
+                "square",
+                "thermostat_carbon",
+                "pentagon",
+                "hexagon",
+              ][index]}
         </Icon>
       </View>
       <View
@@ -116,7 +123,21 @@ function StoryPointShape({ selected, index, onPress }) {
           }}
           weight={700}
         >
-          {index === -1 ? <Icon>close</Icon> : scale[index]}
+          {index === -1 ? (
+            <View
+              style={{
+                marginLeft: 4,
+                paddingLeft: 4,
+                height: 25,
+              }}
+            >
+              <Icon size={24} bold style={{ color: theme[selected ? 1 : 11] }}>
+                close
+              </Icon>
+            </View>
+          ) : (
+            scale[index]
+          )}
         </Text>
       </View>
     </IconButton>
@@ -274,47 +295,56 @@ const StoryPoint = ({
                 task.recurrenceRule ||
                 (!task.recurrenceRule && task.completionInstances.length === 0)
             ) && (
-              <View style={{ height: 70, marginTop: 70 }}>
-                <ColumnEmptyComponent offset={index} />
+              <View style={{ padding: 20, paddingBottom: 0, paddingTop: 5 }}>
+                <ColumnEmptyComponent
+                  row
+                  plannerFinished
+                  finished
+                  offset={index}
+                />
               </View>
             )}
         </>
       )}
-      <FlashList
-        contentInset={TEMPORARY_CONTENT_INSET_FIX()}
-        ref={columnRef}
-        refreshControl={
-          <RefreshControl refreshing={false} onRefresh={() => mutate()} />
-        }
-        data={filteredTasks
-          .sort((a, b) =>
-            a.agendaOrder?.toString()?.localeCompare(b.agendaOrder)
-          )
-          .sort((x, y) => (x.pinned === y.pinned ? 0 : x.pinned ? -1 : 1))
-          .sort((x, y) =>
-            x.completionInstances.length === y.completionInstances.length
-              ? 0
-              : x.completionInstances.length === 0
-              ? -1
-              : 0
+      {filteredTasks.length === 0 ? (
+        <View style={styles.empty}>
+          <ColumnEmptyComponent offset={index} />
+        </View>
+      ) : (
+        <FlashList
+          contentInset={TEMPORARY_CONTENT_INSET_FIX()}
+          ref={columnRef}
+          refreshControl={
+            <RefreshControl refreshing={false} onRefresh={() => mutate()} />
+          }
+          data={filteredTasks
+            .sort((a, b) =>
+              a.agendaOrder?.toString()?.localeCompare(b.agendaOrder)
+            )
+            .sort((x, y) => (x.pinned === y.pinned ? 0 : x.pinned ? -1 : 1))
+            .sort((x, y) =>
+              x.completionInstances.length === y.completionInstances.length
+                ? 0
+                : x.completionInstances.length === 0
+                ? -1
+                : 0
+            )}
+          estimatedItemSize={100}
+          contentContainerStyle={{
+            padding: 10,
+            paddingBottom: 50,
+          }}
+          renderItem={({ item }) => (
+            <Entity
+              showLabel
+              isReadOnly={isReadOnly}
+              item={item}
+              onTaskUpdate={mutations.categoryBased.update(mutate)}
+            />
           )}
-        estimatedItemSize={100}
-        contentContainerStyle={{
-          padding: 10,
-          paddingBottom: 50,
-        }}
-        centerContent={filteredTasks.length === 0}
-        ListEmptyComponent={() => <ColumnEmptyComponent offset={index} />}
-        renderItem={({ item }) => (
-          <Entity
-            showLabel
-            isReadOnly={isReadOnly}
-            item={item}
-            onTaskUpdate={mutations.categoryBased.update(mutate)}
-          />
-        )}
-        keyExtractor={(i, d) => `${i.id}-${d}`}
-      />
+          keyExtractor={(i, d) => `${i.id}-${d}`}
+        />
+      )}
     </View>
   );
 };

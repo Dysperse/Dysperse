@@ -448,7 +448,7 @@ export const TaskNote = ({
       {Platform.OS !== "web" && (
         <Button
           dense
-          style={{ gap: 10 }}
+          style={{ gap: 10, marginRight: "auto" }}
           containerStyle={{ opacity: 0.6, marginRight: "auto" }}
           onPress={
             isLoading

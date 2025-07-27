@@ -152,61 +152,73 @@ function Widgets() {
       </View>
       <FlatList
         data={sections}
-        contentContainerStyle={{ paddingTop: 7, paddingBottom: 30 }}
-        renderItem={({ item, index }: any) =>
-          item.header ? (
-            <Text
-              variant="eyebrow"
-              style={{ marginTop: 17, marginBottom: 3, marginLeft: 5 }}
-            >
-              {item.text}
-            </Text>
-          ) : (
-            <ListItemButton
-              key={index}
-              pressableStyle={{ padding: 5 }}
-              onPress={() => {
-                if (item.comingSoon) {
-                  return Toast.show({
-                    type: "info",
-                    text1: "Coming soon!",
-                  });
-                }
-                if (
-                  item.onlyOnce &&
-                  data.find((d) => d.type === item.text.toLowerCase())
-                ) {
-                  return Toast.show({
-                    type: "info",
-                    text1: "You can only add this widget once",
-                  });
-                }
-                handleWidgetToggle((item.key || item.text) as Widget);
-                router.back();
-              }}
-            >
-              <Avatar
-                disabled
-                icon={
-                  item.icon?.startsWith?.("https")
-                    ? undefined
-                    : (item.icon as any)
-                }
-                image={item.icon?.startsWith?.("https") ? item.icon : undefined}
-                size={40}
-                style={{ borderRadius: 15, backgroundColor: theme[3] }}
-              />
-              <ListItemText
-                primary={item.text}
-                secondary={item.secondary}
-                secondaryProps={{
-                  style: { opacity: 0.5, marginTop: -3, fontSize: 13 },
+        contentContainerStyle={{
+          paddingTop: 7,
+          paddingBottom: 30,
+        }}
+        renderItem={({ item, index }: any) => (
+          <View style={{ marginHorizontal: -10 }}>
+            {item.header ? (
+              <Text
+                variant="eyebrow"
+                style={{
+                  marginTop: 17,
+                  marginBottom: 3,
+                  marginLeft: 5,
+                  paddingHorizontal: 10,
                 }}
-              />
-              {loading === item.text && <Spinner />}
-            </ListItemButton>
-          )
-        }
+              >
+                {item.text}
+              </Text>
+            ) : (
+              <ListItemButton
+                key={index}
+                pressableStyle={{ padding: 5 }}
+                onPress={() => {
+                  if (item.comingSoon) {
+                    return Toast.show({
+                      type: "info",
+                      text1: "Coming soon!",
+                    });
+                  }
+                  if (
+                    item.onlyOnce &&
+                    data.find((d) => d.type === item.text.toLowerCase())
+                  ) {
+                    return Toast.show({
+                      type: "info",
+                      text1: "You can only add this widget once",
+                    });
+                  }
+                  handleWidgetToggle((item.key || item.text) as Widget);
+                  router.back();
+                }}
+              >
+                <Avatar
+                  disabled
+                  icon={
+                    item.icon?.startsWith?.("https")
+                      ? undefined
+                      : (item.icon as any)
+                  }
+                  image={
+                    item.icon?.startsWith?.("https") ? item.icon : undefined
+                  }
+                  size={40}
+                  style={{ borderRadius: 15, backgroundColor: theme[3] }}
+                />
+                <ListItemText
+                  primary={item.text}
+                  secondary={item.secondary}
+                  secondaryProps={{
+                    style: { opacity: 0.5, marginTop: -3, fontSize: 13 },
+                  }}
+                />
+                {loading === item.text && <Spinner />}
+              </ListItemButton>
+            )}
+          </View>
+        )}
       />
     </>
   );
@@ -225,7 +237,7 @@ export default function Page() {
       <MenuButton gradient icon="arrow_back_ios_new" back left />
       <ScrollView>
         <ArcSystemBar />
-        <View style={{ paddingHorizontal: 30 }}>
+        <View style={{ paddingHorizontal: 25 }}>
           <Text
             style={{
               fontFamily: "serifText800",
