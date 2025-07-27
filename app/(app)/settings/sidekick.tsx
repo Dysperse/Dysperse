@@ -178,9 +178,7 @@ export default function Page() {
   const { data, mutate, error } = useSWR(["ai"]);
 
   if (!session?.user?.betaTester)
-    return (
-      <SidekickComingSoon style={{ marginVertical: 50, marginBottom: 20 }} />
-    );
+    return <SidekickComingSoon style={{ flex: 1 }} />;
 
   const sections = [
     {

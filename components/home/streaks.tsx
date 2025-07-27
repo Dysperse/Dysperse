@@ -95,7 +95,11 @@ function StreakGoal({ dense }: { dense?: boolean }) {
         <>
           {!dense && (
             <MenuPopover
-              menuProps={{ style: { marginRight: "auto", marginLeft: -10 } }}
+              containerStyle={{ width: 150, marginLeft: 10, marginTop: -15 }}
+              menuProps={{
+                rendererProps: { placement: "bottom" },
+                style: { marginRight: "auto", marginLeft: -10 },
+              }}
               options={[
                 {
                   icon: "settings",

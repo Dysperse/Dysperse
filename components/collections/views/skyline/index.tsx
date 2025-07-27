@@ -11,6 +11,7 @@ import RefreshControl from "@/ui/RefreshControl";
 import Spinner from "@/ui/Spinner";
 import Text from "@/ui/Text";
 import capitalizeFirstLetter from "@/utils/capitalizeFirstLetter";
+import { TEMPORARY_CONTENT_INSET_FIX } from "@/utils/temporary-scrolling-bug-fix";
 import { FlashList } from "@shopify/flash-list";
 import dayjs from "dayjs";
 import { impactAsync, ImpactFeedbackStyle } from "expo-haptics";
@@ -204,7 +205,8 @@ function Header({
               variant="filled"
               containerStyle={{
                 flex: 1,
-                marginTop: title === "Today" ? -10 : undefined,
+                marginTop:
+                  title === "Today" || !breakpoints.md ? -10 : undefined,
               }}
               large={!breakpoints.md}
               bold={!breakpoints.md}
@@ -309,14 +311,22 @@ function Content({ data, mutate }) {
           large
           range={[data[0].start, data[0].end]}
         />
-        <FlashList
-          contentContainerStyle={{ padding: 20 }}
-          data={taskSortAlgorithm(Object.values(data[0].entities))}
-          centerContent={Object.keys(data[0].entities).length === 0}
-          ListEmptyComponent={() => <ColumnEmptyComponent />}
-          renderItem={renderItem}
-          refreshControl={refreshControl}
-        />
+        {Object.keys(data[0].entities).length === 0 ? (
+          <View
+            style={{ flex: 1, alignItems: "center", justifyContent: "center" }}
+          >
+            <ColumnEmptyComponent offset={0} />
+          </View>
+        ) : (
+          <FlashList
+            contentInset={TEMPORARY_CONTENT_INSET_FIX()}
+            contentContainerStyle={{ padding: 20 }}
+            data={taskSortAlgorithm(Object.values(data[0].entities))}
+            centerContent={Object.keys(data[0].entities).length === 0}
+            renderItem={renderItem}
+            refreshControl={refreshControl}
+          />
+        )}
       </View>
       <View style={columnStyles}>
         <Header
@@ -324,14 +334,22 @@ function Content({ data, mutate }) {
           title="Week"
           range={[data[1].start, data[1].end]}
         />
-        <FlashList
-          contentContainerStyle={{ padding: 20 }}
-          data={taskSortAlgorithm(Object.values(data[1].entities))}
-          centerContent={Object.keys(data[1].entities).length === 0}
-          ListEmptyComponent={() => <ColumnEmptyComponent offset={1} />}
-          renderItem={renderItem}
-          refreshControl={refreshControl}
-        />
+        {Object.keys(data[1].entities).length === 0 ? (
+          <View
+            style={{ flex: 1, alignItems: "center", justifyContent: "center" }}
+          >
+            <ColumnEmptyComponent offset={1} />
+          </View>
+        ) : (
+          <FlashList
+            contentInset={TEMPORARY_CONTENT_INSET_FIX()}
+            contentContainerStyle={{ padding: 20 }}
+            data={taskSortAlgorithm(Object.values(data[1].entities))}
+            centerContent={Object.keys(data[0].entities).length === 0}
+            renderItem={renderItem}
+            refreshControl={refreshControl}
+          />
+        )}
       </View>
       <View style={columnStyles}>
         <Header
@@ -339,14 +357,22 @@ function Content({ data, mutate }) {
           title="Month"
           range={[data[2].start, data[2].end]}
         />
-        <FlashList
-          contentContainerStyle={{ padding: 20 }}
-          data={taskSortAlgorithm(Object.values(data[2].entities))}
-          centerContent={Object.keys(data[2].entities).length === 0}
-          ListEmptyComponent={() => <ColumnEmptyComponent offset={2} />}
-          renderItem={renderItem}
-          refreshControl={refreshControl}
-        />
+        {Object.keys(data[2].entities).length === 0 ? (
+          <View
+            style={{ flex: 1, alignItems: "center", justifyContent: "center" }}
+          >
+            <ColumnEmptyComponent offset={2} />
+          </View>
+        ) : (
+          <FlashList
+            contentInset={TEMPORARY_CONTENT_INSET_FIX()}
+            contentContainerStyle={{ padding: 20 }}
+            data={taskSortAlgorithm(Object.values(data[2].entities))}
+            centerContent={Object.keys(data[2].entities).length === 0}
+            renderItem={renderItem}
+            refreshControl={refreshControl}
+          />
+        )}
       </View>
       <View style={columnStyles}>
         <Header
@@ -354,14 +380,22 @@ function Content({ data, mutate }) {
           title="Year"
           range={[data[3].start, data[3].end]}
         />
-        <FlashList
-          contentContainerStyle={{ padding: 20 }}
-          data={taskSortAlgorithm(Object.values(data[3].entities))}
-          centerContent={Object.keys(data[3].entities).length === 0}
-          ListEmptyComponent={() => <ColumnEmptyComponent offset={3} />}
-          renderItem={renderItem}
-          refreshControl={refreshControl}
-        />
+        {Object.keys(data[3].entities).length === 0 ? (
+          <View
+            style={{ flex: 1, alignItems: "center", justifyContent: "center" }}
+          >
+            <ColumnEmptyComponent offset={3} />
+          </View>
+        ) : (
+          <FlashList
+            contentInset={TEMPORARY_CONTENT_INSET_FIX()}
+            contentContainerStyle={{ padding: 20 }}
+            data={taskSortAlgorithm(Object.values(data[3].entities))}
+            centerContent={Object.keys(data[3].entities).length === 0}
+            renderItem={renderItem}
+            refreshControl={refreshControl}
+          />
+        )}
       </View>
       <View style={{ width: 1 }} />
     </ScrollView>
@@ -385,16 +419,22 @@ function Content({ data, mutate }) {
         range={[data[selectedColumn].start, data[selectedColumn].end]}
       />
       <View style={{ flex: 1 }}>
-        <FlashList
-          contentContainerStyle={{ padding: 20 }}
-          data={Object.values(data[selectedColumn].entities)}
-          centerContent={
-            Object.keys(data[selectedColumn].entities).length === 0
-          }
-          ListEmptyComponent={() => <ColumnEmptyComponent offset={4} />}
-          renderItem={renderItem}
-          refreshControl={refreshControl}
-        />
+        {Object.keys(data[selectedColumn].entities).length === 0 ? (
+          <View
+            style={{ flex: 1, alignItems: "center", justifyContent: "center" }}
+          >
+            <ColumnEmptyComponent offset={4} />
+          </View>
+        ) : (
+          <FlashList
+            contentContainerStyle={{ padding: 20 }}
+            data={Object.values(data[selectedColumn].entities)}
+            centerContent={
+              Object.keys(data[selectedColumn].entities).length === 0
+            }
+            renderItem={renderItem}
+          />
+        )}
       </View>
     </View>
   );

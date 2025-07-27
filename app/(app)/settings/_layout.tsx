@@ -2,6 +2,7 @@ import { JsStack } from "@/components/layout/_stack";
 import { ArcSystemBar } from "@/components/layout/arcAnimations";
 import ContentWrapper from "@/components/layout/content";
 import { forHorizontalIOS } from "@/components/layout/forHorizontalIOS";
+import { useUser } from "@/context/useUser";
 import { useResponsiveBreakpoints } from "@/helpers/useResponsiveBreakpoints";
 import { useColorTheme } from "@/ui/color/theme-provider";
 import { ThemeProvider } from "@react-navigation/native";
@@ -119,6 +120,7 @@ export function forFade({ current, next }) {
 export default function Layout() {
   const theme = useColorTheme();
   const breakpoints = useResponsiveBreakpoints();
+  const { session } = useUser();
   const { width } = useWindowDimensions();
 
   return (
@@ -151,13 +153,22 @@ export default function Layout() {
                     back
                     gradient
                     gradientColors={
-                      route.name === "login/scan"
+                      route.name === "login/scan" ||
+                      (route.name === "sidekick" && !session.user?.betaTester)
                         ? ["rgba(0,0,0,0.5)", "transparent"]
                         : undefined
                     }
-                    iconColor={route.name === "login/scan" ? "#fff" : null}
+                    iconColor={
+                      route.name === "login/scan" ||
+                      (route.name === "sidekick" && !session.user?.betaTester)
+                        ? "#fff"
+                        : null
+                    }
                     iconBackgroundColor={
-                      route.name === "login/scan" ? "rgba(0,0,0,0.2)" : null
+                      route.name === "login/scan" ||
+                      (route.name === "sidekick" && !session.user?.betaTester)
+                        ? "rgba(0,0,0,0.2)"
+                        : null
                     }
                     left={route.name !== "index"}
                     icon={route.name === "index" ? "close" : "west"}
