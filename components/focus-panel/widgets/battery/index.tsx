@@ -83,7 +83,7 @@ export default function BatteryWidget({ menuActions }) {
                       alignItems: "center",
                       // backgroundColor: "red",
                       paddingRight: 5,
-                      paddingBottom: 12,
+                      marginTop: -23,
                       justifyContent: "center",
                     }}
                   >
