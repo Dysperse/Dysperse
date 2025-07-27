@@ -54,7 +54,7 @@ export function MemberSince() {
           <Logo size={70} />
         </View>
         <LinearGradient
-          colors={[theme[8], theme[9]]}
+          colors={[theme[9], theme[11]]}
           style={{
             position: "absolute",
             bottom: 0,
@@ -67,18 +67,19 @@ export function MemberSince() {
             justifyContent: "center",
           }}
         >
-          <Text
-            style={{
-              fontFamily: "serifText800",
-              color: theme[2],
-              marginLeft: -9,
-              marginTop: -3,
-              fontSize: 27,
-              transform: [{ rotate: "-45deg" }],
-            }}
-          >
-            &rsquo;{dayjs(session.user.createdAt).format("YY")}
-          </Text>
+          <View style={{ transform: [{ rotate: "-45deg" }] }}>
+            <Text
+              style={{
+                fontFamily: "serifText800",
+                color: theme[2],
+                marginLeft: -9,
+                marginTop: -3,
+                fontSize: 27,
+              }}
+            >
+              &rsquo;{dayjs(session.user.createdAt).format("YY")}
+            </Text>
+          </View>
         </LinearGradient>
       </LinearGradient>
       <Text
@@ -90,9 +91,10 @@ export function MemberSince() {
         }}
         weight={700}
       >
-        {capitalizeFirstLetter(session?.user?.profile?.name?.split(" ")?.[0])},
-        you've been a user since{" "}
-        {dayjs(session.user.createdAt).format("MMMM YYYY")} &mdash; thank you!
+        {capitalizeFirstLetter(session?.user?.profile?.name?.split(" ")?.[0])}
+        {session?.user?.profile?.name?.split ? ", y" : " Y"}ou've been a user
+        since {dayjs(session.user.createdAt).format("MMMM YYYY")} &mdash; thank
+        you!
       </Text>
     </View>
   );

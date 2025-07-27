@@ -273,7 +273,7 @@ const StoryPoint = ({
               defaultValues={{
                 collectionId: data?.id === "all" ? undefined : data?.id,
                 date: dayjs(),
-                storyPoints: scale,
+                storyPoints: scale === -1 ? undefined : scale,
               }}
               mutate={mutations.categoryBased.add(mutate)}
             >

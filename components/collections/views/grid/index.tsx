@@ -22,12 +22,10 @@ import { GridContext, GridContextSelectedColumn } from "./context";
 export default function Grid() {
   const theme = useColorTheme();
   const insets = useSafeAreaInsets();
-  const { data, openLabelPicker, access, isPublic } = useCollectionContext();
+  const { data, openLabelPicker } = useCollectionContext();
   const { width } = useWindowDimensions();
   const breakpoints = useResponsiveBreakpoints();
   const scrollRef = useRef<ScrollView>(null);
-
-  const isReadOnly = access?.access === "READ_ONLY" || isPublic;
 
   const [currentColumn, setCurrentColumn] =
     useState<GridContextSelectedColumn>("HOME");
@@ -41,7 +39,7 @@ export default function Grid() {
 
   if (Object.keys(data.entities).length > 0)
     displayLabels.push({ other: true });
-  displayLabels.push({ create: true });
+  if (data.id) displayLabels.push({ create: true });
   if (displayLabels.length % 2 !== 0) displayLabels.push({ empty: true });
   if (displayLabels.length < 4)
     displayLabels.push(
