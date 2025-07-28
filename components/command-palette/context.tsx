@@ -103,44 +103,53 @@ function IOSSpotlightSearch() {
 
   const lastSearch = useRef<string | null>(null);
 
-  const handleSpotlightTap = (uniqueIdentifier: string) => {
-    if (!uniqueIdentifier || lastSearch.current === uniqueIdentifier) return;
-    lastSearch.current = uniqueIdentifier;
+  const handleSpotlightTap = useCallback(
+    (uniqueIdentifier: string) => {
+      if (!uniqueIdentifier || lastSearch.current === uniqueIdentifier) return;
+      lastSearch.current = uniqueIdentifier;
 
-    const match = uniqueIdentifier.match(/<([^:]+):([^>]+)>/);
-    if (!match) return;
+      const match = uniqueIdentifier.match(/<([^:]+):([^>]+)>/);
+      if (!match) return;
 
-    const [, domain, key] = match;
+      const [, domain, key] = match;
 
-    sidebarRef.current?.closeDrawer();
+      sidebarRef.current?.closeDrawer();
 
-    // Find the section that matches the domain
-    if (domain === "LABELS") {
-      router.push(`/everything/labels/${key}`);
-    } else {
-      const section = sections
-        .filter((t) => t.title)
-        .find(
-          (section) =>
-            section.title.toUpperCase().replaceAll(" ", "_") === domain
-        );
-      if (!section) Toast.show({ type: "error", text1: "Item not found" });
-      const item = section.items.find((item) => item.key === key);
-      if (!item) Toast.show({ type: "error", text1: "Item not found" });
+      // Find the section that matches the domain
+      if (domain === "LABELS") {
+        router.push(`/everything/labels/${key}`);
+      } else {
+        const section = sections
+          .filter((t) => t.title)
+          .find(
+            (section) =>
+              section.title.toUpperCase().replaceAll(" ", "_") === domain
+          );
+        if (!section) Toast.show({ type: "error", text1: "Item not found" });
+        const item = section.items.find((item) => item.key === key);
+        if (!item) Toast.show({ type: "error", text1: "Item not found" });
 
-      createTab(sessionToken, item);
-    }
-  };
+        createTab(sessionToken, item);
+      }
+    },
+    [sections, sidebarRef, sessionToken]
+  );
 
   useEffect(() => {
     // Handle initial launch via Spotlight
     SpotlightSearch.getInitialSearchItem().then((uniqueIdentifier) => {
+      console.log("Initial Spotlight search item:", uniqueIdentifier);
       handleSpotlightTap(uniqueIdentifier);
     });
+
+    setTimeout(() => {
+      SpotlightSearch.getInitialSearchItem().then(console.log);
+    }, 5000);
 
     // Listen for live Spotlight taps
     const spotlightListener = SpotlightSearch.searchItemTapped(
       (uniqueIdentifier) => {
+        console.log("Spotlight search item tapped:", uniqueIdentifier);
         handleSpotlightTap(uniqueIdentifier);
       }
     );
@@ -148,7 +157,7 @@ function IOSSpotlightSearch() {
     return () => {
       spotlightListener.remove();
     };
-  }, []);
+  }, [handleSpotlightTap]);
 
   return null;
 }

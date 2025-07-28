@@ -66,6 +66,7 @@
     "expo-camera": "~16.1.11",
     "expo-clipboard": "~7.1.5",
     "expo-constants": "~17.1.6",
+    "expo-contacts": "~14.2.5",
     "expo-dev-client": "~5.2.4",
     "expo-device": "~7.1.4",
     "expo-file-system": "~18.1.10",
@@ -145,8 +146,7 @@
     "typescript": "~5.8.3",
     "use-debounce": "^10.0.4",
     "workbox-build": "^7.3.0",
-    "workbox-window": "^7.3.0",
-    "expo-contacts": "~14.2.5"
+    "workbox-window": "^7.3.0"
   },
   "devDependencies": {
     "@babel/core": "^7.24.6",
