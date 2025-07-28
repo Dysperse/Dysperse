@@ -12,12 +12,12 @@ import RefreshControl from "@/ui/RefreshControl";
 import Spinner from "@/ui/Spinner";
 import Text from "@/ui/Text";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { FlashList } from "@shopify/flash-list";
 import dayjs from "dayjs";
 import * as Contacts from "expo-contacts";
 import { impactAsync, ImpactFeedbackStyle } from "expo-haptics";
 import { useEffect, useState } from "react";
 import { View } from "react-native";
-import { FlatList } from "react-native-gesture-handler";
 import useSWR from "swr";
 import { MenuButton } from "./home";
 
@@ -98,10 +98,11 @@ function FriendsList() {
 
   return data ? (
     <View style={{ flex: 1 }}>
-      <FlatList
+      <FlashList
         refreshControl={
           <RefreshControl refreshing={false} onRefresh={() => mutate()} />
         }
+        estimatedItemSize={70}
         data={[
           pendingFriends.length > 0 && "Pending",
           ...pendingFriends,
