@@ -17,7 +17,7 @@ import dayjs from "dayjs";
 import * as Contacts from "expo-contacts";
 import { impactAsync, ImpactFeedbackStyle } from "expo-haptics";
 import { useEffect, useState } from "react";
-import { Linking, View } from "react-native";
+import { Linking, Share, View } from "react-native";
 import useSWR from "swr";
 import { MenuButton } from "./home";
 
@@ -304,7 +304,7 @@ function AddFriendsPromo() {
 }
 
 export default function Page() {
-  const theme = useColorTheme();
+  const { session } = useUser();
 
   return (
     <>
@@ -333,6 +333,12 @@ export default function Page() {
             bold
             large
             variant="filled"
+            onPress={() => {
+              Share.share({
+                title: "Invite friends to Dysperse",
+                message: `Hey! Check out Dysperse, a new productivity app which I use: https://go.dysperse.com/r/${session?.user?.id} \n\nUse the link above to sign up and we'll both get extra storage!`,
+              });
+            }}
           />
           <Button
             containerStyle={{ flex: 1 }}
