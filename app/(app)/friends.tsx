@@ -1,5 +1,6 @@
 import { ArcSystemBar } from "@/components/layout/arcAnimations";
 import { useUser } from "@/context/useUser";
+import { sendApiRequest } from "@/helpers/api";
 import { Avatar } from "@/ui/Avatar";
 import { Button } from "@/ui/Button";
 import { useColorTheme } from "@/ui/color/theme-provider";
@@ -74,7 +75,10 @@ function FriendsList() {
   }, [hasContactsPermission, contacts]);
 
   const acceptedFriends = data?.friends.filter((t) => t.accepted) || [];
-  const pendingFriends = data?.friends.filter((t) => !t.accepted) || [];
+  const pendingFriends =
+    data?.friends.filter(
+      (t) => !t.accepted && t.followingId !== session?.user?.id
+    ) || [];
 
   const inContacts = data
     ? contacts
@@ -97,6 +101,10 @@ function FriendsList() {
         }))
     : [];
 
+  const friendRequests = data.friends.filter(
+    (t) => !t.accepted && t.followingId === session?.user?.id
+  );
+
   return data ? (
     <View style={{ flex: 1 }}>
       <FlashList
@@ -105,6 +113,8 @@ function FriendsList() {
         }
         estimatedItemSize={70}
         data={[
+          friendRequests.length > 0 && "Requests",
+          ...friendRequests,
           pendingFriends.length > 0 && "Pending",
           ...pendingFriends,
           acceptedFriends.length > 0 && "Your friends",
@@ -181,6 +191,25 @@ function FriendsList() {
                     variant="outlined"
                     style={{ marginLeft: 10 }}
                   />
+                  {item.followingId === session?.user?.id && (
+                    <IconButton
+                      icon="check"
+                      variant="filled"
+                      style={{ marginLeft: -5 }}
+                      onPress={async () => {
+                        await sendApiRequest(
+                          sessionToken,
+                          "PUT",
+                          "user/friends",
+                          {
+                            followerId: item.followerId,
+                            followingId: item.followingId,
+                            accepted: true,
+                          }
+                        );
+                      }}
+                    />
+                  )}
                 </>
               )}
             </ListItemButton>
