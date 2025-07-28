@@ -80,10 +80,17 @@ export default function Page() {
 
       <FriendsList
         onSelect={(friend) => {
-          setIsLoading(true);
           const email =
             friend.user?.email || friend.profile?.email || friend.email;
-          if (email !== session.user?.email) handleSelectFriends(email);
+          if (email === session.user?.email) {
+            Toast.show({
+              type: "error",
+              text1: "You can't invite yourself...",
+            });
+            return;
+          }
+          setIsLoading(true);
+          handleSelectFriends(email);
         }}
         search={search}
       />
