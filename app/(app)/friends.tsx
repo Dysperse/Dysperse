@@ -1,10 +1,13 @@
 import { ArcSystemBar } from "@/components/layout/arcAnimations";
 import { useSession } from "@/context/AuthProvider";
+import { Avatar } from "@/ui/Avatar";
 import { Button } from "@/ui/Button";
 import { useColorTheme } from "@/ui/color/theme-provider";
 import ErrorAlert from "@/ui/Error";
 import Icon from "@/ui/Icon";
 import IconButton from "@/ui/IconButton";
+import { ListItemButton } from "@/ui/ListItemButton";
+import ListItemText from "@/ui/ListItemText";
 import Spinner from "@/ui/Spinner";
 import Text from "@/ui/Text";
 import * as Contacts from "expo-contacts";
@@ -17,7 +20,7 @@ import { MenuButton } from "./home";
 function FriendsList() {
   const { session } = useSession();
   const [contacts, setContacts] = useState([]);
-
+  console.log(session);
   const { data, error } = useSWR("user/friends", {
     fetcher: () =>
       fetch(`${process.env.EXPO_PUBLIC_API_URL}/user/friends/suggestions`, {
@@ -64,9 +67,27 @@ function FriendsList() {
   return data ? (
     <View style={{ flex: 1 }}>
       <FlatList
-        data={[...data, ...contacts]}
+        data={[
+          ...data.friends,
+          ...data.contactsUsingDysperse.map((t) => ({
+            ...t,
+            suggestion: true,
+          })),
+        ]}
         renderItem={({ item }) => (
-          <Text>{item.user?.profile?.name || item.name}</Text>
+          <ListItemButton>
+            <Avatar
+              image={item.user?.profile?.picture || item.profile?.contactImage}
+              name={item.user?.profile?.name}
+              size={50}
+            />
+            <ListItemText
+              primary={item.user?.profile?.name || item.profile?.name}
+              secondary={
+                item.suggestion ? "In your contacts" : item.user?.profile?.email
+              }
+            />
+          </ListItemButton>
         )}
       />
     </View>

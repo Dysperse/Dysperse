@@ -12,10 +12,21 @@ import Icon, { DIconProps } from "../Icon";
 import Text from "../Text";
 import { useColor } from "../color";
 
+const getInitials = (name: string | null | undefined) => {
+  if (!name) return "";
+  const parts = name.split(" ");
+  if (parts.length === 0) return "";
+  if (parts.length === 1) return parts[0][0]?.toUpperCase() || "";
+  return `${parts[0][0]?.toUpperCase() || ""}${
+    parts[1][0]?.toUpperCase() || ""
+  }`;
+};
+
 interface DAvatarProps extends PressableProps {
   image?: string;
   size?: number;
   viewClassName?: string;
+  name?: string;
   style?:
     | StyleProp<ViewStyle>
     | (({ pressed, hovered }) => StyleProp<ViewStyle>);
@@ -67,12 +78,23 @@ export function Avatar(props: DAvatarProps) {
           { width: props.size || 30, height: props.size || 30 },
         ]}
       >
-        {props.children ||
+        {props.children || props.name ? (
+          <Text
+            style={{
+              color: theme[11],
+              fontSize: (props.size || 30) / 2.5,
+            }}
+            weight={600}
+          >
+            {props.name ? getInitials(props.name) : ""}
+          </Text>
+        ) : (
           ((
             <Icon style={{ color: theme[11] }} {...props.iconProps}>
               {props.icon}
             </Icon>
-          ) as any)}
+          ) as any)
+        )}
       </View>
       {props.image && (
         <Image
