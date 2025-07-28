@@ -105,6 +105,38 @@ function FriendsList() {
     (t) => !t.accepted && t.followingId === session?.user?.id
   );
 
+  const handleFriendRequestAccept = async (item: any, accepted: boolean) => {
+    {
+      impactAsync(ImpactFeedbackStyle.Heavy);
+      mutate(
+        (o) => ({
+          ...o,
+          friends: o.friends.map((f) =>
+            f.followerId === item.followerId &&
+            f.followingId === item.followingId
+              ? { ...f, accepted }
+              : f
+          ),
+        }),
+        { revalidate: false }
+      );
+
+      sendApiRequest(
+        sessionToken,
+        "PUT",
+        "user/friends",
+        {},
+        {
+          body: JSON.stringify({
+            followerId: item.followerId,
+            followingId: item.followingId,
+            accepted,
+          }),
+        }
+      );
+    }
+  };
+
   return data ? (
     <View style={{ flex: 1 }}>
       <FlashList
@@ -190,24 +222,46 @@ function FriendsList() {
                     icon="close"
                     variant="outlined"
                     style={{ marginLeft: 10 }}
+                    onPress={() => {
+                      if (
+                        item.followingId === session?.user?.id &&
+                        item.followerId === session?.user?.id
+                      ) {
+                        handleFriendRequestAccept(item, false);
+                        return;
+                      }
+                      mutate(
+                        (o) => ({
+                          ...o,
+                          friends: o.friends.filter(
+                            (f) =>
+                              !(
+                                f.followerId === item.followerId &&
+                                f.followingId === item.followingId
+                              )
+                          ),
+                        }),
+                        { revalidate: false }
+                      );
+                      sendApiRequest(
+                        sessionToken,
+                        "DELETE",
+                        "user/friends",
+                        {},
+                        {
+                          body: JSON.stringify({
+                            userId: item.followerId,
+                          }),
+                        }
+                      );
+                    }}
                   />
                   {item.followingId === session?.user?.id && (
                     <IconButton
                       icon="check"
                       variant="filled"
                       style={{ marginLeft: -5 }}
-                      onPress={async () => {
-                        await sendApiRequest(
-                          sessionToken,
-                          "PUT",
-                          "user/friends",
-                          {
-                            followerId: item.followerId,
-                            followingId: item.followingId,
-                            accepted: true,
-                          }
-                        );
-                      }}
+                      onPress={() => handleFriendRequestAccept(item.id, true)}
                     />
                   )}
                 </>
