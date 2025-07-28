@@ -141,10 +141,19 @@ function FriendsList() {
                 primary={item.user?.profile?.name || item.profile?.name}
                 secondary={
                   item.profile?.lastActive || item.user?.profile?.lastActive
-                    ? `Active ${dayjs(
-                        item.profile?.lastActive ||
-                          item.user?.profile?.lastActive
-                      ).fromNow()}`
+                    ? `Active ${
+                        dayjs(
+                          item.profile?.lastActive ||
+                            item.user?.profile?.lastActive
+                        )
+                          .fromNow()
+                          .includes("seconds")
+                          ? "now"
+                          : dayjs(
+                              item.profile?.lastActive ||
+                                item.user?.profile?.lastActive
+                            ).fromNow()
+                      }`
                     : item.user?.profile?.email || item.profile?.secondaryText
                 }
               />
