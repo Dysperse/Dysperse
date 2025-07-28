@@ -78,7 +78,9 @@ export function Avatar(props: DAvatarProps) {
           { width: props.size || 30, height: props.size || 30 },
         ]}
       >
-        {props.children || props.name ? (
+        {props.children ? (
+          props.children
+        ) : props.name ? (
           <Text
             style={{
               color: theme[11],

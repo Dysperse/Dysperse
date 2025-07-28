@@ -1,5 +1,5 @@
 import { ArcSystemBar } from "@/components/layout/arcAnimations";
-import { useSession } from "@/context/AuthProvider";
+import { useUser } from "@/context/useUser";
 import { Avatar } from "@/ui/Avatar";
 import { Button } from "@/ui/Button";
 import { useColorTheme } from "@/ui/color/theme-provider";
@@ -17,12 +17,12 @@ import dayjs from "dayjs";
 import * as Contacts from "expo-contacts";
 import { impactAsync, ImpactFeedbackStyle } from "expo-haptics";
 import { useEffect, useState } from "react";
-import { View } from "react-native";
+import { Linking, View } from "react-native";
 import useSWR from "swr";
 import { MenuButton } from "./home";
 
 function FriendsList() {
-  const { session } = useSession();
+  const { session, sessionToken } = useUser();
   const [contacts, setContacts] = useState([]);
   const [hasContactsPermission, setHasContactsPermission] = useState(false);
 
@@ -36,7 +36,7 @@ function FriendsList() {
           ),
         }),
         headers: {
-          Authorization: `Bearer ${session}`,
+          Authorization: `Bearer ${sessionToken}`,
         },
       }).then((res) => res.json()),
   });
@@ -92,6 +92,7 @@ function FriendsList() {
             secondaryText:
               contact.phoneNumbers?.[0]?.number || contact.emails?.[0]?.email,
             email: contact.emails?.[0]?.email,
+            phoneNumber: contact.phoneNumbers?.[0]?.number,
           },
         }))
     : [];
@@ -161,6 +162,17 @@ function FriendsList() {
                 <Button
                   text={item.profile?.lastActive ? "Add" : "Invite"}
                   variant={item.profile?.lastActive ? "filled" : "outlined"}
+                  onPress={() => {
+                    Linking.openURL(
+                      `sms:${
+                        item.profile?.phoneNumber || item.profile?.email
+                      }?body=Hi, ${
+                        item.profile?.name?.split(" ")[0]
+                      }! Check out Dysperse, a new productivity app which I use: https://go.dysperse.com/r/${
+                        session?.user?.id
+                      } \n\nUse the link above to sign up and we'll both get extra storage!`
+                    );
+                  }}
                 />
               ) : item.accepted ? null : (
                 <>
