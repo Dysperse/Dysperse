@@ -84,12 +84,6 @@ function FriendsList() {
             ((t.emails && t.emails.length > 0) ||
               (t.phoneNumbers && t.phoneNumbers.length > 0))
         )
-        .filter(
-          (t) =>
-            data.contactsUsingDysperse.some(
-              (c) => c.profile.email === t.emails?.[0]?.email
-            ) || data.friends.some((c) => c.user.email === t.emails?.[0]?.email)
-        )
         .map((contact) => ({
           contactImage: contact.imageAvailable ? contact.image.uri : undefined,
           suggestion: true,
@@ -158,12 +152,14 @@ function FriendsList() {
                   text={item.profile?.lastActive ? "Add" : "Invite"}
                   variant={item.profile?.lastActive ? "filled" : "outlined"}
                 />
-              ) : (
-                <IconButton
-                  icon="close"
-                  variant="outlined"
-                  style={{ marginLeft: 10 }}
-                />
+              ) : item.accepted ? null : (
+                <>
+                  <IconButton
+                    icon="close"
+                    variant="outlined"
+                    style={{ marginLeft: 10 }}
+                  />
+                </>
               )}
             </ListItemButton>
           )
