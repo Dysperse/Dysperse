@@ -153,10 +153,16 @@ function FriendsList() {
                     : item.user?.profile?.email || item.profile?.secondaryText
                 }
               />
-              {item.suggestion && (
+              {item.suggestion ? (
                 <Button
                   text={item.profile?.lastActive ? "Add" : "Invite"}
                   variant={item.profile?.lastActive ? "filled" : "outlined"}
+                />
+              ) : (
+                <IconButton
+                  icon="close"
+                  variant="outlined"
+                  style={{ marginLeft: 10 }}
                 />
               )}
             </ListItemButton>
