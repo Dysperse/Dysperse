@@ -1,4 +1,5 @@
 import { ArcSystemBar } from "@/components/layout/arcAnimations";
+import { ProfileModal } from "@/components/ProfileModal";
 import { useUser } from "@/context/useUser";
 import { sendApiRequest } from "@/helpers/api";
 import { Avatar } from "@/ui/Avatar";
@@ -173,100 +174,117 @@ function FriendsList() {
               {item}
             </Text>
           ) : (
-            <ListItemButton>
-              <Avatar
-                disabled
-                image={item.user?.profile?.picture || item?.contactImage}
-                name={item.user?.profile?.name || item.profile?.name}
-                size={50}
-              />
-              <ListItemText
-                primary={item.user?.profile?.name || item.profile?.name}
-                secondary={
-                  item.profile?.lastActive || item.user?.profile?.lastActive
-                    ? `Active ${
-                        dayjs(
-                          item.profile?.lastActive ||
-                            item.user?.profile?.lastActive
-                        )
-                          .fromNow()
-                          .includes("seconds")
-                          ? "now"
-                          : dayjs(
-                              item.profile?.lastActive ||
-                                item.user?.profile?.lastActive
-                            ).fromNow()
-                      }`
-                    : item.user?.profile?.email || item.profile?.secondaryText
-                }
-              />
-              {item.suggestion ? (
-                <Button
-                  text={item.profile?.lastActive ? "Add" : "Invite"}
-                  variant={item.profile?.lastActive ? "filled" : "outlined"}
-                  onPress={() => {
-                    Linking.openURL(
-                      `sms:${
-                        item.profile?.phoneNumber || item.profile?.email
-                      }?body=Hi, ${
-                        item.profile?.name?.split(" ")[0]
-                      }! Check out Dysperse, a new productivity app which I use: https://go.dysperse.com/r/${
-                        session?.user?.id
-                      } \n\nUse the link above to sign up and we'll both get extra storage!`
-                    );
-                  }}
+            <ProfileModal email={item.profile?.email || item.user?.email}>
+              <ListItemButton disabled={item.suggestion}>
+                <Avatar
+                  disabled
+                  image={item.user?.profile?.picture || item?.contactImage}
+                  name={item.user?.profile?.name || item.profile?.name}
+                  size={50}
                 />
-              ) : item.accepted ? null : (
-                <>
-                  <IconButton
-                    icon="close"
-                    variant="outlined"
-                    style={{ marginLeft: 10 }}
-                    onPress={() => {
-                      if (
-                        item.followingId === session?.user?.id &&
-                        item.followerId === session?.user?.id
-                      ) {
-                        handleFriendRequestAccept(item, false);
+                <ListItemText
+                  primary={item.user?.profile?.name || item.profile?.name}
+                  secondary={
+                    item.profile?.lastActive || item.user?.profile?.lastActive
+                      ? `Active ${
+                          dayjs(
+                            item.profile?.lastActive ||
+                              item.user?.profile?.lastActive
+                          )
+                            .fromNow()
+                            .includes("seconds")
+                            ? "now"
+                            : dayjs(
+                                item.profile?.lastActive ||
+                                  item.user?.profile?.lastActive
+                              ).fromNow()
+                        }`
+                      : item.user?.profile?.email || item.profile?.secondaryText
+                  }
+                />
+                {item.suggestion ? (
+                  <Button
+                    text={item.profile?.lastActive ? "Add" : "Invite"}
+                    variant={item.profile?.lastActive ? "filled" : "outlined"}
+                    onPress={async () => {
+                      if (item.profile?.lastActive) {
+                        await sendApiRequest(
+                          sessionToken,
+                          "POST",
+                          "user/friends",
+                          {},
+                          {
+                            body: JSON.stringify({
+                              email: item.profile?.email || item.user?.email,
+                            }),
+                          }
+                        );
+                        mutate();
                         return;
                       }
-                      mutate(
-                        (o) => ({
-                          ...o,
-                          friends: o.friends.filter(
-                            (f) =>
-                              !(
-                                f.followerId === item.followerId &&
-                                f.followingId === item.followingId
-                              )
-                          ),
-                        }),
-                        { revalidate: false }
-                      );
-                      sendApiRequest(
-                        sessionToken,
-                        "DELETE",
-                        "user/friends",
-                        {},
-                        {
-                          body: JSON.stringify({
-                            userId: item.followerId,
-                          }),
-                        }
+                      Linking.openURL(
+                        `sms:${
+                          item.profile?.phoneNumber || item.profile?.email
+                        }?body=Hi, ${
+                          item.profile?.name?.split(" ")[0]
+                        }! Check out Dysperse, a new productivity app which I use: https://go.dysperse.com/r/${
+                          session?.user?.id
+                        } \n\nUse the link above to sign up and we'll both get extra storage!`
                       );
                     }}
                   />
-                  {item.followingId === session?.user?.id && (
+                ) : item.accepted ? null : (
+                  <>
                     <IconButton
-                      icon="check"
-                      variant="filled"
-                      style={{ marginLeft: -5 }}
-                      onPress={() => handleFriendRequestAccept(item.id, true)}
+                      icon="close"
+                      variant="outlined"
+                      style={{ marginLeft: 10 }}
+                      onPress={() => {
+                        if (
+                          item.followingId === session?.user?.id &&
+                          item.followerId === session?.user?.id
+                        ) {
+                          handleFriendRequestAccept(item, false);
+                          return;
+                        }
+                        mutate(
+                          (o) => ({
+                            ...o,
+                            friends: o.friends.filter(
+                              (f) =>
+                                !(
+                                  f.followerId === item.followerId &&
+                                  f.followingId === item.followingId
+                                )
+                            ),
+                          }),
+                          { revalidate: false }
+                        );
+                        sendApiRequest(
+                          sessionToken,
+                          "DELETE",
+                          "user/friends",
+                          {},
+                          {
+                            body: JSON.stringify({
+                              userId: item.followingId,
+                            }),
+                          }
+                        );
+                      }}
                     />
-                  )}
-                </>
-              )}
-            </ListItemButton>
+                    {item.followingId === session?.user?.id && (
+                      <IconButton
+                        icon="check"
+                        variant="filled"
+                        style={{ marginLeft: -5 }}
+                        onPress={() => handleFriendRequestAccept(item.id, true)}
+                      />
+                    )}
+                  </>
+                )}
+              </ListItemButton>
+            </ProfileModal>
           )
         }
       />
@@ -333,7 +351,7 @@ function ContactBanner() {
 
 function AddFriendsPromo() {
   const theme = useColorTheme();
-  const [show, setShow] = useState(true);
+  const [show, setShow] = useState(false);
 
   useEffect(() => {
     (async () => {

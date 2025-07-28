@@ -1,11 +1,11 @@
 import { useUser } from "@/context/useUser";
-import { ProfilePicture } from "@/ui/Avatar";
+import { Avatar } from "@/ui/Avatar";
+import BottomSheet from "@/ui/BottomSheet";
 import { Button } from "@/ui/Button";
 import ErrorAlert from "@/ui/Error";
 import Icon from "@/ui/Icon";
 import { ListItemButton } from "@/ui/ListItemButton";
 import ListItemText from "@/ui/ListItemText";
-import Modal from "@/ui/Modal";
 import Spinner from "@/ui/Spinner";
 import Text from "@/ui/Text";
 import { useColor } from "@/ui/color";
@@ -13,7 +13,6 @@ import { ColorThemeProvider } from "@/ui/color/theme-provider";
 import { BottomSheetModal, BottomSheetScrollView } from "@gorhom/bottom-sheet";
 import dayjs from "dayjs";
 import { setStringAsync } from "expo-clipboard";
-import { LinearGradient } from "expo-linear-gradient";
 import { cloneElement, useCallback, useRef } from "react";
 import { useWindowDimensions, View } from "react-native";
 import Toast from "react-native-toast-message";
@@ -30,40 +29,27 @@ function ProfileModalContent({ email }) {
         showsVerticalScrollIndicator={false}
         aria-label="Scrollbar-Hidden"
         contentContainerStyle={{ backgroundColor: theme[2] }}
-        bounces={false}
       >
-        <LinearGradient
-          colors={[theme[9], theme[5]]}
-          style={{
-            padding: 30,
-            height: 140,
-            overflow: "visible",
-          }}
-        >
-          <ProfilePicture
-            style={{
-              top: 80,
-              left: 30,
-              position: "absolute",
-              backgroundColor: theme[6],
-              zIndex: 999,
-            }}
+        <View style={{ padding: 35, marginTop: 10, gap: 15 }}>
+          <Avatar
             name={data.profile?.name || "--"}
             image={data.profile?.picture}
             size={90}
+            style={{ marginHorizontal: "auto" }}
           />
-        </LinearGradient>
-        <View style={{ padding: 35, marginTop: 10, gap: 15 }}>
           <Text
             style={{
               fontSize: 35,
               fontFamily: "serifText800",
               marginBottom: -10,
+              textAlign: "center",
             }}
           >
             {data.profile.name}
           </Text>
-          <View style={{ flexDirection: "row" }}>
+          <View
+            style={{ flexDirection: "row", justifyContent: "center", gap: 10 }}
+          >
             <Button
               onPress={() => {
                 setStringAsync(data.email);
@@ -109,6 +95,10 @@ function ProfileModalContent({ email }) {
             )}
           </View>
         </View>
+
+        <View
+          style={{ height: 500, marginBottom: -500, backgroundColor: theme[2] }}
+        />
       </BottomSheetScrollView>
     </ColorThemeProvider>
   ) : (
@@ -148,12 +138,12 @@ export function ProfileModal({ children, email }) {
   return (
     <>
       {trigger}
-      <Modal
-        animation="SCALE"
+      <BottomSheet
         transformCenter
         sheetRef={ref}
         onClose={handleClose}
         handleComponent={() => null}
+        snapPoints={[500]}
         maxWidth={450}
         height={500}
         innerStyles={{ maxHeight: height - 100 }}
@@ -161,7 +151,7 @@ export function ProfileModal({ children, email }) {
         style={{ borderRadius: 20, overflow: "hidden" }}
       >
         <ProfileModalContent email={email} />
-      </Modal>
+      </BottomSheet>
     </>
   );
 }
