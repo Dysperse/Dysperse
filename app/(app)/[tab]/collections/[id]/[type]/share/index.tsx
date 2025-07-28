@@ -466,32 +466,14 @@ const CollectionShareLink = () => {
 };
 
 const CollectionMembers = ({ collection, mutateList, navigation }) => {
-  const { session } = useSession();
   const { data, access } = collection || {};
+  const pathname = usePathname();
   const isReadOnly = access?.access === "READ_ONLY";
 
-  const handleSelectFriends = async (friends) => {
-    try {
-      const userList = friends.map((i) => i.id);
-      const res = await sendApiRequest(
-        session,
-        "POST",
-        "space/collections/collection/share",
-        {},
-        {
-          body: JSON.stringify({
-            userList,
-            id: data?.id,
-          }),
-        }
-      );
-      if (res.error) throw new Error(res);
-      await mutateList();
-      Toast.show({ type: "success", text1: "Invites sent!" });
-    } catch (e) {
-      Toast.show({ type: "error" });
-    }
-  };
+  useEffect(() => {
+    mutateList();
+  }, [pathname]);
+
   return (
     <View style={{ padding: 10, paddingTop: 0, marginTop: -20 }}>
       <Text variant="eyebrow" style={[modalStyles.eyebrow, { marginTop: 0 }]}>
@@ -503,12 +485,14 @@ const CollectionMembers = ({ collection, mutateList, navigation }) => {
         }}
       >
         {!isReadOnly && (
-          <FriendModal onComplete={handleSelectFriends}>
-            <ListItemButton>
-              <Avatar icon="add" disabled size={40} />
-              <ListItemText primary="Invite people" />
-            </ListItemButton>
-          </FriendModal>
+          <ListItemButton
+            onPress={() =>
+              router.push(pathname.replace("/share", "/share/friends"))
+            }
+          >
+            <Avatar icon="add" disabled size={40} />
+            <ListItemText primary="Invite people" />
+          </ListItemButton>
         )}
         {collection.data?.createdBy && (
           <ProfileModal email={collection.data.createdBy.email}>

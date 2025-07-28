@@ -28,6 +28,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import { DefaultTheme, ThemeProvider } from "@react-navigation/native";
 import * as Sentry from "@sentry/react-native";
 import { ErrorBoundary } from "@sentry/react-native";
+import { injectSpeedInsights } from "@vercel/speed-insights";
 import { useFonts } from "expo-font";
 import * as SplashScreen from "expo-splash-screen";
 import React, { useEffect, useRef, useState } from "react";
@@ -36,6 +37,9 @@ import "react-native-gesture-handler";
 import { KeyboardProvider } from "react-native-keyboard-controller";
 import { useSharedValue } from "react-native-reanimated";
 import { SessionProvider } from "../context/AuthProvider";
+
+if (Platform.OS === "web" && process.env.NODE_ENV === "production")
+  injectSpeedInsights();
 
 if (process.env.NODE_ENV === "production") {
   Sentry.init({

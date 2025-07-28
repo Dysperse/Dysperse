@@ -128,7 +128,7 @@ function ProfileModalContent({ email }) {
   );
 }
 
-export function ProfileModal({ children, email }) {
+export function ProfileModal({ children, email, disabled }) {
   const ref = useRef<BottomSheetModal>(null);
   const { height } = useWindowDimensions();
   const handleOpen = useCallback(() => ref.current?.present(), []);
@@ -137,7 +137,7 @@ export function ProfileModal({ children, email }) {
 
   return (
     <>
-      {trigger}
+      {disabled ? children : trigger}
       <BottomSheet
         transformCenter
         sheetRef={ref}

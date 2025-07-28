@@ -19,15 +19,25 @@ import * as Contacts from "expo-contacts";
 import { impactAsync, ImpactFeedbackStyle } from "expo-haptics";
 import { router } from "expo-router";
 import { useEffect, useState } from "react";
-import { Linking, Share, View } from "react-native";
+import { Keyboard, Linking, Share, View } from "react-native";
 import useSWR from "swr";
 
-function FriendsList() {
+export function FriendsList({
+  onSelect,
+  search,
+}: {
+  onSelect?: (query: any) => void;
+  search?: string;
+}) {
   const { session, sessionToken } = useUser();
   const [contacts, setContacts] = useState([]);
   const [hasContactsPermission, setHasContactsPermission] = useState(false);
 
-  const { data, error, mutate } = useSWR("user/friends", {
+  const {
+    data: rawData,
+    error,
+    mutate,
+  } = useSWR("user/friends", {
     fetcher: () =>
       fetch(`${process.env.EXPO_PUBLIC_API_URL}/user/friends/suggestions`, {
         method: "POST",
@@ -41,6 +51,19 @@ function FriendsList() {
         },
       }).then((res) => res.json()),
   });
+
+  const data = {
+    friends: (rawData?.friends || []).filter((t) =>
+      JSON.stringify(t)
+        .toLowerCase()
+        .includes(search?.toLowerCase() || "")
+    ),
+    contactsUsingDysperse: (rawData?.contactsUsingDysperse || []).filter((t) =>
+      JSON.stringify(t)
+        .toLowerCase()
+        .includes(search?.toLowerCase() || "")
+    ),
+  };
 
   useEffect(() => {
     (async () => {
@@ -140,6 +163,9 @@ function FriendsList() {
   return data ? (
     <View style={{ flex: 1 }}>
       <FlashList
+        key={search || "all"}
+        keyboardShouldPersistTaps="handled"
+        onScrollBeginDrag={Keyboard.dismiss}
         refreshControl={
           <RefreshControl refreshing={false} onRefresh={() => mutate()} />
         }
@@ -173,8 +199,14 @@ function FriendsList() {
               {item}
             </Text>
           ) : (
-            <ProfileModal email={item.profile?.email || item.user?.email}>
-              <ListItemButton disabled={item.suggestion}>
+            <ProfileModal
+              email={item.profile?.email || item.user?.email}
+              disabled={Boolean(onSelect)}
+            >
+              <ListItemButton
+                disabled={item.suggestion}
+                onPress={() => onSelect(item)}
+              >
                 <Avatar
                   disabled
                   image={item.user?.profile?.picture || item?.contactImage}

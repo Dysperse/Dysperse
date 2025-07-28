@@ -62,6 +62,7 @@ export default function Layout() {
             "customize",
             "share/index",
             "share/link",
+            "share/friends",
             "reorder",
             "upload",
             "pin-code",
