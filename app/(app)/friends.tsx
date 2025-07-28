@@ -78,13 +78,15 @@ function FriendsList() {
           <ListItemButton>
             <Avatar
               image={item.user?.profile?.picture || item.profile?.contactImage}
-              name={item.user?.profile?.name}
+              name={item.user?.profile?.name || item.profile?.name}
               size={50}
             />
             <ListItemText
               primary={item.user?.profile?.name || item.profile?.name}
               secondary={
-                item.suggestion ? "In your contacts" : item.user?.profile?.email
+                item.suggestion
+                  ? "In your contacts • Uses Dysperse"
+                  : item.user?.profile?.email
               }
             />
           </ListItemButton>
