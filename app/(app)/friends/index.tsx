@@ -204,7 +204,7 @@ export function FriendsList({
               disabled={Boolean(onSelect)}
             >
               <ListItemButton
-                disabled={item.suggestion}
+                disabled={item.suggestion && !onSelect}
                 onPress={() => onSelect(item)}
               >
                 <Avatar
@@ -233,87 +233,90 @@ export function FriendsList({
                       : item.user?.profile?.email || item.profile?.secondaryText
                   }
                 />
-                {item.suggestion ? (
-                  <Button
-                    text={item.profile?.lastActive ? "Add" : "Invite"}
-                    variant={item.profile?.lastActive ? "filled" : "outlined"}
-                    onPress={async () => {
-                      if (item.profile?.lastActive) {
-                        await sendApiRequest(
-                          sessionToken,
-                          "POST",
-                          "user/friends",
-                          {},
-                          {
-                            body: JSON.stringify({
-                              email: item.profile?.email || item.user?.email,
-                            }),
-                          }
-                        );
-                        mutate();
-                        return;
-                      }
-                      Linking.openURL(
-                        `sms:${
-                          item.profile?.phoneNumber || item.profile?.email
-                        }?body=Hi, ${
-                          item.profile?.name?.split(" ")[0]
-                        }! Check out Dysperse, a new productivity app which I use: https://go.dysperse.com/r/${
-                          session?.user?.id
-                        } \n\nUse the link above to sign up and we'll both get extra storage!`
-                      );
-                    }}
-                  />
-                ) : item.accepted ? null : (
-                  <>
-                    <IconButton
-                      icon="close"
-                      variant="outlined"
-                      style={{ marginLeft: 10 }}
-                      onPress={() => {
-                        if (
-                          item.followingId === session?.user?.id &&
-                          item.followerId === session?.user?.id
-                        ) {
-                          handleFriendRequestAccept(item, false);
+                {!(Boolean(onSelect) && item.profile?.lastActive) &&
+                  (item.suggestion ? (
+                    <Button
+                      text={item.profile?.lastActive ? "Add" : "Invite"}
+                      variant={item.profile?.lastActive ? "filled" : "outlined"}
+                      onPress={async () => {
+                        if (item.profile?.lastActive) {
+                          await sendApiRequest(
+                            sessionToken,
+                            "POST",
+                            "user/friends",
+                            {},
+                            {
+                              body: JSON.stringify({
+                                email: item.profile?.email || item.user?.email,
+                              }),
+                            }
+                          );
+                          mutate();
                           return;
                         }
-                        mutate(
-                          (o) => ({
-                            ...o,
-                            friends: o.friends.filter(
-                              (f) =>
-                                !(
-                                  f.followerId === item.followerId &&
-                                  f.followingId === item.followingId
-                                )
-                            ),
-                          }),
-                          { revalidate: false }
-                        );
-                        sendApiRequest(
-                          sessionToken,
-                          "DELETE",
-                          "user/friends",
-                          {},
-                          {
-                            body: JSON.stringify({
-                              userId: item.followingId,
-                            }),
-                          }
+                        Linking.openURL(
+                          `sms:${
+                            item.profile?.phoneNumber || item.profile?.email
+                          }?body=Hi, ${
+                            item.profile?.name?.split(" ")[0]
+                          }! Check out Dysperse, a new productivity app which I use: https://go.dysperse.com/r/${
+                            session?.user?.id
+                          } \n\nUse the link above to sign up and we'll both get extra storage!`
                         );
                       }}
                     />
-                    {item.followingId === session?.user?.id && (
+                  ) : item.accepted ? null : (
+                    <>
                       <IconButton
-                        icon="check"
-                        variant="filled"
-                        style={{ marginLeft: -5 }}
-                        onPress={() => handleFriendRequestAccept(item.id, true)}
+                        icon="close"
+                        variant="outlined"
+                        style={{ marginLeft: 10 }}
+                        onPress={() => {
+                          if (
+                            item.followingId === session?.user?.id &&
+                            item.followerId === session?.user?.id
+                          ) {
+                            handleFriendRequestAccept(item, false);
+                            return;
+                          }
+                          mutate(
+                            (o) => ({
+                              ...o,
+                              friends: o.friends.filter(
+                                (f) =>
+                                  !(
+                                    f.followerId === item.followerId &&
+                                    f.followingId === item.followingId
+                                  )
+                              ),
+                            }),
+                            { revalidate: false }
+                          );
+                          sendApiRequest(
+                            sessionToken,
+                            "DELETE",
+                            "user/friends",
+                            {},
+                            {
+                              body: JSON.stringify({
+                                userId: item.followingId,
+                              }),
+                            }
+                          );
+                        }}
                       />
-                    )}
-                  </>
-                )}
+                      {item.followingId === session?.user?.id && (
+                        <IconButton
+                          icon="check"
+                          variant="filled"
+                          style={{ marginLeft: -5 }}
+                          onPress={() =>
+                            handleFriendRequestAccept(item.id, true)
+                          }
+                        />
+                      )}
+                    </>
+                  ))}
               </ListItemButton>
             </ProfileModal>
           )

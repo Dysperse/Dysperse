@@ -18,7 +18,7 @@ export default function Page() {
   const [search, setSearch] = useState("");
   const isDark = useDarkMode();
   const theme = useColorTheme();
-  const { sessionToken } = useUser();
+  const { session, sessionToken } = useUser();
   const { id } = useLocalSearchParams();
 
   const handleSelectFriends = async (email) => {
@@ -81,8 +81,9 @@ export default function Page() {
       <FriendsList
         onSelect={(friend) => {
           setIsLoading(true);
-          console.log("Selected friend:", friend);
-          handleSelectFriends(friend.user?.email || friend.profile?.email);
+          const email =
+            friend.user?.email || friend.profile?.email || friend.email;
+          if (email !== session.user?.email) handleSelectFriends(email);
         }}
         search={search}
       />
