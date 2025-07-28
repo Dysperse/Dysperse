@@ -15,7 +15,7 @@ import { FlatList } from "react-native-gesture-handler";
 import { KeyboardAvoidingView } from "react-native-keyboard-controller";
 import { useDebounce } from "use-debounce";
 
-export default function Page() {
+export default function EmailFriendPage({ collection, onSelect }) {
   const theme = useColorTheme();
   const { sessionToken } = useUser();
   const [query, setQuery] = useState("");
@@ -45,22 +45,34 @@ export default function Page() {
 
   return (
     <View
-      style={{
-        paddingTop: 80,
-        paddingHorizontal: 25,
-        flex: 1,
-        paddingBottom: 20,
-        gap: 10,
-      }}
+      style={
+        collection
+          ? {
+              paddingHorizontal: 25,
+              marginTop: 15,
+              flex: 1,
+              gap: 10,
+              paddingBottom: 30,
+            }
+          : {
+              paddingTop: 80,
+              paddingHorizontal: 25,
+              flex: 1,
+              paddingBottom: 20,
+              gap: 10,
+            }
+      }
     >
-      <Text
-        style={{
-          fontFamily: "serifText700",
-          fontSize: 30,
-        }}
-      >
-        Search
-      </Text>
+      {!collection && (
+        <Text
+          style={{
+            fontFamily: "serifText700",
+            fontSize: 30,
+          }}
+        >
+          Search
+        </Text>
+      )}
       <TextField
         variant="filled"
         style={{
@@ -99,36 +111,66 @@ export default function Page() {
             <IndeterminateProgressBar height={5} />
           </View>
         )}
-        <FlatList
-          data={data}
-          keyboardShouldPersistTaps="handled"
-          renderItem={({ item }) => (
-            <ListItemButton
-              onPress={() => {
-                Keyboard.dismiss();
-                setSelected(item.email === selected ? null : item.email);
+        {data.length === 0 ? (
+          <View
+            onTouchStart={Keyboard.dismiss}
+            style={{
+              padding: 20,
+              alignItems: "center",
+              justifyContent: "center",
+              flex: 1,
+            }}
+          >
+            <Text
+              style={{
+                textAlign: "center",
+                padding: 20,
+                color: theme[11],
+                fontSize: 16,
+                opacity: 0.3,
               }}
-              variant="filled"
+              weight={500}
             >
-              <ListItemText
-                primary={item.profile?.name || item.email}
-                secondary={item.profile?.name && item.email}
-              />
-              {selected === item.email && (
-                <Icon filled bold>
-                  check_circle
-                </Icon>
-              )}
-            </ListItemButton>
-          )}
-          keyExtractor={(item) => item.email}
-        />
+              Start typing to see results...
+            </Text>
+          </View>
+        ) : (
+          <FlatList
+            data={data}
+            keyboardShouldPersistTaps="handled"
+            onScrollBeginDrag={Keyboard.dismiss}
+            renderItem={({ item }) => (
+              <ListItemButton
+                onPress={() => {
+                  Keyboard.dismiss();
+                  setSelected(item.email === selected ? null : item.email);
+                }}
+                variant="filled"
+              >
+                <ListItemText
+                  primary={item.profile?.name || item.email}
+                  secondary={item.profile?.name && item.email}
+                />
+                {selected === item.email && (
+                  <Icon filled bold>
+                    check_circle
+                  </Icon>
+                )}
+              </ListItemButton>
+            )}
+            keyExtractor={(item) => item.email}
+          />
+        )}
       </KeyboardAvoidingView>
       {selected && (
         <Button
           variant="filled"
           isLoading={requestLoading}
           onPress={async () => {
+            if (onSelect) {
+              onSelect(selected);
+              return;
+            }
             setRequestLoading(true);
             await sendApiRequest(
               sessionToken,
@@ -144,7 +186,7 @@ export default function Page() {
             if (router.canGoBack()) router.back();
             else router.replace("/friends");
           }}
-          text="Add friend"
+          text={onSelect ? "Select" : "Add friend"}
           large
           bold
           icon="east"

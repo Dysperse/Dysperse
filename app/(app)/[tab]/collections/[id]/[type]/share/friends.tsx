@@ -1,7 +1,9 @@
 import { FriendsList } from "@/app/(app)/friends";
+import EmailFriendPage from "@/app/(app)/friends/search";
 import { MenuButton } from "@/app/(app)/home";
 import { useUser } from "@/context/useUser";
 import { sendApiRequest } from "@/helpers/api";
+import { Button } from "@/ui/Button";
 import { addHslAlpha, useDarkMode } from "@/ui/color";
 import { useColorTheme } from "@/ui/color/theme-provider";
 import Spinner from "@/ui/Spinner";
@@ -20,6 +22,8 @@ export default function Page() {
   const theme = useColorTheme();
   const { session, sessionToken } = useUser();
   const { id } = useLocalSearchParams();
+
+  const [view, setView] = useState<"friends" | "email">("friends");
 
   const handleSelectFriends = async (email) => {
     try {
@@ -62,38 +66,57 @@ export default function Page() {
         </Text>
       </View>
 
-      <View style={{ paddingHorizontal: 25, marginTop: 10 }}>
-        <TextField
-          placeholder="Search friends..."
-          value={search}
-          onChangeText={setSearch}
-          variant="filled"
-          weight={800}
-          style={{
-            fontSize: 20,
-            height: 60,
-            textAlign: "center",
-            borderRadius: 99,
-          }}
+      <View style={{ paddingHorizontal: 25, marginTop: 10, gap: 10 }}>
+        {view === "friends" && (
+          <TextField
+            placeholder="Search friends..."
+            value={search}
+            onChangeText={setSearch}
+            variant="filled"
+            weight={800}
+            style={{
+              fontSize: 20,
+              height: 60,
+              textAlign: "center",
+              borderRadius: 99,
+            }}
+          />
+        )}
+        <Button
+          onPress={() =>
+            setView((t) => (t === "friends" ? "email" : "friends"))
+          }
+          large
+          variant="outlined"
+          icon={view === "friends" ? "email" : "west"}
+          containerStyle={view === "email" && { marginRight: "auto" }}
+          text={view === "friends" ? "Invite by email" : "Search friends"}
         />
       </View>
 
-      <FriendsList
-        onSelect={(friend) => {
-          const email =
-            friend.user?.email || friend.profile?.email || friend.email;
-          if (email === session.user?.email) {
-            Toast.show({
-              type: "error",
-              text1: "You can't invite yourself...",
-            });
-            return;
-          }
-          setIsLoading(true);
-          handleSelectFriends(email);
-        }}
-        search={search}
-      />
+      {view === "friends" ? (
+        <FriendsList
+          onSelect={(friend) => {
+            const email =
+              friend.user?.email || friend.profile?.email || friend.email;
+            if (email === session.user?.email) {
+              Toast.show({
+                type: "error",
+                text1: "You can't invite yourself...",
+              });
+              return;
+            }
+            setIsLoading(true);
+            handleSelectFriends(email);
+          }}
+          search={search}
+        />
+      ) : (
+        <EmailFriendPage
+          collection
+          onSelect={(email) => handleSelectFriends(email)}
+        />
+      )}
 
       {isLoading && (
         <BlurView
