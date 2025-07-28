@@ -128,6 +128,13 @@ export default ({ config }: ConfigContext): ExpoConfig =>
         display: "standalone",
       },
       plugins: [
+        [
+          "expo-contacts",
+          {
+            contactsPermission:
+              "Allow $(PRODUCT_NAME) to access your contacts.",
+          },
+        ],
         "expo-apple-authentication",
         [
           "expo-alternate-app-icons",
