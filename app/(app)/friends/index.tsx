@@ -1,4 +1,3 @@
-import { ArcSystemBar } from "@/components/layout/arcAnimations";
 import { ProfileModal } from "@/components/ProfileModal";
 import { useUser } from "@/context/useUser";
 import { sendApiRequest } from "@/helpers/api";
@@ -18,10 +17,10 @@ import { FlashList } from "@shopify/flash-list";
 import dayjs from "dayjs";
 import * as Contacts from "expo-contacts";
 import { impactAsync, ImpactFeedbackStyle } from "expo-haptics";
+import { router } from "expo-router";
 import { useEffect, useState } from "react";
 import { Linking, Share, View } from "react-native";
 import useSWR from "swr";
-import { MenuButton } from "./home";
 
 function FriendsList() {
   const { session, sessionToken } = useUser();
@@ -409,12 +408,10 @@ export default function Page() {
 
   return (
     <>
-      <MenuButton gradient back />
-      <ArcSystemBar />
       <View
         style={{
-          marginTop: 80,
-          paddingHorizontal: 20,
+          marginTop: 90,
+          paddingHorizontal: 25,
         }}
       >
         <Text
@@ -448,6 +445,7 @@ export default function Page() {
             bold
             large
             variant="filled"
+            onPress={() => router.push("/friends/search")}
           />
         </View>
 
