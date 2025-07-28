@@ -56,6 +56,7 @@ import { GestureHandlerRootView } from "react-native-gesture-handler";
 import DrawerLayout from "react-native-gesture-handler/ReanimatedDrawerLayout";
 import { MenuProvider } from "react-native-popup-menu";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
+import SpotlightSearch from "react-native-spotlight-search";
 import Toast from "react-native-toast-message";
 import "react-native-url-polyfill/auto";
 import useSWR from "swr";
@@ -91,6 +92,10 @@ export function LastStateRestore() {
   const { fullscreen, tab: currentTab } = useGlobalSearchParams();
 
   const setCurrentPage = useCallback(async () => {
+    if (Platform.OS === "ios") {
+      const t = await SpotlightSearch.getInitialSearchItem();
+      if (t) return;
+    }
     const lastViewedTab = await AsyncStorage.getItem("lastViewedTab");
 
     if (lastViewedTab && currentTab !== lastViewedTab) {
