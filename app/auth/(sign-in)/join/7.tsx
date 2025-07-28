@@ -4,6 +4,7 @@ import { useColorTheme } from "@/ui/color/theme-provider";
 import ErrorAlert from "@/ui/Error";
 import Spinner from "@/ui/Spinner";
 import Text from "@/ui/Text";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import dayjs from "dayjs";
 import { router } from "expo-router";
 import { useCallback, useEffect, useState } from "react";
@@ -22,6 +23,8 @@ export default function Page() {
     try {
       if (success) return;
       setError(false);
+      const referredBy = await AsyncStorage.getItem("referredBy");
+
       const data = await fetch(
         `${process.env.EXPO_PUBLIC_API_URL}/auth/signup`,
         {
@@ -29,6 +32,7 @@ export default function Page() {
           body: JSON.stringify({
             ...store,
             timeZone: dayjs.tz.guess(),
+            referredBy: referredBy || null,
             birthday: [store.birthday?.month, store.birthday?.day],
           }),
           headers: {
