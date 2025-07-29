@@ -26,6 +26,7 @@ import { ScrollView } from "react-native-gesture-handler";
 import { useCollectionContext } from "../../context";
 import { ColumnEmptyComponent } from "../../emptyComponent";
 import { Entity } from "../../entity";
+import { taskSortAlgorithm } from "../skyline";
 
 const styles = StyleSheet.create({
   header: {
@@ -317,18 +318,7 @@ const StoryPoint = ({
           refreshControl={
             <RefreshControl refreshing={false} onRefresh={() => mutate()} />
           }
-          data={filteredTasks
-            .sort((a, b) =>
-              a.agendaOrder?.toString()?.localeCompare(b.agendaOrder)
-            )
-            .sort((x, y) => (x.pinned === y.pinned ? 0 : x.pinned ? -1 : 1))
-            .sort((x, y) =>
-              x.completionInstances.length === y.completionInstances.length
-                ? 0
-                : x.completionInstances.length === 0
-                ? -1
-                : 0
-            )}
+          data={taskSortAlgorithm(filteredTasks)}
           estimatedItemSize={100}
           contentContainerStyle={{
             padding: 10,
