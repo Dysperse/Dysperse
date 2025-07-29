@@ -14,7 +14,7 @@ import { TEMPORARY_CONTENT_INSET_FIX } from "@/utils/temporary-scrolling-bug-fix
 import { cacheDirectory, deleteAsync } from "expo-file-system";
 import { router, usePathname } from "expo-router";
 import * as Updates from "expo-updates";
-import React, { React, useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import {
   Keyboard,
   Linking,

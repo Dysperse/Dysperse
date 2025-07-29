@@ -744,8 +744,7 @@ function SubTaskInformation({ watch }) {
   );
 }
 
-function SpeechRecognition({ setValue }) {
-  const breakpoints = useResponsiveBreakpoints();
+function SpeechRecognition({ ref, setValue }) {
   const theme = useColorTheme();
   const red = useColor("red");
   const [recognizing, setRecognizing] = useState(false);
@@ -799,6 +798,14 @@ function SpeechRecognition({ setValue }) {
     });
   };
 
+  useImperativeHandle(ref, () => ({
+    start: handleStart,
+    stop: () => {
+      ExpoSpeechRecognitionModule.stop();
+      setRecognizing(false);
+    },
+  }));
+
   return (
     <>
       <IconButton
@@ -846,11 +853,13 @@ const BottomSheetContent = ({
   mutateList,
   hintRef,
   ref: formRef,
+  voiceRef,
 }: {
   defaultValues: CreateTaskDrawerProps["defaultValues"];
   mutateList: any;
   hintRef;
   ref;
+  voiceRef: RefObject<any>;
 }) => {
   const breakpoints = useResponsiveBreakpoints();
   const { sessionToken } = useUser();
@@ -861,7 +870,6 @@ const BottomSheetContent = ({
   const submitRef = useRef(null);
   const labelMenuRef = useRef<BottomSheetModal>(null);
   const badgingService = useBadgingService();
-  const descriptionRef = useRef(null);
   const theme = useColorTheme();
   const addedTasks = useRef([]);
   const { forceClose } = useBottomSheet();
@@ -1093,7 +1101,7 @@ const BottomSheetContent = ({
                   index={3}
                   style={Platform.OS === "web" ? undefined : { flex: 1 }}
                 >
-                  <SpeechRecognition setValue={setValue} />
+                  <SpeechRecognition ref={voiceRef} setValue={setValue} />
                 </AttachStep>
                 <AttachStep
                   index={4}
@@ -1228,6 +1236,7 @@ const CreateTask = ({
 }: CreateTaskDrawerProps) => {
   const ref = useRef<BottomSheetModal>(null);
   const formRef = useRef(null);
+  const voiceRef = useRef(null);
   const { height } = useWindowDimensions();
 
   useImperativeHandle(forwardedRef, () => ({
@@ -1237,15 +1246,23 @@ const CreateTask = ({
   }));
 
   // callbacks
-  const handleOpen = useCallback(() => {
-    onPress();
-    ref.current?.present();
-  }, [ref, onPress]);
+  const handleOpen = useCallback(
+    (voice = false) => {
+      onPress();
+      ref.current?.present();
+      if (voice) {
+        impactAsync(ImpactFeedbackStyle.Heavy);
+        voiceRef.current?.start?.();
+      }
+    },
+    [ref, onPress]
+  );
 
   const { isReached } = useStorageContext() || {};
 
   const trigger = cloneElement((children || <Pressable />) as any, {
     onPress: handleOpen,
+    onLongPress: () => handleOpen(true),
   });
 
   const breakpoints = useResponsiveBreakpoints();
@@ -1313,6 +1330,7 @@ const CreateTask = ({
               hintRef={hintRef}
               defaultValues={defaultValues}
               mutateList={mutate}
+              voiceRef={voiceRef}
             />
           )}
         </OnboardingContainer>

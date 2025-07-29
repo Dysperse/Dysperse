@@ -24,7 +24,6 @@ import { router, useGlobalSearchParams, usePathname } from "expo-router";
 import * as SecureStore from "expo-secure-store";
 import * as TaskManager from "expo-task-manager";
 import {
-  default as React,
   memo,
   useCallback,
   useEffect,
