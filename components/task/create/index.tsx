@@ -1252,7 +1252,9 @@ const CreateTask = ({
       ref.current?.present();
       if (voice) {
         impactAsync(ImpactFeedbackStyle.Heavy);
-        voiceRef.current?.start?.();
+        setTimeout(() => {
+          voiceRef.current?.start?.();
+        }, 100);
       }
     },
     [ref, onPress]
