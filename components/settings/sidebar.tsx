@@ -14,7 +14,7 @@ import { TEMPORARY_CONTENT_INSET_FIX } from "@/utils/temporary-scrolling-bug-fix
 import { cacheDirectory, deleteAsync } from "expo-file-system";
 import { router, usePathname } from "expo-router";
 import * as Updates from "expo-updates";
-import React, { useEffect, useRef, useState } from "react";
+import React, { React, useEffect, useRef, useState } from "react";
 import {
   Keyboard,
   Linking,
@@ -300,15 +300,18 @@ export function SettingsSidebar({ forceShow }: { forceShow?: boolean }) {
     <ScrollView
       contentInset={TEMPORARY_CONTENT_INSET_FIX()}
       onScrollBeginDrag={Keyboard.dismiss}
-      style={{
-        maxHeight: breakpoints.md
-          ? "100%"
-          : Platform.OS === "web"
-          ? height - 85
-          : undefined,
-        zIndex: breakpoints.md ? 99999999999 : undefined,
-        maxWidth: breakpoints.md ? 200 : undefined,
-      }}
+      style={[
+        {
+          maxHeight: breakpoints.md
+            ? "100%"
+            : Platform.OS === "web"
+            ? height - 85
+            : undefined,
+          zIndex: breakpoints.md ? 99999999999 : undefined,
+          maxWidth: breakpoints.md ? 200 : undefined,
+        },
+        Platform.OS === "web" && ({ WebkitAppRegion: "no-drag" } as any),
+      ]}
       contentContainerStyle={{
         paddingVertical: breakpoints.md ? 50 : 120,
         paddingBottom: 20 + insets.bottom,
