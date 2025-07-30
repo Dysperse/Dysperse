@@ -20,6 +20,7 @@ import { router, useLocalSearchParams } from "expo-router";
 import { Platform, ScrollView, View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { ColumnEmptyComponent } from "../../emptyComponent";
+import { taskSortAlgorithm } from "../skyline";
 
 const streamViews = [
   { label: "Unscheduled", value: "unscheduled", icon: "change_history" },
@@ -153,7 +154,7 @@ function StreamColumn({ view, mutate, filteredTasks, index }) {
           refreshControl={
             <RefreshControl refreshing={false} onRefresh={() => mutate()} />
           }
-          data={filteredTasks}
+          data={taskSortAlgorithm(filteredTasks)}
           estimatedItemSize={113}
           contentContainerStyle={{
             padding: 5,
