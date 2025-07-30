@@ -26,6 +26,17 @@ export const validateEmail = (email) => {
     );
 };
 
+function generateRandomString(length) {
+  const characters =
+    "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*()_+[]{}|;:,.<>?";
+  let result = "";
+  const charactersLength = characters.length;
+  for (let i = 0; i < length; i++) {
+    result += characters.charAt(Math.floor(Math.random() * charactersLength));
+  }
+  return result;
+}
+
 const useDebouncedValue = (inputValue, delay) => {
   const [debouncedValue, setDebouncedValue] = useState(inputValue);
 
@@ -68,6 +79,14 @@ function Content() {
     store.allowMarketingEmails = allowMarketingEmails;
     store.birthday = birthday;
   }, [store, password, passwordConfirm, allowMarketingEmails, birthday]);
+
+  useEffect(() => {
+    if (store.appleAuthFillPassword && password === "") {
+      const randomSecurePassword = generateRandomString(50);
+      setPassword(randomSecurePassword);
+      setPasswordConfirm(randomSecurePassword);
+    }
+  }, [store.appleAuthFillPassword, password]);
 
   const debouncedEmail = useDebouncedValue(email, 500);
 
@@ -151,35 +170,37 @@ function Content() {
             defaultValue={store.email}
           />
         )}
-        {email !== "" && profileExists !== "empty" && (
-          <View
-            style={{
-              flexDirection: "row",
-              alignItems: "center",
-              gap: 10,
-              padding: 10,
-              backgroundColor: theme[5],
-              borderRadius: 99,
-              justifyContent: "center",
-              marginTop: 5,
-            }}
-          >
-            {profileExists === "loading" && (
-              <Spinner color={theme[11]} size={15} />
-            )}
-            <Text style={{ color: theme[11] }}>
-              {
+        {email !== "" &&
+          profileExists !== "empty" &&
+          !(store.prefilledEmail && profileExists === "available") && (
+            <View
+              style={{
+                flexDirection: "row",
+                alignItems: "center",
+                gap: 10,
+                padding: 10,
+                backgroundColor: theme[5],
+                borderRadius: 99,
+                justifyContent: "center",
+                marginTop: 5,
+              }}
+            >
+              {profileExists === "loading" && (
+                <Spinner color={theme[11]} size={15} />
+              )}
+              <Text style={{ color: theme[11] }}>
                 {
-                  empty: "",
-                  loading: "Checking if this email is available…",
-                  error: "An error occurred while checking this email.",
-                  available: "This email is available.",
-                  taken: "This email is already taken.",
-                }[profileExists]
-              }
-            </Text>
-          </View>
-        )}
+                  {
+                    empty: "",
+                    loading: "Checking if this email is available…",
+                    error: "An error occurred while checking this email.",
+                    available: "This email is available.",
+                    taken: "This email is already taken.",
+                  }[profileExists]
+                }
+              </Text>
+            </View>
+          )}
         <ListItemButton
           onPress={() => setAllowMarketingEmails(!allowMarketingEmails)}
           variant="filled"
@@ -190,26 +211,34 @@ function Content() {
           />
           <Icon size={40}>toggle_{allowMarketingEmails ? "on" : "off"}</Icon>
         </ListItemButton>
-        <Text variant="eyebrow" style={{ marginTop: 30 }}>
-          Password
-          {password.length < 8
-            ? ` — ${8 - password.length} more characters`
-            : ""}
-        </Text>
-        <TextField
-          secureTextEntry
-          variant="filled"
-          placeholder="Pick something strong"
-          onChangeText={setPassword}
-          autoComplete="new-password"
-        />
-        <TextField
-          secureTextEntry
-          variant="filled"
-          placeholder="Retype what you just entered above"
-          onChangeText={setPasswordConfirm}
-          autoComplete="new-password"
-        />
+        {!store.appleAuthFillPassword && (
+          <Text variant="eyebrow" style={{ marginTop: 30 }}>
+            Password
+            {password.length < 8
+              ? ` — ${8 - password.length} more characters`
+              : ""}
+          </Text>
+        )}
+        {!store.appleAuthFillPassword && (
+          <TextField
+            secureTextEntry
+            variant="filled"
+            placeholder="Pick something strong"
+            onChangeText={setPassword}
+            autoComplete="new-password"
+            defaultValue={store.password}
+          />
+        )}
+        {!store.appleAuthFillPassword && (
+          <TextField
+            secureTextEntry
+            variant="filled"
+            placeholder="Retype what you just entered above"
+            onChangeText={setPasswordConfirm}
+            autoComplete="new-password"
+            defaultValue={store.confirmPassword}
+          />
+        )}
       </Animated.View>
       <Animated.View
         entering={FadeIn.delay(1200)}

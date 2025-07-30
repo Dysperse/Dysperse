@@ -29,6 +29,9 @@ function Intro() {
       store.email = params.email;
       store.prefilledEmail = true;
     }
+    if (params.appleAuthFillPassword) {
+      store.appleAuthFillPassword = true;
+    }
   }, [params, store]);
 
   return (

@@ -153,14 +153,15 @@ function AppleAuth() {
             height: "100%",
           }}
           onPress={async () => {
-            // router.push({
-            //   pathname: "/auth/join",
-            //   params: {
-            //     email: "asdfasdf@asdf.com",
-            //     name: "",
-            //   },
-            // });
-            // if (1 === 1) return;
+            router.push({
+              pathname: "/auth/join",
+              params: {
+                email: "asdfasdf@asdf.com",
+                name: "",
+                appleAuthFillPassword: true,
+              },
+            });
+            if (1 === 1) return;
             Toast.show({
               type: "loading",
               autoHide: false,
@@ -192,6 +193,7 @@ function AppleAuth() {
                 router.push({
                   pathname: "/auth/join",
                   params: {
+                    appleAuthFillPassword: true,
                     email: credential.email,
                     name: credential.fullName
                       ? `${credential.fullName?.givenName} ${credential.fullName?.familyName}`
