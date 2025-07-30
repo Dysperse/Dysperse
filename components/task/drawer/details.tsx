@@ -480,10 +480,18 @@ function TaskLocationMenu() {
     <Button
       disabled={isReadOnly}
       containerStyle={{
-        marginRight: "auto",
         opacity: 0.6,
+        marginLeft: 10,
+        marginTop: 5,
+        borderRadius: 0,
       }}
-      style={{ gap: 10, paddingTop: 3 }}
+      style={{
+        gap: 10,
+        alignItems: "flex-start",
+        justifyContent: "flex-start",
+        paddingHorizontal: 0,
+      }}
+      height={"auto" as any}
       dense
       icon="location_on"
       text={task.location ? task.location.name : "Add location"}
