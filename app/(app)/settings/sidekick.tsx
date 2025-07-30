@@ -106,14 +106,14 @@ function SidekickComingSoon({ style }: { style?: StyleProp<ViewStyle> }) {
           overflow: "hidden",
         }}
       >
-        <Icon size={80} style={{ color: theme[12] }}>
+        <Icon size={80} style={{ color: "#fff" }}>
           raven
         </Icon>
         <Text
           weight={300}
           style={{
             fontFamily: "serifText800",
-            color: theme[12],
+            color: "#fff",
             fontSize: 70,
           }}
         >
@@ -125,7 +125,7 @@ function SidekickComingSoon({ style }: { style?: StyleProp<ViewStyle> }) {
             opacity: 0.6,
             fontSize: 30,
             marginTop: -10,
-            color: theme[12],
+            color: "#fff",
           }}
         >
           arriving 2026
