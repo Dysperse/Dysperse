@@ -145,7 +145,7 @@
     "name": "Notion",
     "id": "NOTION",
     "description": "Connect your databases to dysperse collections.",
-    "icon": "https://cdn.brandfetch.io/idPYUoikV7/theme/dark/symbol.svg?k=bfHSJFAPEG",
+    "icon": "https://upload.wikimedia.org/wikipedia/commons/thumb/e/e9/Notion-logo.svg/2048px-Notion-logo.svg.png",
     "slug": "notion",
     "comingSoon": true,
     "availableOptions": {}
@@ -154,7 +154,7 @@
     "name": "Gmail",
     "id": "GMAIL",
     "description": "Starred emails will be added to your collections",
-    "icon": "https://cdn.brandfetch.io/id5o3EIREg/theme/dark/symbol.svg?k=bfHSJFAPEG",
+    "icon": "https://upload.wikimedia.org/wikipedia/commons/thumb/7/7e/Gmail_icon_%282020%29.svg/2560px-Gmail_icon_%282020%29.svg.png",
     "slug": "gmail",
     "comingSoon": true,
     "availableOptions": {},
