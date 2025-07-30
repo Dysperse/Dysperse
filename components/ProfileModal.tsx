@@ -32,7 +32,7 @@ function ProfileModalContent({ email }) {
 
   console.log(data);
 
-  const isFriend = data?.followers?.some(
+  const isFriend = data?.followers?.find(
     (f) =>
       (f.followerId === session.user.id || f.followingId === session.user.id) &&
       f.accepted
@@ -119,9 +119,17 @@ function ProfileModalContent({ email }) {
               isLoading={loading}
               onPress={async () => {
                 setLoading(true);
-                await sendApiRequest(sessionToken, "DELETE", "user/friends", {
-                  userId: data.profile.id,
-                });
+                await sendApiRequest(
+                  sessionToken,
+                  "DELETE",
+                  "user/friends",
+                  {},
+                  {
+                    body: JSON.stringify({
+                      userId: data.profile.id,
+                    }),
+                  }
+                );
                 forceClose();
                 mutate(() => true);
               }}
