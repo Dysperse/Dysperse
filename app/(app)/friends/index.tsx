@@ -160,6 +160,8 @@ export function FriendsList({
     }
   };
 
+  const theme = useColorTheme();
+
   return data ? (
     <View style={{ flex: 1 }}>
       <FlashList
@@ -169,6 +171,25 @@ export function FriendsList({
         refreshControl={
           <RefreshControl refreshing={false} onRefresh={() => mutate()} />
         }
+        ListEmptyComponent={() => (
+          <View
+            style={{
+              padding: 20,
+              alignItems: "center",
+              backgroundColor: theme[3],
+              borderRadius: 20,
+              marginTop: 10,
+              marginHorizontal: 20,
+            }}
+          >
+            <Text
+              style={{ color: theme[11], textAlign: "center", opacity: 0.6 }}
+              weight={800}
+            >
+              You don't have any friends yet.{"\n"}Invite some to get started!
+            </Text>
+          </View>
+        )}
         estimatedItemSize={70}
         data={[
           friendRequests.length > 0 && "Requests",
