@@ -99,7 +99,7 @@ function Insights({ year }) {
         <View style={cardStyles}>
           <Text style={[textStyles]}>
             {~~data.co2}
-            {breakpoints.md ? " grams" : "g"}
+            {breakpoints.md ? (~~data.co2 === 1 ? " gram" : " grams") : "g"}
           </Text>
           <Text style={labelStyles}>of CO2 saved</Text>
         </View>
