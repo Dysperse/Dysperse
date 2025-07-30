@@ -19,7 +19,7 @@ import * as Contacts from "expo-contacts";
 import { impactAsync, ImpactFeedbackStyle } from "expo-haptics";
 import { router } from "expo-router";
 import { useEffect, useState } from "react";
-import { Keyboard, Linking, Share, View } from "react-native";
+import { Keyboard, Linking, Platform, Share, View } from "react-native";
 import useSWR from "swr";
 
 export function FriendsList({
@@ -485,7 +485,7 @@ export default function Page() {
         </View>
 
         <AddFriendsPromo />
-        <ContactBanner />
+        {Platform.OS !== "web" && <ContactBanner />}
       </View>
 
       <FriendsList />

@@ -205,6 +205,7 @@ function SearchList({ collection, inputRef, listRef, handleClose }) {
               }}
             >
               <TextField
+                autoCorrect={false}
                 value={query}
                 inputRef={inputRef}
                 placeholder="Find tasks…"
