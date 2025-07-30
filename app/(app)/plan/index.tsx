@@ -13,7 +13,7 @@ import { LinearGradient } from "expo-linear-gradient";
 import * as Location from "expo-location";
 import { router } from "expo-router";
 import { useCallback, useEffect, useState } from "react";
-import { StyleSheet, View } from "react-native";
+import { Platform, StyleSheet, View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import Toast from "react-native-toast-message";
 import weatherCodes from "../../../components/focus-panel/widgets/weather/weatherCodes.json";
@@ -342,7 +342,7 @@ export default function Page() {
                 session.user.militaryTime ? "HH:mm" : "h:mm A"
               )}
             />
-            {planData?.place && (
+            {planData?.place && Platform.OS !== "web" && (
               <Button
                 icon="near_me"
                 containerStyle={{ marginRight: "auto" }}
