@@ -371,7 +371,8 @@ const PaletteHeader = memo(function PaletteHeader({
   };
 
   useEffect(() => {
-    if (pathname === "/open") ref.current?.focus({ preventScroll: true });
+    if (pathname === "/open" || breakpoints.md)
+      ref.current?.focus({ preventScroll: true });
   }, [breakpoints, pathname]);
 
   useEffect(() => {
