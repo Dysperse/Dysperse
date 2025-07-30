@@ -30,8 +30,6 @@ function ProfileModalContent({ email }) {
   const [loading, setLoading] = useState(false);
   const { forceClose } = useBottomSheet();
 
-  console.log(data, session.user.id);
-
   const isFriend =
     data?.followers?.find(
       (f) =>
@@ -127,17 +125,18 @@ function ProfileModalContent({ email }) {
               isLoading={loading}
               onPress={async () => {
                 setLoading(true);
-                await sendApiRequest(
+                const res = await sendApiRequest(
                   sessionToken,
                   "DELETE",
                   "user/friends",
                   {},
                   {
                     body: JSON.stringify({
-                      userId: data.userId,
+                      userId: data.profile.userId,
                     }),
                   }
                 );
+                console.log(res);
                 forceClose();
                 mutate(() => true);
               }}
