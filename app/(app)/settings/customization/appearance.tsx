@@ -28,7 +28,8 @@ function ThemedSlide({
 
   const handleSelect = async () => {
     try {
-      setAlternateAppIcon(`${theme}${isDark ? "Dark" : "Light"}`);
+      if (Platform.OS !== "web")
+        setAlternateAppIcon(`${theme}${isDark ? "Dark" : "Light"}`);
       sendApiRequest(
         sessionToken,
         "PUT",
