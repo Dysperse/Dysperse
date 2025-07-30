@@ -1250,7 +1250,7 @@ const CreateTask = ({
     (voice = false) => {
       onPress();
       ref.current?.present();
-      if (voice) {
+      if (voice === true) {
         impactAsync(ImpactFeedbackStyle.Heavy);
         setTimeout(() => {
           voiceRef.current?.start?.();
