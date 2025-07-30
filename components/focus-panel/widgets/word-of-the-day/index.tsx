@@ -6,7 +6,7 @@ import MenuPopover from "@/ui/MenuPopover";
 import Spinner from "@/ui/Spinner";
 import Text from "@/ui/Text";
 import capitalizeFirstLetter from "@/utils/capitalizeFirstLetter";
-import { View } from "react-native";
+import { Linking, View } from "react-native";
 import useSWR from "swr";
 
 export default function WordOfTheDay({ small, handlePin, widget }) {
@@ -45,13 +45,20 @@ export default function WordOfTheDay({ small, handlePin, widget }) {
           rendererProps: { placement: "bottom" },
           style: { marginRight: "auto", marginLeft: -10 },
         }}
-        containerStyle={{ marginLeft: 20, marginTop: -10 }}
+        containerStyle={{ marginLeft: 20, marginTop: -10, width: 250 }}
         options={[
           {
             text: widget.pinned ? "Pinned" : "Pin",
             icon: "push_pin",
             callback: handlePin,
             selected: widget.pinned,
+          },
+          data && {
+            text: "Open in Merriam-Webster",
+            icon: "open_in_new",
+            callback: () => {
+              Linking.openURL(data.link);
+            },
           },
         ]}
         trigger={
@@ -112,3 +119,4 @@ export default function WordOfTheDay({ small, handlePin, widget }) {
     </View>
   );
 }
+
