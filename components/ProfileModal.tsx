@@ -1,4 +1,5 @@
 import { useUser } from "@/context/useUser";
+import { sendApiRequest } from "@/helpers/api";
 import { Avatar } from "@/ui/Avatar";
 import BottomSheet from "@/ui/BottomSheet";
 import { Button } from "@/ui/Button";
@@ -10,18 +11,32 @@ import Spinner from "@/ui/Spinner";
 import Text from "@/ui/Text";
 import { useColor } from "@/ui/color";
 import { ColorThemeProvider } from "@/ui/color/theme-provider";
-import { BottomSheetModal, BottomSheetScrollView } from "@gorhom/bottom-sheet";
+import {
+  BottomSheetModal,
+  BottomSheetScrollView,
+  useBottomSheet,
+} from "@gorhom/bottom-sheet";
 import dayjs from "dayjs";
 import { setStringAsync } from "expo-clipboard";
-import { cloneElement, useCallback, useRef } from "react";
+import { cloneElement, useCallback, useRef, useState } from "react";
 import { useWindowDimensions, View } from "react-native";
 import Toast from "react-native-toast-message";
-import useSWR from "swr";
+import useSWR, { mutate } from "swr";
 
 function ProfileModalContent({ email }) {
-  const { session } = useUser();
+  const { session, sessionToken } = useUser();
   const { data, error } = useSWR(["user/profile", { email }]);
   const theme = useColor(data?.profile?.theme || "gray");
+  const [loading, setLoading] = useState(false);
+  const { forceClose } = useBottomSheet();
+
+  console.log(data);
+
+  const isFriend = data?.followers?.some(
+    (f) =>
+      (f.followerId === session.user.id || f.followingId === session.user.id) &&
+      f.accepted
+  );
 
   return data?.profile ? (
     <ColorThemeProvider theme={theme}>
@@ -94,6 +109,24 @@ function ProfileModalContent({ email }) {
               </ListItemButton>
             )}
           </View>
+
+          {isFriend && (
+            <Button
+              variant="filled"
+              icon="person_remove"
+              text="Remove friend"
+              containerStyle={{ marginBottom: 20 }}
+              isLoading={loading}
+              onPress={async () => {
+                setLoading(true);
+                await sendApiRequest(sessionToken, "DELETE", "user/friends", {
+                  userId: data.profile.id,
+                });
+                forceClose();
+                mutate(() => true);
+              }}
+            />
+          )}
         </View>
 
         <View
