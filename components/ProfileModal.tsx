@@ -30,13 +30,21 @@ function ProfileModalContent({ email }) {
   const [loading, setLoading] = useState(false);
   const { forceClose } = useBottomSheet();
 
-  console.log(data);
+  console.log(data, session.user.id);
 
-  const isFriend = data?.followers?.find(
-    (f) =>
-      (f.followerId === session.user.id || f.followingId === session.user.id) &&
-      f.accepted
-  );
+  const isFriend =
+    data?.followers?.find(
+      (f) =>
+        (f.followerId === session.user.id ||
+          f.followingId === session.user.id) &&
+        f.accepted
+    ) ||
+    data?.following?.find(
+      (f) =>
+        (f.followerId === session.user.id ||
+          f.followingId === session.user.id) &&
+        f.accepted
+    );
 
   return data?.profile ? (
     <ColorThemeProvider theme={theme}>
@@ -126,7 +134,7 @@ function ProfileModalContent({ email }) {
                   {},
                   {
                     body: JSON.stringify({
-                      userId: data.profile.id,
+                      userId: data.userId,
                     }),
                   }
                 );
