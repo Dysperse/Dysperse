@@ -556,7 +556,15 @@ export default function Matrix() {
           onEntityCreate={mutations.categoryBased.add(mutate)}
           onTaskUpdate={mutations.categoryBased.update(mutate)}
           tasks={grid[currentColumn]}
-          defaultOptions={{ pinned: true }}
+          defaultOptions={
+            currentColumn == "pinnedImportant"
+              ? { pinned: true, due: dayjs().startOf("day") }
+              : currentColumn == "important"
+              ? { due: dayjs().startOf("day") }
+              : currentColumn == "pinned"
+              ? { pinned: true }
+              : {}
+          }
           handleHome={() => setCurrentColumn(null)}
         />
       )}
