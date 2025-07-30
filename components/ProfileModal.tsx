@@ -125,7 +125,7 @@ function ProfileModalContent({ email }) {
               isLoading={loading}
               onPress={async () => {
                 setLoading(true);
-                const res = await sendApiRequest(
+                await sendApiRequest(
                   sessionToken,
                   "DELETE",
                   "user/friends",
@@ -136,9 +136,8 @@ function ProfileModalContent({ email }) {
                     }),
                   }
                 );
-                console.log(res);
-                forceClose();
                 mutate(() => true);
+                forceClose();
               }}
             />
           )}
