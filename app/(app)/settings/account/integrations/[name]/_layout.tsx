@@ -1,4 +1,5 @@
 import { JsStack } from "@/components/layout/_stack";
+import { ArcSystemBar } from "@/components/layout/arcAnimations";
 import { forHorizontalIOS } from "@/components/layout/forHorizontalIOS";
 import { useResponsiveBreakpoints } from "@/helpers/useResponsiveBreakpoints";
 import { useColorTheme } from "@/ui/color/theme-provider";
@@ -55,6 +56,7 @@ export default function Layout() {
         },
       ]}
     >
+      <ArcSystemBar />
       <JsStack
         id={undefined}
         screenOptions={{
