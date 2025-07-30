@@ -187,7 +187,7 @@ const PermissionScreen = ({ onSuccess }) => {
         padding: 20,
       }}
     >
-      <Text style={{ fontSize: 20, marginBottom: 20 }}>
+      <Text style={{ fontSize: 20, marginBottom: 20, textAlign: "center" }}>
         Improve your experience by enabling location services
       </Text>
       <Button
@@ -197,7 +197,8 @@ const PermissionScreen = ({ onSuccess }) => {
           pressed: theme[8],
           hovered: theme[7],
         }}
-        containerStyle={{ width: "100%" }}
+        large
+        containerStyle={{ width: "100%", maxWidth: 300 }}
       >
         <ButtonText style={{ color: theme[1] }}>Continue</ButtonText>
       </Button>
@@ -282,7 +283,14 @@ export default function Page() {
       colors={[theme[2], theme[3], theme[4], theme[3], theme[2]]}
       style={[styles.container, { paddingBottom: insets.bottom }]}
     >
-      {!planData || hasPermission === null ? (
+      {!hasPermission ? (
+        <PermissionScreen
+          onSuccess={() => {
+            console.log("Permission granted");
+            setHasPermission(true);
+          }}
+        />
+      ) : !planData || hasPermission === null ? (
         <View
           style={{
             flex: 1,
@@ -292,13 +300,6 @@ export default function Page() {
         >
           <Spinner />
         </View>
-      ) : !hasPermission ? (
-        <PermissionScreen
-          onSuccess={() => {
-            console.log("Permission granted");
-            setHasPermission(true);
-          }}
-        />
       ) : (
         <>
           <View style={{ paddingHorizontal: 25, marginTop: 20 }}>
@@ -345,8 +346,8 @@ export default function Page() {
               <Button
                 icon="near_me"
                 containerStyle={{ marginRight: "auto" }}
-                text={`${planData.place[0].city}, ${
-                  planData.place[0].region || ""
+                text={`${planData.place[0]?.city}, ${
+                  planData.place[0]?.region || ""
                 }`}
               />
             )}

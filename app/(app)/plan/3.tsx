@@ -571,6 +571,12 @@ export default function Page() {
       )
     : [];
 
+  useEffect(() => {
+    if (data && todaysTasks.length === 0) {
+      router.replace("/plan/4");
+    }
+  }, [todaysTasks]);
+
   const [createdTasks, setCreatedTasks] = useState([]);
   const [stage, setStage] = useState<0 | 1 | 2>(0);
 

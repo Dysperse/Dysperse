@@ -125,7 +125,7 @@ export default function Page() {
   ).sort((a, b) => dayjs(a.start).diff(dayjs(b.start)));
 
   useEffect(() => {
-    if (filteredTasks.length === 0) router.push("/plan/3");
+    if (filteredTasks.length === 0) router.replace("/plan/3");
   }, [filteredTasks]);
 
   return (
