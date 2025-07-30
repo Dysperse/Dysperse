@@ -197,8 +197,9 @@ function CommandPaletteList({
             alignItems: "center",
             justifyContent: "center",
             gap: 10,
-            flex: 1,
-            paddingBottom: 200,
+            height: "100%",
+            marginVertical: "auto",
+            paddingBottom: 20,
           }}
         >
           <Icon size={50}>heart_broken</Icon>
@@ -208,20 +209,19 @@ function CommandPaletteList({
               fontSize: 20,
               color: theme[11],
             }}
+            weight={800}
           >
             We couldn't find anything{"\n"}matching your search
           </Text>
           <Button
-            variant="filled"
-            dense
-            containerStyle={{ marginBottom: -20 }}
+            variant="outlined"
             onPress={() => {
               setFilter(null);
               setQuery("");
             }}
-          >
-            <ButtonText>Clear filters</ButtonText>
-          </Button>
+            icon="refresh"
+            text="Clear filters"
+          />
         </View>
       ) : (
         <FlashList
@@ -378,7 +378,7 @@ const PaletteHeader = memo(function PaletteHeader({
   useEffect(() => {
     if (pathname === "/open" || breakpoints.md)
       ref.current?.focus({ preventScroll: true });
-  }, [breakpoints, pathname]);
+  }, [breakpoints, pathname, preview]);
 
   useEffect(() => {
     if (breakpoints.md)
