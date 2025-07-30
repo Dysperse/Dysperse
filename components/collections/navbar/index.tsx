@@ -169,7 +169,7 @@ const CollectionNavbar = memo(function CollectionNavbar({
   );
 
   const collectionMenuOptions = [
-    ...(type === "planner"
+    ...(type === "planner" && userSession.user.betaTester
       ? [
           {
             id: "render",
@@ -208,7 +208,7 @@ const CollectionNavbar = memo(function CollectionNavbar({
           },
         ]
       : []),
-    ...(type === "planner"
+    ...(type === "planner" && userSession.user.betaTester
       ? [
           {
             text: "2 days",
@@ -230,7 +230,9 @@ const CollectionNavbar = memo(function CollectionNavbar({
           selected: e.text && e.id.toString() === (days || 7)?.toString(),
         }))
       : []),
-    ...(type === "planner" ? [{ key: 2, divider: true }] : []),
+    ...(type === "planner" && userSession.user.betaTester
+      ? [{ key: 2, divider: true }]
+      : []),
     session &&
       !isAll && {
         icon: "edit",
