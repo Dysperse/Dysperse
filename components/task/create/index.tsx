@@ -20,11 +20,7 @@ import MenuPopover from "@/ui/MenuPopover";
 import Modal from "@/ui/Modal";
 import Spinner from "@/ui/Spinner";
 import Text from "@/ui/Text";
-import {
-  BottomSheetModal,
-  BottomSheetScrollView,
-  useBottomSheet,
-} from "@gorhom/bottom-sheet";
+import { BottomSheetModal, useBottomSheet } from "@gorhom/bottom-sheet";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import dayjs, { Dayjs } from "dayjs";
 import { BlurView } from "expo-blur";
@@ -549,7 +545,7 @@ function TaskNameInput({
                 forceClose();
               }
             }}
-            scrollEnabled={false}
+            scrollEnabled={true}
             placeholder="Task name"
             disabled={disabled}
             placeholderTextColor={addHslAlpha(theme[11], 0.2)}
@@ -564,6 +560,7 @@ function TaskNameInput({
                 borderWidth: 2,
                 shadowRadius: 0,
                 borderColor: "transparent",
+                maxHeight: 200,
               },
             ]}
             fontSize={35}
@@ -999,129 +996,121 @@ const BottomSheetContent = ({
             ? "systemUltraThinMaterialDark"
             : "systemUltraThinMaterialLight"
         }
+        style={{ gap: 20 }}
       >
-        <BottomSheetScrollView
-          keyboardShouldPersistTaps="handled"
-          bounces={false}
-          contentContainerStyle={{ gap: 20 }}
-          style={{ flexGrow: 1 }}
-        >
-          {view === "HOME" ? (
-            <View style={{ padding: 20, paddingBottom: 0 }}>
-              <SubTaskInformation watch={watch} />
-              <View style={{ flexDirection: "column", zIndex: 0 }}>
-                <TaskNameInput
-                  watch={watch}
-                  setValue={setValue}
-                  disabled={!session.user.hintsViewed.includes("CREATE_TASK")}
-                  control={control}
-                  handleSubmitButtonClick={handleSubmitButtonClick}
-                  nameRef={nameRef}
-                />
-                <Footer
-                  defaultValues={defaultValues}
-                  dateRef={dateRef}
-                  recurrenceRef={recurrenceRef}
-                  setValue={setValue}
-                  watch={watch}
-                  nameRef={nameRef}
-                  labelMenuRef={labelMenuRef}
-                  control={control}
-                />
-              </View>
-              <TaskAttachments watch={watch} setValue={setValue} />
-            </View>
-          ) : (
-            <TaskDrawerContext.Provider
-              value={{
-                task: control._formValues,
-                updateTask: (t) => {
-                  Object.keys(t).forEach((key: any) => {
-                    setValue(key, t[key]);
-                  });
-                },
-                mutateList,
-                isReadOnly: false,
-              }}
-            >
-              <TaskAttachmentPicker
-                handleBack={() => {
-                  setView("HOME");
-                  setTimeout(() => nameRef.current?.focus(), 20);
-                }}
-                isTaskCreation
-                forceClose={forceClose}
+        {view === "HOME" ? (
+          <View style={{ padding: 20, paddingBottom: 0 }}>
+            <SubTaskInformation watch={watch} />
+            <View style={{ flexDirection: "column", zIndex: 0 }}>
+              <TaskNameInput
+                watch={watch}
+                setValue={setValue}
+                disabled={!session.user.hintsViewed.includes("CREATE_TASK")}
+                control={control}
+                handleSubmitButtonClick={handleSubmitButtonClick}
+                nameRef={nameRef}
               />
-            </TaskDrawerContext.Provider>
-          )}
-
-          <View
-            style={{
-              gap: 5,
-              flexDirection: "row",
-              alignItems: "center",
-              padding: 20,
-              paddingTop: 0,
+              <Footer
+                defaultValues={defaultValues}
+                dateRef={dateRef}
+                recurrenceRef={recurrenceRef}
+                setValue={setValue}
+                watch={watch}
+                nameRef={nameRef}
+                labelMenuRef={labelMenuRef}
+                control={control}
+              />
+            </View>
+            <TaskAttachments watch={watch} setValue={setValue} />
+          </View>
+        ) : (
+          <TaskDrawerContext.Provider
+            value={{
+              task: control._formValues,
+              updateTask: (t) => {
+                Object.keys(t).forEach((key: any) => {
+                  setValue(key, t[key]);
+                });
+              },
+              mutateList,
+              isReadOnly: false,
             }}
           >
-            <AttachStep
-              index={2}
-              style={{ flex: Platform.OS === "web" ? undefined : 1 }}
-            >
-              <Button
-                icon={view === "HOME" ? "note_stack_add" : "west"}
-                text={view === "HOME" ? undefined : "Attach"}
-                bold={view === "ATTACH"}
-                height={50}
-                onPress={() => {
-                  Keyboard.dismiss();
-                  impactAsync(ImpactFeedbackStyle.Heavy);
-                  setView((t) => (t === "HOME" ? "ATTACH" : "HOME"));
-                  setTimeout(() => nameRef.current?.focus(), 20);
-                }}
-                containerStyle={
-                  view === "HOME"
-                    ? Platform.OS === "web"
-                      ? { width: 50, minWidth: 0 }
-                      : { paddingHorizontal: 0, minWidth: 0 }
-                    : { marginRight: "auto" }
+            <TaskAttachmentPicker
+              handleBack={() => {
+                setView("HOME");
+                setTimeout(() => nameRef.current?.focus(), 20);
+              }}
+              isTaskCreation
+              forceClose={forceClose}
+            />
+          </TaskDrawerContext.Provider>
+        )}
+
+        <View
+          style={{
+            gap: 5,
+            flexDirection: "row",
+            alignItems: "center",
+            padding: 20,
+            paddingTop: 0,
+          }}
+        >
+          <AttachStep
+            index={2}
+            style={{ flex: Platform.OS === "web" ? undefined : 1 }}
+          >
+            <Button
+              icon={view === "HOME" ? "note_stack_add" : "west"}
+              text={view === "HOME" ? undefined : "Attach"}
+              bold={view === "ATTACH"}
+              height={50}
+              onPress={() => {
+                Keyboard.dismiss();
+                impactAsync(ImpactFeedbackStyle.Heavy);
+                setView((t) => (t === "HOME" ? "ATTACH" : "HOME"));
+                setTimeout(() => nameRef.current?.focus(), 20);
+              }}
+              containerStyle={
+                view === "HOME"
+                  ? Platform.OS === "web"
+                    ? { width: 50, minWidth: 0 }
+                    : { paddingHorizontal: 0, minWidth: 0 }
+                  : { marginRight: "auto" }
+              }
+              style={view === "ATTACH" && { paddingHorizontal: 20 }}
+              variant="filled"
+              backgroundColors={{
+                default: addHslAlpha(theme[9], 0.15),
+                hovered: addHslAlpha(theme[9], 0.25),
+                pressed: addHslAlpha(theme[9], 0.35),
+              }}
+            />
+          </AttachStep>
+          {view === "HOME" && (
+            <>
+              <AttachStep
+                index={3}
+                style={Platform.OS === "web" ? undefined : { flex: 1 }}
+              >
+                <SpeechRecognition ref={voiceRef} setValue={setValue} />
+              </AttachStep>
+              <AttachStep
+                index={4}
+                style={
+                  Platform.OS === "web" ? { marginRight: "auto" } : { flex: 1 }
                 }
-                style={view === "ATTACH" && { paddingHorizontal: 20 }}
-                variant="filled"
-                backgroundColors={{
-                  default: addHslAlpha(theme[9], 0.15),
-                  hovered: addHslAlpha(theme[9], 0.25),
-                  pressed: addHslAlpha(theme[9], 0.35),
-                }}
+              >
+                <PinTask control={control} />
+              </AttachStep>
+              <SubmitButton
+                watch={watch}
+                ref={submitRef}
+                onSubmit={handleSubmitButtonClick}
               />
-            </AttachStep>
-            {view === "HOME" && (
-              <>
-                <AttachStep
-                  index={3}
-                  style={Platform.OS === "web" ? undefined : { flex: 1 }}
-                >
-                  <SpeechRecognition ref={voiceRef} setValue={setValue} />
-                </AttachStep>
-                <AttachStep
-                  index={4}
-                  style={
-                    Platform.OS === "web"
-                      ? { marginRight: "auto" }
-                      : { flex: 1 }
-                  }
-                >
-                  <PinTask control={control} />
-                </AttachStep>
-                <SubmitButton
-                  watch={watch}
-                  ref={submitRef}
-                  onSubmit={handleSubmitButtonClick}
-                />
-              </>
-            )}
-          </View>
-        </BottomSheetScrollView>
+            </>
+          )}
+        </View>
       </BlurView>
     </Pressable>
   );
