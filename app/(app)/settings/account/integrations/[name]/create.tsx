@@ -16,8 +16,9 @@ import {
   useForm,
   useFormContext,
 } from "react-hook-form";
-import { StyleSheet, View } from "react-native";
+import { Keyboard, Platform, StyleSheet, View } from "react-native";
 import { ScrollView } from "react-native-gesture-handler";
+import { KeyboardAwareScrollView } from "react-native-keyboard-controller";
 import Toast from "react-native-toast-message";
 import useSWR from "swr";
 
@@ -32,7 +33,13 @@ const Intro = ({ integration }) => {
   const theme = useColorTheme();
 
   return (
-    <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
+    <View
+      style={{
+        flex: 1,
+        justifyContent: "center",
+        alignItems: "center",
+      }}
+    >
       <View
         style={{
           flexDirection: "row",
@@ -68,10 +75,18 @@ const Intro = ({ integration }) => {
         />
       </View>
       <View style={{ paddingHorizontal: 20, alignItems: "center", gap: 5 }}>
-        <Text style={{ textAlign: "center", fontSize: 30 }} weight={700}>
+        <Text
+          style={{
+            textAlign: "center",
+            fontSize: 30,
+            marginBottom: 5,
+            marginTop: 5,
+            fontFamily: "serifText700",
+          }}
+        >
           Dysperse + {integration.name}
         </Text>
-        <Text weight={300} style={{ textAlign: "center", opacity: 0.7 }}>
+        <Text style={{ textAlign: "center", opacity: 0.7 }}>
           {integration.description}
         </Text>
       </View>
@@ -215,12 +230,16 @@ const ParamSlide = ({ slide, currentSlide }) => {
         flex: 1,
         justifyContent: "center",
         alignItems: "center",
-        paddingHorizontal: 20,
+        paddingHorizontal: 25,
       }}
     >
       <Text
-        style={{ width: "100%", fontSize: 30, marginBottom: 20 }}
-        weight={700}
+        style={{
+          width: "100%",
+          fontSize: 30,
+          marginVertical: 20,
+          fontFamily: "serifText700",
+        }}
       >
         Step #{currentSlide}
       </Text>
@@ -241,6 +260,8 @@ const ParamSlide = ({ slide, currentSlide }) => {
             style={{
               width: "100%",
               marginTop: 20,
+              height: 50,
+              marginBottom: 30,
             }}
             placeholder={slide.name}
           />
@@ -298,14 +319,14 @@ export default function Page() {
 
   const { data: integrationData } = useSWR(
     `${
-      process.env.NODE_ENV === "development"
+      process.env.NODE_ENV === "development" && Platform.OS === "web"
         ? "/integrations.json"
         : "https://go.dysperse.com/integrations.json"
     }`,
     (t) => fetch(t).then((t) => t.json())
   );
 
-  const data = integrationData?.find((i) => i.slug === name);
+  const data = integrationData?.find((i) => i.slug === name) || {};
 
   const { data: integrations } = useSWR(["space/integrations"]);
 
@@ -374,7 +395,8 @@ export default function Page() {
   return (
     <FormProvider {...methods}>
       {data ? (
-        <View
+        <KeyboardAwareScrollView
+          onScrollBeginDrag={Keyboard.dismiss}
           style={[
             { flex: 1 },
             slide === -1 && {
@@ -382,6 +404,9 @@ export default function Page() {
               justifyContent: "center",
             },
           ]}
+          contentContainerStyle={{
+            flexGrow: 1,
+          }}
         >
           {slide === -1 && <Spinner />}
           {slide === 0 && <Intro integration={data} />}
@@ -415,17 +440,17 @@ export default function Page() {
               <View style={[styles.footer, { paddingHorizontal: 20 }]}>
                 <Button
                   large
+                  bold
                   variant="filled"
                   icon="arrow_forward_ios"
                   iconPosition="end"
-                  height={50}
                   text={slide === 0 ? "Connect" : "Next"}
                   onPress={handleOpen}
                 />
               </View>
             )
           )}
-        </View>
+        </KeyboardAwareScrollView>
       ) : (
         <View
           style={{
