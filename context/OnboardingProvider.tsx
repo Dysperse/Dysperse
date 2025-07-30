@@ -73,12 +73,14 @@ export const OnboardingTrigger = ({
               onboarding.state = id;
               onStart?.();
               onboarding.setState(id);
-              try {
-                start();
-                onboarding.state = id;
-              } catch (e) {
-                console.error("Error starting onboarding:", e);
-              }
+              setTimeout(() => {
+                try {
+                  start();
+                  onboarding.state = id;
+                } catch (e) {
+                  console.error("Error starting onboarding:", e);
+                }
+              }, 100);
             }, delay || 0);
           }
         });
