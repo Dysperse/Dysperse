@@ -53,6 +53,7 @@ export function GoogleAuth({
   redirectPath,
   getRefreshToken,
   children,
+  onSuccess,
 }: {
   signup?: boolean;
   onNewAccount?: (data) => void;
@@ -60,6 +61,7 @@ export function GoogleAuth({
   redirectPath?: string;
   getRefreshToken?: boolean;
   children?: any;
+  onSuccess?: (data: any) => void;
 }) {
   const theme = useColorTheme();
   const { signIn } = useSession();
@@ -71,16 +73,16 @@ export function GoogleAuth({
   useEffect(() => {
     if (result?.type === "success") {
       const t = new URL(result.url);
-      if (t.searchParams.has("session")) {
+      if (!onSuccess && t.searchParams.has("session")) {
         signIn(t.searchParams.get("session"));
       } else {
         setLoading(false);
-        onNewAccount?.(Object.fromEntries(t.searchParams.entries()));
+        onSuccess?.(Object.fromEntries(t.searchParams.entries()));
       }
     } else {
       setLoading(false);
     }
-  }, [result, signIn, onNewAccount, setLoading]);
+  }, [result, signIn, onNewAccount, onSuccess, setLoading]);
 
   const handleClick = async () => {
     try {
@@ -130,7 +132,13 @@ export function GoogleAuth({
           })}`
         ).then((r) => r.json());
 
-        if (data?.session) signIn(data.session);
+        if (data?.session) {
+          if (onSuccess) {
+            setLoading(false);
+            return onSuccess(data);
+          }
+          signIn(data.session);
+        }
 
         setLoading(false);
       }
