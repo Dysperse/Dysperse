@@ -23,7 +23,7 @@ import { ImpactFeedbackStyle, impactAsync } from "expo-haptics";
 import { router, useGlobalSearchParams, usePathname } from "expo-router";
 import * as SecureStore from "expo-secure-store";
 import * as TaskManager from "expo-task-manager";
-import {
+import React, {
   memo,
   useCallback,
   useEffect,
