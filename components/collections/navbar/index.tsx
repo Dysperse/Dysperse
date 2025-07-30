@@ -310,11 +310,14 @@ const CollectionNavbar = memo(function CollectionNavbar({
                 : "Search for tasks and narrow results down with filters",
           },
           {
-            text: "Edit, print, and import tasks to your collection",
+            text: breakpoints.md
+              ? "Edit, print, and import tasks to your collection"
+              : "Edit, print, and share your collection with others",
           },
-          id !== "all" && {
-            text: "Share or publish your collection as a template",
-          },
+          id !== "all" &&
+            breakpoints.md && {
+              text: "Share or publish your collection as a template",
+            },
         ].filter(Boolean) as any
       }
     >

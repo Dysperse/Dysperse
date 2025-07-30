@@ -152,44 +152,46 @@ const Cell = ({
           </CreateTask>
         </View>
       </Pressable>
-      <FlashList
-        refreshControl={
-          <RefreshControl refreshing={false} onRefresh={() => mutate()} />
-        }
-        estimatedItemSize={118}
-        ref={ref}
-        contentContainerStyle={{
-          padding: breakpoints.md ? 10 : 20,
-          paddingTop: breakpoints.md ? undefined : 5,
-        }}
-        keyExtractor={(i: any) => i.id}
-        ListEmptyComponent={() => (
-          <ColumnEmptyComponent offset={cellIndex} row={breakpoints.md} />
-        )}
-        renderItem={({ item }) => (
-          <Entity
-            showRelativeTime
-            showLabel
-            isReadOnly={false}
-            onTaskUpdate={mutations.categoryBased.update(mutate)}
-            item={item}
-          />
-        )}
-        data={filteredTasks}
-        centerContent={filteredTasks.length === 0}
-        ListFooterComponent={() =>
-          tasks.find((i) => i.completionInstances.length !== 0) &&
-          filteredTasks.length !== 0 && (
-            <Button
-              onPress={toggleShowCompleted}
-              icon={showCompleted ? "expand_less" : "expand_more"}
-              iconPosition="end"
-              text={`${showCompleted ? "Hide" : "Show"} completed`}
-              variant="outlined"
+      <View style={{ flex: 1 }}>
+        <FlashList
+          refreshControl={
+            <RefreshControl refreshing={false} onRefresh={() => mutate()} />
+          }
+          estimatedItemSize={118}
+          ref={ref}
+          contentContainerStyle={{
+            padding: breakpoints.md ? 10 : 20,
+            paddingTop: breakpoints.md ? undefined : 5,
+          }}
+          keyExtractor={(i: any) => i.id}
+          ListEmptyComponent={() => (
+            <ColumnEmptyComponent offset={cellIndex} row={breakpoints.md} />
+          )}
+          renderItem={({ item }) => (
+            <Entity
+              showRelativeTime
+              showLabel
+              isReadOnly={false}
+              onTaskUpdate={mutations.categoryBased.update(mutate)}
+              item={item}
             />
-          )
-        }
-      />
+          )}
+          data={filteredTasks}
+          centerContent={filteredTasks.length === 0}
+          ListFooterComponent={() =>
+            tasks.find((i) => i.completionInstances.length !== 0) &&
+            filteredTasks.length !== 0 && (
+              <Button
+                onPress={toggleShowCompleted}
+                icon={showCompleted ? "expand_less" : "expand_more"}
+                iconPosition="end"
+                text={`${showCompleted ? "Hide" : "Show"} completed`}
+                variant="outlined"
+              />
+            )
+          }
+        />
+      </View>
     </Animated.View>
   );
 };
@@ -426,20 +428,21 @@ export default function Matrix() {
             <Label size={900} x="Less urgent" />
           </View>
           <OnboardingContainer
+            onlyIf={() => true}
             id="MATRIX_VIEW"
             delay={700}
             steps={[
               {
-                text: "Urgent & important → These are your deadlines & emergencies.",
+                text: "Urgent & overdue → These are your deadlines & emergencies.",
               },
               {
-                text: "Important but not urgent → Schedule it (e.g., planning).",
+                text: "Overdue but less urgent → Schedule it (e.g., planning).",
               },
               {
-                text: "Urgent but not important → Interruptions you'll work on later",
+                text: "Upcoming & urgent → Interruptions you'll work on later",
               },
               {
-                text: "Not urgent and not important → Delete it (e.g., distractions).",
+                text: "Upcoming & less urgent → Delete it (e.g., distractions).",
               },
             ]}
           >

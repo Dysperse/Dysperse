@@ -874,42 +874,44 @@ export function TaskDetails({ labelPickerRef }) {
             <TaskDateMenu />
             {task.location && <TaskLocationMenu />}
             {task && !task.parentTaskId && !(isReadOnly && !task.label) && (
-              <LabelPicker
-                disabled={isReadOnly}
-                label={task?.label || undefined}
-                setLabel={(e: any) => {
-                  updateTask({ labelId: e.id, label: e });
-                }}
-                onClose={() => {}}
-                sheetProps={{ sheetRef: labelPickerRef }}
-                defaultCollection={collectionId as any}
-              >
-                <Button
+              <AttachStep index={1}>
+                <LabelPicker
                   disabled={isReadOnly}
-                  icon={
-                    task.label?.emoji || task.collection?.emoji ? (
-                      <Emoji
-                        emoji={task?.label?.emoji || task.collection.emoji}
-                        size={20}
-                        style={{ marginHorizontal: 2.5 }}
-                      />
-                    ) : (
-                      <Icon>tag</Icon>
-                    )
-                  }
-                  dense
-                  style={{ gap: 10 }}
-                  containerStyle={{ marginRight: "auto" }}
-                  textStyle={{ opacity: 0.6 }}
-                  iconStyle={{
-                    opacity:
-                      task.label?.emoji || task.collection?.emoji ? 1 : 0.6,
+                  label={task?.label || undefined}
+                  setLabel={(e: any) => {
+                    updateTask({ labelId: e.id, label: e });
                   }}
-                  text={
-                    task?.label?.name || task?.collection?.name || "Add label"
-                  }
-                />
-              </LabelPicker>
+                  onClose={() => {}}
+                  sheetProps={{ sheetRef: labelPickerRef }}
+                  defaultCollection={collectionId as any}
+                >
+                  <Button
+                    disabled={isReadOnly}
+                    icon={
+                      task.label?.emoji || task.collection?.emoji ? (
+                        <Emoji
+                          emoji={task?.label?.emoji || task.collection.emoji}
+                          size={20}
+                          style={{ marginHorizontal: 2.5 }}
+                        />
+                      ) : (
+                        <Icon>tag</Icon>
+                      )
+                    }
+                    dense
+                    style={{ gap: 10 }}
+                    containerStyle={{ marginRight: "auto" }}
+                    textStyle={{ opacity: 0.6 }}
+                    iconStyle={{
+                      opacity:
+                        task.label?.emoji || task.collection?.emoji ? 1 : 0.6,
+                    }}
+                    text={
+                      task?.label?.name || task?.collection?.name || "Add label"
+                    }
+                  />
+                </LabelPicker>
+              </AttachStep>
             )}
           </>
         )}

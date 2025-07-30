@@ -710,7 +710,7 @@ export function TaskDrawerContent({
   return (
     <>
       <OnboardingContainer
-        delay={1000}
+        delay={500}
         id="TASK_DRAWER"
         onlyIf={() => true}
         steps={[
