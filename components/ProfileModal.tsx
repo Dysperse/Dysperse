@@ -116,7 +116,7 @@ function ProfileModalContent({ email }) {
             )}
           </View>
 
-          {isFriend && (
+          {isFriend ? (
             <Button
               variant="filled"
               icon="person_remove"
@@ -133,6 +133,30 @@ function ProfileModalContent({ email }) {
                   {
                     body: JSON.stringify({
                       userId: data.profile.userId,
+                    }),
+                  }
+                );
+                mutate(() => true);
+                forceClose();
+              }}
+            />
+          ) : (
+            <Button
+              variant="filled"
+              icon="person_add"
+              text="Add friend"
+              containerStyle={{ marginBottom: 20 }}
+              isLoading={loading}
+              onPress={async () => {
+                setLoading(true);
+                await sendApiRequest(
+                  sessionToken,
+                  "POST",
+                  "user/friends",
+                  {},
+                  {
+                    body: JSON.stringify({
+                      email: data.email,
                     }),
                   }
                 );
