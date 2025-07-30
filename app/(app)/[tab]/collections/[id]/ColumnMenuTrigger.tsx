@@ -1,6 +1,8 @@
 import { handleLabelDelete } from "@/app/(app)/everything";
 import { useCollectionContext } from "@/components/collections/context";
+import { createTab } from "@/components/layout/openTab";
 import { useSession } from "@/context/AuthProvider";
+import { useUser } from "@/context/useUser";
 import ConfirmationModal from "@/ui/ConfirmationModal";
 import Icon from "@/ui/Icon";
 import MenuPopover, { MenuItem } from "@/ui/MenuPopover";
@@ -23,6 +25,7 @@ export const ColumnMenuTrigger = memo(function ColumnMenuTrigger({
   const pathname = usePathname();
   const { session } = useSession();
   const { mutate } = useCollectionContext();
+  const { sessionToken } = useUser();
 
   const editButton = (
     <LabelEditModal
@@ -71,6 +74,16 @@ export const ColumnMenuTrigger = memo(function ColumnMenuTrigger({
             callback: () => {
               menuRef.current.close();
               router.push(pathname + "/reorder");
+            },
+          },
+          {
+            icon: "open_in_new",
+            text: "Open label",
+            callback: () => {
+              createTab(sessionToken, {
+                slug: "/[tab]/labels/[id]",
+                params: { type: "list", id: label.id },
+              });
             },
           },
           {

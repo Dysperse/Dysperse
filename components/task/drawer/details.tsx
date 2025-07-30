@@ -863,6 +863,8 @@ function TaskStoryPoints() {
 export function TaskDetails({ labelPickerRef }) {
   const { task, updateTask, isReadOnly } = useTaskDrawerContext();
   const editorRef = useRef(null);
+
+  console.log(task);
   const { id: collectionId } = useGlobalSearchParams();
 
   return (
