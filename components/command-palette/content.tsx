@@ -13,16 +13,10 @@ import { addHslAlpha } from "@/ui/color";
 import { useColorTheme } from "@/ui/color/theme-provider";
 import { FlashList } from "@shopify/flash-list";
 import { LinearGradient } from "expo-linear-gradient";
-import { router } from "expo-router";
+import { router, usePathname } from "expo-router";
 import fuzzysort from "fuzzysort";
 import { memo, useCallback, useEffect, useMemo, useRef, useState } from "react";
-import {
-  Keyboard,
-  Platform,
-  TouchableOpacity,
-  View,
-  useWindowDimensions,
-} from "react-native";
+import { Keyboard, Platform, View } from "react-native";
 import { ScrollView } from "react-native-gesture-handler";
 import { KeyboardAvoidingView } from "react-native-keyboard-controller";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
@@ -49,10 +43,28 @@ const PaletteItem = memo(
     return (
       <ListItemButton
         style={{ paddingHorizontal: 10, marginLeft: -5 }}
-        onPress={() => onCreate(item)}
+        onPress={() => {
+          if (!breakpoints.md) {
+            router.push({
+              pathname: "/open/preview",
+              params: {
+                item: JSON.stringify(item),
+              },
+            });
+            return;
+          } else {
+            onCreate(item);
+          }
+        }}
         variant={preview?.key === item.key ? "filled" : "default"}
         onMouseEnter={() => {
-          if (!breakpoints.md) return;
+          if (!breakpoints.md) {
+            router.push({
+              pathname: "/open/preview",
+              params: item,
+            });
+            return;
+          }
           if (preview?.key !== item.key) {
             setPreview(item);
           }
@@ -157,7 +169,6 @@ function CommandPaletteList({
   showMore: string[];
   setshowMore: (e) => void;
 }) {
-  const { height } = useWindowDimensions();
   const theme = useColorTheme();
 
   return (
@@ -179,128 +190,130 @@ function CommandPaletteList({
           marginTop: 10,
         }}
       />
-      <FlashList
-        onScrollBeginDrag={() => Keyboard.dismiss()}
-        key={query}
-        keyboardShouldPersistTaps="handled"
-        ListEmptyComponent={() => (
-          <View
+      {filtered.length === 0 ? (
+        <View
+          style={{
+            flexDirection: "column",
+            alignItems: "center",
+            justifyContent: "center",
+            gap: 10,
+            flex: 1,
+            paddingBottom: 200,
+          }}
+        >
+          <Icon size={50}>heart_broken</Icon>
+          <Text
             style={{
-              flexDirection: "column",
-              alignItems: "center",
-              justifyContent: "center",
-              gap: 10,
-              height: Math.min(600, height / 1.5) - 120,
+              textAlign: "center",
+              fontSize: 20,
+              color: theme[11],
             }}
           >
-            <Icon size={50}>heart_broken</Icon>
-            <Text
-              style={{
-                textAlign: "center",
-                fontSize: 20,
-                color: theme[11],
-              }}
-            >
-              We couldn't find anything{"\n"}matching your search
-            </Text>
-            <Button
-              variant="filled"
-              dense
-              containerStyle={{ marginBottom: -20 }}
-              onPress={() => {
-                setFilter(null);
-                setQuery("");
-              }}
-            >
-              <ButtonText>Clear filters</ButtonText>
-            </Button>
-          </View>
-        )}
-        data={filtered}
-        keyExtractor={(item, index) =>
-          (typeof item === "string" ? item : item.key) + index
-        }
-        estimatedItemSize={44}
-        contentContainerStyle={{ padding: 20 }}
-        renderItem={({ item, index }) => {
-          if (typeof item === "string") {
-            return (
-              <Text
-                style={{
-                  marginTop: index === 0 ? 0 : 10,
-                  marginBottom: 3,
-                  marginLeft: 10,
-                }}
-                variant="eyebrow"
-              >
-                {item}
-              </Text>
-            );
-          } else if (item.showMore) {
-            return (
-              <LinearGradient
-                colors={
-                  showMore.includes(item.category)
-                    ? [addHslAlpha(theme[2], 0), addHslAlpha(theme[2], 0)]
-                    : [
-                        addHslAlpha(theme[2], 0),
-                        addHslAlpha(theme[2], 0.65),
-                        addHslAlpha(theme[2], 0.8),
-                        theme[2],
-                      ]
-                }
-                style={{
-                  height: 75,
-                  marginTop: showMore.includes(item.category)
-                    ? -30
-                    : Platform.OS === "ios"
-                    ? -50
-                    : -75,
-                  justifyContent: "flex-end",
-                  marginBottom: 10,
-                  marginHorizontal: -20,
-                  zIndex: 9999,
-                }}
-              >
-                <Button
-                  containerStyle={{ marginHorizontal: "auto" }}
-                  textStyle={{ opacity: 0.8 }}
-                  iconStyle={{ opacity: 0.8 }}
-                  style={{ paddingHorizontal: 20, gap: 10, paddingRight: 15 }}
-                  dense
-                  pointerEvents="auto"
-                  variant="outlined"
-                  text={
-                    showMore.includes(item.category) ? "See less" : "See all"
-                  }
-                  icon={
-                    showMore.includes(item.category)
-                      ? "expand_less"
-                      : "expand_more"
-                  }
-                  iconPosition="end"
-                  onPress={() => {
-                    setshowMore((prev) =>
-                      prev.includes(item.category)
-                        ? prev.filter((e) => e !== item.category)
-                        : [...prev, item.category]
-                    );
-                  }}
-                />
-              </LinearGradient>
-            );
-          } else {
-            return (
-              <PaletteItem
-                onCreate={onCreate}
-                setPreview={setPreview}
-                preview={preview}
-                item={item}
-              />
-            );
+            We couldn't find anything{"\n"}matching your search
+          </Text>
+          <Button
+            variant="filled"
+            dense
+            containerStyle={{ marginBottom: -20 }}
+            onPress={() => {
+              setFilter(null);
+              setQuery("");
+            }}
+          >
+            <ButtonText>Clear filters</ButtonText>
+          </Button>
+        </View>
+      ) : (
+        <FlashList
+          onScrollBeginDrag={() => Keyboard.dismiss()}
+          key={query}
+          keyboardShouldPersistTaps="handled"
+          data={filtered}
+          keyExtractor={(item, index) =>
+            (typeof item === "string" ? item : item.key) + index
           }
-        }}
-      />
+          estimatedItemSize={44}
+          contentContainerStyle={{ padding: 20 }}
+          renderItem={({ item, index }) => {
+            if (typeof item === "string") {
+              return (
+                <Text
+                  style={{
+                    marginTop: index === 0 ? 0 : 10,
+                    marginBottom: 3,
+                    marginLeft: 10,
+                  }}
+                  variant="eyebrow"
+                >
+                  {item}
+                </Text>
+              );
+            } else if (item.showMore) {
+              return (
+                <LinearGradient
+                  colors={
+                    showMore.includes(item.category)
+                      ? [addHslAlpha(theme[2], 0), addHslAlpha(theme[2], 0)]
+                      : [
+                          addHslAlpha(theme[2], 0),
+                          addHslAlpha(theme[2], 0.65),
+                          addHslAlpha(theme[2], 0.8),
+                          theme[2],
+                        ]
+                  }
+                  style={{
+                    height: 75,
+                    marginTop: showMore.includes(item.category)
+                      ? -30
+                      : Platform.OS === "ios"
+                      ? -50
+                      : -75,
+                    justifyContent: "flex-end",
+                    marginBottom: 10,
+                    marginHorizontal: -20,
+                    zIndex: 9999,
+                  }}
+                >
+                  <Button
+                    containerStyle={{ marginHorizontal: "auto" }}
+                    textStyle={{ opacity: 0.8 }}
+                    iconStyle={{ opacity: 0.8 }}
+                    style={{ paddingHorizontal: 20, gap: 10, paddingRight: 15 }}
+                    dense
+                    pointerEvents="auto"
+                    variant="outlined"
+                    text={
+                      showMore.includes(item.category) ? "See less" : "See all"
+                    }
+                    icon={
+                      showMore.includes(item.category)
+                        ? "expand_less"
+                        : "expand_more"
+                    }
+                    iconPosition="end"
+                    onPress={() => {
+                      setshowMore((prev) =>
+                        prev.includes(item.category)
+                          ? prev.filter((e) => e !== item.category)
+                          : [...prev, item.category]
+                      );
+                    }}
+                  />
+                </LinearGradient>
+              );
+            } else {
+              return (
+                <PaletteItem
+                  onCreate={onCreate}
+                  setPreview={setPreview}
+                  preview={preview}
+                  item={item}
+                />
+              );
+            }
+          }}
+        />
+      )}
     </View>
   );
 }
@@ -323,27 +336,28 @@ const PaletteHeader = memo(function PaletteHeader({
   const breakpoints = useResponsiveBreakpoints();
   const ref = useRef(null);
   const { sessionToken } = useUser();
+  const pathname = usePathname();
 
   const theme = useColorTheme();
   const close = useMemo(
     () => (
-      <TouchableOpacity
-        onPress={handleClose}
-        style={{
-          paddingVertical: 20,
-          paddingHorizontal: 10,
+      <IconButton
+        backgroundColors={{
+          default: theme[4],
+          pressed: theme[5],
+          hovered: theme[6],
         }}
-      >
-        {breakpoints.md ? (
-          <Text style={{ color: theme[11] }} weight={900}>
-            Cancel
-          </Text>
-        ) : (
-          <Icon bold style={{ transform: [{ translateX: 10 }] }}>
-            close
-          </Icon>
-        )}
-      </TouchableOpacity>
+        variant="filled"
+        onPress={() => {
+          if (query) {
+            setQuery("");
+            setPreview(null);
+          } else {
+            handleClose();
+          }
+        }}
+        icon={"close"}
+      />
     ),
     [handleClose, theme, breakpoints, query]
   );
@@ -357,8 +371,8 @@ const PaletteHeader = memo(function PaletteHeader({
   };
 
   useEffect(() => {
-    ref.current?.focus({ preventScroll: true });
-  }, [breakpoints]);
+    if (pathname === "/open") ref.current?.focus({ preventScroll: true });
+  }, [breakpoints, pathname]);
 
   useEffect(() => {
     if (breakpoints.md) setPreview(filtered.length > 0 ? filtered[0] : null);
@@ -368,27 +382,31 @@ const PaletteHeader = memo(function PaletteHeader({
     (breakpoints.md || !preview) && (
       <View
         style={{
-          flexDirection: "row",
+          flexDirection: query ? "row" : "row-reverse",
           alignItems: "center",
-          paddingHorizontal: breakpoints.md ? 20 : 20,
-          borderBottomWidth: 1,
-          borderColor: theme[5],
+          paddingHorizontal: 20,
+          paddingRight: 20,
+          backgroundColor: theme[3],
+          borderRadius: 99,
+          margin: 15,
+          marginBottom: 0,
         }}
       >
-        <Icon size={breakpoints.md ? 30 : 24} style={{ flexShrink: 0 }}>
-          search
-        </Icon>
+        {query && <IconButton variant="filled" icon="search" />}
         <TextField
+          autoCorrect={false}
           inputRef={ref}
           style={{
             padding: 20,
+            paddingVertical: 15,
             flex: 1,
             paddingRight: 0,
+            paddingLeft: 15,
             fontSize: breakpoints.md ? 25 : 20,
             shadowRadius: 0,
           }}
-          weight={breakpoints.md ? 800 : 400}
-          placeholder="What are you looking for?"
+          weight={700}
+          placeholder="Find anything"
           value={query}
           onChangeText={(e) => {
             setQuery(e);
@@ -414,15 +432,15 @@ const PaletteHeader = memo(function PaletteHeader({
   );
 });
 
-function CommandPalettePreview({ loading, setPreview, preview, onCreate }) {
+export function CommandPalettePreview({ loading, preview, onCreate }) {
   const theme = useColorTheme();
   const breakpoints = useResponsiveBreakpoints();
   const insets = useSafeAreaInsets();
 
-  const handleClose = useCallback(() => setPreview(null), [setPreview]);
   return (
     preview && (
       <ScrollView
+        bounces={false}
         keyboardShouldPersistTaps="always"
         style={{
           flex: 1,
@@ -431,24 +449,11 @@ function CommandPalettePreview({ loading, setPreview, preview, onCreate }) {
         }}
         contentContainerStyle={{
           minHeight: "100%",
-          padding: 30,
-          paddingBottom: insets.bottom + 20,
+          padding: breakpoints.md ? 30 : 20,
+          paddingBottom: insets.bottom + (breakpoints.md ? 20 : 10),
         }}
         centerContent
       >
-        {!breakpoints.md && (
-          <IconButton
-            icon="arrow_back_ios_new"
-            onPress={handleClose}
-            size={40}
-            style={{
-              position: "absolute",
-              top: 30,
-              left: 20,
-              zIndex: 100,
-            }}
-          />
-        )}
         <View
           style={[
             {

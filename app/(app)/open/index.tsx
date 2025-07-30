@@ -1,4 +1,5 @@
 import CommandPaletteContent from "@/components/command-palette/content";
+
 import { ArcSystemBar } from "@/components/layout/arcAnimations";
 import { useWebStatusBar } from "@/helpers/useWebStatusBar";
 import { useColorTheme } from "@/ui/color/theme-provider";

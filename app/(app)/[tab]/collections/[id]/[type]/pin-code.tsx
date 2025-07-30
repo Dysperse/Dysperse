@@ -3,18 +3,20 @@ import { CollectionMenuLayout } from "@/components/collections/menus/layout";
 import { useSession } from "@/context/AuthProvider";
 import { sendApiRequest } from "@/helpers/api";
 import { useHotkeys } from "@/helpers/useHotKeys";
+import { useResponsiveBreakpoints } from "@/helpers/useResponsiveBreakpoints";
 import { Button } from "@/ui/Button";
 import OtpInput from "@/ui/OtpInput";
 import Text from "@/ui/Text";
 import { router } from "expo-router";
 import { useState } from "react";
-import { StatusBar } from "react-native";
+import { StatusBar, View } from "react-native";
 import Toast from "react-native-toast-message";
 
 function Content() {
   const { session } = useSession();
   const { data, mutate } = useCollectionContext();
   useHotkeys("esc", () => router.back());
+  const breakpoints = useResponsiveBreakpoints();
   const [code, setCode] = useState(data.pinCode || "");
   const [loading, setLoading] = useState(false);
 
@@ -61,20 +63,23 @@ function Content() {
           }}
         />
       ) : (
-        <>
+        <View style={{ paddingHorizontal: 20, flex: 1 }}>
           <Text
             style={{
-              textAlign: "center",
+              textAlign: breakpoints.md ? "center" : "left",
               marginBottom: 20,
             }}
-            weight={300}
           >
-            Dysperse will ask you for a password when you open this collection.
-            Users whom you share this collection with will also need to enter
-            the password.
+            We'll require a password to open this collection. Shared users must
+            enter it too.
+            {"\n\n"}
+            Labeled tasks may still show in other collections. Unlabeled ones
+            stay hidden.
           </Text>
+
           <OtpInput
             type="numeric"
+            containerGap={10}
             onTextChange={(text) => setCode(text)}
             onFilled={(text) => handleSubmit(text)}
           />
@@ -93,18 +98,7 @@ function Content() {
               opacity: code.toString().length < 6 ? 0.5 : 1,
             }}
           />
-
-          <Text
-            style={{
-              textAlign: "center",
-              marginTop: 20,
-            }}
-            weight={300}
-          >
-            Heads up! Tasks can still be viewed if labels in this collection
-            exist in other ones. Unlabeled ones will still be hidden.
-          </Text>
-        </>
+        </View>
       )}
     </>
   );

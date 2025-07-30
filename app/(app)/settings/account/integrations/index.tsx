@@ -83,6 +83,7 @@ const IntegrationItem = ({ item, data }) => {
           containerStyle={{ borderRadius: 20, flex: 1 }}
           style={{
             padding: 15,
+            paddingHorizontal: 15,
             flexDirection: "column",
             flex: 1,
             borderRadius: 0,

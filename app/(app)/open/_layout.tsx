@@ -4,7 +4,6 @@ import { forHorizontalIOS } from "@/components/layout/forHorizontalIOS";
 import { useWebStatusBar } from "@/helpers/useWebStatusBar";
 import { useColorTheme } from "@/ui/color/theme-provider";
 import { TransitionPresets } from "@react-navigation/stack";
-import { MenuButton } from "../home";
 
 export default function Layout() {
   const theme = useColorTheme();
@@ -20,22 +19,14 @@ export default function Layout() {
       <JsStack
         id={undefined}
         screenOptions={{
-          ...TransitionPresets.SlideFromRightIOS,
-          cardStyleInterpolator: forHorizontalIOS,
-          header: ({ navigation, route }) => (
-            <MenuButton
-              gradient
-              back
-              left={route.name !== "index"}
-              icon={route.name === "index" ? "close" : "west"}
-            />
-          ),
-          headerMode: "screen",
           detachPreviousScreen: false,
+          headerShown: false,
           gestureEnabled: true,
           cardOverlayEnabled: true,
           gestureResponseDistance: 9999,
           cardStyle: { backgroundColor: theme[2], display: "flex" },
+          ...TransitionPresets.SlideFromRightIOS,
+          cardStyleInterpolator: forHorizontalIOS,
         }}
       />
     </>
