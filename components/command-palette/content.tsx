@@ -367,7 +367,12 @@ const PaletteHeader = memo(function PaletteHeader({
         handleClose();
       }
     }
-    if (breakpoints.md) setPreview(filtered.length > 0 ? filtered[0] : null);
+    if (breakpoints.md)
+      setPreview(
+        filtered.length > 0
+          ? filtered.filter((t) => typeof t !== "string")[0]
+          : null
+      );
   };
 
   useEffect(() => {
@@ -376,8 +381,13 @@ const PaletteHeader = memo(function PaletteHeader({
   }, [breakpoints, pathname]);
 
   useEffect(() => {
-    if (breakpoints.md) setPreview(filtered.length > 0 ? filtered[0] : null);
-  }, []);
+    if (breakpoints.md)
+      setPreview(
+        filtered.length > 0
+          ? filtered.filter((t) => typeof t !== "string")[0]
+          : null
+      );
+  }, [breakpoints, filtered]);
 
   return (
     (breakpoints.md || !preview) && (
