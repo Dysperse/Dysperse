@@ -299,7 +299,7 @@ function OauthRedirect({ integration, onSubmit }) {
       <GoogleAuth
         getRefreshToken
         additionalScopes={integration.authorization.scopes}
-        redirectPath="space/integrations/settings/google-calendar/auth"
+        redirectPath="/space/integrations/settings/google-calendar/auth"
         onNewAccount={() => {}}
         onSuccess={(e) => {
           if (e.account && e.tokens) {
