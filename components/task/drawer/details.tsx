@@ -433,12 +433,12 @@ function TaskLocationMenu() {
       <Icon
         style={{
           flexShrink: 0,
-          transform: [{ scale: 1.3 }, { translateX: -4 }],
+          transform: [{ scale: 1.3 }, { translateX: -3 }],
         }}
       >
         near_me
       </Icon>
-      <View>
+      <View style={{ marginLeft: -4 }}>
         <ButtonText numberOfLines={undefined}>
           {data.names?.name || "Location"}
         </ButtonText>
@@ -453,9 +453,6 @@ function TaskLocationMenu() {
             .filter((t) => t)
             .join(", ") || capitalizeFirstLetter(data.type)}
         </ButtonText>
-        {/* <ButtonText numberOfLines={undefined}>
-          {JSON.stringify(data, null, 2)}
-        </ButtonText> */}
       </View>
       <View style={{ marginLeft: "auto", flexDirection: "row" }}>
         {data.extratags?.phone && (
@@ -894,14 +891,13 @@ export function TaskDetails({ labelPickerRef }) {
                         <Emoji
                           emoji={task?.label?.emoji || task.collection.emoji}
                           size={20}
-                          style={{ marginHorizontal: 2.5 }}
                         />
                       ) : (
                         <Icon>tag</Icon>
                       )
                     }
                     dense
-                    style={{ gap: 10 }}
+                    style={{ gap: 12, paddingHorizontal: 12 }}
                     containerStyle={{ marginRight: "auto" }}
                     textStyle={{ opacity: 0.6 }}
                     iconStyle={{

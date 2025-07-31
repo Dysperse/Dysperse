@@ -2,6 +2,7 @@ import { useSession } from "@/context/AuthProvider";
 import { useUser } from "@/context/useUser";
 import { sendApiRequest } from "@/helpers/api";
 import { Button } from "@/ui/Button";
+import Divider from "@/ui/Divider";
 import Icon from "@/ui/Icon";
 import IconButton from "@/ui/IconButton";
 import MenuPopover, { MenuItem } from "@/ui/MenuPopover";
@@ -469,6 +470,11 @@ export const TaskNote = ({
             task.note ? (collapsed ? "Show note" : "Hide note") : "Add a note"
           }
         />
+      )}
+      {Platform.OS === "web" && (
+        <View style={{ padding: 13, paddingBottom: 10 }}>
+          <Divider style={{ height: 1.5, opacity: 0.5, borderRadius: 99 }} />
+        </View>
       )}
       <Animated.View
         style={[
