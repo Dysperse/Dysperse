@@ -236,7 +236,13 @@ function TaskDateModalContent({ task, updateTask }) {
           icon: "history",
           primary: "Last used date",
           secondary: `${lastUsedDate.format("dddd, MMMM Do")} • ${
-            lastUsedDate.isToday() ? "Today" : lastUsedDate.fromNow()
+            lastUsedDate.isToday()
+              ? "Today"
+              : lastUsedDate.isYesterday()
+              ? "Yesterday"
+              : lastUsedDate.isTomorrow()
+              ? "Tomorrow"
+              : lastUsedDate.fromNow()
           }`,
           value: lastUsedDate,
         },
