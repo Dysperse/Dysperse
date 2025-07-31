@@ -330,6 +330,7 @@ export function TaskNameInput({ fullscreen }: { fullscreen }) {
             e.target.blur();
           }
         }}
+        editable={!isReadOnly}
         disabled={isReadOnly}
         scrollEnabled={false}
         onFocus={() => (fullscreen.value = 1)}
