@@ -99,8 +99,8 @@ export function LastStateRestore() {
       if (t) return;
     }
 
-    const url = await Linking.getInitialURL();
-    if (url) return;
+    const url = await Linking.getLinkingURL();
+    if (url && Platform.OS !== "web") return;
 
     const lastViewedTab = await AsyncStorage.getItem("lastViewedTab");
 
@@ -122,7 +122,7 @@ export function LastStateRestore() {
     else if (!lastViewedTab || !desktopCollapsed || !breakpoints.md) {
       router.replace("/home");
     }
-  }, []);
+  }, [desktopCollapsed, breakpoints, currentTab, data]);
 
   useEffect(() => {
     if (!fullscreen && !pathname.includes("chrome-extension")) setCurrentPage();
