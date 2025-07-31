@@ -90,6 +90,7 @@ export function LastStateRestore() {
   const { data } = useSWR(["user/tabs"]);
   const breakpoints = useResponsiveBreakpoints();
   const pathname = usePathname();
+  const { desktopCollapsed } = useSidebarContext();
   const { fullscreen, tab: currentTab } = useGlobalSearchParams();
 
   const setCurrentPage = useCallback(async () => {
@@ -118,7 +119,7 @@ export function LastStateRestore() {
       }
     }
     // weird sidebar bug when opening/closing
-    else if (!lastViewedTab || !breakpoints.md) {
+    else if (!lastViewedTab || !desktopCollapsed || !breakpoints.md) {
       router.replace("/home");
     }
   }, []);
