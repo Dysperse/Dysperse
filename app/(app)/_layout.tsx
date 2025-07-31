@@ -99,7 +99,7 @@ export function LastStateRestore() {
       if (t) return;
     }
 
-    const url = await Linking.getLinkingURL();
+    const url = await Linking.getInitialURL();
     if (url && Platform.OS !== "web") return;
 
     const lastViewedTab = await AsyncStorage.getItem("lastViewedTab");
