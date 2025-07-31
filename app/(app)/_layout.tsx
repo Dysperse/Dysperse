@@ -34,6 +34,7 @@ import timezone from "dayjs/plugin/timezone";
 import utc from "dayjs/plugin/utc";
 import weekOfYear from "dayjs/plugin/weekOfYear";
 import weekday from "dayjs/plugin/weekday";
+import * as Linking from "expo-linking";
 import {
   Redirect,
   router,
@@ -96,6 +97,10 @@ export function LastStateRestore() {
       const t = await SpotlightSearch.getInitialSearchItem();
       if (t) return;
     }
+
+    const url = await Linking.getInitialURL();
+    if (url) return;
+
     const lastViewedTab = await AsyncStorage.getItem("lastViewedTab");
 
     if (lastViewedTab && currentTab !== lastViewedTab) {
