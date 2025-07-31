@@ -90,7 +90,7 @@ export const mutations = {
   timeBased: {
     add: (mutate) => (newTask) => {
       if (!newTask) return;
-      if (newTask.recurrenceRule || newTask.parentTaskId) return mutate();
+      if (newTask.recurrenceRule) return mutate();
 
       mutate(
         (oldData) => {
