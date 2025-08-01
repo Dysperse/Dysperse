@@ -92,12 +92,13 @@ export default function Grid() {
                     padding: 20,
                   })}
                 >
-                  <Icon>stylus_note</Icon>
+                  <Icon bold style={{ opacity: 0.6 }}>
+                    stylus_note
+                  </Icon>
                   <Text
                     numberOfLines={1}
-                    style={{
-                      color: theme[11],
-                    }}
+                    style={{ color: theme[11], opacity: 0.6 }}
+                    weight={700}
                   >
                     Edit
                   </Text>
@@ -245,10 +246,14 @@ export default function Grid() {
                         padding: 20,
                       })}
                     >
-                      <Icon>stylus_note</Icon>
+                      <Icon bold style={{ opacity: 0.6 }}>
+                        stylus_note
+                      </Icon>
                       <Text
                         numberOfLines={1}
+                        weight={700}
                         style={{
+                          opacity: 0.6,
                           color: theme[11],
                         }}
                       >
