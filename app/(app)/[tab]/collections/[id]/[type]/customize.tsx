@@ -9,12 +9,13 @@ import { Button } from "@/ui/Button";
 import ConfirmationModal from "@/ui/ConfirmationModal";
 import { router } from "expo-router";
 import { View } from "react-native";
-import { mutate } from "swr";
+import { useSWRConfig } from "swr";
 
 function Content() {
   const { session } = useSession();
   const collection = useCollectionContext();
   const breakpoints = useResponsiveBreakpoints();
+  const { mutate } = useSWRConfig();
 
   useHotkeys("esc", () => router.back());
 

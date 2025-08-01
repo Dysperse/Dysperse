@@ -21,13 +21,14 @@ import { setStringAsync } from "expo-clipboard";
 import { cloneElement, useCallback, useRef, useState } from "react";
 import { useWindowDimensions, View } from "react-native";
 import Toast from "react-native-toast-message";
-import useSWR, { mutate } from "swr";
+import useSWR, { useSWRConfig } from "swr";
 
 function ProfileModalContent({ email }) {
   const { session, sessionToken } = useUser();
   const { data, error } = useSWR(["user/profile", { email }]);
   const theme = useColor(data?.profile?.theme || "gray");
   const [loading, setLoading] = useState(false);
+  const { mutate } = useSWRConfig();
   const { forceClose } = useBottomSheet();
 
   const isFriend =

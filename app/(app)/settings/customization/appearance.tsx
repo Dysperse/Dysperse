@@ -230,9 +230,7 @@ export default function Page() {
                 );
               } catch (e) {
                 Toast.show({ type: "error" });
-                mutate(() => session, {
-                  revalidate: false,
-                });
+                mutate(() => session, { revalidate: false });
               }
             },
           }))
