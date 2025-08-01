@@ -327,7 +327,7 @@ const CollectionNavbar = memo(function CollectionNavbar({
         <>
           <SelectionNavbar />
           <NavbarGradient>
-            {menu}
+            {!fullscreen && menu}
             <View
               style={{
                 marginRight: "auto",
