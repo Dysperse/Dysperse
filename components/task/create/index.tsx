@@ -128,7 +128,6 @@ function Footer({
   const storyPoints = watch("storyPoints");
   const collectionId = watch("collectionId");
   const date = watch("date");
-  const end = watch("end");
   const location = watch("location");
   const parentTask = watch("parentTask");
 
@@ -158,7 +157,7 @@ function Footer({
             >
               <TaskDateMenu
                 isTaskCreation
-                onClose={() => nameRef.current.focus()}
+                onClose={() => nameRef.current?.focus?.()}
               />
             </TaskDrawerContext.Provider>
           </View>
