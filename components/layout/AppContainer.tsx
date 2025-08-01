@@ -1,6 +1,6 @@
 import { useResponsiveBreakpoints } from "@/helpers/useResponsiveBreakpoints";
 import { useColorTheme } from "@/ui/color/theme-provider";
-import { usePathname } from "expo-router";
+import { useGlobalSearchParams, usePathname } from "expo-router";
 import { memo, useEffect } from "react";
 import { Platform } from "react-native";
 import Animated, {
@@ -22,6 +22,8 @@ const AppContainer = memo(
     const breakpoints = useResponsiveBreakpoints();
     const insets = useSafeAreaInsets();
     const pathname = usePathname();
+    const { fullscreen } = useGlobalSearchParams();
+
     const {
       desktopCollapsed,
       ORIGINAL_SIDEBAR_WIDTH,
@@ -31,7 +33,7 @@ const AppContainer = memo(
 
     useEffect(() => {
       if (Platform.OS === "web" && !desktopCollapsed) {
-        sidebarRef.current.openDrawer();
+        sidebarRef.current?.openDrawer?.();
       }
     }, [desktopCollapsed, sidebarRef]);
 
@@ -118,7 +120,9 @@ const AppContainer = memo(
               }
             : {
                 flex: 1,
-                marginLeft: pathname.includes("/everything")
+                marginLeft: fullscreen
+                  ? 0
+                  : pathname.includes("/everything")
                   ? SECONDARY_SIDEBAR_WIDTH
                   : ORIGINAL_SIDEBAR_WIDTH,
                 marginRight: 0,

@@ -138,6 +138,7 @@ export default function AppLayout() {
   const isDark = useDarkMode();
   const breakpoints = useResponsiveBreakpoints();
   const pathname = usePathname();
+  const { fullscreen } = useGlobalSearchParams();
 
   const progressValue = useRef(0);
 
@@ -228,6 +229,85 @@ export default function AppLayout() {
         pathname.includes("/reorder") ||
         pathname.includes("/share")));
 
+  const app = (
+    <AppContainer
+      key={desktopCollapsed.toString()}
+      progressValue={progressValue}
+    >
+      <StatusBar barStyle={!isDark ? "dark-content" : "light-content"} />
+      <JsStack
+        id={undefined}
+        screenOptions={{
+          header: () => null,
+          gestureResponseDistance: width,
+          gestureEnabled: false,
+          detachPreviousScreen: true,
+          presentation: "modal",
+          cardStyle: {
+            height,
+            width: breakpoints.md ? "100%" : width,
+            backgroundColor: theme[breakpoints.sm ? 2 : 1],
+            padding: breakpoints.md ? 10 : 0,
+            paddingBottom: Platform.OS === "ios" ? 0 : undefined,
+            ...(Platform.OS === "web" &&
+              ({
+                marginTop: "env(titlebar-area-height,0)",
+              } as any)),
+          },
+          animation: "none",
+        }}
+      >
+        <JsStack.Screen name="index" />
+        {[
+          "everything/labels/[id]",
+          "everything/collections/[id]",
+          "friends",
+          "[tab]/welcome/task",
+          "[tab]/welcome/labels",
+          "[tab]/welcome/collections",
+          "[tab]/welcome/views",
+          "insights",
+          "home/customize",
+          "home/add-widget",
+          "plan",
+        ].map((d) => (
+          <JsStack.Screen
+            key={d}
+            name={d}
+            options={arcCard({
+              theme,
+              breakpoints,
+              maxWidth: 500,
+            })}
+          />
+        ))}
+        <JsStack.Screen
+          name="open"
+          options={{
+            presentation: "modal",
+            animation: "default",
+            detachPreviousScreen: false,
+            gestureEnabled: true,
+            ...TransitionPresets.ModalPresentationIOS,
+          }}
+        />
+        <JsStack.Screen
+          name="settings"
+          options={{
+            gestureEnabled: true,
+            detachPreviousScreen: false,
+            gestureResponseDistance: 9999,
+            ...(!breakpoints.md && {
+              presentation: "modal",
+              animation: "default",
+            }),
+            ...(!breakpoints.md && TransitionPresets.ModalPresentationIOS),
+          }}
+        />
+      </JsStack>
+    </AppContainer>
+  );
+
   return (
     <WebAnimationComponent>
       <StorageContextProvider>
@@ -272,150 +352,65 @@ export default function AppLayout() {
                             <BadgingProvider>
                               <NotificationsModal />
                               <TabFriendModal />
-                              <DrawerLayout
-                                key={desktopCollapsed.toString()}
-                                contentContainerStyle={{
-                                  backgroundColor: "transparent",
-                                  marginTop: -1,
+                              <ThemeProvider
+                                value={{
+                                  ...DefaultTheme,
+                                  colors: {
+                                    background: theme[2],
+                                    card: theme[2],
+                                    primary: theme[2],
+                                    border: theme[6],
+                                    text: theme[11],
+                                    notification: theme[9],
+                                  },
                                 }}
-                                ref={sidebarRef}
-                                onDrawerOpen={() => Keyboard.dismiss()}
-                                onDrawerClose={() => {}}
-                                drawerLockMode={
-                                  !desktopCollapsed && breakpoints.md
-                                    ? 2
-                                    : drawerLocked
-                                    ? 1
-                                    : 0
-                                }
-                                drawerType={
-                                  breakpoints.md
-                                    ? desktopCollapsed
-                                      ? 2
-                                      : 0
-                                    : 1
-                                }
-                                overlayColor="transparent"
-                                drawerWidth={
-                                  pathname.includes("/everything")
-                                    ? SECONDARY_SIDEBAR_WIDTH
-                                    : ORIGINAL_SIDEBAR_WIDTH
-                                }
-                                edgeWidth={
-                                  breakpoints.md
-                                    ? ORIGINAL_SIDEBAR_WIDTH
-                                    : pathname.includes("grid")
-                                    ? 10000
-                                    : width
-                                }
-                                renderNavigationView={renderNavigationView}
                               >
-                                <ThemeProvider
-                                  value={{
-                                    ...DefaultTheme,
-                                    colors: {
-                                      background: theme[2],
-                                      card: theme[2],
-                                      primary: theme[2],
-                                      border: theme[6],
-                                      text: theme[11],
-                                      notification: theme[9],
-                                    },
-                                  }}
-                                >
-                                  <LastStateRestore />
-                                  <AppContainer
+                                {fullscreen ? (
+                                  app
+                                ) : (
+                                  <DrawerLayout
                                     key={desktopCollapsed.toString()}
-                                    progressValue={progressValue}
+                                    contentContainerStyle={{
+                                      backgroundColor: "transparent",
+                                      marginTop: -1,
+                                    }}
+                                    ref={sidebarRef}
+                                    onDrawerOpen={() => Keyboard.dismiss()}
+                                    onDrawerClose={() => {}}
+                                    drawerLockMode={
+                                      !desktopCollapsed && breakpoints.md
+                                        ? 2
+                                        : drawerLocked
+                                        ? 1
+                                        : 0
+                                    }
+                                    drawerType={
+                                      breakpoints.md
+                                        ? desktopCollapsed
+                                          ? 2
+                                          : 0
+                                        : 1
+                                    }
+                                    overlayColor="transparent"
+                                    drawerWidth={
+                                      pathname.includes("/everything")
+                                        ? SECONDARY_SIDEBAR_WIDTH
+                                        : ORIGINAL_SIDEBAR_WIDTH
+                                    }
+                                    edgeWidth={
+                                      breakpoints.md
+                                        ? ORIGINAL_SIDEBAR_WIDTH
+                                        : pathname.includes("grid")
+                                        ? 10000
+                                        : width
+                                    }
+                                    renderNavigationView={renderNavigationView}
                                   >
-                                    <StatusBar
-                                      barStyle={
-                                        !isDark
-                                          ? "dark-content"
-                                          : "light-content"
-                                      }
-                                    />
-                                    <JsStack
-                                      id={undefined}
-                                      screenOptions={{
-                                        header: () => null,
-                                        gestureResponseDistance: width,
-                                        gestureEnabled: false,
-                                        detachPreviousScreen: true,
-                                        presentation: "modal",
-                                        cardStyle: {
-                                          height,
-                                          width: breakpoints.md
-                                            ? "100%"
-                                            : width,
-                                          backgroundColor:
-                                            theme[breakpoints.sm ? 2 : 1],
-                                          padding: breakpoints.md ? 10 : 0,
-                                          paddingBottom:
-                                            Platform.OS === "ios"
-                                              ? 0
-                                              : undefined,
-                                          ...(Platform.OS === "web" &&
-                                            ({
-                                              marginTop:
-                                                "env(titlebar-area-height,0)",
-                                            } as any)),
-                                        },
-                                        animation: "none",
-                                      }}
-                                    >
-                                      <JsStack.Screen name="index" />
-                                      {[
-                                        "everything/labels/[id]",
-                                        "everything/collections/[id]",
-                                        "friends",
-                                        "[tab]/welcome/task",
-                                        "[tab]/welcome/labels",
-                                        "[tab]/welcome/collections",
-                                        "[tab]/welcome/views",
-                                        "insights",
-                                        "home/customize",
-                                        "home/add-widget",
-                                        "plan",
-                                      ].map((d) => (
-                                        <JsStack.Screen
-                                          key={d}
-                                          name={d}
-                                          options={arcCard({
-                                            theme,
-                                            breakpoints,
-                                            maxWidth: 500,
-                                          })}
-                                        />
-                                      ))}
-                                      <JsStack.Screen
-                                        name="open"
-                                        options={{
-                                          presentation: "modal",
-                                          animation: "default",
-                                          detachPreviousScreen: false,
-                                          gestureEnabled: true,
-                                          ...TransitionPresets.ModalPresentationIOS,
-                                        }}
-                                      />
-                                      <JsStack.Screen
-                                        name="settings"
-                                        options={{
-                                          gestureEnabled: true,
-                                          detachPreviousScreen: false,
-                                          gestureResponseDistance: 9999,
-                                          ...(!breakpoints.md && {
-                                            presentation: "modal",
-                                            animation: "default",
-                                          }),
-                                          ...(!breakpoints.md &&
-                                            TransitionPresets.ModalPresentationIOS),
-                                        }}
-                                      />
-                                    </JsStack>
-                                  </AppContainer>
-                                </ThemeProvider>
-                              </DrawerLayout>
+                                    <LastStateRestore />
+                                    {app}
+                                  </DrawerLayout>
+                                )}
+                              </ThemeProvider>
                             </BadgingProvider>
                           </ThemeProvider>
                         </CommandPaletteProvider>
