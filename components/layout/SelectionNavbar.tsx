@@ -105,6 +105,7 @@ function Actions({ isLoading, setIsLoading }) {
         color: blue[11],
       }}
       onPress={() => {
+        if (!reorderMode) return;
         if (process.env.NODE_ENV === "development") {
           if (COLLECTION_VIEWS[type as string].type !== "Category Based") {
             Toast.show({
@@ -122,7 +123,9 @@ function Actions({ isLoading, setIsLoading }) {
   return (
     <View style={{ flexDirection: "row" }}>
       <TaskDateModal
-        updateTask={(s) => handleSelect(s)}
+        updateTask={(s) => {
+          handleSelect(s);
+        }}
         task={{}}
         ref={dateModal}
       />
