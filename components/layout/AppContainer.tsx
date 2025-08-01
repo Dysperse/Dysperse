@@ -1,8 +1,10 @@
 import { useResponsiveBreakpoints } from "@/helpers/useResponsiveBreakpoints";
+import { useDarkMode } from "@/ui/color";
 import { useColorTheme } from "@/ui/color/theme-provider";
+import * as NavigationBar from "expo-navigation-bar";
 import { useGlobalSearchParams, usePathname } from "expo-router";
-import { memo, useEffect } from "react";
-import { Platform } from "react-native";
+import React, { memo, useEffect } from "react";
+import { Platform, StatusBar } from "react-native";
 import Animated, {
   interpolate,
   useAnimatedStyle,
@@ -23,6 +25,7 @@ const AppContainer = memo(
     const insets = useSafeAreaInsets();
     const pathname = usePathname();
     const { fullscreen } = useGlobalSearchParams();
+    const isDark = useDarkMode();
 
     const {
       desktopCollapsed,
@@ -36,6 +39,13 @@ const AppContainer = memo(
         sidebarRef.current?.openDrawer?.();
       }
     }, [desktopCollapsed, sidebarRef]);
+
+    useEffect(() => {
+      if (Platform.OS === "android") {
+        StatusBar.setBackgroundColor("transparent");
+        NavigationBar.setButtonStyleAsync(isDark ? "light" : "dark");
+      }
+    }, [isDark]);
 
     const borderStyle = useAnimatedStyle(
       () => ({

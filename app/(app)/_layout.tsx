@@ -43,7 +43,7 @@ import {
   usePathname,
 } from "expo-router";
 import * as SystemUI from "expo-system-ui";
-import { useCallback, useEffect, useRef } from "react";
+import React, { useCallback, useEffect, useRef } from "react";
 import {
   InteractionManager,
   Keyboard,
