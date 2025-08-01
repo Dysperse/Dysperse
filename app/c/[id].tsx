@@ -60,7 +60,7 @@ export default function Page() {
                   }
                   style={{ flexDirection: "row", alignItems: "center", gap: 5 }}
                 >
-                  <Logo size={30} color="mint" />
+                  <Logo size={30} color="gray" />
                   <Text style={{ color: theme[11], fontSize: 20 }} weight={900}>
                     #dysperse
                   </Text>

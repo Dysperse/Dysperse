@@ -24,7 +24,6 @@ import { LinearGradient } from "expo-linear-gradient";
 import fuzzysort from "fuzzysort";
 import React, {
   cloneElement,
-  memo,
   useCallback,
   useEffect,
   useRef,
@@ -94,7 +93,7 @@ function CollectionChips({
 
   return (
     <View style={{ padding: 10, gap: 10 }}>
-      {collections.length !== 0 && <Text variant="eyebrow">Collections</Text>}
+      {collections?.length !== 0 && <Text variant="eyebrow">Collections</Text>}
       <BottomSheetFlatList
         horizontal
         ref={ref}
@@ -139,47 +138,11 @@ function CollectionChips({
   );
 }
 
-const CloseButton = memo(function CloseButton({
-  data,
-  onClose,
-}: {
-  data;
-  onClose: any;
-}) {
-  const { forceClose } = useBottomSheet();
-  const breakpoints = useResponsiveBreakpoints();
-  const [loading, setLoading] = useState(false);
-
-  const handleClose = useCallback(async () => {
-    setLoading(true);
-    await onClose?.();
-    forceClose(
-      breakpoints.md ? { duration: 0.0001, overshootClamping: true } : undefined
-    );
-    setLoading(false);
-  }, [forceClose, onClose, breakpoints]);
-
-  return (
-    data.length > 0 && (
-      <Button
-        onPress={handleClose}
-        containerStyle={{ marginLeft: "auto" }}
-        variant="filled"
-        style={{ paddingHorizontal: 20 }}
-        isLoading={loading}
-      >
-        <Icon>check</Icon>
-      </Button>
-    )
-  );
-});
-
 function LabelPickerContent({
   defaultCollection,
   label,
   setLabel,
   multiple,
-  onClose,
   handleClose,
   autoFocus,
   hideBack,
@@ -239,7 +202,7 @@ function LabelPickerContent({
         paddingBottom: 0,
       }}
     >
-      {multiple && data.length > 0 && (
+      {multiple && data?.length > 0 && (
         <View
           style={{
             flexDirection: "row",
@@ -253,7 +216,7 @@ function LabelPickerContent({
           </Text>
         </View>
       )}
-      {data.length > 0 && (
+      {data?.length > 0 && (
         <View style={[labelPickerStyles.searchBox]}>
           {!hideBack && (
             <IconButton
@@ -519,7 +482,7 @@ export default function LabelPicker({
         sheetRef={ref}
         onClose={handleClose}
         maxWidth={(breakpoints.md ? 450 : "100%") as any}
-        snapPoints={[height / 2]}
+        snapPoints={[breakpoints.md ? "80%" : height / 2]}
         containerStyle={{
           maxWidth: 500,
           width: "100%",
@@ -538,7 +501,6 @@ export default function LabelPicker({
           hideBack={hideBack}
           autoFocus={autoFocus}
           handleClose={handleClose}
-          onClose={onClose}
         />
       </BottomSheet>
     </>

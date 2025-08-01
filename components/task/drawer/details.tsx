@@ -897,7 +897,17 @@ export function TaskDetails({ labelPickerRef }) {
                       )
                     }
                     dense
-                    style={{ gap: 12, paddingHorizontal: 12 }}
+                    style={
+                      task?.label?.name || task?.collection?.name
+                        ? {
+                            gap: 12,
+                            paddingHorizontal: 12,
+                          }
+                        : {
+                            paddingHorizontal: 10,
+                            gap: 10,
+                          }
+                    }
                     containerStyle={{ marginRight: "auto" }}
                     textStyle={{ opacity: 0.6 }}
                     iconStyle={{

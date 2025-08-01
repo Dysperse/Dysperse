@@ -221,7 +221,11 @@ function OpenTabsList() {
     e.preventDefault();
     const i = data.findIndex((i) => i.id === tab);
     let d = i - 1;
-    if (i === 0) d = data.length - 1;
+    if (i === 0) {
+      router.push("/home");
+      return;
+    }
+    if (i === -1) d = data.length - 1;
     handleSnapToIndex(d);
   });
 

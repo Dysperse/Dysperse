@@ -98,6 +98,19 @@ const PaletteFilters = memo(({ filters, filter, setFilter }: any) => {
         flexDirection: "row",
       }}
     >
+      <LinearGradient
+        colors={[theme[2], addHslAlpha(theme[2], 0)]}
+        start={{ x: 0, y: 0 }}
+        end={{ x: 1, y: 0 }}
+        style={{
+          height: 35,
+          width: 30,
+          marginRight: -30,
+          marginLeft: -20,
+          pointerEvents: "none",
+          zIndex: 99,
+        }}
+      />
       <ScrollView
         keyboardShouldPersistTaps="handled"
         horizontal
@@ -106,6 +119,7 @@ const PaletteFilters = memo(({ filters, filter, setFilter }: any) => {
           gap: 10,
           paddingBottom: 10,
           paddingRight: 60,
+          paddingLeft: 20,
         }}
         style={{ marginRight: -60 }}
       >
