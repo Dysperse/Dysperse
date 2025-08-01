@@ -17,8 +17,14 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import * as chrono from "chrono-node";
 import dayjs from "dayjs";
 import fuzzysort from "fuzzysort";
-import React, { cloneElement, useEffect, useRef, useState } from "react";
-import { Keyboard, View } from "react-native";
+import React, {
+  cloneElement,
+  useEffect,
+  useImperativeHandle,
+  useRef,
+  useState,
+} from "react";
+import { Keyboard, Pressable, View } from "react-native";
 import Animated, {
   useAnimatedStyle,
   useSharedValue,
@@ -650,16 +656,32 @@ function OnClose({ onClose }) {
   return null;
 }
 
-export function TaskDateModal({ onClose, children, task, updateTask }) {
+export function TaskDateModal({
+  ref,
+  onClose,
+  children,
+  task,
+  updateTask,
+}: {
+  ref: React.Ref<any>;
+  onClose?: () => void;
+  children?: React.ReactElement;
+  task: any;
+  updateTask: (task: any) => void;
+}) {
   const sheetRef = useRef(null);
   const insets = useSafeAreaInsets();
 
-  const trigger = cloneElement(children, {
+  const trigger = cloneElement(children || <Pressable />, {
     onPress: () => {
       sheetRef.current?.present();
       Keyboard.dismiss();
     },
   });
+
+  useImperativeHandle(ref, () => ({
+    open: () => sheetRef.current?.present(),
+  }));
 
   return (
     <>

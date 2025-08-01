@@ -10,7 +10,7 @@ import Text from "@/ui/Text";
 import { useColor } from "@/ui/color";
 import { LinearGradient } from "expo-linear-gradient";
 import { useLocalSearchParams } from "expo-router";
-import { memo, useCallback, useState } from "react";
+import { memo, useCallback, useRef, useState } from "react";
 import { View } from "react-native";
 import Animated, {
   useAnimatedStyle,
@@ -19,6 +19,7 @@ import Animated, {
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import Toast from "react-native-toast-message";
 import { useSWRConfig } from "swr";
+import { TaskDateModal } from "../task/drawer/date-modal";
 import { COLLECTION_VIEWS } from "./command-palette/list";
 
 function NavbarHeader({ isLoading, setIsLoading }) {
@@ -62,6 +63,7 @@ function Actions({ isLoading, setIsLoading }) {
   const { setSelection } = useSelectionContext();
   const blue = useColor("blue");
   const { mutate } = useSWRConfig();
+  const dateModal = useRef(null);
 
   const badgingService = useBadgingService();
   const { reorderMode, setReorderMode } = useSelectionContext();
@@ -103,8 +105,6 @@ function Actions({ isLoading, setIsLoading }) {
         color: blue[11],
       }}
       onPress={() => {
-        if (!reorderMode)
-          return Toast.show({ type: "info", text1: "Coming soon!" });
         if (process.env.NODE_ENV === "development") {
           if (COLLECTION_VIEWS[type as string].type !== "Category Based") {
             Toast.show({
@@ -112,11 +112,8 @@ function Actions({ isLoading, setIsLoading }) {
               text1:
                 "For now, you can only reorder tasks in category-based views",
             });
-          }
-
-          setReorderMode((t) => !t);
-        } else {
-          Toast.show({ type: "info", text1: "Coming soon!" });
+            setReorderMode((t) => !t);
+          } else Toast.show({ type: "info", text1: "Coming soon!" });
         }
       }}
     />
@@ -124,6 +121,11 @@ function Actions({ isLoading, setIsLoading }) {
 
   return (
     <View style={{ flexDirection: "row" }}>
+      <TaskDateModal
+        updateTask={(s) => handleSelect(s)}
+        task={{}}
+        ref={dateModal}
+      />
       {selection.length === 1 ? (
         trigger
       ) : (
@@ -140,7 +142,7 @@ function Actions({ isLoading, setIsLoading }) {
             {
               text: "Reschedule",
               icon: "calendar_today",
-              // callback: () => handleSelect({  }),
+              callback: () => dateModal.current.open(),
             },
             {
               text: "Delete",
