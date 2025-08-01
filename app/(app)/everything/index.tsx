@@ -363,6 +363,14 @@ export const LabelDetails = ({
               </View>
             </View>
           </View>
+
+          <View
+            style={{
+              height: 1000,
+              marginBottom: -1000,
+              backgroundColor: labelTheme[3],
+            }}
+          />
         </ColorThemeProvider>
       </ScrollView>
     )
