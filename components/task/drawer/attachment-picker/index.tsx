@@ -2,6 +2,7 @@ import Text from "@/ui/Text";
 import { BottomSheetScrollView } from "@gorhom/bottom-sheet";
 import { Dimensions, Keyboard } from "react-native";
 import { ScrollView } from "react-native-gesture-handler";
+import { useTaskDrawerContext } from "../context";
 import { ComplexitySelector } from "./complexity-selection";
 import { LocationSelector } from "./location-selection";
 import { PhotoSelection } from "./photo-selection";
@@ -12,6 +13,7 @@ export function TaskAttachmentPicker({
   forceClose,
   handleBack,
 }) {
+  const { task } = useTaskDrawerContext();
   const SafeScrollView = forceClose ? BottomSheetScrollView : ScrollView;
 
   return (
@@ -29,10 +31,12 @@ export function TaskAttachmentPicker({
         Photo
       </Text>
       <PhotoSelection handleBack={handleBack} />
-      <Text variant="eyebrow" style={{ marginBottom: 5, marginTop: 35 }}>
-        Location
-      </Text>
-      <LocationSelector handleBack={handleBack} />
+      {!task.location && (
+        <Text variant="eyebrow" style={{ marginBottom: 5, marginTop: 35 }}>
+          Location
+        </Text>
+      )}
+      {!task.location && <LocationSelector handleBack={handleBack} />}
       {!isTaskCreation && (
         <>
           <Text variant="eyebrow" style={{ marginBottom: 5, marginTop: 35 }}>
@@ -42,10 +46,13 @@ export function TaskAttachmentPicker({
         </>
       )}
 
-      <Text variant="eyebrow" style={{ marginBottom: 5, marginTop: 35 }}>
-        Complexity
-      </Text>
-      <ComplexitySelector handleBack={handleBack} />
+      {!task.storyPoints && (
+        <Text variant="eyebrow" style={{ marginBottom: 5, marginTop: 35 }}>
+          Complexity
+        </Text>
+      )}
+      {!task.storyPoints && <ComplexitySelector handleBack={handleBack} />}
     </SafeScrollView>
   );
 }
+

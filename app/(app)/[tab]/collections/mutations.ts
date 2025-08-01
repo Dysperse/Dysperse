@@ -90,17 +90,16 @@ export const mutations = {
   timeBased: {
     add: (mutate) => (newTask) => {
       if (!newTask) return;
-      if (newTask.recurrenceRule || newTask.parentTaskId) return mutate();
+      if (newTask.recurrenceRule) return mutate();
 
       mutate(
         (oldData) => {
           const dateIndex = oldData.findIndex((column) =>
-            dayjs(newTask.start).isBetween(
-              column.start,
-              column.end,
-              "day",
-              "[]"
-            )
+            dayjs(
+              newTask.start || newTask.parentTaskId
+                ? oldData.entities[newTask.parentTaskId]?.start || newTask.start
+                : newTask.start
+            ).isBetween(column.start, column.end, "day", "[]")
           );
 
           if (dateIndex === -1) return;
@@ -119,21 +118,21 @@ export const mutations = {
     },
     update: (mutate) => (newTask) => {
       if (!newTask) return;
-      if (newTask.recurrenceRule || newTask.parentTaskId) return mutate();
+      if (newTask.recurrenceRule) return mutate();
 
       mutate(
         (oldData) => {
           const colIndex = oldData.findIndex((column) =>
-            dayjs(newTask.start).isBetween(
-              column.start,
-              column.end,
-              "day",
-              "[]"
-            )
+            dayjs(
+              newTask.parentTaskId
+                ? column.entities[newTask.parentTaskId]?.start
+                : newTask.start
+            ).isBetween(column.start, column.end, "day", "[]")
           );
 
           return oldData.map((oldColumn, oldColumnIndex) => {
             if (newTask.parentTaskId && oldColumnIndex === colIndex) {
+              // Update task in the parent column if it has a parentTaskId
               return {
                 ...oldColumn,
                 entities: {

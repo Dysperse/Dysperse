@@ -34,6 +34,7 @@ import timezone from "dayjs/plugin/timezone";
 import utc from "dayjs/plugin/utc";
 import weekOfYear from "dayjs/plugin/weekOfYear";
 import weekday from "dayjs/plugin/weekday";
+import * as Linking from "expo-linking";
 import {
   Redirect,
   router,
@@ -89,6 +90,7 @@ export function LastStateRestore() {
   const { data } = useSWR(["user/tabs"]);
   const breakpoints = useResponsiveBreakpoints();
   const pathname = usePathname();
+  const { desktopCollapsed } = useSidebarContext();
   const { fullscreen, tab: currentTab } = useGlobalSearchParams();
 
   const setCurrentPage = useCallback(async () => {
@@ -96,6 +98,10 @@ export function LastStateRestore() {
       const t = await SpotlightSearch.getInitialSearchItem();
       if (t) return;
     }
+
+    const url = await Linking.getInitialURL();
+    if (url && Platform.OS !== "web") return;
+
     const lastViewedTab = await AsyncStorage.getItem("lastViewedTab");
 
     if (lastViewedTab && currentTab !== lastViewedTab) {
@@ -113,10 +119,10 @@ export function LastStateRestore() {
       }
     }
     // weird sidebar bug when opening/closing
-    else if (!lastViewedTab || !breakpoints.md) {
+    else if (!lastViewedTab || !desktopCollapsed || !breakpoints.md) {
       router.replace("/home");
     }
-  }, []);
+  }, [desktopCollapsed, breakpoints, currentTab, data]);
 
   useEffect(() => {
     if (!fullscreen && !pathname.includes("chrome-extension")) setCurrentPage();

@@ -446,6 +446,7 @@ const Task = memo(function Task({
                   {(showRelativeTime || !task.dateOnly) && task.start && (
                     <Button
                       chip
+                      disabled
                       text={
                         showRelativeTime
                           ? dayjs(task.start).fromNow()

@@ -694,7 +694,7 @@ const PrimarySidebar = memo(function PrimarySidebar({ progressValue }: any) {
   return (
     <OnboardingContainer
       id="SIDEBAR"
-      delay={Platform.OS==='web'?1000:500}
+      delay={Platform.OS === "web" ? 1000 : 500}
       onlyIf={() => pathname === "/home" && !desktopCollapsed}
       onBeforeStart={() => sidebarRef.current.openDrawer()}
       onStart={() => sidebarRef.current.openDrawer()}

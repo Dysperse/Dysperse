@@ -482,6 +482,7 @@ function NlpProcessor({
       keyboardShouldPersistTaps="handled"
       horizontal
       data={suggestions}
+      contentContainerStyle={{ paddingHorizontal: 7 }}
       renderItem={({ item }) => (
         <Button
           chip

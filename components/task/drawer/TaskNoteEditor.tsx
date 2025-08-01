@@ -10,6 +10,7 @@ import { EditorProvider, useCurrentEditor } from "@tiptap/react";
 import StarterKit from "@tiptap/starter-kit";
 import { useDOMImperativeHandle } from "expo/dom";
 import { forwardRef, useEffect, useImperativeHandle, useRef } from "react";
+import { Platform } from "react-native";
 
 const LIMIT = 3000;
 
@@ -287,6 +288,7 @@ export default forwardRef<any, object>(function TaskNoteEditor(
         borderRadius: 10,
         overflow: "hidden",
         padding: "0 15px",
+        minHeight: Platform.OS === "web" ? 60 : undefined,
         width: "100%",
       }}
       onMouseDown={() => editorRef.current.editor.commands.focus()}
