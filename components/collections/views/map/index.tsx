@@ -463,10 +463,10 @@ export default function MapView() {
   const breakpoints = useResponsiveBreakpoints();
   const { data, mutate } = useCollectionContext();
 
-  const flex = useSharedValue(breakpoints.md ? 2 : 0.3);
+  const flex = useSharedValue(1);
   const animatedFlexStyle = useAnimatedStyle(() => ({
     flex: withSpring(flex.value, {
-      damping: 50,
+      damping: 150,
       stiffness: flex.value == 0.3 ? 100 : 20,
       mass: 1,
       overshootClamping: false,
@@ -512,24 +512,27 @@ export default function MapView() {
         gap: 10,
       }}
     >
-      <View
-        style={{
-          flex: 1,
-          justifyContent: "flex-start",
-          height: "100%",
-        }}
-      >
-        <TaskList tasks={tasks} />
-      </View>
-
       <Animated.View
         style={[
           animatedFlexStyle,
+          {
+            justifyContent: "flex-start",
+            height: 0,
+            overflow: "hidden",
+          },
+        ]}
+      >
+        <TaskList tasks={tasks} />
+      </Animated.View>
+
+      <View
+        style={[
           {
             borderRadius: breakpoints.md ? 20 : 0,
             overflow: "hidden",
             backgroundColor: theme[3],
             position: "relative",
+            flex: 1,
           },
         ]}
       >
@@ -539,12 +542,7 @@ export default function MapView() {
             style={{ position: "absolute", top: 10, right: 10, zIndex: 999 }}
             icon="fullscreen"
             onPress={() => {
-              flex.value =
-                flex.value === (breakpoints.md ? 2 : 4.5)
-                  ? 0.3
-                  : breakpoints.md
-                  ? 2
-                  : 4.5;
+              flex.value = flex.value === 1 ? 0 : 1;
             }}
           />
         )}
@@ -557,7 +555,7 @@ export default function MapView() {
           tasks={tasksWithLocation}
           onLocationSelect={(task) => mapTaskDrawerRef.current.open(task)}
         />
-      </Animated.View>
+      </View>
     </View>
   );
 }

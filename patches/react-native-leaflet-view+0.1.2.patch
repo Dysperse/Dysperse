@@ -34,7 +34,7 @@ index 5a04755..8cc3351 100644
        };
      }
 diff --git a/node_modules/react-native-leaflet-view/src/LeafletView/index.tsx b/node_modules/react-native-leaflet-view/src/LeafletView/index.tsx
-index da878e3..0aaef5d 100644
+index da878e3..0961c29 100644
 --- a/node_modules/react-native-leaflet-view/src/LeafletView/index.tsx
 +++ b/node_modules/react-native-leaflet-view/src/LeafletView/index.tsx
 @@ -1,27 +1,40 @@
@@ -102,7 +102,7 @@ index da878e3..0aaef5d 100644
  };
  
  const LeafletView: React.FC<LeafletViewProps> = ({
-@@ -211,11 +224,11 @@ const LeafletView: React.FC<LeafletViewProps> = ({
+@@ -211,11 +224,12 @@ const LeafletView: React.FC<LeafletViewProps> = ({
        onError={onError}
        originWhitelist={['*']}
        renderLoading={renderLoading}
@@ -113,6 +113,7 @@ index da878e3..0aaef5d 100644
        allowFileAccessFromFileURLs={true}
 -      androidHardwareAccelerationDisabled={androidHardwareAccelerationDisabled}
 +      injectedJavaScript={androidHardwareAccelerationDisabled as any}
++      style={{ backgroundColor: "transparent" }}
      />
    );
  };

@@ -27,16 +27,9 @@ export default function NativeMapView({ tasks, onLocationSelect }) {
         androidHardwareAccelerationDisabled={`
           const style = document.createElement('style');
           style.innerHTML = \`
-         .leaflet-container, body {
-              background: ${theme[3]};
-          }
-              *::before, *::after {
-          user-select:none!important;
-              }
-          * {
-          user-select:none!important;
-            -webkit-tap-highlight-color: rgba(0, 0, 0, 0)!important;
-            }
+         .leaflet-container, body { background: ${theme[3]} !important; }
+          *::before, *::after { user-select:none!important; }
+          * { user-select:none!important; -webkit-tap-highlight-color: rgba(0, 0, 0, 0)!important; }
             .leaflet-control-attribution {margin:5px!important;border-radius:10px!important;background:${addHslAlpha(
               theme[9],
               0.1
@@ -122,3 +115,4 @@ export default function NativeMapView({ tasks, onLocationSelect }) {
     </View>
   );
 }
+

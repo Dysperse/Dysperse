@@ -57,18 +57,18 @@ const PaletteItem = memo(
           }
         }}
         variant={preview?.key === item.key ? "filled" : "default"}
-        onMouseEnter={() => {
-          if (!breakpoints.md) {
-            router.push({
-              pathname: "/open/preview",
-              params: item,
-            });
-            return;
-          }
-          if (preview?.key !== item.key) {
-            setPreview(item);
-          }
-        }}
+        // onMouseEnter={() => {
+        //   if (!breakpoints.md) {
+        //     router.push({
+        //       pathname: "/open/preview",
+        //       params: item,
+        //     });
+        //     return;
+        //   }
+        //   if (preview?.key !== item.key) {
+        //     setPreview(item);
+        //   }
+        // }}
       >
         {item.emoji ? <Emoji emoji={item.emoji} /> : <Icon>{item.icon}</Icon>}
         <ListItemText primary={item.label} />
