@@ -18,7 +18,6 @@ import fuzzysort from "fuzzysort";
 import { memo, useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { Keyboard, Platform, View } from "react-native";
 import { ScrollView } from "react-native-gesture-handler";
-import { KeyboardAvoidingView } from "react-native-keyboard-controller";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import Toast from "react-native-toast-message";
 import useSWR from "swr";
@@ -53,7 +52,8 @@ const PaletteItem = memo(
             });
             return;
           } else {
-            onCreate(item);
+            // onCreate(item);
+            setPreview(item);
           }
         }}
         variant={preview?.key === item.key ? "filled" : "default"}
@@ -170,6 +170,7 @@ function CommandPaletteList({
   setQuery,
   showMore,
   setshowMore,
+  searchRef,
 }: {
   query: any;
   preview: any;
@@ -182,6 +183,7 @@ function CommandPaletteList({
   setQuery: any;
   showMore: string[];
   setshowMore: (e) => void;
+  searchRef;
 }) {
   const theme = useColorTheme();
 
@@ -239,6 +241,8 @@ function CommandPaletteList({
         </View>
       ) : (
         <FlashList
+          refreshing={false}
+          onRefresh={() => searchRef.current?.focus({ preventScroll: true })}
           onScrollBeginDrag={() => Keyboard.dismiss()}
           key={query}
           keyboardShouldPersistTaps="handled"
@@ -333,6 +337,7 @@ function CommandPaletteList({
 }
 
 const PaletteHeader = memo(function PaletteHeader({
+  ref,
   query,
   setQuery,
   handleClose,
@@ -340,6 +345,7 @@ const PaletteHeader = memo(function PaletteHeader({
   setPreview,
   filtered,
 }: {
+  ref: any;
   query: string;
   setQuery: (e) => void;
   handleClose: () => void;
@@ -348,7 +354,6 @@ const PaletteHeader = memo(function PaletteHeader({
   filtered: any[];
 }) {
   const breakpoints = useResponsiveBreakpoints();
-  const ref = useRef(null);
   const { sessionToken } = useUser();
   const pathname = usePathname();
 
@@ -389,19 +394,24 @@ const PaletteHeader = memo(function PaletteHeader({
       );
   };
 
+  const hasFocused = useRef(false);
+
   useEffect(() => {
+    if (hasFocused.current) return;
+    hasFocused.current = true;
+
     if (pathname === "/open" || breakpoints.md)
       ref.current?.focus({ preventScroll: true });
   }, [breakpoints, pathname, preview]);
 
-  useEffect(() => {
-    if (breakpoints.md)
-      setPreview(
-        filtered.length > 0
-          ? filtered.filter((t) => typeof t !== "string")[0]
-          : null
-      );
-  }, [breakpoints, filtered]);
+  // useEffect(() => {
+  //   if (breakpoints.md)
+  //     setPreview(
+  //       filtered.length > 0
+  //         ? filtered.filter((t) => typeof t !== "string")[0]
+  //         : null
+  //     );
+  // }, [breakpoints, filtered]);
 
   return (
     (breakpoints.md || !preview) && (
@@ -604,21 +614,18 @@ export function CommandPalettePreview({ loading, preview, onCreate }) {
 export default function CommandPaletteContent({ handleClose, defaultFilter }) {
   const { sessionToken } = useUser();
   const theme = useColorTheme();
+  const searchRef = useRef(null);
   const { mutate } = useSWR(["user/tabs"]);
 
   const [query, setQuery] = useState("");
   const [preview, setPreview] = useState(null);
-
-  const handlePreviewChange = useCallback((e) => setPreview(e), []);
-
+  const [showMore, setShowMore] = useState<string[]>([]);
   const [filter, setFilter] = useState<null | string>(defaultFilter || null);
   const { data: collections } = useSWR(["space/collections"]);
   const { data: labels } = useSWR(["space/labels"]);
   const { data: sharedCollections } = useSWR(["user/collectionAccess"]);
 
   const sections = paletteItems(collections, sharedCollections, labels);
-
-  const [showMore, setShowMore] = useState<string[]>([]);
 
   const filtered = sections
     .filter((section) => !filter || section.title === filter)
@@ -690,13 +697,21 @@ export default function CommandPaletteContent({ handleClose, defaultFilter }) {
         });
         if (!breakpoints.md || desktopCollapsed)
           sidebarRef?.current?.closeDrawer?.();
-      } catch (e) {
+      } catch {
         Toast.show({ type: "error" });
       } finally {
         setLoading(false);
       }
     },
-    [handleClose, mutate, sessionToken, breakpoints.md, preview, sidebarRef]
+    [
+      handleClose,
+      mutate,
+      sessionToken,
+      breakpoints,
+      preview,
+      sidebarRef,
+      desktopCollapsed,
+    ]
   );
 
   return (
@@ -709,6 +724,7 @@ export default function CommandPaletteContent({ handleClose, defaultFilter }) {
       ]}
     >
       <PaletteHeader
+        ref={searchRef}
         preview={preview}
         handleClose={handleClose}
         query={query}
@@ -716,33 +732,27 @@ export default function CommandPaletteContent({ handleClose, defaultFilter }) {
         setPreview={setPreview}
         filtered={filtered}
       />
+
       <View style={{ flexDirection: "row", flex: 1 }}>
         {(!preview || breakpoints.md) && (
-          <KeyboardAvoidingView
-            style={{
-              flex: breakpoints.md ? 1.5 : 1,
-              width: "100%",
-            }}
-            behavior="height"
-          >
-            <CommandPaletteList
-              query={query}
-              setQuery={setQuery}
-              preview={preview}
-              setPreview={handlePreviewChange}
-              filtered={filtered}
-              showMore={showMore}
-              setshowMore={setShowMore}
-              filter={filter}
-              setFilter={setFilter}
-              filters={filters}
-              onCreate={onCreate}
-            />
-          </KeyboardAvoidingView>
+          <CommandPaletteList
+            query={query}
+            searchRef={searchRef}
+            setQuery={setQuery}
+            preview={preview}
+            setPreview={setPreview}
+            filtered={filtered}
+            showMore={showMore}
+            setshowMore={setShowMore}
+            filter={filter}
+            setFilter={setFilter}
+            filters={filters}
+            onCreate={onCreate}
+          />
         )}
+
         {(breakpoints.md || preview) && typeof preview !== "string" ? (
           <CommandPalettePreview
-            setPreview={setPreview}
             onCreate={onCreate}
             preview={preview}
             loading={loading}

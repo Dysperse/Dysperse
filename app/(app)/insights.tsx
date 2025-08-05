@@ -35,8 +35,12 @@ function YearSelector({ years, year, setYear }) {
 
 function Insights({ year }) {
   const theme = useColorTheme();
+  const isDark = useDarkMode();
   const breakpoints = useResponsiveBreakpoints();
   const { data, error } = useSWR(["user/insights", { year }]);
+  const needsMoreData =
+    data &&
+    (!year || Object.entries(data.insights?.viewCount || {}).length === 0);
 
   const cardStyles = {
     backgroundColor: theme[4],
@@ -59,262 +63,318 @@ function Insights({ year }) {
   };
 
   return data ? (
-    <View style={{ padding: 20, paddingTop: 0, gap: 10 }}>
-      <View
-        style={{
-          flexDirection: "row",
-          gap: 10,
-          alignItems: "center",
-          justifyContent: "space-between",
-        }}
-      >
-        <Text variant="eyebrow">Climate impact</Text>
-
-        <MenuPopover
-          trigger={<Button dense text="About" />}
-          containerStyle={{ width: 250 }}
-          options={[
-            {
-              renderer: () => (
-                <View style={{ padding: 10 }}>
-                  <Text style={{ color: theme[11] }}>
-                    This data is calculated based on the number of tasks &
-                    collections you've created so far. It's an estimate of how
-                    much impact you would make if you were to use regular
-                    notebook instead of Dysperse.
-                  </Text>
-                </View>
-              ),
-            },
-          ]}
-        />
-      </View>
-      <View style={{ flexDirection: "row", gap: 10 }}>
-        <View style={cardStyles}>
-          <Text style={textStyles}>
-            {Math.round(data.treesSaved * 100) / 100}
-          </Text>
-          <Text style={labelStyles}>Trees saved</Text>
-        </View>
-
-        <View style={cardStyles}>
-          <Text style={[textStyles]}>
-            {~~data.co2}
-            {breakpoints.md ? (~~data.co2 === 1 ? " gram" : " grams") : "g"}
-          </Text>
-          <Text style={labelStyles}>of CO2 saved</Text>
-        </View>
-      </View>
-
-      <Text variant="eyebrow" style={{ marginTop: 10 }}>
-        Summary
-      </Text>
-
-      <View style={{ flexDirection: "row", gap: 10 }}>
-        <View style={cardStyles}>
-          <Text style={textStyles}>{data.insights.tasksCreated}</Text>
-          <Text style={labelStyles}>Tasks created</Text>
-        </View>
-
-        <View style={cardStyles}>
-          <Text style={textStyles}>{data.insights.tasksCompleted}</Text>
-          <Text style={labelStyles}>Tasks completed</Text>
-        </View>
-      </View>
-
-      <View style={{ flexDirection: "row", gap: 10 }}>
-        <View style={cardStyles}>
-          <Text style={textStyles}>{data.insights.tasksRescheduled}</Text>
-          <Text style={labelStyles}>Tasks rescheduled</Text>
-        </View>
-
-        <View style={cardStyles}>
-          <Text style={textStyles}>{data.insights.tasksDeleted}</Text>
-          <Text style={labelStyles}>Tasks deleted</Text>
-        </View>
-      </View>
-
-      <View style={{ flexDirection: "row", gap: 10 }}>
-        <View style={cardStyles}>
-          <Text style={textStyles}>{data.insights.aiFeaturesUsed}</Text>
-          <Text style={labelStyles}>AI features used</Text>
-        </View>
-
-        <View style={cardStyles}>
-          <Text style={textStyles}>{data.insights.tabsCreated}</Text>
-          <Text style={labelStyles}>Tabs created</Text>
-        </View>
-      </View>
-
-      <View>
-        <View style={cardStyles}>
-          <Text style={labelStyles}>By day</Text>
+    <>
+      {needsMoreData && (
+        <>
+          <BlurView
+            experimentalBlurMethod="dimezisBlurView"
+            tint={isDark ? "dark" : "light"}
+            style={{
+              position: "absolute",
+              top: 0,
+              left: 0,
+              right: 0,
+              bottom: 0,
+              zIndex: 10,
+            }}
+          />
           <View
             style={{
-              flexDirection: "row",
-              height: 100,
-              gap: 20,
-              marginTop: 10,
+              padding: 30,
+              zIndex: 20,
+              position: "absolute",
+              top: 50,
+              left: 0,
+              right: 0,
+              backgroundColor: addHslAlpha(theme[9], 0.05),
+              marginHorizontal: 30,
+              borderRadius: 30,
+              justifyContent: "center",
             }}
           >
-            {data.byDay.map((day, index) => (
-              <View
-                key={index}
-                style={{
-                  flex: 1,
-                }}
-              >
-                <View style={{ flex: 1 }} />
-                <View
-                  style={{
-                    height: `${(day / Math.max(...data.byDay)) * 100}%`,
-                    minHeight: 50,
-                  }}
-                >
-                  <View
-                    style={{
-                      backgroundColor: addHslAlpha(theme[6], 0.7),
-                      borderRadius: 15,
-                      alignItems: "center",
-                      justifyContent: "flex-end",
-                      padding: 5,
-                      flex: 1,
-                    }}
-                  >
-                    <Text variant="eyebrow" style={{ fontSize: 13 }}>
-                      {day === 0 ? "" : day.toString()}
-                    </Text>
-                  </View>
-                  <View>
-                    <Text
-                      variant="eyebrow"
-                      style={{
-                        textAlign: "center",
-                        marginTop: 5,
-                        marginBottom: -5,
-                      }}
-                    >
-                      {["S", "M", "T", "W", "T", "F", "S"][index]}
-                    </Text>
-                  </View>
-                </View>
-              </View>
-            ))}
+            <Text
+              style={{
+                fontFamily: "serifText800",
+                fontSize: 27,
+                color: theme[11],
+              }}
+            >
+              We're getting your{"\n"}insights ready
+            </Text>
+            <Text
+              style={{
+                fontSize: 15,
+                color: theme[11],
+                opacity: 0.6,
+                marginTop: 5,
+              }}
+            >
+              You'll be able to see your insights{"\n"}as you use Dysperse more
+            </Text>
           </View>
-        </View>
-      </View>
-
-      <View style={cardStyles}>
-        <Text style={labelStyles}>Top views</Text>
+        </>
+      )}
+      <View style={{ padding: 20, paddingTop: 0, gap: 10 }}>
         <View
           style={{
             flexDirection: "row",
-            gap: 5,
-            marginTop: 5,
+            gap: 10,
+            alignItems: "center",
+            justifyContent: "space-between",
           }}
         >
-          {Object.entries(data.insights?.viewCount || {})
-            .sort((a, b) => b[1] - a[1])
-            .map(
-              ([key, value]) =>
-                COLLECTION_VIEWS[key] && (
+          <Text variant="eyebrow">Climate impact</Text>
+
+          <MenuPopover
+            trigger={<Button dense text="About" />}
+            containerStyle={{ width: 250 }}
+            options={[
+              {
+                renderer: () => (
+                  <View style={{ padding: 10 }}>
+                    <Text style={{ color: theme[11] }}>
+                      This data is calculated based on the number of tasks &
+                      collections you've created so far. It's an estimate of how
+                      much impact you would make if you were to use regular
+                      notebook instead of Dysperse.
+                    </Text>
+                  </View>
+                ),
+              },
+            ]}
+          />
+        </View>
+        <View style={{ flexDirection: "row", gap: 10 }}>
+          <View style={cardStyles}>
+            <Text style={textStyles}>
+              {Math.round(data.treesSaved * 100) / 100}
+            </Text>
+            <Text style={labelStyles}>Trees saved</Text>
+          </View>
+
+          <View style={cardStyles}>
+            <Text style={[textStyles]}>
+              {~~data.co2}
+              {breakpoints.md ? (~~data.co2 === 1 ? " gram" : " grams") : "g"}
+            </Text>
+            <Text style={labelStyles}>of CO2 saved</Text>
+          </View>
+        </View>
+
+        <Text variant="eyebrow" style={{ marginTop: 10 }}>
+          Summary
+        </Text>
+
+        <View style={{ flexDirection: "row", gap: 10 }}>
+          <View style={cardStyles}>
+            <Text style={textStyles}>{data.insights.tasksCreated}</Text>
+            <Text style={labelStyles}>Tasks created</Text>
+          </View>
+
+          <View style={cardStyles}>
+            <Text style={textStyles}>{data.insights.tasksCompleted}</Text>
+            <Text style={labelStyles}>Tasks completed</Text>
+          </View>
+        </View>
+
+        <View style={{ flexDirection: "row", gap: 10 }}>
+          <View style={cardStyles}>
+            <Text style={textStyles}>{data.insights.tasksRescheduled}</Text>
+            <Text style={labelStyles}>Tasks rescheduled</Text>
+          </View>
+
+          <View style={cardStyles}>
+            <Text style={textStyles}>{data.insights.tasksDeleted}</Text>
+            <Text style={labelStyles}>Tasks deleted</Text>
+          </View>
+        </View>
+
+        <View style={{ flexDirection: "row", gap: 10 }}>
+          <View style={cardStyles}>
+            <Text style={textStyles}>{data.insights.aiFeaturesUsed}</Text>
+            <Text style={labelStyles}>AI features used</Text>
+          </View>
+
+          <View style={cardStyles}>
+            <Text style={textStyles}>{data.insights.tabsCreated}</Text>
+            <Text style={labelStyles}>Tabs created</Text>
+          </View>
+        </View>
+
+        <View>
+          <View style={cardStyles}>
+            <Text style={labelStyles}>By day</Text>
+            <View
+              style={{
+                flexDirection: "row",
+                height: 100,
+                gap: 20,
+                marginTop: 10,
+              }}
+            >
+              {data.byDay.map((day, index) => (
+                <View
+                  key={index}
+                  style={{
+                    flex: 1,
+                  }}
+                >
+                  <View style={{ flex: 1 }} />
                   <View
                     style={{
-                      height: 200,
-                      flex: 1,
-                      justifyContent: "flex-end",
+                      height: `${(day / Math.max(...data.byDay)) * 100}%`,
+                      minHeight: 50,
                     }}
-                    key={key}
                   >
                     <View
                       style={{
-                        flexDirection: "column",
                         backgroundColor: addHslAlpha(theme[6], 0.7),
                         borderRadius: 15,
-                        height: `${Math.max(
-                          1,
-                          (value /
-                            Math.max(
-                              ...Object.values(data.insights?.viewCount || {})
-                            )) *
-                            100 -
-                            15
-                        )}%`,
-                        justifyContent: "flex-end",
                         alignItems: "center",
-                        maxWidth: 35,
+                        justifyContent: "flex-end",
+                        padding: 5,
+                        flex: 1,
                       }}
-                    />
-                    <Icon
-                      bold
-                      style={{ color: theme[11], marginLeft: 7, marginTop: 5 }}
                     >
-                      {COLLECTION_VIEWS[key]?.icon}
-                    </Icon>
+                      <Text variant="eyebrow" style={{ fontSize: 13 }}>
+                        {day === 0 ? "" : day.toString()}
+                      </Text>
+                    </View>
+                    <View>
+                      <Text
+                        variant="eyebrow"
+                        style={{
+                          textAlign: "center",
+                          marginTop: 5,
+                          marginBottom: -5,
+                        }}
+                      >
+                        {["S", "M", "T", "W", "T", "F", "S"][index]}
+                      </Text>
+                    </View>
                   </View>
-                )
-            )}
+                </View>
+              ))}
+            </View>
+          </View>
         </View>
-      </View>
 
-      <View>
         <View style={cardStyles}>
-          <Text style={labelStyles}>By hour</Text>
+          <Text style={labelStyles}>Top views</Text>
           <View
             style={{
               flexDirection: "row",
-              height: 200,
               gap: 5,
-              marginTop: 10,
+              marginTop: 5,
             }}
           >
-            {data.byHour.map((day, index) => (
-              <View
-                key={index}
-                style={{
-                  flex: 1,
-                }}
-              >
-                <View style={{ flex: 1 }} />
-                <View
-                  style={{
-                    minHeight: 23,
-                    height: `${(day / Math.max(...data.byHour)) * 100}%`,
-                  }}
-                >
-                  <View
-                    style={{
-                      backgroundColor: addHslAlpha(theme[6], 0.7),
-                      borderRadius: 15,
-                      alignItems: "center",
-                      justifyContent: "flex-end",
-                      flex: 1,
-                      overflow: "visible",
-                    }}
-                  >
-                    <Text
-                      variant="eyebrow"
+            {Object.entries(data.insights?.viewCount || {})
+              .sort((a, b) => b[1] - a[1])
+              .map(
+                ([key, value]) =>
+                  COLLECTION_VIEWS[key] && (
+                    <View
                       style={{
-                        fontSize:
-                          (index % 12 === 0 ? 12 : index % 12) > 9 ? 7 : 12,
-                        fontFamily: "mono",
-                        textAlign: "center",
-                        marginBottom:
-                          (index % 12 === 0 ? 12 : index % 12) > 9 ? 8 : 4,
+                        height: 200,
+                        flex: 1,
+                        justifyContent: "flex-end",
                       }}
+                      key={key}
                     >
-                      {index % 12 === 0 ? 12 : index % 12}
-                    </Text>
-                  </View>
-                </View>
-              </View>
-            ))}
+                      <View
+                        style={{
+                          flexDirection: "column",
+                          backgroundColor: addHslAlpha(theme[6], 0.7),
+                          borderRadius: 15,
+                          height: `${Math.max(
+                            1,
+                            (value /
+                              Math.max(
+                                ...Object.values(data.insights?.viewCount || {})
+                              )) *
+                              100 -
+                              15
+                          )}%`,
+                          justifyContent: "flex-end",
+                          alignItems: "center",
+                          maxWidth: 35,
+                        }}
+                      />
+                      <Icon
+                        bold
+                        style={{
+                          color: theme[11],
+                          marginLeft: 7,
+                          marginTop: 5,
+                        }}
+                      >
+                        {COLLECTION_VIEWS[key]?.icon}
+                      </Icon>
+                    </View>
+                  )
+              )}
           </View>
         </View>
-      </View>
 
-      <MemberSince />
-    </View>
+        <View>
+          <View style={cardStyles}>
+            <Text style={labelStyles}>By hour</Text>
+            <View
+              style={{
+                flexDirection: "row",
+                height: 200,
+                gap: 5,
+                marginTop: 10,
+              }}
+            >
+              {data.byHour.map((day, index) => (
+                <View
+                  key={index}
+                  style={{
+                    flex: 1,
+                  }}
+                >
+                  <View style={{ flex: 1 }} />
+                  <View
+                    style={{
+                      minHeight: 23,
+                      height: `${(day / Math.max(...data.byHour)) * 100}%`,
+                    }}
+                  >
+                    <View
+                      style={{
+                        backgroundColor: addHslAlpha(theme[6], 0.7),
+                        borderRadius: 15,
+                        alignItems: "center",
+                        justifyContent: "flex-end",
+                        flex: 1,
+                        overflow: "visible",
+                      }}
+                    >
+                      <Text
+                        variant="eyebrow"
+                        style={{
+                          fontSize:
+                            (index % 12 === 0 ? 12 : index % 12) > 9 ? 7 : 12,
+                          fontFamily: "mono",
+                          textAlign: "center",
+                          marginBottom:
+                            (index % 12 === 0 ? 12 : index % 12) > 9 ? 8 : 4,
+                        }}
+                      >
+                        {index % 12 === 0 ? 12 : index % 12}
+                      </Text>
+                    </View>
+                  </View>
+                </View>
+              ))}
+            </View>
+          </View>
+        </View>
+
+        <MemberSince />
+      </View>
+    </>
   ) : (
     <View
       style={{
@@ -366,13 +426,7 @@ export default function Page() {
   const [year, setYear] = useState(new Date().getFullYear());
   const theme = useColorTheme();
   const shotRef = useRef(null);
-  const isDark = useDarkMode();
   const [banner, setBanner] = useState(false);
-
-  const needsMoreData =
-    data &&
-    (data.years.length === 0 ||
-      Object.keys(data.insights?.viewCount || {}).length === 0);
 
   return data ? (
     <>
@@ -405,57 +459,6 @@ export default function Page() {
           )}
         </View>
         <View style={{ opacity: banner ? 0 : 1, position: "relative" }}>
-          {needsMoreData && (
-            <>
-              <BlurView
-                experimentalBlurMethod="dimezisBlurView"
-                tint={isDark ? "dark" : "light"}
-                style={{
-                  position: "absolute",
-                  top: 0,
-                  left: 0,
-                  right: 0,
-                  bottom: 0,
-                  zIndex: 10,
-                }}
-              />
-              <View
-                style={{
-                  padding: 30,
-                  zIndex: 20,
-                  position: "absolute",
-                  top: 50,
-                  left: 0,
-                  right: 0,
-                  backgroundColor: addHslAlpha(theme[9], 0.05),
-                  marginHorizontal: 30,
-                  borderRadius: 30,
-                  justifyContent: "center",
-                }}
-              >
-                <Text
-                  style={{
-                    fontFamily: "serifText800",
-                    fontSize: 27,
-                    color: theme[11],
-                  }}
-                >
-                  We're getting your{"\n"}insights ready
-                </Text>
-                <Text
-                  style={{
-                    fontSize: 15,
-                    color: theme[11],
-                    opacity: 0.6,
-                    marginTop: 5,
-                  }}
-                >
-                  You'll be able to see your insights{"\n"}as you use Dysperse
-                  more
-                </Text>
-              </View>
-            </>
-          )}
           <ViewShot
             ref={shotRef}
             options={{

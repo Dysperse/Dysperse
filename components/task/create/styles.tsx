@@ -13,7 +13,7 @@ export const styles = StyleSheet.create({
     padding: 10,
     borderWidth: 1,
     borderColor: "gray",
-    zIndex: 100000000, // Ensure the menu is above other components
+    zIndex: 100000000,
   },
   attachmentCard: {
     borderRadius: 25,
@@ -32,3 +32,4 @@ export const styles = StyleSheet.create({
     marginTop: 15,
   },
 });
+

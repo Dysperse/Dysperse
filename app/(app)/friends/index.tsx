@@ -3,6 +3,7 @@ import { useUser } from "@/context/useUser";
 import { sendApiRequest } from "@/helpers/api";
 import { Avatar } from "@/ui/Avatar";
 import { Button } from "@/ui/Button";
+import { addHslAlpha } from "@/ui/color";
 import { useColorTheme } from "@/ui/color/theme-provider";
 import ErrorAlert from "@/ui/Error";
 import Icon from "@/ui/Icon";
@@ -17,10 +18,11 @@ import { FlashList } from "@shopify/flash-list";
 import dayjs from "dayjs";
 import * as Contacts from "expo-contacts";
 import { impactAsync, ImpactFeedbackStyle } from "expo-haptics";
+import { LinearGradient } from "expo-linear-gradient";
 import { router } from "expo-router";
 import { useEffect, useState } from "react";
 import { Keyboard, Linking, Platform, Share, View } from "react-native";
-import useSWR from "swr";
+import useSWR, { useSWRConfig } from "swr";
 
 export function FriendsList({
   onSelect,
@@ -164,6 +166,15 @@ export function FriendsList({
 
   return data ? (
     <View style={{ flex: 1 }}>
+      <LinearGradient
+        colors={[theme[2], addHslAlpha(theme[2], 0)]}
+        style={{
+          height: 50,
+          marginBottom: -50,
+          width: "100%",
+          zIndex: 1,
+        }}
+      />
       <FlashList
         key={search || "all"}
         keyboardShouldPersistTaps="handled"
@@ -352,11 +363,13 @@ export function FriendsList({
 function ContactBanner() {
   const theme = useColorTheme();
   const [hasContactsPermission, setHasContactsPermission] = useState(true);
+  const { mutate } = useSWRConfig();
 
   useEffect(() => {
     (async () => {
       const { status } = await Contacts.getPermissionsAsync();
       setHasContactsPermission(status === "granted");
+      mutate(() => true);
     })();
   }, []);
 
