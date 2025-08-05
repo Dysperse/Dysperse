@@ -695,9 +695,7 @@ export default function SignIn() {
 
               <Controller
                 control={control}
-                rules={{
-                  required: true,
-                }}
+                rules={{ required: true }}
                 render={({ field: { onChange } }) => (
                   <OtpInput
                     onFilled={(t) => {
