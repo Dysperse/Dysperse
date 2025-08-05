@@ -147,7 +147,8 @@
     "typescript": "~5.8.3",
     "use-debounce": "^10.0.4",
     "workbox-build": "^7.3.0",
-    "workbox-window": "^7.3.0"
+    "workbox-window": "^7.3.0",
+    "expo-store-review": "~8.1.5"
   },
   "devDependencies": {
     "@babel/core": "^7.24.6",

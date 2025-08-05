@@ -5,10 +5,32 @@ import { Button, ButtonText } from "@/ui/Button";
 import Icon from "@/ui/Icon";
 import Text from "@/ui/Text";
 import { useColorTheme } from "@/ui/color/theme-provider";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import { LinearGradient } from "expo-linear-gradient";
 import { router } from "expo-router";
+import * as StoreReview from "expo-store-review";
 import { useEffect } from "react";
 import { styles } from ".";
+
+function StoreReviewTrigger() {
+  const prompt = async () => {
+    const hasRequested = await AsyncStorage.getItem("hasRequestedReview");
+    if (hasRequested) return;
+
+    await AsyncStorage.setItem("hasRequestedReview", "true");
+    StoreReview.requestReview();
+  };
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      prompt();
+    }, 100);
+
+    return () => clearTimeout(timer);
+  }, []);
+
+  return null;
+}
 
 const SubmitButton = () => {
   const theme = useColorTheme();
@@ -117,6 +139,7 @@ export default function Page() {
       </Text>
       <PlannerButton />
       <SubmitButton />
+      <StoreReviewTrigger />
     </LinearGradient>
   );
 }
