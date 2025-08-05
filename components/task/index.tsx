@@ -511,7 +511,7 @@ const Task = memo(function Task({
                                 style={{
                                   width: 50,
                                   height: 30,
-                                  borderRadius: 99,
+                                  borderRadius: 10,
                                 }}
                               />
                             </Galeria.Image>
