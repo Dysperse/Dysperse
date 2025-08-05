@@ -132,7 +132,7 @@ export default ({ config }: ConfigContext): ExpoConfig =>
           "expo-contacts",
           {
             contactsPermission:
-              "Allow $(PRODUCT_NAME) to access your contacts.",
+              "$(PRODUCT_NAME) will use your contacts to help you find friends quicker.",
           },
         ],
         "expo-apple-authentication",
@@ -209,7 +209,8 @@ export default ({ config }: ConfigContext): ExpoConfig =>
         [
           "expo-camera",
           {
-            cameraPermission: "Allow $(PRODUCT_NAME) to access your camera.",
+            cameraPermission:
+              "$(PRODUCT_NAME) will use your camera to add photos to tasks, and enable QR code desktop login",
           },
         ],
         [
@@ -234,9 +235,9 @@ export default ({ config }: ConfigContext): ExpoConfig =>
           "expo-speech-recognition",
           {
             microphonePermission:
-              "Allow $(PRODUCT_NAME) to use the microphone.",
+              "$(PRODUCT_NAME) will use your microphone to enable text-to-speech for task creation.",
             speechRecognitionPermission:
-              "Allow $(PRODUCT_NAME) to use speech recognition.",
+              "$(PRODUCT_NAME) will use speech recognition to transcribe your tasks.",
             androidSpeechServicePackages: [
               "com.google.android.googlequicksearchbox",
             ],
@@ -262,7 +263,7 @@ export default ({ config }: ConfigContext): ExpoConfig =>
           "expo-location",
           {
             locationAlwaysAndWhenInUsePermission:
-              "Allow $(PRODUCT_NAME) to use your location.",
+              "$(PRODUCT_NAME) will use your location to enable weather widgets & task location features.",
           },
         ],
         [
@@ -275,8 +276,10 @@ export default ({ config }: ConfigContext): ExpoConfig =>
         [
           "expo-media-library",
           {
-            photosPermission: "Allow $(PRODUCT_NAME) to access your photos.",
-            savePhotosPermission: "Allow $(PRODUCT_NAME) to save photos.",
+            photosPermission:
+              "$(PRODUCT_NAME) uses photo permissions so you can add images to tasks.",
+            savePhotosPermission:
+              "$(PRODUCT_NAME) saves photos to your library so you can easily share insights with friends.",
             isAccessMediaLocationEnabled: true,
           },
         ],
