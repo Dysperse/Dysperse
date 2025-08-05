@@ -2,17 +2,17 @@ import { sendApiRequest } from "@/helpers/api";
 import { useResponsiveBreakpoints } from "@/helpers/useResponsiveBreakpoints";
 import { Button } from "@/ui/Button";
 import { useColorTheme } from "@/ui/color/theme-provider";
-import { DatePicker } from "@/ui/DatePicker";
 import Icon from "@/ui/Icon";
 import { ListItemButton } from "@/ui/ListItemButton";
 import ListItemText from "@/ui/ListItemText";
+import MenuPopover from "@/ui/MenuPopover";
 import Spinner from "@/ui/Spinner";
 import Text from "@/ui/Text";
 import TextField from "@/ui/TextArea";
 import { useDidUpdate } from "@/utils/useDidUpdate";
 import dayjs from "dayjs";
 import { router, useLocalSearchParams } from "expo-router";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import { Keyboard, Linking, View } from "react-native";
 import { ScrollView } from "react-native-gesture-handler";
 import Animated, { FadeIn } from "react-native-reanimated";
@@ -89,8 +89,6 @@ function Content() {
   }, [store.appleAuthFillPassword, password]);
 
   const debouncedEmail = useDebouncedValue(email, 500);
-
-  const pickerRef = useRef(null);
 
   useEffect(() => {
     try {
@@ -252,21 +250,50 @@ function Content() {
         }}
       >
         <Text variant="eyebrow">Birthday</Text>
-        <DatePicker
-          value={{
-            date: birthday,
-          }}
-          setValue={(v) => setBirthday(v.date ? dayjs(v.date) : null)}
-          ref={pickerRef}
-          ignoreYear
-          ignoreTime
-        />
-        <Button
-          variant="filled"
-          text={birthday ? dayjs(birthday).format("MMMM Do") : "Pick a date"}
-          icon="calendar_today"
-          onPress={() => pickerRef.current.present()}
-        />
+        <View style={{ flexDirection: "row", gap: 10 }}>
+          <MenuPopover
+            options={Array.from({ length: 12 }, (_, i) => ({
+              text:
+                dayjs().month(i).format("MMMM").charAt(0).toUpperCase() +
+                dayjs().month(i).format("MMMM").slice(1),
+              value: i,
+              selected: birthday && dayjs(birthday).month() === i,
+              callback: () => {
+                const current = birthday ? dayjs(birthday) : dayjs();
+                setBirthday(current.month(i).toDate());
+              },
+            }))}
+            scrollViewStyle={{ height: 300 }}
+            trigger={
+              <Button
+                variant="filled"
+                text={birthday ? dayjs(birthday).format("MMMM") : "Month"}
+              />
+            }
+          />
+          <MenuPopover
+            options={(() => {
+              const month = birthday ? dayjs(birthday).month() : 0;
+              const daysInMonth = dayjs().month(month).daysInMonth();
+              return Array.from({ length: daysInMonth }, (_, i) => ({
+                text: (i + 1).toString(),
+                value: i + 1,
+                selected: birthday && dayjs(birthday).date() === i + 1,
+                callback: () => {
+                  const current = birthday ? dayjs(birthday) : dayjs();
+                  setBirthday(current.date(i + 1).toDate());
+                },
+              }));
+            })()}
+            scrollViewStyle={{ maxHeight: 300 }}
+            trigger={
+              <Button
+                variant="filled"
+                text={birthday ? dayjs(birthday).format("D") : "Day"}
+              />
+            }
+          />
+        </View>
       </Animated.View>
       <Animated.View
         entering={FadeIn.delay(1400)}

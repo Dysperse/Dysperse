@@ -69,10 +69,9 @@ export default function Page() {
     );
   }
 
-  const handleBarCodeScanned = async (data) => {
+  const handleBarCodeScanned = async ({ data }) => {
     try {
-      const { raw } = data;
-      if (raw.includes("?token=") && !isLoading) {
+      if (data.includes("?token=") && !isLoading) {
         setIsLoading(true);
         const res = await sendApiRequest(
           session,
@@ -81,7 +80,7 @@ export default function Page() {
           {},
           {
             body: JSON.stringify({
-              token: raw.split("?token=")[1],
+              token: data.split("?token=")[1],
               deviceType: Device.deviceType,
               deviceName:
                 Device.deviceName ||
@@ -100,9 +99,8 @@ export default function Page() {
       }
     } catch (e) {
       console.error(e);
-      Toast.show({ type: "error" });
-    } finally {
       setIsLoading(false);
+      Toast.show({ type: "error" });
     }
   };
 

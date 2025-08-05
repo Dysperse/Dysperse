@@ -97,7 +97,12 @@ function BottomSheet(props: DBottomSheetProps) {
       }}
       containerStyle={[
         styles.container,
-        { maxWidth: props.maxWidth || 500 } as any,
+        {
+          maxWidth: props.maxWidth || 500,
+          marginLeft: "50%",
+          width: "100%",
+          transform: [{ translateX: "-50%" }],
+        } as any,
       ]}
       backgroundStyle={[styles.background, { backgroundColor: theme[2] }]}
       handleIndicatorStyle={{ backgroundColor: theme[5], width: 50 }}
