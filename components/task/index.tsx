@@ -509,7 +509,7 @@ const Task = memo(function Task({
                               <Image
                                 source={{ uri: item.data }}
                                 style={{
-                                  width: 30,
+                                  width: 50,
                                   height: 30,
                                   borderRadius: 99,
                                 }}
