@@ -13,9 +13,11 @@ import Text from "@/ui/Text";
 import { useColor } from "@/ui/color";
 import { useColorTheme } from "@/ui/color/theme-provider";
 import capitalizeFirstLetter from "@/utils/capitalizeFirstLetter";
+import { Galeria } from "@nandorojo/galeria";
 import dayjs from "dayjs";
 import { setUrlAsync } from "expo-clipboard";
 import { impactAsync, ImpactFeedbackStyle } from "expo-haptics";
+import { Image } from "expo-image";
 import { router } from "expo-router";
 import React, { memo, useMemo } from "react";
 import { Linking, Platform, View } from "react-native";
@@ -493,6 +495,23 @@ const Task = memo(function Task({
                   )}
                   {showLabel && task.label && <TaskLabelChip task={task} />}
                   <TaskNoteChips note={task.note} />
+                  {task.attachments.length > 0 &&
+                    task.attachments
+                      .filter((a) => a.type === "IMAGE" && a.data)
+                      .map((item) => (
+                        <Galeria urls={[item.data]} key={item.data}>
+                          <Galeria.Image>
+                            <Image
+                              source={{ uri: item.data }}
+                              style={{
+                                width: 30,
+                                height: 30,
+                                borderRadius: 99,
+                              }}
+                            />
+                          </Galeria.Image>
+                        </Galeria>
+                      ))}
                 </View>
               </View>
             </View>
