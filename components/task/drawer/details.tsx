@@ -863,21 +863,23 @@ function TaskStoryPoints() {
 function TaskAttachments() {
   const { task } = useTaskDrawerContext();
 
+  const images = task.attachments?.filter(
+    (a) => a.type === "IMAGE" && isValidHttpUrl(a.data)
+  );
+
   return (
-    task.attachments?.length > 0 && (
+    images?.length > 0 && (
       <View>
         <Button
           dense
           icon="image"
           disabled
           style={{ gap: 10, marginRight: "auto", opacity: 0.6 }}
-          text={`${task.attachments.length} attachment${
-            task.attachments.length > 1 ? "s" : ""
-          }`}
+          text={`${images.length} attachment${images.length > 1 ? "s" : ""}`}
         />
 
         <BottomSheetFlashList
-          data={task.attachments.filter((t) => t.data)}
+          data={images}
           keyExtractor={(a) => a.data}
           horizontal
           estimatedItemSize={100}
