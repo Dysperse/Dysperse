@@ -60,7 +60,6 @@
     "expo-apple-authentication": "~7.2.4",
     "expo-application": "~6.1.5",
     "expo-av": "~15.1.7",
-    "expo-background-fetch": "~13.1.6",
     "expo-background-task": "~0.2.8",
     "expo-battery": "~9.1.4",
     "expo-blur": "~14.1.5",
