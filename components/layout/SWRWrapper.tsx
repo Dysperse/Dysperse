@@ -1,6 +1,6 @@
 import { useSession } from "@/context/AuthProvider";
 import * as FileSystem from "expo-file-system";
-import React, { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { AppState, InteractionManager, Platform } from "react-native";
 import "react-native-gesture-handler";
 import { SWRConfig } from "swr";
@@ -22,6 +22,26 @@ function localStorageProvider() {
 
   // We still use the map for write & read for performance.
   return map;
+}
+
+export function CLEAR_APP_CACHE() {
+  if (Platform.OS === "web") {
+    (window as any).disableSaveData = true;
+    localStorage.removeItem("app-cache");
+    window.location.reload();
+    return;
+  } else if (Platform.OS === "android") {
+    // Cache file exists in the cache directory FileSystem.cacheDirectory + "dysperse-cache/cache.json"
+    // Delete the file
+
+    const cacheFilePath =
+      FileSystem.cacheDirectory + "dysperse-cache/cache.json";
+    FileSystem.deleteAsync(cacheFilePath, {
+      idempotent: true,
+    }).catch((error) => {
+      console.error("Failed to delete cache file:", error);
+    });
+  }
 }
 
 async function fileSystemProvider(cacheData) {

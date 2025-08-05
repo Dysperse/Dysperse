@@ -1,5 +1,6 @@
+import { CLEAR_APP_CACHE } from "@/components/layout/SWRWrapper";
 import { createContext, useContext, type PropsWithChildren } from "react";
-import { Platform } from "react-native";
+import SpotlightSearch from "react-native-spotlight-search";
 import { useStorageState } from "./useStorageState";
 
 const AuthContext = createContext<{
@@ -17,6 +18,7 @@ const AuthContext = createContext<{
 // This hook can be used to access the user info.
 export function useSession() {
   const value = useContext(AuthContext);
+
   if (process.env.NODE_ENV !== "production") {
     if (!value) {
     }
@@ -37,7 +39,8 @@ export function SessionProvider({ children }: PropsWithChildren) {
         signOut: () => {
           setSession(null);
           (window as any).disableSaveData = true;
-          if (Platform.OS === "web") localStorage.clear();
+          SpotlightSearch.deleteAllSearchItems();
+          CLEAR_APP_CACHE();
         },
         session,
         isLoading,

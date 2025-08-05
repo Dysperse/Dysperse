@@ -254,7 +254,7 @@ export default function SignIn() {
       style={{
         flex: 1,
         justifyContent: "center",
-        paddingTop: breakpoints.md ? 40 : 10,
+        paddingTop: breakpoints.lg ? 40 : breakpoints.md ? 20 : 10,
         paddingBottom: 0,
         padding: breakpoints.md ? 40 : 20,
         paddingLeft: breakpoints.md ? 40 : undefined,

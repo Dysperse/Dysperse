@@ -3,7 +3,7 @@ import { ArcSystemBar } from "@/components/layout/arcAnimations";
 import { COLLECTION_VIEWS } from "@/components/layout/command-palette/list";
 import { useResponsiveBreakpoints } from "@/helpers/useResponsiveBreakpoints";
 import { Button } from "@/ui/Button";
-import { addHslAlpha } from "@/ui/color";
+import { addHslAlpha, useDarkMode } from "@/ui/color";
 import { useColorTheme } from "@/ui/color/theme-provider";
 import ErrorAlert from "@/ui/Error";
 import Icon from "@/ui/Icon";
@@ -11,6 +11,7 @@ import Logo from "@/ui/logo";
 import MenuPopover from "@/ui/MenuPopover";
 import Spinner from "@/ui/Spinner";
 import Text from "@/ui/Text";
+import { BlurView } from "expo-blur";
 import { shareAsync } from "expo-sharing";
 import { useRef, useState } from "react";
 import { Platform, View } from "react-native";
@@ -298,21 +299,11 @@ function Insights({ year }) {
                           (index % 12 === 0 ? 12 : index % 12) > 9 ? 7 : 12,
                         fontFamily: "mono",
                         textAlign: "center",
+                        marginBottom:
+                          (index % 12 === 0 ? 12 : index % 12) > 9 ? 8 : 4,
                       }}
                     >
-                      {/* hour of day */}
                       {index % 12 === 0 ? 12 : index % 12}
-                      {"\n"}
-                      <Text
-                        style={{
-                          fontSize: 7,
-                          fontFamily: "mono",
-                          opacity: 0.8,
-                          color: theme[11],
-                        }}
-                      >
-                        {index < 12 ? "AM" : "PM"}
-                      </Text>
                     </Text>
                   </View>
                 </View>
@@ -375,7 +366,13 @@ export default function Page() {
   const [year, setYear] = useState(new Date().getFullYear());
   const theme = useColorTheme();
   const shotRef = useRef(null);
+  const isDark = useDarkMode();
   const [banner, setBanner] = useState(false);
+
+  const needsMoreData =
+    data &&
+    (data.years.length === 0 ||
+      Object.keys(data.insights?.viewCount || {}).length === 0);
 
   return data ? (
     <>
@@ -407,7 +404,58 @@ export default function Page() {
             <ShareInsights setBanner={setBanner} shotRef={shotRef} />
           )}
         </View>
-        <View style={{ opacity: banner ? 0 : 1 }}>
+        <View style={{ opacity: banner ? 0 : 1, position: "relative" }}>
+          {needsMoreData && (
+            <>
+              <BlurView
+                experimentalBlurMethod="dimezisBlurView"
+                tint={isDark ? "dark" : "light"}
+                style={{
+                  position: "absolute",
+                  top: 0,
+                  left: 0,
+                  right: 0,
+                  bottom: 0,
+                  zIndex: 10,
+                }}
+              />
+              <View
+                style={{
+                  padding: 30,
+                  zIndex: 20,
+                  position: "absolute",
+                  top: 50,
+                  left: 0,
+                  right: 0,
+                  backgroundColor: addHslAlpha(theme[9], 0.05),
+                  marginHorizontal: 30,
+                  borderRadius: 30,
+                  justifyContent: "center",
+                }}
+              >
+                <Text
+                  style={{
+                    fontFamily: "serifText800",
+                    fontSize: 27,
+                    color: theme[11],
+                  }}
+                >
+                  We're getting your{"\n"}insights ready
+                </Text>
+                <Text
+                  style={{
+                    fontSize: 15,
+                    color: theme[11],
+                    opacity: 0.6,
+                    marginTop: 5,
+                  }}
+                >
+                  You'll be able to see your insights{"\n"}as you use Dysperse
+                  more
+                </Text>
+              </View>
+            </>
+          )}
           <ViewShot
             ref={shotRef}
             options={{

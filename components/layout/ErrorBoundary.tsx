@@ -5,12 +5,11 @@ import Icon from "@/ui/Icon";
 import Text from "@/ui/Text";
 import { useColor } from "@/ui/color";
 import { ColorThemeProvider } from "@/ui/color/theme-provider";
-import * as FileSystem from "expo-file-system";
 import * as Updates from "expo-updates";
 import React from "react";
 import { Platform, View, useWindowDimensions } from "react-native";
 import "react-native-gesture-handler";
-import SpotlightSearch from "react-native-spotlight-search";
+import { CLEAR_APP_CACHE } from "./SWRWrapper";
 
 export function ErrorBoundaryComponent() {
   const theme = useColor("mint");
@@ -68,23 +67,7 @@ export function ErrorBoundaryComponent() {
 
             <Button
               onPress={() => {
-                if (Platform.OS === "web") {
-                  (window as any).disableSaveData = true;
-                  localStorage.removeItem("app-cache");
-                  window.location.reload();
-                  return;
-                } else if (Platform.OS === "android") {
-                  // Cache file exists in the cache directory FileSystem.cacheDirectory + "dysperse-cache/cache.json"
-                  // Delete the file
-
-                  const cacheFilePath =
-                    FileSystem.cacheDirectory + "dysperse-cache/cache.json";
-                  FileSystem.deleteAsync(cacheFilePath, {
-                    idempotent: true,
-                  }).catch((error) => {
-                    console.error("Failed to delete cache file:", error);
-                  });
-                }
+                CLEAR_APP_CACHE();
                 Updates.reloadAsync();
               }}
               variant="filled"
@@ -95,12 +78,7 @@ export function ErrorBoundaryComponent() {
             </Button>
             <Button
               onPress={() => {
-                if (Platform.OS === "web") {
-                  localStorage.clear();
-                  window.location.reload();
-                }
                 signOut();
-                SpotlightSearch.deleteAllItems();
               }}
               variant="filled"
               containerStyle={{ marginTop: 10 }}
