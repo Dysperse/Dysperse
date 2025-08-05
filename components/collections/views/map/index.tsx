@@ -517,7 +517,7 @@ export default function MapView() {
           animatedFlexStyle,
           {
             justifyContent: "flex-start",
-            height: 0,
+            height: breakpoints.md ? "100%" : 0,
             overflow: "hidden",
           },
         ]}
