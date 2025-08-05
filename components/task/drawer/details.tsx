@@ -21,8 +21,8 @@ import SkeletonContainer from "@/ui/Skeleton/container";
 import { LinearSkeletonArray } from "@/ui/Skeleton/linear";
 import Text from "@/ui/Text";
 import capitalizeFirstLetter from "@/utils/capitalizeFirstLetter";
-import { BottomSheetFlashList } from "@gorhom/bottom-sheet";
 import { Galeria } from "@nandorojo/galeria";
+import { FlashList } from "@shopify/flash-list";
 import dayjs from "dayjs";
 import { Image } from "expo-image";
 import { LinearGradient } from "expo-linear-gradient";
@@ -859,13 +859,14 @@ function TaskStoryPoints() {
     />
   );
 }
+const src = (s) => (typeof s === "string" ? { uri: s } : s); // 🤷‍♂️
 
 function TaskAttachments() {
   const { task } = useTaskDrawerContext();
 
-  const images = task.attachments?.filter(
-    (a) => a.type === "IMAGE" && isValidHttpUrl(a.data)
-  );
+  const images = task.attachments
+    ?.filter((a) => a.type === "IMAGE" && isValidHttpUrl(a.data))
+    .map((a) => a.data);
 
   return (
     images?.length > 0 && (
@@ -878,16 +879,17 @@ function TaskAttachments() {
           text={`${images.length} attachment${images.length > 1 ? "s" : ""}`}
         />
 
-        <BottomSheetFlashList
-          data={images}
-          keyExtractor={(a) => a.data}
-          horizontal
-          estimatedItemSize={100}
-          renderItem={({ item }: any) => (
-            <Galeria urls={[item.data]}>
-              <Galeria.Image>
+        <Galeria urls={images}>
+          <FlashList
+            data={images}
+            keyExtractor={(a) => a}
+            horizontal
+            estimatedItemSize={100}
+            renderItem={({ item, index }: any) => (
+              <Galeria.Image index={index}>
                 <Image
-                  source={{ uri: item.data }}
+                  recyclingKey={item + index}
+                  source={src(item)}
                   style={{
                     width: 50,
                     height: 50,
@@ -896,10 +898,13 @@ function TaskAttachments() {
                   }}
                 />
               </Galeria.Image>
-            </Galeria>
-          )}
-          contentContainerStyle={{ paddingVertical: 5, paddingHorizontal: 45 }}
-        />
+            )}
+            contentContainerStyle={{
+              paddingVertical: 5,
+              paddingHorizontal: 45,
+            }}
+          />
+        </Galeria>
       </View>
     )
   );

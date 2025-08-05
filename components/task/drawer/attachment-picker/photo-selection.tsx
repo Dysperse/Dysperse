@@ -117,6 +117,8 @@ export function PhotoSelection({ handleBack }) {
             variant="filled"
             onPress={async () => {
               const { image } = await handleImageUpload(item.id);
+              console.log("Image uploaded:", image.display_url);
+
               updateTask({
                 attachments: [
                   ...(task.attachments || []),

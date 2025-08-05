@@ -495,23 +495,30 @@ const Task = memo(function Task({
                   )}
                   {showLabel && task.label && <TaskLabelChip task={task} />}
                   <TaskNoteChips note={task.note} />
-                  {task.attachments.length > 0 &&
-                    task.attachments
-                      .filter((a) => a.type === "IMAGE" && a.data)
-                      .map((item) => (
-                        <Galeria urls={[item.data]} key={item.data}>
-                          <Galeria.Image>
-                            <Image
-                              source={{ uri: item.data }}
-                              style={{
-                                width: 30,
-                                height: 30,
-                                borderRadius: 99,
-                              }}
-                            />
-                          </Galeria.Image>
-                        </Galeria>
-                      ))}
+                  {task.attachments.length > 0 && (
+                    <>
+                      <Galeria
+                        urls={task.attachments
+                          .filter((a) => a.type === "IMAGE" && a.data)
+                          .map((i) => i.data)}
+                      >
+                        {task.attachments
+                          .filter((a) => a.type === "IMAGE" && a.data)
+                          .map((item, i) => (
+                            <Galeria.Image index={i} key={item.data}>
+                              <Image
+                                source={{ uri: item.data }}
+                                style={{
+                                  width: 30,
+                                  height: 30,
+                                  borderRadius: 99,
+                                }}
+                              />
+                            </Galeria.Image>
+                          ))}
+                      </Galeria>
+                    </>
+                  )}
                 </View>
               </View>
             </View>
