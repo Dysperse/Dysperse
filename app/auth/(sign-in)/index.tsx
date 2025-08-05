@@ -24,6 +24,7 @@ function QrLogin() {
   const [data, setData] = useState<any>(null);
   const [error, setError] = useState(false);
   const { signIn } = useSession();
+
   useEffect(() => {
     try {
       fetch(`${process.env.EXPO_PUBLIC_API_URL}/auth/qr`, {
@@ -37,6 +38,7 @@ function QrLogin() {
       Toast.show({ type: "error" });
     }
   }, []);
+
   useEffect(() => {
     const t: any = () => {
       if (data) {
@@ -58,6 +60,16 @@ function QrLogin() {
     setInterval(t, 5000);
     return () => clearInterval(t);
   }, [signIn, data]);
+
+  useEffect(() => {
+    return () => {
+      setTimeout(() => {
+        setData(null);
+        setError(false);
+      });
+    };
+  }, []);
+
   return data ? (
     <View style={{ alignItems: "center", padding: 20, gap: 5 }}>
       <View
