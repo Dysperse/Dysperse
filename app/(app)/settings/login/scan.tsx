@@ -95,7 +95,8 @@ export default function Page() {
           throw new Error(res.error);
         }
         Toast.show({ type: "success", text1: "Logged in successfully!" });
-        router.replace("/settings");
+        if (router.canGoBack()) router.back();
+        else router.replace("/settings");
       }
     } catch (e) {
       console.error(e);
