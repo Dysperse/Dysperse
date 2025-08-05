@@ -1,5 +1,6 @@
 import Icon from "@/ui/Icon";
 import IconButton from "@/ui/IconButton";
+import Spinner from "@/ui/Spinner";
 import { addHslAlpha } from "@/ui/color";
 import { useColorTheme } from "@/ui/color/theme-provider";
 import { Image } from "expo-image";
@@ -16,7 +17,38 @@ export function PhotoSelection({ handleBack }) {
   const { task, updateTask } = useTaskDrawerContext();
 
   const [photos, setPhotos] = useState([]);
+  const [loading, setLoading] = useState(null);
   const [permission, requestPermission] = MediaLibrary.usePermissions();
+
+  const handleImageUpload = async (id) => {
+    setLoading(id);
+    const t = await MediaLibrary.getAssetInfoAsync(id);
+    const formData = new FormData();
+
+    // Attach "source", submitting as multipart/form-data
+    formData.append("source", {
+      uri: t.localUri,
+      type: t.mediaType || "image/jpeg", // or whatever the mime type is
+      name: t.filename || "upload.jpg", // a filename is required
+    });
+
+    try {
+      const res = await fetch("https://api.dysperse.com/upload", {
+        method: "POST",
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+        body: formData,
+      });
+
+      const data = await res.json();
+      console.log("Upload successful:", data);
+      setLoading(null);
+      return data;
+    } catch (err) {
+      console.error("Upload failed:", err);
+    }
+  };
 
   useEffect(() => {
     const getPhotos = async () => {
@@ -83,11 +115,36 @@ export function PhotoSelection({ handleBack }) {
           <IconButton
             size={100}
             variant="filled"
-            onPress={() => {
-              Toast.show({ type: "info", text1: "Coming soon!" });
+            onPress={async () => {
+              const { image } = await handleImageUpload(item.id);
+              updateTask({
+                attachments: [
+                  ...(task.attachments || []),
+                  { data: image?.display_url, type: "IMAGE" },
+                ],
+              });
+              handleBack();
             }}
+            disabled={Boolean(loading)}
             style={{ borderRadius: 20, marginRight: 7, overflow: "hidden" }}
           >
+            {loading === item.id && (
+              <View
+                style={{
+                  position: "absolute",
+                  top: 0,
+                  left: 0,
+                  right: 0,
+                  bottom: 0,
+                  backgroundColor: addHslAlpha(theme[1], 0.8),
+                  justifyContent: "center",
+                  alignItems: "center",
+                  zIndex: 1,
+                }}
+              >
+                <Spinner />
+              </View>
+            )}
             <Image
               source={{ uri: item.uri }}
               style={{
@@ -102,3 +159,4 @@ export function PhotoSelection({ handleBack }) {
     </View>
   );
 }
+

@@ -21,7 +21,10 @@ import SkeletonContainer from "@/ui/Skeleton/container";
 import { LinearSkeletonArray } from "@/ui/Skeleton/linear";
 import Text from "@/ui/Text";
 import capitalizeFirstLetter from "@/utils/capitalizeFirstLetter";
+import { BottomSheetFlashList } from "@gorhom/bottom-sheet";
+import { Galeria } from "@nandorojo/galeria";
 import dayjs from "dayjs";
+import { Image } from "expo-image";
 import { LinearGradient } from "expo-linear-gradient";
 import { useGlobalSearchParams } from "expo-router";
 import React, { useRef } from "react";
@@ -857,6 +860,49 @@ function TaskStoryPoints() {
   );
 }
 
+function TaskAttachments() {
+  const { task } = useTaskDrawerContext();
+
+  return (
+    task.attachments?.length > 0 && (
+      <View>
+        <Button
+          dense
+          icon="image"
+          disabled
+          style={{ gap: 10, marginRight: "auto", opacity: 0.6 }}
+          text={`${task.attachments.length} attachment${
+            task.attachments.length > 1 ? "s" : ""
+          }`}
+        />
+
+        <BottomSheetFlashList
+          data={task.attachments.filter((t) => t.data)}
+          keyExtractor={(a) => a.data}
+          horizontal
+          estimatedItemSize={100}
+          renderItem={({ item }: any) => (
+            <Galeria urls={[item.data]}>
+              <Galeria.Image>
+                <Image
+                  source={{ uri: item.data }}
+                  style={{
+                    width: 50,
+                    height: 50,
+                    borderRadius: 10,
+                    marginRight: 10,
+                  }}
+                />
+              </Galeria.Image>
+            </Galeria>
+          )}
+          contentContainerStyle={{ paddingVertical: 5, paddingHorizontal: 45 }}
+        />
+      </View>
+    )
+  );
+}
+
 export function TaskDetails({ labelPickerRef }) {
   const { task, updateTask, isReadOnly } = useTaskDrawerContext();
   const editorRef = useRef(null);
@@ -928,6 +974,7 @@ export function TaskDetails({ labelPickerRef }) {
         task.parentTaskId ? null : (
           <SubtaskList />
         )}
+        <TaskAttachments />
         <TaskNote task={task} ref={editorRef} updateTask={updateTask} />
       </View>
     </View>
