@@ -495,7 +495,7 @@ const Task = memo(function Task({
                   )}
                   {showLabel && task.label && <TaskLabelChip task={task} />}
                   <TaskNoteChips note={task.note} />
-                  {task.attachments.length > 0 && (
+                  {task.attachments?.length > 0 && (
                     <>
                       <Galeria
                         urls={task.attachments
