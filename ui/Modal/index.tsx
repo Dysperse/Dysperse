@@ -95,10 +95,10 @@ const Modal = (
 
   const paddingValue = useSharedValue(insets.bottom);
   useEffect(() => {
-    Keyboard.addListener("keyboardDidHide", () => {
+    Keyboard.addListener("keyboardWillHide", () => {
       paddingValue.value = insets.bottom;
     });
-    Keyboard.addListener("keyboardDidShow", () => {
+    Keyboard.addListener("keyboardWillShow", () => {
       paddingValue.value = 15;
     });
   }, [insets, paddingValue]);

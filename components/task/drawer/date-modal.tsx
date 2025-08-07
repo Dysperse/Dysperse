@@ -238,7 +238,7 @@ function TaskDateModalContent({ task, updateTask }) {
               search,
             }))
           : []),
-        lastUsedDate && {
+        dayjs(lastUsedDate).isValid() && {
           icon: "history",
           primary: "Last used date",
           secondary: `${lastUsedDate.format("dddd, MMMM Do")} • ${

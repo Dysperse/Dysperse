@@ -1,6 +1,6 @@
 import { useSession } from "@/context/AuthProvider";
 import { useResponsiveBreakpoints } from "@/helpers/useResponsiveBreakpoints";
-import { Button, ButtonText } from "@/ui/Button";
+import { Button } from "@/ui/Button";
 import Icon from "@/ui/Icon";
 import Text from "@/ui/Text";
 import { useColor } from "@/ui/color";
@@ -72,20 +72,22 @@ export function ErrorBoundaryComponent() {
               }}
               variant="filled"
               containerStyle={{ marginTop: 10 }}
-            >
-              <ButtonText>Reload</ButtonText>
-              <Icon>loop</Icon>
-            </Button>
+              text="Reload"
+              icon="refresh"
+              bold
+              large
+            />
             <Button
               onPress={() => {
                 signOut();
               }}
               variant="filled"
               containerStyle={{ marginTop: 10 }}
-            >
-              <ButtonText>Sign out</ButtonText>
-              <Icon>logout</Icon>
-            </Button>
+              text="Sign out"
+              icon="logout"
+              bold
+              large
+            />
           </View>
         </View>
       </View>

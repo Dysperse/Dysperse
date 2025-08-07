@@ -28,6 +28,8 @@ import advancedFormat from "dayjs/plugin/advancedFormat";
 import customParseFormat from "dayjs/plugin/customParseFormat";
 import isBetween from "dayjs/plugin/isBetween";
 import isToday from "dayjs/plugin/isToday";
+import isTomorrow from "dayjs/plugin/isTomorrow";
+import isYesterday from "dayjs/plugin/isYesterday";
 import isoWeek from "dayjs/plugin/isoWeek";
 import relativeTime from "dayjs/plugin/relativeTime";
 import timezone from "dayjs/plugin/timezone";
@@ -62,6 +64,8 @@ import Toast from "react-native-toast-message";
 import "react-native-url-polyfill/auto";
 import useSWR from "swr";
 
+dayjs.extend(isYesterday);
+dayjs.extend(isTomorrow);
 dayjs.extend(weekOfYear);
 dayjs.extend(customParseFormat);
 dayjs.extend(timezone);
