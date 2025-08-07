@@ -3,12 +3,13 @@ import { useResponsiveBreakpoints } from "@/helpers/useResponsiveBreakpoints";
 import { Button, ButtonText } from "@/ui/Button";
 import ErrorAlert from "@/ui/Error";
 import Icon from "@/ui/Icon";
+import Spinner from "@/ui/Spinner";
 import Text from "@/ui/Text";
 import { useColorTheme } from "@/ui/color/theme-provider";
 import { FlashList } from "@shopify/flash-list";
 import dayjs from "dayjs";
 import { LinearGradient } from "expo-linear-gradient";
-import { router } from "expo-router";
+import { Redirect, router } from "expo-router";
 import { useEffect } from "react";
 import { View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
@@ -125,10 +126,22 @@ export default function Page() {
   ).sort((a, b) => dayjs(a.start).diff(dayjs(b.start)));
 
   useEffect(() => {
-    if (filteredTasks.length === 0) router.replace("/plan/3");
+    // if (filteredTasks.length === 0) router.replace("/plan/3");
   }, [filteredTasks]);
 
-  return (
+  return filteredTasks.length === 0 ? (
+    <View
+      style={{
+        flex: 1,
+        alignItems: "center",
+        justifyContent: "center",
+        backgroundColor: theme[2],
+      }}
+    >
+      <Redirect href="/plan/3" />
+      <Spinner />
+    </View>
+  ) : (
     <LinearGradient colors={[theme[2], theme[3]]} style={{ flex: 1 }}>
       {error && <ErrorAlert />}
       <FlashList

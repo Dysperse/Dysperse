@@ -23,7 +23,7 @@ import capitalizeFirstLetter from "@/utils/capitalizeFirstLetter";
 import dayjs from "dayjs";
 import { impactAsync, ImpactFeedbackStyle } from "expo-haptics";
 import { LinearGradient } from "expo-linear-gradient";
-import { router } from "expo-router";
+import { Redirect, router } from "expo-router";
 import { useEffect, useMemo, useState } from "react";
 import { Pressable, StyleSheet, View } from "react-native";
 import { ScrollView } from "react-native-gesture-handler";
@@ -571,18 +571,24 @@ export default function Page() {
       )
     : [];
 
-  useEffect(() => {
-    if (data && todaysTasks.length === 0) {
-      router.replace("/plan/4");
-    }
-  }, [todaysTasks]);
-
   const [createdTasks, setCreatedTasks] = useState([]);
   const [stage, setStage] = useState<0 | 1 | 2>(0);
 
   const breakpoints = useResponsiveBreakpoints();
 
-  return (
+  return data && todaysTasks.length === 0 ? (
+    <View
+      style={{
+        flex: 1,
+        alignItems: "center",
+        justifyContent: "center",
+        backgroundColor: theme[2],
+      }}
+    >
+      <Redirect href="/plan/4" />
+      <Spinner />
+    </View>
+  ) : (
     <LinearGradient colors={[theme[2], theme[3]]} style={{ flex: 1 }}>
       <ScrollView
         centerContent

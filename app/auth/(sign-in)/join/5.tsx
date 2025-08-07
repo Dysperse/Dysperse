@@ -13,8 +13,8 @@ import { useDidUpdate } from "@/utils/useDidUpdate";
 import dayjs from "dayjs";
 import { router, useLocalSearchParams } from "expo-router";
 import { useEffect, useState } from "react";
-import { Keyboard, Linking, View } from "react-native";
-import { ScrollView } from "react-native-gesture-handler";
+import { Linking, View } from "react-native";
+import { KeyboardAwareScrollView } from "react-native-keyboard-controller";
 import Animated, { FadeIn } from "react-native-reanimated";
 import { useSignupContext } from "../_layout";
 
@@ -362,9 +362,9 @@ function Content() {
 
 export default function Page() {
   return (
-    <ScrollView onScrollBeginDrag={Keyboard.dismiss}>
+    <KeyboardAwareScrollView>
       <Content />
-    </ScrollView>
+    </KeyboardAwareScrollView>
   );
 }
 
