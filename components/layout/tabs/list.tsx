@@ -363,7 +363,7 @@ function OpenTabsList() {
                   }}
                 />
               }
-              contentInset={TEMPORARY_CONTENT_INSET_FIX}
+              contentInset={TEMPORARY_CONTENT_INSET_FIX()}
               ListFooterComponentStyle={{ marginTop: "auto" }}
               ListFooterComponent={() => (
                 <View style={{ padding: 1, paddingHorizontal: 10 }}>
