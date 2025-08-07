@@ -581,7 +581,7 @@ const TaskAttachments = ({ watch, setValue }: any) => {
         horizontal
         keyboardShouldPersistTaps="handled"
         style={{
-          marginTop: -10,
+          marginTop: 10,
           maxHeight: 65,
           marginBottom: -5,
         }}
