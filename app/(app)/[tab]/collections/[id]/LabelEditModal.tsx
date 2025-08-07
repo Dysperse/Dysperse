@@ -160,8 +160,7 @@ export const LabelEditModal = memo(function LabelEditModal({
                     flexDirection: "row",
                     alignItems: "center",
                     flexWrap: "wrap",
-                    marginTop: 10,
-                    gap: 10,
+                    flex: 1,
                   }}
                 >
                   {Object.keys(colors).map((color) => (
