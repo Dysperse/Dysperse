@@ -13,6 +13,7 @@ import { useCallback, useEffect, useState } from "react";
 import { Keyboard, View } from "react-native";
 import { FlatList } from "react-native-gesture-handler";
 import { KeyboardAvoidingView } from "react-native-keyboard-controller";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { useDebounce } from "use-debounce";
 
 export default function EmailFriendPage({ collection, onSelect }) {
@@ -24,6 +25,7 @@ export default function EmailFriendPage({ collection, onSelect }) {
   const [data, setData] = useState<any[]>([]);
   const [isLoading, setLoading] = useState(false);
   const [selected, setSelected] = useState<string | null>(null);
+  const insets = useSafeAreaInsets();
 
   const [requestLoading, setRequestLoading] = useState(false);
 
@@ -52,13 +54,13 @@ export default function EmailFriendPage({ collection, onSelect }) {
               marginTop: 15,
               flex: 1,
               gap: 10,
-              paddingBottom: 30,
+              paddingBottom: 30 + insets.bottom,
             }
           : {
               paddingTop: 80,
               paddingHorizontal: 25,
               flex: 1,
-              paddingBottom: 20,
+              paddingBottom: 20 + insets.bottom,
               gap: 10,
             }
       }

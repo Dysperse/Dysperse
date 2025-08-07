@@ -342,9 +342,7 @@ export function FriendsList({
                           icon="check"
                           variant="filled"
                           style={{ marginLeft: -5 }}
-                          onPress={() =>
-                            handleFriendRequestAccept(item.id, true)
-                          }
+                          onPress={() => handleFriendRequestAccept(item, true)}
                         />
                       )}
                     </>
