@@ -105,6 +105,12 @@ function Actions({ isLoading, setIsLoading }) {
         color: blue[11],
       }}
       onPress={() => {
+        if (selection.length === 1) {
+          Toast.show({
+            type: "info",
+            text1: "Coming soon!",
+          });
+        }
         if (!reorderMode) return;
         if (process.env.NODE_ENV === "development") {
           if (COLLECTION_VIEWS[type as string].type !== "Category Based") {

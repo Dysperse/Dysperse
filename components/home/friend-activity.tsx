@@ -1,11 +1,9 @@
-import { useUser } from "@/context/useUser";
 import { useResponsiveBreakpoints } from "@/helpers/useResponsiveBreakpoints";
 import { Avatar, ProfilePicture } from "@/ui/Avatar";
 import ErrorAlert from "@/ui/Error";
 import Icon from "@/ui/Icon";
 import Spinner from "@/ui/Spinner";
 import Text from "@/ui/Text";
-import { useColor } from "@/ui/color";
 import { useColorTheme } from "@/ui/color/theme-provider";
 import { getProfileLastActiveRelativeTime } from "@/utils/getProfileLastActiveRelativeTime";
 import { router } from "expo-router";
@@ -73,32 +71,16 @@ export function FriendActivity() {
   const handleFriendsPress = useCallback(() => router.push("/friends"), []);
 
   const friends = Array.isArray(data) && [...data.slice(0, 4), "ALL_FRIENDS"];
-  const red = useColor("red");
 
   if (friends.length < 5)
     for (let i = friends.length; i < 5; i++) {
       friends.push({ placeholder: i });
     }
 
-  const { session } = useUser();
-  const { data: friendData } = useSWR(["user/friends", { requests: "true" }]);
-
-  const hasRequest =
-    Array.isArray(friendData) &&
-    Boolean(
-      friendData?.find(
-        (user) =>
-          user.accepted === false && user.followingId === session?.user?.id
-      )
-    );
-
   return (
     <View>
       <View style={styles.container}>
         <Text variant="eyebrow">Recent Activity</Text>
-        {hasRequest && (
-          <View style={[styles.badge, { backgroundColor: red[9] }]} />
-        )}
       </View>
       <View
         style={[
@@ -144,9 +126,6 @@ export function FriendActivity() {
                   >
                     All friends
                   </Text>
-                  {hasRequest && (
-                    <View style={[styles.badge, { backgroundColor: red[9] }]} />
-                  )}
                 </View>
               </TouchableOpacity>
             ) : !friend.user ? (
