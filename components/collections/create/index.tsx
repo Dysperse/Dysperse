@@ -21,6 +21,7 @@ import TextField from "@/ui/TextArea";
 import { addHslAlpha, useDarkMode } from "@/ui/color";
 import { useColorTheme } from "@/ui/color/theme-provider";
 import capitalizeFirstLetter from "@/utils/capitalizeFirstLetter";
+import { TEMPORARY_CONTENT_INSET_FIX } from "@/utils/temporary-scrolling-bug-fix";
 import { BottomSheetScrollView, useBottomSheet } from "@gorhom/bottom-sheet";
 import { Image } from "expo-image";
 import { cloneElement, useEffect, useRef, useState } from "react";
@@ -615,6 +616,7 @@ export const CreateCollectionModal = ({
           keyboardShouldPersistTaps="handled"
           showsVerticalScrollIndicator={false}
           showsHorizontalScrollIndicator={false}
+          contentInset={TEMPORARY_CONTENT_INSET_FIX()}
         >
           <View style={{ padding: 30, paddingBottom: 0 }}>
             <Header

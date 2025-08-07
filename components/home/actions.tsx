@@ -7,6 +7,7 @@ import dayjs from "dayjs";
 import { router } from "expo-router";
 import { useCallback, useRef } from "react";
 import { StyleSheet, TouchableOpacity, View } from "react-native";
+import useSWR from "swr";
 import { CreateCollectionModal } from "../collections/create";
 
 const actionStyles = StyleSheet.create({
@@ -40,6 +41,7 @@ const styles = StyleSheet.create({
 export function PlanDayPrompt() {
   const { session } = useUser();
   const theme = useColorTheme();
+
   const handlePress = useCallback(() => {
     router.push("/plan");
   }, []);
@@ -58,6 +60,54 @@ export function PlanDayPrompt() {
         Plan my day
       </Text>
       {!hasCompleted && (
+        <View
+          style={[
+            styles.badge,
+            { backgroundColor: theme[9], width: 10, height: 10 },
+          ]}
+        />
+      )}
+    </TouchableOpacity>
+  );
+}
+
+function Friends() {
+  const theme = useColorTheme();
+  const { session, sessionToken } = useUser();
+
+  const { data } = useSWR("user/friends", {
+    fetcher: () =>
+      fetch(`${process.env.EXPO_PUBLIC_API_URL}/user/friends/suggestions`, {
+        method: "POST",
+        body: JSON.stringify({
+          contactEmails: [],
+        }),
+        headers: {
+          Authorization: `Bearer ${sessionToken}`,
+        },
+      }).then((res) => res.json()),
+  });
+
+  const hasRequest = data
+    ? data.friends.find(
+        (t) => !t.accepted && t.followingId === session?.user?.id
+      )
+    : false;
+
+  return (
+    <TouchableOpacity
+      style={actionStyles.item}
+      onPress={() => {
+        router.dismissAll();
+        router.push("/friends");
+      }}
+    >
+      <Icon>group</Icon>
+      <Text style={{ color: theme[11] }} numberOfLines={1}>
+        Friends
+      </Text>
+
+      {hasRequest && (
         <View
           style={[
             styles.badge,
@@ -99,18 +149,8 @@ export function Actions() {
           Insights
         </Text>
       </TouchableOpacity>
-      <TouchableOpacity
-        style={actionStyles.item}
-        onPress={() => {
-          router.dismissAll();
-          router.push("/friends");
-        }}
-      >
-        <Icon>group</Icon>
-        <Text style={{ color: theme[11] }} numberOfLines={1}>
-          Friends
-        </Text>
-      </TouchableOpacity>
+      <Friends />
     </View>
   );
 }
+
