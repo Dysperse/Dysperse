@@ -90,7 +90,7 @@ const WebAnimationComponent = ({ children }) => {
   } else return children;
 };
 
-export function LastStateRestore() {
+export function LastStateRestore({ isHome }: { isHome?: boolean }) {
   const { data } = useSWR(["user/tabs"]);
   const breakpoints = useResponsiveBreakpoints();
   const pathname = usePathname();
@@ -104,7 +104,11 @@ export function LastStateRestore() {
     }
 
     const url = await Linking.getInitialURL();
-    if (url && Platform.OS !== "web") return;
+    if (url && Platform.OS !== "web") {
+      // user opened a go.dysperse.com link
+      if (isHome) router.replace("/home");
+      else return;
+    }
 
     const lastViewedTab = await AsyncStorage.getItem("lastViewedTab");
 

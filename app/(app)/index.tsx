@@ -9,7 +9,7 @@ export default function Page() {
       noPaddingTop
     >
       <Spinner />
-      <LastStateRestore />
+      <LastStateRestore isHome />
     </Content>
   );
 }
