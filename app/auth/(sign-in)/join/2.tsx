@@ -142,7 +142,9 @@ function Content() {
             },
           ]}
         >
-          {`Nice to meet you, ${store.name || params.name || "friend"}! `}
+          {`Nice to meet you${store.name || params.name ? ", " : " "}${
+            store.name || params.name
+          }! `}
         </Text>
       </Animated.View>
       <Animated.View entering={FadeIn.delay(900)}>
