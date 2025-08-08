@@ -106,8 +106,10 @@ export function LastStateRestore({ isHome }: { isHome?: boolean }) {
     const url = await Linking.getInitialURL();
     if (url && Platform.OS !== "web") {
       // user opened a go.dysperse.com link
-      if (isHome) router.replace("/home");
-      else return;
+      if (isHome) {
+        router.replace("/home");
+        return;
+      } else return;
     }
 
     const lastViewedTab = await AsyncStorage.getItem("lastViewedTab");
