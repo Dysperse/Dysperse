@@ -204,7 +204,7 @@ function AppleAuth() {
                   text1: "We couldn't find an account with that email",
                 });
                 router.push({
-                  pathname: "/auth/join",
+                  pathname: "/auth/join/2",
                   params: {
                     appleAuthFillPassword: "true",
                     email: credential.email,

@@ -31,7 +31,6 @@ function Intro() {
     }
     if (params.appleAuthFillPassword) {
       store.appleAuthFillPassword = true;
-      router.replace("/join/2");
     }
   }, [params, store]);
 

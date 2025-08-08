@@ -10,7 +10,7 @@ import TextField from "@/ui/TextArea";
 import dayjs from "dayjs";
 import { Image } from "expo-image";
 import { router, useLocalSearchParams } from "expo-router";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Platform, View } from "react-native";
 import { KeyboardAwareScrollView } from "react-native-keyboard-controller";
 import Animated, { FadeIn } from "react-native-reanimated";
@@ -226,6 +226,20 @@ function Content() {
 }
 
 export default function Page() {
+  const store = useSignupContext();
+  const params = useLocalSearchParams();
+
+  useEffect(() => {
+    if (params.name) store.name = params.name;
+    if (params.email) {
+      store.email = params.email;
+      store.prefilledEmail = true;
+    }
+    if (params.appleAuthFillPassword) {
+      store.appleAuthFillPassword = true;
+    }
+  }, [params, store]);
+
   return (
     <KeyboardAwareScrollView keyboardShouldPersistTaps="handled">
       <Content />
