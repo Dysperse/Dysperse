@@ -167,7 +167,7 @@ function AppleAuth() {
           onPress={async () => {
             if (process.env.NODE_ENV === "development") {
               return router.push({
-                pathname: "/auth/join",
+                pathname: "/auth/join/2",
                 params: {
                   appleAuthFillPassword: "true",
                   email: "asdfasdf@asdf.com",
