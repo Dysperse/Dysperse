@@ -51,7 +51,7 @@ export default function Page() {
           </Text>
           <Button
             onPress={requestPermission}
-            text="Grant permission"
+            text="Continue"
             variant="filled"
             iconPosition="end"
             icon="arrow_forward_ios"
