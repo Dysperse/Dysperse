@@ -4,7 +4,7 @@ import { ArcSystemBar } from "@/components/layout/arcAnimations";
 import { useWebStatusBar } from "@/helpers/useWebStatusBar";
 import { useColorTheme } from "@/ui/color/theme-provider";
 import { router } from "expo-router";
-import { View } from "react-native";
+import { KeyboardAvoidingView } from "react-native-keyboard-controller";
 
 export default function Page() {
   const theme = useColorTheme();
@@ -20,14 +20,15 @@ export default function Page() {
   return (
     <>
       <ArcSystemBar />
-      <View
+      <KeyboardAvoidingView
+        behavior="padding"
         style={{
           backgroundColor: theme[2],
           flex: 1,
         }}
       >
         <CommandPaletteContent defaultFilter={null} handleClose={handleClose} />
-      </View>
+      </KeyboardAvoidingView>
     </>
   );
 }

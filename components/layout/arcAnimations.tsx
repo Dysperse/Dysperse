@@ -103,7 +103,7 @@ export const arcCard = ({ theme, breakpoints, maxWidth, padding = 15 }) =>
     animation: "default",
     presentation: "modal",
     detachPreviousScreen: false,
-    gestureEnabled: true,
+    gestureEnabled: Platform.OS !== "android",
     ...TransitionPresets.ModalPresentationIOS,
     ...(breakpoints.md && {
       cardStyleInterpolator: arcAnimation,
@@ -129,6 +129,7 @@ export const ArcSystemBar = () => {
 
   return (
     <StatusBar
+      translucent
       barStyle={!breakpoints.md || isDark ? "light-content" : "dark-content"}
     />
   );

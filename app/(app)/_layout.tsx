@@ -244,7 +244,10 @@ export default function AppLayout() {
       key={desktopCollapsed.toString()}
       progressValue={progressValue}
     >
-      <StatusBar barStyle={!isDark ? "dark-content" : "light-content"} />
+      <StatusBar
+        translucent
+        barStyle={!isDark ? "dark-content" : "light-content"}
+      />
       <JsStack
         id={undefined}
         screenOptions={{

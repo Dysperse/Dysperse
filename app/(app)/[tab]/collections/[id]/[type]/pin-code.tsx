@@ -107,7 +107,7 @@ function Content() {
 export default function Page() {
   return (
     <CollectionMenuLayout title="PIN code">
-      <StatusBar barStyle="dark-content" />
+      <StatusBar translucent barStyle="dark-content" />
       <Content />
     </CollectionMenuLayout>
   );

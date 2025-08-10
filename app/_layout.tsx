@@ -154,7 +154,7 @@ function Root() {
   };
 
   if (Platform.OS !== "web" && !fontsLoaded && !fontsError) return null;
-  if (Platform.OS === "android") StatusBar.setBackgroundColor("transparent");
+  if (Platform.OS === "android") StatusBar.setBackgroundColor("red");
 
   return (
     <KeyboardProvider>
@@ -179,6 +179,7 @@ function Root() {
                 <SidebarContext.Provider value={sidebarContextValue}>
                   <SWRWrapper>
                     <StatusBar
+                      translucent
                       barStyle={!isDark ? "dark-content" : "light-content"}
                     />
                     <JsStack

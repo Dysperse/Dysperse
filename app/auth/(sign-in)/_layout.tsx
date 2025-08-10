@@ -122,7 +122,10 @@ export default function Layout() {
 
   return (
     <SignupContext.Provider value={signupData.current}>
-      <StatusBar barStyle={isDark ? "light-content" : "dark-content"} />
+      <StatusBar
+        translucent
+        barStyle={isDark ? "light-content" : "dark-content"}
+      />
       <View
         style={{
           flexDirection: breakpoints.lg ? "row" : "column-reverse",

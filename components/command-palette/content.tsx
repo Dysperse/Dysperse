@@ -16,8 +16,7 @@ import { LinearGradient } from "expo-linear-gradient";
 import { router, usePathname } from "expo-router";
 import fuzzysort from "fuzzysort";
 import { memo, useCallback, useEffect, useMemo, useRef, useState } from "react";
-import { Keyboard, Platform, View } from "react-native";
-import { ScrollView } from "react-native-gesture-handler";
+import { Keyboard, Platform, ScrollView, View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import Toast from "react-native-toast-message";
 import useSWR from "swr";
@@ -241,9 +240,10 @@ function CommandPaletteList({
         </View>
       ) : (
         <FlashList
+          // block all gestures
+          keyboardDismissMode="interactive"
           refreshing={false}
           onRefresh={() => searchRef.current?.focus({ preventScroll: true })}
-          onScrollBeginDrag={() => Keyboard.dismiss()}
           key={query}
           keyboardShouldPersistTaps="handled"
           data={filtered}
@@ -251,7 +251,8 @@ function CommandPaletteList({
             (typeof item === "string" ? item : item.key) + index
           }
           estimatedItemSize={44}
-          contentContainerStyle={{ padding: 20 }}
+          style={{ zIndex: 9999 }}
+          contentContainerStyle={{ paddingBottom: 100, padding: 20 }}
           renderItem={({ item, index }) => {
             if (typeof item === "string") {
               return (
