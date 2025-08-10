@@ -7,6 +7,7 @@ import Icon from "@/ui/Icon";
 import IconButton from "@/ui/IconButton";
 import { ListItemButton } from "@/ui/ListItemButton";
 import ListItemText from "@/ui/ListItemText";
+import RefreshControl from "@/ui/RefreshControl";
 import Text from "@/ui/Text";
 import TextField from "@/ui/TextArea";
 import { addHslAlpha } from "@/ui/color";
@@ -243,6 +244,7 @@ function CommandPaletteList({
           // block all gestures
           keyboardDismissMode="interactive"
           refreshing={false}
+          refreshControl={<RefreshControl refreshing={false} />}
           onRefresh={() => searchRef.current?.focus({ preventScroll: true })}
           key={query}
           keyboardShouldPersistTaps="handled"

@@ -300,14 +300,14 @@ export default function AppLayout() {
             presentation: "modal",
             animation: "default",
             detachPreviousScreen: false,
-            gestureEnabled: true,
+            gestureEnabled: Platform.OS !== "android",
             ...TransitionPresets.ModalPresentationIOS,
           }}
         />
         <JsStack.Screen
           name="settings"
           options={{
-            gestureEnabled: true,
+            gestureEnabled: false,
             detachPreviousScreen: false,
             gestureResponseDistance: 9999,
             ...(!breakpoints.md && {
