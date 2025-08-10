@@ -210,7 +210,7 @@ function AppleAuth() {
                     email: credential.email,
                     name: credential.fullName
                       ? `${credential.fullName?.givenName} ${credential.fullName?.familyName}`
-                      : "John Doe",
+                      : "",
                   },
                 });
               }
