@@ -119,7 +119,6 @@
     "react-native-countdown-circle-timer": "^3.2.1",
     "react-native-edge-to-edge": "^1.4.3",
     "react-native-gesture-handler": "^2.24.0",
-    "react-native-image-colors": "^2.4.0",
     "react-native-keyboard-controller": "^1.18.3",
     "react-native-leaflet-view": "^0.1.2",
     "react-native-markdown-display": "^7.0.2",
@@ -166,3 +165,4 @@
   },
   "private": true
 }
+
