@@ -170,14 +170,20 @@ export default function Grid() {
                         {
                           Object.values(
                             label.entities || data.entities
-                          )?.filter?.((e) => e.completionInstances.length === 0)
-                            ?.length
+                          )?.filter?.(
+                            (e) =>
+                              e.completionInstances.length === 0 &&
+                              !e.parentTaskId
+                          )?.length
                         }
                         {" item"}
                         {Object.values(
                           label.entities || data.entities
-                        )?.filter?.((e) => e.completionInstances.length === 0)
-                          ?.length !== 1
+                        )?.filter?.(
+                          (e) =>
+                            e.completionInstances.length === 0 &&
+                            !e.parentTaskId
+                        )?.length !== 1
                           ? "s"
                           : ""}
                       </Text>
