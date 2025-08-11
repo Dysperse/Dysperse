@@ -109,8 +109,9 @@ function TaskDateModalContent({ task, updateTask }) {
           secondary: dayjs().set("date", dayOffset).fromNow(),
         },
         {
-          date: dayjs().add(dayOffset, "week"),
-          secondary: `${dayOffset} week${dayOffset === 1 ? "" : "s"} from now`,
+          text: `+${dayOffset}`,
+          date: dayjs().add(dayOffset, "day"),
+          secondary: `${dayOffset} day${dayOffset === 1 ? "" : "s"} from now`,
         },
       ];
     }
@@ -242,7 +243,8 @@ function TaskDateModalContent({ task, updateTask }) {
     : [
         ...(searchDate.length > 0
           ? searchDate.map((item) => ({
-              icon: "search",
+              text: item.text,
+              icon: item.text ? undefined : "search",
               primary: item.date.format("dddd, MMMM Do"),
               secondary:
                 item.secondary ||
