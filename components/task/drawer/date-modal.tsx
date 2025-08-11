@@ -100,11 +100,30 @@ function TaskDateModalContent({ task, updateTask }) {
   const convertSearchToDate = (search) => {
     if (!search) return [];
 
+    // if search is just a number, treat it as a day offset
+    const dayOffset = parseInt(search, 10);
+    if (!isNaN(dayOffset)) {
+      return [
+        {
+          date: dayjs().add(dayOffset, "day"),
+          secondary: `${dayOffset} day${dayOffset === 1 ? "" : "s"} from now`,
+        },
+        {
+          date: dayjs().add(dayOffset, "week"),
+          secondary: `${dayOffset} week${dayOffset === 1 ? "" : "s"} from now`,
+        },
+        {
+          date: dayjs().set("date", dayOffset),
+          secondary: dayjs().set("date", dayOffset).fromNow(),
+        },
+      ];
+    }
+
     // Try parsing natural language
     const parsedDate = chrono.parse(search);
 
     if (parsedDate) {
-      return parsedDate.map((date) => dayjs(date.start.date()));
+      return parsedDate.map((date) => ({ date: dayjs(date.start.date()) }));
     }
 
     // Fallback to dayjs parsing
@@ -226,15 +245,17 @@ function TaskDateModalContent({ task, updateTask }) {
       ]
     : [
         ...(searchDate.length > 0
-          ? searchDate.map((date) => ({
+          ? searchDate.map((item) => ({
               icon: "search",
-              primary: date.format("dddd, MMMM Do"),
-              secondary: task?.dateOnly
-                ? "From search"
-                : date.format(
-                    session.user.militaryTime ? "[at] H:mm" : "[at] h:mm A"
-                  ),
-              value: date,
+              primary: item.date.format("dddd, MMMM Do"),
+              secondary:
+                item.secondary ||
+                (task?.dateOnly
+                  ? "From search"
+                  : item.date.format(
+                      session.user.militaryTime ? "[at] H:mm" : "[at] h:mm A"
+                    )),
+              value: item.date,
               search,
             }))
           : []),
