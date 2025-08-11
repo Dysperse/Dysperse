@@ -318,7 +318,7 @@ const StoryPoint = ({
           refreshControl={
             <RefreshControl refreshing={false} onRefresh={() => mutate()} />
           }
-          data={taskSortAlgorithm(filteredTasks)}
+          data={taskSortAlgorithm(filteredTasks).filter((t) => !t.parentTaskId)}
           estimatedItemSize={100}
           contentContainerStyle={{
             padding: 10,

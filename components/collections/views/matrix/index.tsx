@@ -31,6 +31,7 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { useCollectionContext } from "../../context";
 import { ColumnEmptyComponent } from "../../emptyComponent";
 import { Entity } from "../../entity";
+import { taskSortAlgorithm } from "../skyline";
 
 const styles = StyleSheet.create({
   container: { flexDirection: "column", flex: 1 },
@@ -75,11 +76,12 @@ const Cell = ({
     (t) => t.completionInstances.length === 0
   );
 
-  const filteredTasks = showCompleted
-    ? tasks.sort(
-        (a, b) => a.completionInstances.length - b.completionInstances.length
-      )
-    : tasks.filter((e) => e.completionInstances.length === 0);
+  const filteredTasks = taskSortAlgorithm(
+    (showCompleted
+      ? tasks
+      : tasks.filter((e) => e.completionInstances.length === 0)
+    ).filter((t) => !t.parentTaskId)
+  );
 
   return (
     <Animated.View
