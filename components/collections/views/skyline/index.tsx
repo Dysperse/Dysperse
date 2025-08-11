@@ -221,10 +221,10 @@ function Header({
       <LinearGradient
         style={{
           width: "100%",
-          height: 30,
+          height: 20,
           zIndex: 1,
-          marginBottom: -30,
-          marginTop: Platform.OS !== "web" && 50,
+          marginBottom: -20,
+          marginTop: Platform.OS !== "web" && 35,
           pointerEvents: "none",
         }}
         colors={[
@@ -427,7 +427,7 @@ function Content({ data, mutate }) {
           </View>
         ) : (
           <FlashList
-            contentContainerStyle={{ padding: 20 }}
+            contentContainerStyle={{ padding: 20, paddingTop: 5 }}
             data={Object.values(data[selectedColumn].entities)}
             centerContent={
               Object.keys(data[selectedColumn].entities).length === 0
