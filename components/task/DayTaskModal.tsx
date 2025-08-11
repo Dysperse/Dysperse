@@ -3,6 +3,7 @@ import BottomSheet from "@/ui/BottomSheet";
 import { useColorTheme } from "@/ui/color/theme-provider";
 import Spinner from "@/ui/Spinner";
 import Text from "@/ui/Text";
+import { TEMPORARY_CONTENT_INSET_FIX } from "@/utils/temporary-scrolling-bug-fix";
 import { BottomSheetFlashList } from "@gorhom/bottom-sheet";
 import dayjs from "dayjs";
 import { cloneElement, useRef, useState } from "react";
@@ -126,6 +127,7 @@ export default function DayTaskModal({ children, date, taskId }) {
                     </Text>
                   </View>
                 )}
+                contentInset={TEMPORARY_CONTENT_INSET_FIX()}
                 renderItem={({ item }: any) => (
                   <Entity
                     showLabel
