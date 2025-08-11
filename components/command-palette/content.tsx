@@ -242,7 +242,7 @@ function CommandPaletteList({
       ) : (
         <FlashList
           // block all gestures
-          keyboardDismissMode="interactive"
+          keyboardDismissMode="on-drag"
           refreshing={false}
           refreshControl={<RefreshControl refreshing={false} />}
           onRefresh={() => searchRef.current?.focus({ preventScroll: true })}

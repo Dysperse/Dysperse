@@ -15,6 +15,7 @@ export default function Page() {
     backgroundColor: theme[3],
     flexDirection: "row",
     gap: 10,
+    columnGap: 20,
     alignItems: "center",
     marginTop: 10,
   };
@@ -25,7 +26,7 @@ export default function Page() {
       <ArcSystemBar />
       <ScrollView
         contentContainerStyle={{
-          paddingTop: 100,
+          paddingVertical: 100,
           padding: 20,
           paddingHorizontal: 40,
         }}
@@ -45,20 +46,43 @@ export default function Page() {
           Four ways to create
         </Text>
         <View style={cardStyle}>
-          <Icon>stylus_note</Icon>
-          <Text style={{ color: theme[11] }}>Write it</Text>
+          <Icon bold>stylus_note</Icon>
+          <View>
+            <Text weight={900} style={{ color: theme[11] }}>
+              Write it
+            </Text>
+            <Text style={{ color: theme[11] }}>
+              We'll recognize dates and times!
+            </Text>
+          </View>
         </View>
         <View style={cardStyle}>
-          <Icon>mic</Icon>
-          <Text style={{ color: theme[11] }}>Speak it</Text>
+          <Icon bold>mic</Icon>
+          <View>
+            <Text weight={900} style={{ color: theme[11] }}>
+              Speak it
+            </Text>
+            <Text style={{ color: theme[11] }}>
+              Tap & hold on the create button
+            </Text>
+          </View>
         </View>
         <View style={cardStyle}>
-          <Icon>email</Icon>
-          <Text style={{ color: theme[11] }}>Forward it</Text>
+          <Icon bold>email</Icon>
+          <View>
+            <Text weight={900} style={{ color: theme[11] }}>
+              Forward it
+            </Text>
+            <Text style={{ color: theme[11] }}>
+              Send an email to{"\n"}tasks@dysperse.com
+            </Text>
+          </View>
         </View>
         <View style={cardStyle}>
-          <Icon>extension</Icon>
-          <Text style={{ color: theme[11] }}>Get our extension</Text>
+          <Icon bold>extension</Icon>
+          <Text style={{ color: theme[11] }} weight={900}>
+            Get our Chrome extension
+          </Text>
         </View>
 
         <Text variant="eyebrow" style={{ marginTop: 50 }}>
@@ -78,12 +102,6 @@ export default function Page() {
               Set multiple reminders
             </Text>
           </View>
-          <View style={[cardStyle, { flex: 1, flexDirection: "column" }]}>
-            <Icon>exercise</Icon>
-            <Text style={{ color: theme[11], textAlign: "center" }}>
-              Sort by difficulty
-            </Text>
-          </View>
         </View>
 
         <View style={{ flexDirection: "row", gap: 10 }}>
@@ -99,10 +117,19 @@ export default function Page() {
               Save key locations
             </Text>
           </View>
+        </View>
+
+        <View style={{ flexDirection: "row", gap: 10 }}>
           <View style={[cardStyle, { flex: 1, flexDirection: "column" }]}>
             <Icon>ios_share</Icon>
             <Text style={{ color: theme[11], textAlign: "center" }}>
               Share with anyone
+            </Text>
+          </View>
+          <View style={[cardStyle, { flex: 1, flexDirection: "column" }]}>
+            <Icon>exercise</Icon>
+            <Text style={{ color: theme[11], textAlign: "center" }}>
+              Sort by difficulty
             </Text>
           </View>
         </View>
@@ -122,18 +149,6 @@ export default function Page() {
             </Text>
           </View>
         </View>
-
-        {/* <CreateTask mutate={() => {}}>
-          <Button
-            large
-            bold
-            icon="stylus_note"
-            text="Create a task"
-            variant="filled"
-            height={80}
-            containerStyle={{ marginTop: 10, borderRadius: 30 }}
-          />
-        </CreateTask> */}
       </ScrollView>
     </View>
   );

@@ -31,8 +31,9 @@ export default function Page() {
         </Text>
 
         {[
-          "Tasks can only have one label, but you can create as many labels as you want.",
+          "Tasks can only have one label",
           "Set a color and emoji for each label to make them stand out.",
+          "Group labels into collections",
         ].map((text, i) => (
           <View
             key={i}
