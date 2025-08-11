@@ -135,7 +135,7 @@ export default function List() {
     Object.values(data.entities).filter(
       (e) => !e.trash && (incompleteEntitiesFilter(e) || data.showCompleted)
     )
-  );
+  ).filter((t) => !t.parentTaskId);
 
   const labels = data.labels.sort(
     (a, b) => data.listOrder.indexOf(a.id) - data.listOrder.indexOf(b.id)

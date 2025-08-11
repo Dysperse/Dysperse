@@ -57,7 +57,7 @@ export function Column(props: ColumnProps) {
           ? true
           : e.completionInstances.length === 0 || e.recurrenceRule) && !e.trash
     )
-  );
+  ).filter((t) => !t.parentTaskId);
 
   const hasItems = data.length > 0;
 

@@ -7,7 +7,7 @@ import ConfirmationModal from "@/ui/ConfirmationModal";
 import Icon from "@/ui/Icon";
 import MenuPopover, { MenuItem } from "@/ui/MenuPopover";
 import Text from "@/ui/Text";
-import { router, usePathname } from "expo-router";
+import { router, useLocalSearchParams, usePathname } from "expo-router";
 import { memo, ReactElement, useRef } from "react";
 import Toast from "react-native-toast-message";
 import { LabelEditModal } from "./LabelEditModal";
@@ -25,6 +25,7 @@ export const ColumnMenuTrigger = memo(function ColumnMenuTrigger({
   const pathname = usePathname();
   const { session } = useSession();
   const { mutate } = useCollectionContext();
+  const { id } = useLocalSearchParams();
   const { sessionToken } = useUser();
 
   const editButton = (
@@ -68,7 +69,7 @@ export const ColumnMenuTrigger = memo(function ColumnMenuTrigger({
         }}
         options={[
           { renderer: () => editButton },
-          {
+          id !== "all" && {
             icon: "back_hand",
             text: "Reorder",
             callback: () => {
