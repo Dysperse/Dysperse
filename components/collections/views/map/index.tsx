@@ -463,11 +463,11 @@ export default function MapView() {
   const breakpoints = useResponsiveBreakpoints();
   const { data, mutate } = useCollectionContext();
 
-  const flex = useSharedValue(1);
+  const flex = useSharedValue(0);
   const animatedFlexStyle = useAnimatedStyle(() => ({
-    flex: withSpring(flex.value, {
+    flex: withSpring(flex.value === 1 ? 3.5 : 0.3, {
       damping: 150,
-      stiffness: flex.value == 0.3 ? 100 : 20,
+      stiffness: flex.value == 1 ? 100 : 20,
       mass: 1,
       overshootClamping: false,
     }),
@@ -498,7 +498,7 @@ export default function MapView() {
       : locationMode === "no-location"
       ? tasksWithoutLocation
       : [...tasksWithLocation, ...tasksWithoutLocation]
-  );
+  ).filter((t) => !t.parentTaskId);
 
   const mapTaskDrawerRef = useRef(null);
 
@@ -512,27 +512,27 @@ export default function MapView() {
         gap: 10,
       }}
     >
-      <Animated.View
+      <View
         style={[
-          animatedFlexStyle,
           {
             justifyContent: "flex-start",
             height: breakpoints.md ? "100%" : 0,
             overflow: "hidden",
+            flex: 1,
           },
         ]}
       >
         <TaskList tasks={tasks} />
-      </Animated.View>
+      </View>
 
-      <View
+      <Animated.View
         style={[
+          animatedFlexStyle,
           {
             borderRadius: breakpoints.md ? 20 : 0,
             overflow: "hidden",
             backgroundColor: theme[3],
             position: "relative",
-            flex: 1,
           },
         ]}
       >
@@ -547,15 +547,13 @@ export default function MapView() {
           />
         )}
 
-        <MapTaskDrawer mutate={mutate} ref={mapTaskDrawerRef} />
-
-        {/* Render the actual map with pins here. 
-            This is your MapPreview component usage: */}
         <MapPreview
           tasks={tasksWithLocation}
           onLocationSelect={(task) => mapTaskDrawerRef.current.open(task)}
         />
-      </View>
+      </Animated.View>
+
+      <MapTaskDrawer mutate={mutate} ref={mapTaskDrawerRef} />
     </View>
   );
 }
