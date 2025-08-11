@@ -1,5 +1,6 @@
 import { mutations } from "@/app/(app)/[tab]/collections/mutations";
 import BottomSheet from "@/ui/BottomSheet";
+import { useColorTheme } from "@/ui/color/theme-provider";
 import Spinner from "@/ui/Spinner";
 import Text from "@/ui/Text";
 import { BottomSheetFlashList } from "@gorhom/bottom-sheet";
@@ -13,6 +14,8 @@ import { taskSortAlgorithm } from "../collections/views/skyline";
 export default function DayTaskModal({ children, date, taskId }) {
   const [hasOpened, setHasOpened] = useState(false);
   const sheetRef = useRef(null);
+  const theme = useColorTheme();
+
   const trigger = cloneElement(children, {
     onPress: () => {
       setHasOpened(true);
@@ -43,18 +46,20 @@ export default function DayTaskModal({ children, date, taskId }) {
       dayjs(date).isBetween(col.start, col.end)
   );
 
-  const tasksLength =
-    data && column
-      ? Object.keys(column?.entities || {}).filter((t: any) => t.id !== taskId)
-          .length
-      : 0;
+  const t = data
+    ? taskSortAlgorithm(
+        Object.values(column?.entities || {}).filter(
+          (t: any) => t.id !== taskId && !t.parentTaskId
+        )
+      )
+    : [];
 
   return (
     <>
       {trigger}
       <BottomSheet
         sheetRef={sheetRef}
-        snapPoints={["60%", "90%"]}
+        snapPoints={t.length === 0 ? [200] : ["60%", "90%"]}
         onClose={() => sheetRef.current.close()}
       >
         <View style={{ height: "100%" }}>
@@ -67,16 +72,26 @@ export default function DayTaskModal({ children, date, taskId }) {
               paddingTop: 30,
             }}
           >
-            <Text style={{ fontSize: 25, fontFamily: "serifText700" }}>
+            <Text
+              style={{
+                fontSize: 25,
+                fontFamily: "serifText700",
+                color: theme[11],
+              }}
+            >
               {dayjs(date).format("dddd, MMMM Do")}
             </Text>
             <Text
-              weight={300}
-              style={{ fontSize: 18, opacity: 0.7, marginTop: 5 }}
+              style={{
+                fontSize: 18,
+                opacity: 0.7,
+                marginTop: 5,
+                color: theme[11],
+              }}
             >
               {data
-                ? `${tasksLength} other task${
-                    tasksLength === 1 ? "" : "s"
+                ? `${t.length || "No"} other task${
+                    t.length === 1 ? "" : "s"
                   } on this day`
                 : "Finding other tasks for this day..."}
             </Text>
@@ -96,11 +111,7 @@ export default function DayTaskModal({ children, date, taskId }) {
           ) : (
             <View style={{ flex: 1 }}>
               <BottomSheetFlashList
-                data={taskSortAlgorithm(
-                  Object.values(column?.entities || {}).filter(
-                    (t: any) => t.id !== taskId
-                  )
-                )}
+                data={data}
                 estimatedItemSize={100}
                 contentContainerStyle={{
                   padding: 10,
