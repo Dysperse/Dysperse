@@ -22,7 +22,6 @@ const GoalIndicator = ({ dense, completed, goal, name }) => {
           flexDirection: "row",
           alignItems: "center",
           gap: dense ? 8 : 20,
-          flex: dense ? undefined : 1,
         },
       ]}
     >
@@ -129,9 +128,11 @@ function StreakGoal({ dense }: { dense?: boolean }) {
                     borderWidth: 1,
                     borderColor: theme[5],
                     padding: 20,
+                    paddingHorizontal: 30,
                     flexDirection: "row",
                     alignItems: "center",
-                    gap: 20,
+                    gap: 30,
+                    justifyContent: "space-between",
                   }
                 : {
                     marginTop: 10,
