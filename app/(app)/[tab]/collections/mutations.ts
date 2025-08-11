@@ -92,12 +92,14 @@ export const mutations = {
       if (!newTask) return;
       if (newTask.recurrenceRule) return mutate();
 
+      console.log(newTask);
+
       mutate(
         (oldData) => {
           const dateIndex = oldData.findIndex((column) =>
             dayjs(
-              newTask.start || newTask.parentTaskId
-                ? oldData.entities[newTask.parentTaskId]?.start || newTask.start
+              newTask.parentTaskId
+                ? oldData.entities[newTask.parentTaskId]?.start
                 : newTask.start
             ).isBetween(column.start, column.end, "day", "[]")
           );

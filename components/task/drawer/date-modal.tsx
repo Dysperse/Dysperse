@@ -402,6 +402,22 @@ function TaskDateModalContent({ task, updateTask }) {
           ))}
         </Animated.View>
       </View>
+      {view === "RECURRENCE" && (
+        <View
+          style={{
+            padding: 20,
+            backgroundColor: addHslAlpha(theme[9], 0.05),
+            borderRadius: 20,
+            marginHorizontal: 20,
+            marginBottom: 10,
+          }}
+        >
+          <Text weight={700} style={{ color: theme[11] }}>
+            Heads up! This feature is still in beta and may not work as
+            expected.
+          </Text>
+        </View>
+      )}
       {(hasRecurrence || (view === "DATE" && task.start)) && (
         <Animated.View style={selectedDateStyle}>
           <ListItemButton disabled variant="filled">
