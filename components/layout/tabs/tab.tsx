@@ -282,14 +282,9 @@ function Tab({
             }
           },
         })}
-        onLongPress={
-          Platform.OS === "web"
-            ? undefined
-            : () => {
-                Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
-                // drag();
-              }
-        }
+        onLongPress={(e) => {
+          e.preventDefault();
+        }}
         disabled={disabled}
         variant={selected ? "filled" : "text"}
         onPress={handlePress}

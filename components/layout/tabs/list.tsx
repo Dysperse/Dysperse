@@ -21,6 +21,7 @@ import Spinner from "@/ui/Spinner";
 import Text from "@/ui/Text";
 import { addHslAlpha, useColor } from "@/ui/color";
 import { useColorTheme } from "@/ui/color/theme-provider";
+import { TEMPORARY_CONTENT_INSET_FIX } from "@/utils/temporary-scrolling-bug-fix";
 import * as Haptics from "expo-haptics";
 import { impactAsync, ImpactFeedbackStyle } from "expo-haptics";
 import { LinearGradient } from "expo-linear-gradient";
@@ -315,22 +316,23 @@ function OpenTabsList() {
       text="New tab"
       onPress={onOpen}
       backgroundColors={{
-        default: theme[2],
+        default: theme[data?.length === 0 ? 3 : 2],
         hovered: theme[3],
         pressed: theme[4],
       }}
-      height={50}
+      height={data?.length === 0 ? undefined : 50}
       iconStyle={{
         marginLeft: breakpoints.md ? -2 : 1,
         marginRight: breakpoints.md ? -3 : -1,
       }}
       containerStyle={{
         borderRadius: 15,
+        marginTop: data?.length === 0 ? 10 : 0,
       }}
       style={{
         justifyContent: "flex-start",
-        columnGap: 18,
-        paddingLeft: 17.3,
+        columnGap: data?.length === 0 ? 13 : 18,
+        paddingLeft: breakpoints.md ? 17.3 : 13,
       }}
     />
   );
@@ -353,6 +355,7 @@ function OpenTabsList() {
             <Animated.ScrollView
               ref={scrollableRef}
               showsVerticalScrollIndicator={false}
+              contentInset={TEMPORARY_CONTENT_INSET_FIX()}
               aria-label="Sidebar"
               style={{ marginHorizontal: -10 }}
               contentContainerStyle={{
@@ -407,20 +410,6 @@ function OpenTabsList() {
                 {newTab}
               </View>
             </Animated.ScrollView>
-            {/* <ReorderableList
-              onReorder={handleReorder}
-              contentInset={TEMPORARY_CONTENT_INSET_FIX()}
-              ListFooterComponentStyle={{ marginTop: "auto" }}
-              ListFooterComponent={() => (
-              )}
-              data={data}
-              getItemLayout={(_, index) => ({
-                length: 52,
-                offset: 52,
-                index,
-              })}
-              keyExtractor={(item) => item.id}
-            /> */}
             <LinearGradient
               colors={[addHslAlpha(theme[2], 0), theme[2]]}
               style={{
@@ -431,7 +420,6 @@ function OpenTabsList() {
               }}
             />
             {Platform.OS === "web" && <WebPWAInstallButton />}
-            {/* {footer} */}
           </View>
         ) : (
           <View
@@ -469,7 +457,7 @@ function OpenTabsList() {
                       marginTop: 5,
                     }}
                   >
-                    Try opening a view or one of your collections
+                    Try opening a view or{"\n"}one of your collections
                   </Text>
                   {newTab}
                 </View>
