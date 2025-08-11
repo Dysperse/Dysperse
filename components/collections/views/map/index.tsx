@@ -465,7 +465,7 @@ export default function MapView() {
 
   const flex = useSharedValue(0);
   const animatedFlexStyle = useAnimatedStyle(() => ({
-    flex: withSpring(flex.value === 1 ? 3.5 : 0.3, {
+    flex: withSpring(flex.value === 1 ? 3.5 : breakpoints.md ? 1.4 : 0.3, {
       damping: 150,
       stiffness: flex.value == 1 ? 100 : 20,
       mass: 1,

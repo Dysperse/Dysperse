@@ -21,16 +21,15 @@ import Spinner from "@/ui/Spinner";
 import Text from "@/ui/Text";
 import { addHslAlpha, useColor } from "@/ui/color";
 import { useColorTheme } from "@/ui/color/theme-provider";
-import { TEMPORARY_CONTENT_INSET_FIX } from "@/utils/temporary-scrolling-bug-fix";
 import * as Haptics from "expo-haptics";
+import { impactAsync, ImpactFeedbackStyle } from "expo-haptics";
 import { LinearGradient } from "expo-linear-gradient";
 import { router, useGlobalSearchParams } from "expo-router";
 import { memo, default as React, useEffect, useState } from "react";
 import { Platform, Pressable, StyleSheet, View } from "react-native";
-import ReorderableList, {
-  ReorderableListReorderEvent,
-  reorderItems,
-} from "react-native-reorderable-list";
+import Animated, { useAnimatedRef } from "react-native-reanimated";
+import { reorderItems } from "react-native-reorderable-list";
+import Sortable from "react-native-sortables";
 import Toast from "react-native-toast-message";
 import useSWR from "swr";
 import PWAInstallerPrompt from "../PWAInstaller";
@@ -268,9 +267,10 @@ function OpenTabsList() {
   });
 
   const { widgets } = useFocusPanelContext();
+  const scrollableRef = useAnimatedRef<Animated.ScrollView>();
   const { sessionToken } = useUser();
 
-  const handleReorder = ({ from, to }: ReorderableListReorderEvent) => {
+  const handleReorder = ({ from, to }: { from: number; to: number }) => {
     mutate(
       (oldItems) => {
         // 1. find prev, current, next items
@@ -350,10 +350,17 @@ function OpenTabsList() {
                 pointerEvents: "none",
               }}
             />
-            <ReorderableList
-              onReorder={handleReorder}
+            <Animated.ScrollView
+              ref={scrollableRef}
               showsVerticalScrollIndicator={false}
               aria-label="Sidebar"
+              style={{ marginHorizontal: -10 }}
+              contentContainerStyle={{
+                paddingVertical: 10,
+                paddingTop: 5,
+                paddingHorizontal: Platform.OS === "web" && 10,
+                minHeight: widgets.find((i) => i.pinned) ? undefined : "100%",
+              }}
               refreshControl={
                 <RefreshControl
                   refreshing={false}
@@ -363,39 +370,57 @@ function OpenTabsList() {
                   }}
                 />
               }
+            >
+              <Sortable.Grid
+                columnGap={0}
+                columns={1}
+                data={data}
+                renderItem={({ item }) => (
+                  <View style={{ padding: 1, paddingHorizontal: 10 }}>
+                    <Tab
+                      tab={item}
+                      tabs={data}
+                      mutate={mutate}
+                      selected={tab === item.id}
+                      badgeData={badgeData}
+                    />
+                  </View>
+                )}
+                rowGap={0}
+                scrollableRef={scrollableRef} // required for auto scroll
+                onDragStart={() =>
+                  Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium)
+                }
+                overDrag="vertical"
+                onOrderChange={() => impactAsync(ImpactFeedbackStyle.Light)}
+                activeItemScale={1.05}
+                dragActivationDelay={
+                  Platform.OS === "web" && breakpoints.md ? 0 : undefined
+                }
+                onActiveItemDropped={(res) => {
+                  console.log(res);
+                  if (res.fromIndex === -1) return;
+                  handleReorder({ from: res.fromIndex, to: res.toIndex });
+                }}
+              />
+              <View style={{ padding: 1, paddingHorizontal: 10 }}>
+                {newTab}
+              </View>
+            </Animated.ScrollView>
+            {/* <ReorderableList
+              onReorder={handleReorder}
               contentInset={TEMPORARY_CONTENT_INSET_FIX()}
               ListFooterComponentStyle={{ marginTop: "auto" }}
               ListFooterComponent={() => (
-                <View style={{ padding: 1, paddingHorizontal: 10 }}>
-                  {newTab}
-                </View>
               )}
               data={data}
-              style={{ marginHorizontal: -10 }}
               getItemLayout={(_, index) => ({
                 length: 52,
                 offset: 52,
                 index,
               })}
-              renderItem={({ item }) => (
-                <View style={{ padding: 1, paddingHorizontal: 10 }}>
-                  <Tab
-                    tab={item}
-                    tabs={data}
-                    mutate={mutate}
-                    selected={tab === item.id}
-                    badgeData={badgeData}
-                  />
-                </View>
-              )}
-              contentContainerStyle={{
-                paddingVertical: 10,
-                paddingTop: 5,
-                paddingHorizontal: Platform.OS === "web" && 10,
-                minHeight: widgets.find((i) => i.pinned) ? undefined : "100%",
-              }}
               keyExtractor={(item) => item.id}
-            />
+            /> */}
             <LinearGradient
               colors={[addHslAlpha(theme[2], 0), theme[2]]}
               style={{

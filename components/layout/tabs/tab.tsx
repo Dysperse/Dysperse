@@ -17,7 +17,6 @@ import * as Haptics from "expo-haptics";
 import { router } from "expo-router";
 import React, { memo, useCallback, useMemo, useState } from "react";
 import { InteractionManager, Platform, StyleSheet, View } from "react-native";
-import { useReorderableDrag } from "react-native-reorderable-list";
 import Toast from "react-native-toast-message";
 import { useTabMetadata } from "./useTabMetadata";
 
@@ -59,7 +58,7 @@ function Tab({
   const tabData = useTabMetadata(tab.slug, tab);
   const { sessionToken } = useUser();
   const { sidebarRef, desktopCollapsed } = useSidebarContext();
-  const drag = useReorderableDrag();
+  // const drag = useReorderableDrag();
 
   const handleDelete = useCallback(
     async (id: string) => {
@@ -288,7 +287,7 @@ function Tab({
             ? undefined
             : () => {
                 Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
-                drag();
+                // drag();
               }
         }
         disabled={disabled}

@@ -80,6 +80,35 @@ export function Column(props: ColumnProps) {
 
   const { width } = useWindowDimensions();
 
+  const showCompletedTrigger = (
+    <>
+      {hasNoTasks || !completeTasksExist ? null : (
+        <View style={{ flexDirection: "row" }}>
+          <Button
+            onPress={() => setShowCompleted(!showCompleted)}
+            dense
+            containerStyle={{
+              marginRight: "auto",
+              zIndex: 999,
+              marginTop: hasItems && props.grid ? 20 : 10,
+              marginLeft: breakpoints.md
+                ? !hasItems && props.grid
+                  ? 80
+                  : "auto"
+                : "auto",
+            }}
+            variant={"filled"}
+          >
+            <ButtonText weight={600}>
+              {showCompleted ? "Hide completed" : "See completed"}
+            </ButtonText>
+            <Icon>{showCompleted ? "expand_less" : "expand_more"}</Icon>
+          </Button>
+        </View>
+      )}
+    </>
+  );
+
   return (
     <View
       style={[
@@ -177,111 +206,92 @@ export function Column(props: ColumnProps) {
           addHslAlpha(theme[breakpoints.md ? 2 : 1], 0),
         ]}
       />
-      <FlashList
-        // onReorder={({ from, to }) => {
-        //   mutate(
-        //     (oldData) => {
-        //       const label = oldData.labels.find((e) => e.id === props.label.id);
-        //       if (!label || !label.entities) return oldData;
+      {data.length === 0 ? (
+        <View style={{ flex: 1, justifyContent: "center" }}>
+          <ColumnEmptyComponent
+            offset={props.index}
+            showInspireMe={hasNoTasks}
+            labelId={props.label?.id}
+            row={props.grid}
+          />
+          {showCompletedTrigger}
+        </View>
+      ) : (
+        <FlashList
+          // onReorder={({ from, to }) => {
+          //   mutate(
+          //     (oldData) => {
+          //       const label = oldData.labels.find((e) => e.id === props.label.id);
+          //       if (!label || !label.entities) return oldData;
 
-        //       // Extract keys and reorder them
-        //       const entityKeys = Object.keys(label.entities);
-        //       const reorderedKeys = reorderItems(entityKeys, from, to);
+          //       // Extract keys and reorder them
+          //       const entityKeys = Object.keys(label.entities);
+          //       const reorderedKeys = reorderItems(entityKeys, from, to);
 
-        //       // Rebuild the object with the new key order
-        //       const reorderedEntities = Object.fromEntries(
-        //         reorderedKeys.map((key, index) => [
-        //           key,
-        //           { ...label.entities[key], agendaOrder: index },
-        //         ])
-        //       );
+          //       // Rebuild the object with the new key order
+          //       const reorderedEntities = Object.fromEntries(
+          //         reorderedKeys.map((key, index) => [
+          //           key,
+          //           { ...label.entities[key], agendaOrder: index },
+          //         ])
+          //       );
 
-        //       // Return the updated state
-        //       return {
-        //         ...oldData,
-        //         labels: oldData.labels.map((l) =>
-        //           l.id === props.label.id
-        //             ? { ...l, entities: reorderedEntities }
-        //             : l
-        //         ),
-        //       };
-        //     },
-        //     { revalidate: false }
-        //   );
-        // }}
-        ref={columnRef}
-        refreshControl={
-          !centerContent && (
+          //       // Return the updated state
+          //       return {
+          //         ...oldData,
+          //         labels: oldData.labels.map((l) =>
+          //           l.id === props.label.id
+          //             ? { ...l, entities: reorderedEntities }
+          //             : l
+          //         ),
+          //       };
+          //     },
+          //     { revalidate: false }
+          //   );
+          // }}
+          ref={columnRef}
+          refreshControl={
             <RefreshControl
               refreshing={refreshing}
               onRefresh={() => mutate()}
             />
-          )
-        }
-        centerContent={centerContent}
-        data={data}
-        ListHeaderComponent={() => (
-          <View>
-            {!(!hasNoTasks && hasItems) && (
-              <ColumnEmptyComponent
-                offset={props.index}
-                showInspireMe={hasNoTasks}
-                labelId={props.label?.id}
-                row={props.grid}
-              />
-            )}
-          </View>
-        )}
-        // estimatedItemSize={300}
-        contentContainerStyle={{
-          padding: props.grid ? 10 : 15,
-          paddingTop: props.grid ? 5 : 15,
-          paddingBottom: insets.bottom + 35,
-        }}
-        contentInset={TEMPORARY_CONTENT_INSET_FIX()}
-        ListFooterComponentStyle={[
-          hasNoIncompleteTasks && {
-            marginBottom: showCompleted ? 10 : -70,
-          },
-        ]}
-        ListFooterComponent={() => (
-          <>
-            {hasNoTasks || !completeTasksExist ? null : (
-              <View style={{ flexDirection: "row" }}>
-                <Button
-                  onPress={() => setShowCompleted(!showCompleted)}
-                  dense
-                  containerStyle={{
-                    marginRight: "auto",
-                    zIndex: 999,
-                    marginTop: hasItems && props.grid ? 20 : 10,
-                    marginLeft: breakpoints.md
-                      ? !hasItems && props.grid
-                        ? 80
-                        : "auto"
-                      : "auto",
-                  }}
-                  variant={"filled"}
-                >
-                  <ButtonText weight={600}>
-                    {showCompleted ? "Hide completed" : "See completed"}
-                  </ButtonText>
-                  <Icon>{showCompleted ? "expand_less" : "expand_more"}</Icon>
-                </Button>
-              </View>
-            )}
-          </>
-        )}
-        renderItem={({ item }) => (
-          <Entity
-            isReadOnly={isReadOnly || !session}
-            item={item}
-            showDate
-            onTaskUpdate={mutations.categoryBased.update(mutate)}
-          />
-        )}
-        keyExtractor={(i: any) => i.id}
-      />
+          }
+          data={data}
+          ListHeaderComponent={() => (
+            <View>
+              {!(!hasNoTasks && hasItems) && (
+                <ColumnEmptyComponent
+                  offset={props.index}
+                  showInspireMe={hasNoTasks}
+                  labelId={props.label?.id}
+                  row={props.grid}
+                />
+              )}
+            </View>
+          )}
+          contentContainerStyle={{
+            padding: props.grid ? 10 : 15,
+            paddingTop: props.grid ? 5 : 15,
+            paddingBottom: insets.bottom + 35,
+          }}
+          contentInset={TEMPORARY_CONTENT_INSET_FIX()}
+          ListFooterComponentStyle={[
+            hasNoIncompleteTasks && {
+              marginBottom: showCompleted ? 10 : -70,
+            },
+          ]}
+          ListFooterComponent={() => <>{showCompletedTrigger}</>}
+          renderItem={({ item }) => (
+            <Entity
+              isReadOnly={isReadOnly || !session}
+              item={item}
+              showDate
+              onTaskUpdate={mutations.categoryBased.update(mutate)}
+            />
+          )}
+          keyExtractor={(i: any) => i.id}
+        />
+      )}
     </View>
   );
 }
