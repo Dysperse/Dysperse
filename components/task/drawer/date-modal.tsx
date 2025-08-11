@@ -105,16 +105,16 @@ function TaskDateModalContent({ task, updateTask }) {
     if (!isNaN(dayOffset)) {
       return [
         {
+          date: dayjs().set("date", dayOffset),
+          secondary: dayjs().set("date", dayOffset).fromNow(),
+        },
+        {
           date: dayjs().add(dayOffset, "day"),
           secondary: `${dayOffset} day${dayOffset === 1 ? "" : "s"} from now`,
         },
         {
           date: dayjs().add(dayOffset, "week"),
           secondary: `${dayOffset} week${dayOffset === 1 ? "" : "s"} from now`,
-        },
-        {
-          date: dayjs().set("date", dayOffset),
-          secondary: dayjs().set("date", dayOffset).fromNow(),
         },
       ];
     }
