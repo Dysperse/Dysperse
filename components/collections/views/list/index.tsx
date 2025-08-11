@@ -102,8 +102,10 @@ function ListItem({ d, data, item, listRef, mutate, onTaskUpdate, index }) {
                     item.entitiesLength ||
                     Object.values(
                       data.labels.find((l) => l.id === item.id)?.entities
-                    )?.filter((e) => e.completionInstances.length === 0)
-                      ?.length,
+                    )?.filter(
+                      (e) =>
+                        e.completionInstances.length === 0 && !e.parentTaskId
+                    )?.length,
                 }}
                 grid
                 list

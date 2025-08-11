@@ -120,7 +120,9 @@ export function Column(props: ColumnProps) {
             ...props.label,
             entitiesLength: Object.values(
               props.label?.entities || props?.entities || {}
-            ).filter((e) => e.completionInstances.length === 0).length,
+            ).filter(
+              (e) => e.completionInstances.length === 0 && !e.parentTaskId
+            ).length,
           }}
         />
       )}
