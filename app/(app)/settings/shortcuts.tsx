@@ -26,10 +26,10 @@ export default function Page() {
         },
 
         globalThis.IN_DESKTOP_ENV && {
-          keys: "ctrl+;",
+          keys: "ctrl+shift+;",
           action: "Create a task (from anywhere)",
         },
-      ],
+      ].filter(Boolean),
     },
     {
       name: "Tab management",
