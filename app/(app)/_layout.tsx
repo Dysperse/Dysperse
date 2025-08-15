@@ -95,7 +95,7 @@ export function LastStateRestore({ isHome }: { isHome?: boolean }) {
   const breakpoints = useResponsiveBreakpoints();
   const pathname = usePathname();
   const { desktopCollapsed } = useSidebarContext();
-  const { fullscreen, tab: currentTab } = useGlobalSearchParams();
+  const { deepLink, fullscreen, tab: currentTab } = useGlobalSearchParams();
 
   const setCurrentPage = useCallback(async () => {
     if (Platform.OS === "ios") {
@@ -135,7 +135,8 @@ export function LastStateRestore({ isHome }: { isHome?: boolean }) {
   }, [desktopCollapsed, breakpoints, currentTab, data]);
 
   useEffect(() => {
-    if (!fullscreen && !pathname.includes("chrome-extension")) setCurrentPage();
+    if (!fullscreen && !deepLink && !pathname.includes("chrome-extension"))
+      setCurrentPage();
   }, []);
 
   return null;
