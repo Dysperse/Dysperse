@@ -526,6 +526,22 @@ function TaskShortcutCreation() {
     createTaskRef.current?.present();
   });
 
+  useEffect(() => {
+    if (Platform.OS === "web") {
+      window.addEventListener("dysperse-shortcut", (e) => {
+        if (e.detail?.action === "create-task")
+          createTaskRef.current?.present();
+      });
+
+      return () => {
+        window.removeEventListener("dysperse-shortcut", (e) => {
+          if (e.detail?.action === "create-task")
+            createTaskRef.current?.present();
+        });
+      };
+    }
+  }, []);
+
   return (
     <CreateTask
       ref={createTaskRef}
