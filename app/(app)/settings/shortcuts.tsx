@@ -13,11 +13,21 @@ export default function Page() {
 
   const shortcuts = [
     {
-      name: "Layout",
+      name: "App",
       shorcuts: [
         {
           keys: "ctrl+s",
           action: "Toggle sidebar",
+        },
+
+        globalThis.IN_DESKTOP_ENV && {
+          keys: "ctrl+;",
+          action: "Toggle Dysperse app (from anywhere)",
+        },
+
+        globalThis.IN_DESKTOP_ENV && {
+          keys: "ctrl+;",
+          action: "Create a task (from anywhere)",
         },
       ],
     },
