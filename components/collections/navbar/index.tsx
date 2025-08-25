@@ -20,7 +20,7 @@ import { memo, useMemo, useRef } from "react";
 import { Platform, View } from "react-native";
 import { Menu } from "react-native-popup-menu";
 import Toast from "react-native-toast-message";
-import useSWR from "swr";
+import useSWR, { useSWRConfig } from "swr";
 import { CollectionContext, useCollectionContext } from "../context";
 import { useCollectionSidekickContext } from "../sidekickContext";
 import { AgendaButtons } from "./AgendaButtons";
@@ -89,12 +89,14 @@ const CollectionNavbar = memo(function CollectionNavbar({
   const pathname = usePathname();
   const shareMenuRef = useRef(null);
 
+  const { mutate: mutateGlobal } = useSWRConfig();
+
   const isAll = id === "all";
   const contextValue = { data, swrKey, type, ...ctx, access: null };
 
   const handleRefresh = async (e) => {
     e?.preventDefault?.();
-    await ctx.mutate();
+    await mutateGlobal(() => true);
   };
 
   const openPopOut = async () => {
