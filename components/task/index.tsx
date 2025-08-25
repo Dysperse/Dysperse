@@ -26,7 +26,6 @@ import Animated, {
   withSpring,
 } from "react-native-reanimated";
 import Toast from "react-native-toast-message";
-import { ImageViewer } from "../ImageViewer";
 import TaskCheckbox from "./Checkbox";
 import DayTaskModal from "./DayTaskModal";
 import { TaskDrawer } from "./drawer";
@@ -219,11 +218,21 @@ function TaskNoteChips({ note }) {
       ) : (
         chips
           .filter((link) => link.text?.trim())
-          .map((link, index) => (
-            <ImageViewer
-              key={index + link.type}
-              image={link.type === "IMAGE" && link.image}
-            >
+          .map((link, index) =>
+            link.type === "IMAGE" ? (
+              <Galeria urls={[link.image]} key={index}>
+                <Galeria.Image key={link.image}>
+                  <Image
+                    source={{ uri: link.image }}
+                    style={{
+                      width: 50,
+                      height: 30,
+                      borderRadius: 10,
+                    }}
+                  />
+                </Galeria.Image>
+              </Galeria>
+            ) : (
               <Button
                 chip
                 key={index}
@@ -249,8 +258,8 @@ function TaskNoteChips({ note }) {
                   )
                 }
               />
-            </ImageViewer>
-          ))
+            )
+          )
       )}
     </>
   );
