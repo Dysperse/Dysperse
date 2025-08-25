@@ -398,7 +398,7 @@ function OpenTabsList() {
                 onOrderChange={() => impactAsync(ImpactFeedbackStyle.Light)}
                 activeItemScale={1.05}
                 dragActivationDelay={
-                  Platform.OS === "web" && breakpoints.md ? 0 : undefined
+                  Platform.OS === "web" && breakpoints.md ? 700 : undefined
                 }
                 onActiveItemDropped={(res) => {
                   console.log(res);
