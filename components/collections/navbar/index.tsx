@@ -147,7 +147,10 @@ const CollectionNavbar = memo(function CollectionNavbar({
     handleLock();
   });
   useHotkeys(["ctrl+r"], handleRefresh);
-  useHotkeys(["o"], openPopOut);
+  useHotkeys(["o"], openPopOut, {
+    ignoreEventWhen: () =>
+      document.querySelectorAll('[aria-modal="true"]').length > 0,
+  });
 
   useHotkeys(
     ["p", "y", "k", "s", "g", "w", "l", "m", "c", "a"],
