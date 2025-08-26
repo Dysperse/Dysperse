@@ -26,7 +26,7 @@ import * as Haptics from "expo-haptics";
 import { impactAsync, ImpactFeedbackStyle } from "expo-haptics";
 import { LinearGradient } from "expo-linear-gradient";
 import { router, useGlobalSearchParams } from "expo-router";
-import React, { memo, default as React, useEffect, useState } from "react";
+import React, { memo, useEffect, useState } from "react";
 import { Platform, Pressable, StyleSheet, View } from "react-native";
 import Animated, { useAnimatedRef } from "react-native-reanimated";
 import { reorderItems } from "react-native-reorderable-list";
