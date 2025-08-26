@@ -11,8 +11,7 @@ import { useColorTheme } from "@/ui/color/theme-provider";
 import { useBottomSheet } from "@gorhom/bottom-sheet";
 import { BlurView } from "expo-blur";
 import { useLocalSearchParams, usePathname } from "expo-router";
-import {
-  default as React,
+import React, {
   cloneElement,
   useCallback,
   useImperativeHandle,

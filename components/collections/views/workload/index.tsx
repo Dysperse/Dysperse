@@ -14,13 +14,7 @@ import { FlashList } from "@shopify/flash-list";
 import dayjs from "dayjs";
 import { impactAsync, ImpactFeedbackStyle } from "expo-haptics";
 import { LinearGradient } from "expo-linear-gradient";
-import {
-  Dispatch,
-  default as React,
-  SetStateAction,
-  useRef,
-  useState,
-} from "react";
+import React, { Dispatch, SetStateAction, useRef, useState } from "react";
 import { Platform, Pressable, StyleSheet, View } from "react-native";
 import { ScrollView } from "react-native-gesture-handler";
 import { useCollectionContext } from "../../context";

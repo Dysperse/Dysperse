@@ -17,7 +17,7 @@ import ListItemText from "@/ui/ListItemText";
 import Text from "@/ui/Text";
 import { Image } from "expo-image";
 import { router } from "expo-router";
-import { default as React, useCallback } from "react";
+import React, { useCallback } from "react";
 import { Platform, StyleSheet, View } from "react-native";
 import { Pressable, ScrollView } from "react-native-gesture-handler";
 import ReorderableList, {

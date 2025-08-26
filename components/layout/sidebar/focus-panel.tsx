@@ -8,7 +8,7 @@ import { useColorTheme } from "@/ui/color/theme-provider";
 import { BottomSheetScrollView } from "@gorhom/bottom-sheet";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { ImpactFeedbackStyle, impactAsync } from "expo-haptics";
-import { default as React, memo, useEffect, useRef, useState } from "react";
+import React, { memo, useEffect, useRef, useState } from "react";
 import { Platform, View } from "react-native";
 import Toast from "react-native-toast-message";
 
