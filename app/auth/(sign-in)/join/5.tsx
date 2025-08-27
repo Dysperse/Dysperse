@@ -1,6 +1,7 @@
 import { sendApiRequest } from "@/helpers/api";
 import { useResponsiveBreakpoints } from "@/helpers/useResponsiveBreakpoints";
 import { Button } from "@/ui/Button";
+import { useColor } from "@/ui/color";
 import { useColorTheme } from "@/ui/color/theme-provider";
 import Icon from "@/ui/Icon";
 import { ListItemButton } from "@/ui/ListItemButton";
@@ -58,6 +59,7 @@ function Content() {
   const [hasReadTerms, setHasReadTerms] = useState(false);
   const params = useLocalSearchParams();
   const store = useSignupContext();
+  const red = useColor("red");
   const breakpoints = useResponsiveBreakpoints();
 
   const [email, setEmail] = useState(store.email || "");
@@ -210,12 +212,20 @@ function Content() {
           <Icon size={40}>toggle_{allowMarketingEmails ? "on" : "off"}</Icon>
         </ListItemButton>
         {!store.appleAuthFillPassword && (
-          <Text variant="eyebrow" style={{ marginTop: 30 }}>
-            Password
-            {password.length < 8
-              ? ` — ${8 - password.length} more characters`
-              : ""}
-          </Text>
+          <View
+            style={{
+              marginTop: 30,
+              flexDirection: "row",
+              alignItems: "center",
+            }}
+          >
+            <Text variant="eyebrow">Password</Text>
+            <Text style={{ color: red[9] }}>
+              {password.length < 8
+                ? ` — ${8 - password.length} more characters`
+                : ""}
+            </Text>
+          </View>
         )}
         {!store.appleAuthFillPassword && (
           <TextField

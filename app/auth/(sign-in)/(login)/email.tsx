@@ -75,6 +75,8 @@ export function GoogleAuth({
       const t = new URL(result.url);
       if (!onSuccess && t.searchParams.has("session")) {
         signIn(t.searchParams.get("session"));
+      } else if (t.searchParams.get("isNew")) {
+        onNewAccount(Object.fromEntries(t.searchParams.entries()));
       } else {
         setLoading(false);
         onSuccess?.(Object.fromEntries(t.searchParams.entries()));
