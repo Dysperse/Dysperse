@@ -368,6 +368,7 @@ export default function SignIn() {
           <Button
             large
             bold
+            disabled={globalThis.IN_DESKTOP_ENV}
             android_ripple={{ color: isDark ? "#000" : "#fff" }}
             icon={
               (
@@ -383,6 +384,7 @@ export default function SignIn() {
             }
             iconStyle={{ marginBottom: Platform.OS === "web" ? 0 : -5 }}
             style={[
+              globalThis.IN_DESKTOP_ENV && { opacity: 0.5 },
               !breakpoints.md && {
                 flexDirection: "column",
                 justifyContent: "center",
