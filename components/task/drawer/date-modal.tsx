@@ -562,6 +562,11 @@ function TaskDateModalContent({ task, updateTask }) {
           bottomSheet
           variant="filled"
           onChangeText={setSearch}
+          onKeyPress={(e) => {
+            if (e.nativeEvent.key === "Escape") {
+              searchRef.current?.blur();
+            }
+          }}
           placeholder={
             timeMode ? "Find a time..." : `Find a ${view.toLowerCase()}...`
           }
