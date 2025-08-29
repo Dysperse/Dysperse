@@ -521,10 +521,17 @@ function TaskShortcutCreation() {
   const { data, mutate } = useCollectionContext();
   const { type } = useLocalSearchParams();
 
-  useHotkeys("space", (e) => {
-    e.preventDefault();
-    createTaskRef.current?.present();
-  });
+  useHotkeys(
+    "space",
+    (e) => {
+      e.preventDefault();
+      createTaskRef.current?.present();
+    },
+    {
+      ignoreEventWhen: () =>
+        document.querySelectorAll('[aria-modal="true"]').length > 0,
+    }
+  );
 
   useEffect(() => {
     if (Platform.OS === "web") {

@@ -132,14 +132,21 @@ const CollectionNavbar = memo(function CollectionNavbar({
     );
   };
 
-  useHotkeys(["ctrl+d"], (e) => {
-    if (id === "all") return;
-    e.preventDefault();
-    router.navigate({
-      pathname: "[tab]/collections/[id]/[view]/customize",
-      params: { id, tab, view: type },
-    });
-  });
+  useHotkeys(
+    ["ctrl+d"],
+    (e) => {
+      if (id === "all") return;
+      e.preventDefault();
+      router.navigate({
+        pathname: "[tab]/collections/[id]/[view]/customize",
+        params: { id, tab, view: type },
+      });
+    },
+    {
+      ignoreEventWhen: () =>
+        document.querySelectorAll('[aria-modal="true"]').length > 0,
+    }
+  );
   useHotkeys(["ctrl+l", "ctrl+shift+l"], (e) => {
     if (id === "all") return;
     e.preventDefault();
