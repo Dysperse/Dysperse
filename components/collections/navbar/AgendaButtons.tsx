@@ -7,7 +7,7 @@ import MenuPopover from "@/ui/MenuPopover";
 import Text from "@/ui/Text";
 import { addHslAlpha } from "@/ui/color";
 import { useColorTheme } from "@/ui/color/theme-provider";
-import dayjs, { ManipulateType } from "dayjs";
+import dayjs from "dayjs";
 import { impactAsync, ImpactFeedbackStyle } from "expo-haptics";
 import { router, useGlobalSearchParams } from "expo-router";
 import React, { useCallback } from "react";
@@ -68,8 +68,8 @@ export function AgendaButtons({
   });
 
   const isTodaysView = dayjs().isBetween(
-    dayjs(start).startOf(agendaView as ManipulateType),
-    dayjs(start).endOf(weekMode ? (agendaView as ManipulateType) : "day"),
+    dayjs(start).startOf("week"),
+    dayjs(start).endOf("week"),
     "day",
     "[]"
   );
