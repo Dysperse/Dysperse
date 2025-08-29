@@ -347,19 +347,19 @@ export default function AppLayout() {
           >
             <OnboardingProvider>
               <FocusPanelProvider drawerRef={focusPanelRef}>
-                <BottomSheetModalProvider>
-                  <MenuProvider
-                    skipInstanceCheck
-                    customStyles={{
-                      backdrop: {
-                        flex: 1,
-                        opacity: 1,
-                        ...(Platform.OS === "web" &&
-                          ({ WebkitAppRegion: "no-drag" } as any)),
-                      },
-                    }}
-                  >
-                    <PortalProvider>
+                <MenuProvider
+                  skipInstanceCheck
+                  customStyles={{
+                    backdrop: {
+                      flex: 1,
+                      opacity: 1,
+                      ...(Platform.OS === "web" &&
+                        ({ WebkitAppRegion: "no-drag" } as any)),
+                    },
+                  }}
+                >
+                  <PortalProvider>
+                    <BottomSheetModalProvider>
                       <GlobalTaskContextProvider>
                         <CommandPaletteProvider>
                           <ThemeProvider value={routerTheme}>
@@ -429,13 +429,14 @@ export default function AppLayout() {
                           </ThemeProvider>
                         </CommandPaletteProvider>
                       </GlobalTaskContextProvider>
-                    </PortalProvider>
-                  </MenuProvider>
-                  <Toast
-                    topOffset={insets.top + 15}
-                    config={toastConfig(theme)}
-                  />
-                </BottomSheetModalProvider>
+
+                      <Toast
+                        topOffset={insets.top + 15}
+                        config={toastConfig(theme)}
+                      />
+                    </BottomSheetModalProvider>
+                  </PortalProvider>
+                </MenuProvider>
               </FocusPanelProvider>
             </OnboardingProvider>
           </GestureHandlerRootView>

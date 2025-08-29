@@ -34,7 +34,7 @@ import { ImageBackground as ExpoImageBackground } from "expo-image";
 import { LinearGradient } from "expo-linear-gradient";
 import { router } from "expo-router";
 import { LexoRank } from "lexorank";
-import { Fragment, memo } from "react";
+import { Fragment, memo, useRef } from "react";
 import {
   Dimensions,
   Keyboard,
@@ -496,6 +496,7 @@ export function Widgets() {
 function Page() {
   const insets = useSafeAreaInsets();
   const breakpoints = useResponsiveBreakpoints();
+  const sr = useRef(null);
 
   return (
     <ContentWrapper noPaddingTop>
