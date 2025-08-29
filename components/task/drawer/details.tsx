@@ -300,12 +300,15 @@ export function TaskDateMenu({
 
   const dateName = recurrenceRule
     ? [
-        `Repeats ${recurrenceRule
-          .toText()
-          .replace(
-            "every week on Monday, Tuesday, Wednesday, Thursday, Friday, Saturday, Sunday",
-            "every day"
-          )}`,
+        `Repeats ${
+          recurrenceRule
+            .toText()
+            .replace(
+              "every week on Monday, Tuesday, Wednesday, Thursday, Friday, Saturday, Sunday",
+              "every day"
+            )
+            .split(task.dateOnly ? " at " : " never-match-this ")[0]
+        }`,
       ]
     : [
         task.start
