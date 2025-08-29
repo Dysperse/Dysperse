@@ -411,7 +411,7 @@ export const LogoButton = memo(function LogoButton({
               callback: async () => {
                 window.location.href =
                   "dysperse://" +
-                  window.location.href.split("://")[1].split("/")[1];
+                  window.location.href.split("://")[1].split("/")?.[1];
                 desktopRef.current.present();
               },
             },
