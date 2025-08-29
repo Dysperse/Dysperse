@@ -15,7 +15,7 @@ import capitalizeFirstLetter from "@/utils/capitalizeFirstLetter";
 import { BottomSheetFlashList, useBottomSheet } from "@gorhom/bottom-sheet";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import * as chrono from "chrono-node";
-import dayjs from "dayjs";
+import dayjs, { Dayjs } from "dayjs";
 import fuzzysort from "fuzzysort";
 import React, {
   cloneElement,
@@ -32,6 +32,15 @@ import Animated, {
 } from "react-native-reanimated";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { RRule } from "rrule";
+
+const formatDateRelativity = (t: Dayjs) =>
+  t.isToday()
+    ? "Today"
+    : t.isYesterday()
+    ? "Yesterday"
+    : t.isTomorrow()
+    ? "Tomorrow"
+    : t.fromNow();
 
 function TaskDateModalContent({ task, updateTask }) {
   const theme = useColorTheme();
@@ -106,7 +115,7 @@ function TaskDateModalContent({ task, updateTask }) {
       return [
         {
           date: dayjs().set("date", dayOffset),
-          secondary: dayjs().set("date", dayOffset).fromNow(),
+          secondary: formatDateRelativity(dayjs().set("date", dayOffset)),
         },
         {
           text: `+${dayOffset}`,
@@ -128,7 +137,7 @@ function TaskDateModalContent({ task, updateTask }) {
     return date.isValid() ? [date] : [];
   };
 
-  const searchDate = convertSearchToDate(search);
+  const searchDate = convertSearchToDate(timeMode ? `at ${search}` : search);
 
   useEffect(() => {
     viewPickerHidden.value = timeMode ? 1 : 0;
@@ -136,6 +145,18 @@ function TaskDateModalContent({ task, updateTask }) {
 
   const dateList: any = timeMode
     ? [
+        ...(searchDate.length > 0
+          ? searchDate.map((item) => ({
+              text: item.text,
+              icon: item.text ? undefined : "search",
+              primary: item.date.format(
+                session.user.militaryTime ? "H:mm" : "h:mm A"
+              ),
+              secondary: "From search",
+              value: item.date,
+              search,
+            }))
+          : []),
         lastUsedTime && {
           icon: "history",
           primary: "Last used time",
@@ -260,15 +281,9 @@ function TaskDateModalContent({ task, updateTask }) {
         dayjs(lastUsedDate).isValid() && {
           icon: "history",
           primary: "Last used date",
-          secondary: `${lastUsedDate.format("dddd, MMMM Do")} • ${
-            lastUsedDate.isToday()
-              ? "Today"
-              : lastUsedDate.isYesterday()
-              ? "Yesterday"
-              : lastUsedDate.isTomorrow()
-              ? "Tomorrow"
-              : lastUsedDate.fromNow()
-          }`,
+          secondary: `${lastUsedDate.format(
+            "dddd, MMMM Do"
+          )} • ${formatDateRelativity(lastUsedDate)}`,
           value: lastUsedDate,
         },
         {
