@@ -308,6 +308,8 @@ export const LogoButton = memo(function LogoButton({
   const syncRef = useRef(null);
   const [isLoading, setLoading] = useState(false);
 
+  const desktopRef = useRef(null);
+
   return (
     <View
       style={[
@@ -318,6 +320,30 @@ export const LogoButton = memo(function LogoButton({
         },
       ]}
     >
+      <Modal sheetRef={desktopRef} animation="SCALE" maxWidth={300}>
+        <View style={{ padding: 20, gap: 10 }}>
+          <View style={{ alignItems: "center", gap: 5 }}>
+            <Text style={{ fontSize: 30, fontFamily: "serifText700" }}>
+              All done!
+            </Text>
+            <Text style={{ fontSize: 20, opacity: 0.6 }}>
+              You can close this tab now.
+            </Text>
+          </View>
+          <View style={{ alignItems: "center", marginVertical: 10, gap: 5 }}>
+            <Text variant="eyebrow">Didn't open?</Text>
+            <Button
+              large
+              bold
+              variant="filled"
+              onPress={() =>
+                Linking.openURL("https://dysperse.com/download/windows")
+              }
+              text="Download for Windows"
+            />
+          </View>
+        </View>
+      </Modal>
       <MenuPopover
         menuProps={{
           rendererProps: {
@@ -326,7 +352,16 @@ export const LogoButton = memo(function LogoButton({
           },
         }}
         menuRef={menuRef}
-        containerStyle={{ width: 190, marginLeft: 10, marginTop: -5 }}
+        containerStyle={{
+          width:
+            Platform.OS === "web" &&
+            navigator.userAgent.indexOf("Windows") !== -1 &&
+            !globalThis.IN_DESKTOP_ENV
+              ? 230
+              : 190,
+          marginLeft: 10,
+          marginTop: -5,
+        }}
         trigger={
           <AttachStep index={3}>
             <View style={{ borderRadius: 20, overflow: "hidden" }}>
@@ -367,6 +402,19 @@ export const LogoButton = memo(function LogoButton({
           </AttachStep>
         }
         options={[
+          // detect windows
+          Platform.OS === "web" &&
+            navigator.userAgent.indexOf("Windows") !== -1 &&
+            !globalThis.IN_DESKTOP_ENV && {
+              icon: "north_east",
+              text: "Open in desktop app",
+              callback: async () => {
+                window.location.href =
+                  "dysperse://" +
+                  window.location.href.split("://")[1].split("/")[1];
+                desktopRef.current.present();
+              },
+            },
           session?.space?.space?._count?.integrations > 0 && {
             icon: "sync",
             text: isLoading ? "Syncing..." : "Sync now",
