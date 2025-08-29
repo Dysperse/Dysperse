@@ -454,7 +454,7 @@ const Task = memo(function Task({
                   }}
                 >
                   {task.pinned && <TaskImportantChip />}
-                  {(showRelativeTime || !task.dateOnly) && task.start && (
+                  {showRelativeTime && !task.dateOnly && task.start && (
                     <Button
                       chip
                       disabled
