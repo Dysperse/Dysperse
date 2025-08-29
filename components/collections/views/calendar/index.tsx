@@ -6,13 +6,14 @@ import { TaskDrawer, TaskDrawerProps } from "@/components/task/drawer";
 import { getTaskCompletionStatus } from "@/helpers/getTaskCompletionStatus";
 import { useResponsiveBreakpoints } from "@/helpers/useResponsiveBreakpoints";
 import BottomSheet from "@/ui/BottomSheet";
+import { SafeFlashListFix } from "@/ui/BottomSheet/SafeFlashListFix";
 import { addHslAlpha } from "@/ui/color";
 import { useColorTheme } from "@/ui/color/theme-provider";
 import Icon from "@/ui/Icon";
 import IconButton from "@/ui/IconButton";
 import Spinner from "@/ui/Spinner";
 import Text from "@/ui/Text";
-import { BottomSheetFlashList, BottomSheetModal } from "@gorhom/bottom-sheet";
+import { BottomSheetModal } from "@gorhom/bottom-sheet";
 import dayjs from "dayjs";
 import { impactAsync, ImpactFeedbackStyle } from "expo-haptics";
 import { LinearGradient } from "expo-linear-gradient";
@@ -354,7 +355,7 @@ function Date({ mutate, day, events, theme, dIdx, wIdx }) {
               </Text>
             </View>
           ) : (
-            <BottomSheetFlashList
+            <SafeFlashListFix
               data={dayEvents}
               keyExtractor={(item) => item.id}
               contentContainerStyle={{

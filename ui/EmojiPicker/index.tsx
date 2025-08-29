@@ -1,4 +1,4 @@
-import { BottomSheetFlashList, BottomSheetModal } from "@gorhom/bottom-sheet";
+import { BottomSheetModal } from "@gorhom/bottom-sheet";
 import {
   cloneElement,
   memo,
@@ -17,6 +17,7 @@ import {
 } from "react-native";
 import useSWR from "swr";
 import BottomSheet from "../BottomSheet";
+import { SafeFlashListFix } from "../BottomSheet/SafeFlashListFix";
 import Emoji from "../Emoji";
 import ErrorAlert from "../Error";
 import Icon from "../Icon";
@@ -168,7 +169,7 @@ export function EmojiPicker({
                 height: "100%",
               }}
             >
-              <BottomSheetFlashList
+              <SafeFlashListFix
                 keyboardShouldPersistTaps="handled"
                 data={filteredData}
                 estimatedItemSize={117.5}

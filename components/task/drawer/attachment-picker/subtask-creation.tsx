@@ -13,7 +13,7 @@ export function SubtaskCreation({ handleBack }) {
   return (
     <View style={{ width: "100%", flexDirection: "row", gap: 10 }}>
       <CreateTask
-        stackBehavior="replace"
+        stackBehavior={Platform.OS==='web'?undefined:"replace"}
         mutate={(t) => {
           updateTask({
             subtasks: {

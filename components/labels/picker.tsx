@@ -2,6 +2,7 @@ import { CreateLabelModal } from "@/components/labels/createModal";
 import { useLabelColors } from "@/components/labels/useLabelColors";
 import { useResponsiveBreakpoints } from "@/helpers/useResponsiveBreakpoints";
 import BottomSheet, { DBottomSheetProps } from "@/ui/BottomSheet";
+import { SafeFlashListFix } from "@/ui/BottomSheet/SafeFlashListFix";
 import { Button } from "@/ui/Button";
 import Emoji from "@/ui/Emoji";
 import ErrorAlert from "@/ui/Error";
@@ -15,7 +16,6 @@ import TextField from "@/ui/TextArea";
 import { addHslAlpha } from "@/ui/color";
 import { useColorTheme } from "@/ui/color/theme-provider";
 import {
-  BottomSheetFlashList,
   BottomSheetFlatList,
   BottomSheetModal,
   useBottomSheet,
@@ -263,7 +263,7 @@ function LabelPickerContent({
         style={{ height: 30, zIndex: 99, marginBottom: -30, width: "100%" }}
       />
       {Array.isArray(data) ? (
-        <BottomSheetFlashList
+        <SafeFlashListFix
           showsVerticalScrollIndicator={false}
           estimatedItemSize={62}
           data={fuzzysort

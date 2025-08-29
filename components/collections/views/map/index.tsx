@@ -5,6 +5,7 @@ import { TaskDrawer } from "@/components/task/drawer";
 import { useResponsiveBreakpoints } from "@/helpers/useResponsiveBreakpoints";
 import { Avatar } from "@/ui/Avatar";
 import BottomSheet from "@/ui/BottomSheet";
+import { SafeFlashListFix } from "@/ui/BottomSheet/SafeFlashListFix";
 import { Button } from "@/ui/Button";
 import { addHslAlpha } from "@/ui/color";
 import { useColorTheme } from "@/ui/color/theme-provider";
@@ -15,7 +16,6 @@ import ListItemText from "@/ui/ListItemText";
 import MenuPopover from "@/ui/MenuPopover";
 import RefreshControl from "@/ui/RefreshControl";
 import TextField from "@/ui/TextArea";
-import { BottomSheetFlashList } from "@gorhom/bottom-sheet";
 import { FlashList } from "@shopify/flash-list";
 import { LinearGradient } from "expo-linear-gradient";
 import { router, useLocalSearchParams } from "expo-router";
@@ -155,7 +155,7 @@ function Content({ query, onLocationSelect, closeOnSelect, modalRef }) {
           </View>
         )}
         {error && <ErrorAlert />}
-        <BottomSheetFlashList
+        <SafeFlashListFix
           keyboardShouldPersistTaps="handled"
           contentContainerStyle={{ paddingTop: 10 }}
           data={data}

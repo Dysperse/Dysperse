@@ -1,10 +1,10 @@
 import { mutations } from "@/app/(app)/[tab]/collections/mutations";
 import BottomSheet from "@/ui/BottomSheet";
+import { SafeFlashListFix } from "@/ui/BottomSheet/SafeFlashListFix";
 import { useColorTheme } from "@/ui/color/theme-provider";
 import Spinner from "@/ui/Spinner";
 import Text from "@/ui/Text";
 import { TEMPORARY_CONTENT_INSET_FIX } from "@/utils/temporary-scrolling-bug-fix";
-import { BottomSheetFlashList } from "@gorhom/bottom-sheet";
 import dayjs from "dayjs";
 import { cloneElement, useRef, useState } from "react";
 import { View } from "react-native";
@@ -111,7 +111,7 @@ export default function DayTaskModal({ children, date, taskId }) {
             </View>
           ) : (
             <View style={{ flex: 1 }}>
-              <BottomSheetFlashList
+              <SafeFlashListFix
                 data={data}
                 estimatedItemSize={100}
                 contentContainerStyle={{

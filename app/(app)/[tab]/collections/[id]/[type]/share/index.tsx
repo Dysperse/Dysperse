@@ -11,6 +11,7 @@ import { useHotkeys } from "@/helpers/useHotKeys";
 import { useResponsiveBreakpoints } from "@/helpers/useResponsiveBreakpoints";
 import { Avatar, ProfilePicture } from "@/ui/Avatar";
 import BottomSheet from "@/ui/BottomSheet";
+import { SafeFlashListFix } from "@/ui/BottomSheet/SafeFlashListFix";
 import Emoji from "@/ui/Emoji";
 import ErrorAlert from "@/ui/Error";
 import Icon from "@/ui/Icon";
@@ -23,7 +24,7 @@ import Text from "@/ui/Text";
 import TextField from "@/ui/TextArea";
 import { useColorTheme } from "@/ui/color/theme-provider";
 import capitalizeFirstLetter from "@/utils/capitalizeFirstLetter";
-import { BottomSheetFlashList, BottomSheetModal } from "@gorhom/bottom-sheet";
+import { BottomSheetModal } from "@gorhom/bottom-sheet";
 import { router, useLocalSearchParams, usePathname } from "expo-router";
 import { cloneElement, useEffect, useRef, useState } from "react";
 import {
@@ -279,7 +280,7 @@ const FriendModal = ({ children, onComplete }) => {
             <FriendEmailSelection setQuery={setQuery} />
           </View>
           <View style={{ flex: 1 }}>
-            <BottomSheetFlashList
+            <SafeFlashListFix
               numColumns={3}
               data={
                 data

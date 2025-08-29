@@ -1,6 +1,7 @@
 import { useUser } from "@/context/useUser";
 import { Avatar } from "@/ui/Avatar";
 import BottomSheet from "@/ui/BottomSheet";
+import { SafeFlashListFix } from "@/ui/BottomSheet/SafeFlashListFix";
 import { Button } from "@/ui/Button";
 import { addHslAlpha } from "@/ui/color";
 import { useColorTheme } from "@/ui/color/theme-provider";
@@ -12,7 +13,7 @@ import { RecurrencePicker } from "@/ui/RecurrencePicker";
 import Text from "@/ui/Text";
 import TextField from "@/ui/TextArea";
 import capitalizeFirstLetter from "@/utils/capitalizeFirstLetter";
-import { BottomSheetFlashList, useBottomSheet } from "@gorhom/bottom-sheet";
+import { useBottomSheet } from "@gorhom/bottom-sheet";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import * as chrono from "chrono-node";
 import dayjs, { Dayjs } from "dayjs";
@@ -598,7 +599,7 @@ function TaskDateModalContent({ task, updateTask }) {
         ref={recurrenceRef}
       />
 
-      <BottomSheetFlashList
+      <SafeFlashListFix
         keyboardShouldPersistTaps="handled"
         data={filteredData}
         contentContainerStyle={{
