@@ -154,7 +154,7 @@ function TaskDrawerWrapper({
             tint={isDark ? "dark" : "light"}
           />
         )}
-        {!data?.id ? (
+        {data?.id ? (
           <TaskDrawerContext.Provider
             value={{
               dateRange,
