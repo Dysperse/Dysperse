@@ -16,12 +16,14 @@ export default function LinearSkeleton({
   animateWidth = false,
   delay = 0,
   style,
+  containerStyle,
 }: {
   height: any;
-  width: any;
+  width?: any;
   animateWidth?: boolean;
   delay?: number;
   style?: StyleProp<ViewStyle>;
+  containerStyle?: ViewStyle;
 }) {
   const theme = useColorTheme();
   const containerAnimation = useSharedValue(animateWidth ? 0 : width);
@@ -46,7 +48,7 @@ export default function LinearSkeleton({
   });
 
   return (
-    <View style={{ height }}>
+    <View style={[{ height }, containerStyle]}>
       <Animated.View
         style={[
           {
@@ -91,3 +93,4 @@ export function LinearSkeletonArray({
     </>
   );
 }
+

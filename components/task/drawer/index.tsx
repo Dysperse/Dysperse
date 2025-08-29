@@ -4,7 +4,6 @@ import { sendApiRequest } from "@/helpers/api";
 import { useResponsiveBreakpoints } from "@/helpers/useResponsiveBreakpoints";
 import ErrorAlert from "@/ui/Error";
 import Modal from "@/ui/Modal";
-import CircularSkeleton from "@/ui/Skeleton/circular";
 import LinearSkeleton from "@/ui/Skeleton/linear";
 import { addHslAlpha, useDarkMode } from "@/ui/color";
 import { useColorTheme } from "@/ui/color/theme-provider";
@@ -155,7 +154,7 @@ function TaskDrawerWrapper({
             tint={isDark ? "dark" : "light"}
           />
         )}
-        {data?.id ? (
+        {!data?.id ? (
           <TaskDrawerContext.Provider
             value={{
               dateRange,
@@ -181,29 +180,7 @@ function TaskDrawerWrapper({
               ...(Platform.OS === "web" && { flex: 1 }),
             }}
           >
-            <View style={{ flexDirection: "row", gap: 10 }}>
-              <CircularSkeleton size={45} />
-              <View style={{ flex: 1 }} />
-              <LinearSkeleton width={140} height={45} />
-            </View>
-            <View style={{ paddingTop: 40, paddingHorizontal: 5 }}>
-              <View style={{ flexDirection: "row", gap: 10, marginBottom: 10 }}>
-                <LinearSkeleton
-                  width={50}
-                  height={35}
-                  style={{ borderRadius: 10 }}
-                />
-                <LinearSkeleton
-                  width={100}
-                  height={35}
-                  style={{ borderRadius: 10 }}
-                />
-                <LinearSkeleton
-                  width={50}
-                  height={35}
-                  style={{ borderRadius: 10 }}
-                />
-              </View>
+            <View style={{ paddingBottom: 20, paddingHorizontal: 5 }}>
               <View style={{ gap: 10 }}>
                 <LinearSkeleton width={"70%"} height={50} />
                 <LinearSkeleton width={"30%"} height={20} />
@@ -211,6 +188,17 @@ function TaskDrawerWrapper({
                 <LinearSkeleton width={"20%"} height={20} />
                 <LinearSkeleton width={"10%"} height={20} />
               </View>
+            </View>
+
+            <View style={{ flexDirection: "row", gap: 5 }}>
+              {[...new Array(4)].map((_, i) => (
+                <LinearSkeleton
+                  style={{ flex: 1, borderRadius: 99 }}
+                  containerStyle={{ flex: 1 }}
+                  height={50}
+                  key={i}
+                />
+              ))}
             </View>
           </View>
         )}
