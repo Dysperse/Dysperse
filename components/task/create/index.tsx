@@ -348,7 +348,7 @@ const timeProcessor = (session, taskName: string, taskDate) => {
     return {
       value: {
         dateOnly: false,
-        date: value.format("YYYY-MM-DD HH:mm:ss"),
+        date: value,
       },
       display: {
         text:
