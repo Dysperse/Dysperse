@@ -908,38 +908,51 @@ const BottomSheetContent = ({
     );
   }, [session, nameRef, breakpoints]);
 
+  const unmounted = useRef(false);
+
   const onSubmit = async (data) => {
     try {
       if (Platform.OS !== "web") impactAsync(ImpactFeedbackStyle.Heavy);
+
+      const payload = {
+        ...data,
+        name: data.name.replaceAll(/[@/]\[(.*?)\]\((.*?)\)/g, "$1"),
+        start: data?.date?.toISOString(),
+        agendaOrder: defaultValues.agendaOrder,
+        pinned: data.pinned,
+        labelId: data.label?.id,
+        type: "TASK",
+        parentTask: undefined,
+        parentId: data.parentTask?.id,
+        collectionId: data.label?.id ? null : data.collectionId,
+      };
+
       sendApiRequest(
         sessionToken,
         "POST",
         "space/entity",
         {},
-        {
-          body: JSON.stringify({
-            ...data,
-            name: data.name.replaceAll(/[@/]\[(.*?)\]\((.*?)\)/g, "$1"),
-            start: data?.date?.toISOString(),
-            agendaOrder: defaultValues.agendaOrder,
-            pinned: data.pinned,
-            labelId: data.label?.id,
-            type: "TASK",
-            parentTask: undefined,
-            parentId: data.parentTask?.id,
-            collectionId: data.label?.id ? null : data.collectionId,
-          }),
-        }
+        { body: JSON.stringify(payload) }
       )
-        .then((e) => addedTasks.current.push(e))
-        .then(() => badgingService?.current?.mutate());
+        .then((e) => {
+          if (unmounted.current) {
+            // modal got closed before response -> mutate immediately
+            mutateList(e);
+          } else {
+            // still mounted -> queue for cleanup (or mutate right away if you prefer)
+            addedTasks.current.push(e);
+          }
+        })
+        .then(() => badgingService?.current?.mutate())
+        .catch(() => {
+          Toast.show({
+            type: "error",
+            text1: "Something went wrong. Please try again later.",
+          });
+        });
 
       reset(defaultValues);
-
-      Toast.show({
-        type: "success",
-        text1: "Created task!",
-      });
+      Toast.show({ type: "success", text1: "Created task!" });
       nameRef.current?.focus();
     } catch (e) {
       Toast.show({
@@ -948,6 +961,18 @@ const BottomSheetContent = ({
       });
     }
   };
+
+  useEffect(() => {
+    return () => {
+      unmounted.current = true;
+      // still flush any queued items (from older submits)
+      if (addedTasks.current.length > 0) {
+        for (let i = 0; i < addedTasks.current.length; i++) {
+          mutateList(addedTasks.current[i]);
+        }
+      }
+    };
+  }, []);
 
   const handleSubmitButtonClick = () => {
     setTimeout(() => nameRef.current?.focus(), 1);
@@ -960,16 +985,6 @@ const BottomSheetContent = ({
         })
       )();
   };
-
-  useEffect(() => {
-    return () => {
-      if (addedTasks.current.length > 0) {
-        for (let i = 0; i < addedTasks.current.length; i++) {
-          mutateList(addedTasks.current[i]);
-        }
-      }
-    };
-  }, []);
 
   return (
     <Pressable
