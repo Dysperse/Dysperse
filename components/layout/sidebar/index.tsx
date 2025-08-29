@@ -410,8 +410,8 @@ export const LogoButton = memo(function LogoButton({
               text: "Open in desktop app",
               callback: async () => {
                 window.location.href =
-                  "dysperse://" +
-                  window.location.href.split("://")[1].split("/")?.[1];
+                  new URL(window.location.href).pathname +
+                  new URL(window.location.href).search;
                 desktopRef.current.present();
               },
             },
