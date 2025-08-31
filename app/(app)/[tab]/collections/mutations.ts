@@ -58,7 +58,7 @@ export const mutations = {
                             ...label.entities[newTask.parentTaskId],
                             subtasks: {
                               ...label.entities[newTask.parentTaskId].subtasks,
-                              [newTask.id]: newTask,
+                              [newTask.parentTaskId]: newTask,
                             },
                           }
                         : newTask,
@@ -157,7 +157,6 @@ export const mutations = {
                     [newTask.parentTaskId]: {
                       ...oldColumn.entities[newTask.parentTaskId],
                       subtasks: {
-                        ...oldColumn.entities[newTask.parentTaskId].subtasks,
                         [newTask.id]: newTask,
                       },
                     },

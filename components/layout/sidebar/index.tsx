@@ -178,9 +178,8 @@ const SyncButton = memo(function SyncButton({ syncRef }: any) {
   const hasRegistered = useRef(false);
 
   useEffect(() => {
-    if (hasRegistered.current) return;
+    if (hasRegistered.current || Platform.OS === "web") return;
     hasRegistered.current = true;
-    // Register the background task
     registerBackgroundTaskAsync()
       .then(() => {
         console.log("Background task registered successfully");

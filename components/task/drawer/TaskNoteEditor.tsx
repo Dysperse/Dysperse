@@ -31,7 +31,6 @@ const extensions = [
         ? "Add a note..."
         : "What's on your mind?",
   }),
-
   Dropcursor,
   Link.configure({
     openOnClick: true,
