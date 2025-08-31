@@ -10,7 +10,6 @@ import Icon from "@/ui/Icon";
 import IconButton from "@/ui/IconButton";
 import Logo from "@/ui/logo";
 import MenuPopover from "@/ui/MenuPopover";
-import { Portal } from "@gorhom/portal";
 import dayjs from "dayjs";
 import { useGlobalSearchParams } from "expo-router";
 import { useState } from "react";
@@ -146,62 +145,60 @@ export default function ChromeExtension() {
   };
 
   return (
-    <Portal>
-      <View
-        {...(Platform.OS === "web" && {
-          onContextMenu: () => {
-            return false;
-          },
-        })}
-        style={{
-          position: "absolute",
-          top: 0,
-          left: 0,
-          right: 0,
-          bottom: 0,
-          backgroundColor: theme[2],
-        }}
-      >
-        <Branding />
-        <View style={{ padding: 20, paddingTop: 0, gap: 10 }}>
-          <CreateEntityTrigger defaultValues={{ date: dayjs() }}>
-            <Button
-              variant="filled"
-              height={90}
-              containerStyle={{ borderRadius: 99 }}
-            >
-              <Icon size={40}>add</Icon>
-              <ButtonText weight={900} style={{ fontSize: 20 }}>
-                Create task
-              </ButtonText>
-            </Button>
-          </CreateEntityTrigger>
+    <View
+      {...(Platform.OS === "web" && {
+        onContextMenu: () => {
+          return false;
+        },
+      })}
+      style={{
+        position: "absolute",
+        top: 0,
+        left: 0,
+        right: 0,
+        bottom: 0,
+        backgroundColor: theme[2],
+      }}
+    >
+      <Branding />
+      <View style={{ padding: 20, paddingTop: 0, gap: 10 }}>
+        <CreateEntityTrigger defaultValues={{ date: dayjs() }}>
           <Button
             variant="filled"
             height={90}
-            onPress={handleSaveWebpage}
-            containerStyle={{ borderRadius: 99 }}
-            isLoading={loading}
-          >
-            <Icon size={40}>bookmark</Icon>
-            <ButtonText weight={900} style={{ fontSize: 20 }}>
-              Save webpage
-            </ButtonText>
-          </Button>
-          <Button
-            variant="filled"
-            height={90}
-            onPress={() => window.parent.postMessage("openSidePanel", "*")}
             containerStyle={{ borderRadius: 99 }}
           >
-            <Icon size={40}>dock_to_left</Icon>
+            <Icon size={40}>add</Icon>
             <ButtonText weight={900} style={{ fontSize: 20 }}>
-              Open in panel
+              Create task
             </ButtonText>
           </Button>
-        </View>
+        </CreateEntityTrigger>
+        <Button
+          variant="filled"
+          height={90}
+          onPress={handleSaveWebpage}
+          containerStyle={{ borderRadius: 99 }}
+          isLoading={loading}
+        >
+          <Icon size={40}>bookmark</Icon>
+          <ButtonText weight={900} style={{ fontSize: 20 }}>
+            Save webpage
+          </ButtonText>
+        </Button>
+        <Button
+          variant="filled"
+          height={90}
+          onPress={() => window.parent.postMessage("openSidePanel", "*")}
+          containerStyle={{ borderRadius: 99 }}
+        >
+          <Icon size={40}>dock_to_left</Icon>
+          <ButtonText weight={900} style={{ fontSize: 20 }}>
+            Open in panel
+          </ButtonText>
+        </Button>
       </View>
-    </Portal>
+    </View>
   );
 }
 
