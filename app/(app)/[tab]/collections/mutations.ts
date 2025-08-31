@@ -38,20 +38,17 @@ export const mutations = {
     update: (mutate) => (newTask) => {
       try {
         if (!newTask) return;
-        console.log(newTask);
         mutate(
           (oldData) => {
-            if (
+            const labelId =
               newTask?.labelId ||
-              (newTask?.parentTaskId &&
-                oldData.entities[newTask.parentTaskId]?.labelId)
-            ) {
+              oldData.labels.find(
+                (label) => label.entities[newTask.parentTaskId]
+              )?.id;
+
+            if (labelId) {
               const newLabels = oldData.labels.map((label: any) => {
-                if (
-                  label.id === newTask?.labelId ||
-                  (newTask.parentTaskId &&
-                    label.id === label.entities[newTask.parentTaskId]?.labelId)
-                ) {
+                if (label.id === labelId) {
                   return {
                     ...label,
                     entities: {
