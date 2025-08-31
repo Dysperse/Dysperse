@@ -21,12 +21,12 @@ import {
   useForm,
   useFormContext,
 } from "react-hook-form";
-import { View } from "react-native";
+import { Platform, View } from "react-native";
 import { ScrollView } from "react-native-gesture-handler";
 import Toast from "react-native-toast-message";
 import useSWR from "swr";
 
-const CalendarPicker = () => {
+const CalendarPicker = ({ onSave }) => {
   const theme = useColorTheme();
   const { id } = useLocalSearchParams();
   const { data, error } = useSWR([
@@ -69,11 +69,13 @@ const CalendarPicker = () => {
         </View>
         <LabelPicker
           setLabel={(newLabel: any) => {
+            onSave();
             onChange({
               ...value,
               [item.id]: newLabel,
             });
           }}
+          autoFocus={false}
         >
           <Button
             backgroundColors={
@@ -171,10 +173,12 @@ const CanvasCalendarCourseLabelPicker = ({
   integrationId,
   calendarUrl,
   type,
+  onSave,
 }: {
   integrationId?: string;
   calendarUrl?: string;
   type: string;
+  onSave: () => any;
 }) => {
   const theme = useColorTheme();
   const { data } = useSWR([
@@ -219,9 +223,11 @@ const CanvasCalendarCourseLabelPicker = ({
           )}
         </View>
         <LabelPicker
+          autoFocus={false}
           disableIntegratedItems
           disabledLabels={Object.values(value).map((i: any) => i.id)}
           setLabel={(newLabel: any) => {
+            onSave();
             onChange({
               ...value,
               [item.integrationParams.id]: newLabel,
@@ -340,7 +346,7 @@ export default function Page() {
   const { id, name } = useLocalSearchParams();
   const { data: metadata } = useSWR(
     `${
-      process.env.NODE_ENV === "development"
+      process.env.NODE_ENV === "development" && Platform.OS === "web"
         ? "/integrations.json"
         : "https://go.dysperse.com/integrations.json"
     }`,
@@ -420,7 +426,7 @@ export default function Page() {
     }
   };
 
-  return !data ? (
+  return !data || !integrationMetadata ? (
     <View>{isLoading ? <Spinner /> : <ErrorAlert />}</View>
   ) : (
     <ScrollView style={{ padding: 40 }}>
@@ -454,12 +460,15 @@ export default function Page() {
               </Text>
             </View>
           </View>
-          {integrationMetadata.id === "GOOGLE_CALENDAR" && <CalendarPicker />}
+          {integrationMetadata.id === "GOOGLE_CALENDAR" && (
+            <CalendarPicker onSave={methods.handleSubmit(onSubmit)()} />
+          )}
           {(integrationMetadata.id === "CANVAS_LMS" ||
             integrationMetadata.id === "NEW_CANVAS_LMS") && (
             <CanvasCalendarCourseLabelPicker
               type={integrationMetadata.id}
               integrationId={integration.id}
+              onSave={methods.handleSubmit(onSubmit)()}
               calendarUrl={integration.params?.calendarUrl}
             />
           )}
@@ -477,15 +486,6 @@ export default function Page() {
             >
               <Button text="Delete" icon="delete" variant="outlined" large />
             </ConfirmationModal>
-            <Button
-              isLoading={loading}
-              onPress={methods.handleSubmit(onSubmit)}
-              text="Save changes"
-              iconPosition="end"
-              icon="check"
-              variant="filled"
-              large
-            />
           </View>
         </View>
       </FormProvider>

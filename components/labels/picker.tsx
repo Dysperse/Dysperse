@@ -73,7 +73,6 @@ const Search = ({ query, setQuery, autoFocus }) => {
         }
       }}
       inputRef={searchRef}
-      // autoFocus={Platform.OS !== "web" && autoFocus}
       placeholder="Search…"
     />
   );
@@ -226,7 +225,7 @@ function LabelPickerContent({
               variant="filled"
             />
           )}
-          <Search query={query} setQuery={setQuery} autoFocus={autoFocus} />
+          <Search autoFocus={autoFocus} query={query} setQuery={setQuery} />
           <Animated.View style={hideCreateStyle}>
             <CreateLabelModal
               collectionId={selectedCollection}
