@@ -344,6 +344,7 @@ export default function SignIn() {
               type: "success",
               text1: "We couldn't find an account with that email",
             });
+            console.log(d);
             router.push({
               pathname: "/auth/join/2",
               params: {
