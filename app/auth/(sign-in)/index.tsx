@@ -1,6 +1,6 @@
 import { useSession } from "@/context/AuthProvider";
 import { useResponsiveBreakpoints } from "@/helpers/useResponsiveBreakpoints";
-import { Button, ButtonText } from "@/ui/Button";
+import { Button } from "@/ui/Button";
 import { useDarkMode } from "@/ui/color";
 import { useColorTheme } from "@/ui/color/theme-provider";
 import ErrorAlert from "@/ui/Error";
@@ -343,24 +343,13 @@ export default function SignIn() {
             Toast.show({
               type: "success",
               text1: "We couldn't find an account with that email",
-              props: {
-                renderTrailingIcon: () => (
-                  <Button
-                    onPress={() => {
-                      router.push(`/auth/sign-up?${new URLSearchParams(d)}`);
-                    }}
-                  >
-                    <ButtonText
-                      style={{
-                        color: theme[11],
-                        fontSize: 15,
-                        fontWeight: "bold",
-                      }}
-                    >
-                      Sign up
-                    </ButtonText>
-                  </Button>
-                ),
+            });
+            router.push({
+              pathname: "/auth/join/2",
+              params: {
+                appleAuthFillPassword: "true",
+                email: d.email,
+                name: d.name,
               },
             });
           }}
