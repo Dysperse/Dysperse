@@ -16,6 +16,7 @@ export function ErrorBoundaryComponent() {
   const breakpoints = useResponsiveBreakpoints();
   const { width } = useWindowDimensions();
   const { signOut } = useSession() || {};
+  const [isLoading, setIsLoading] = React.useState(false);
 
   return (
     <ColorThemeProvider theme={theme}>
@@ -67,6 +68,7 @@ export function ErrorBoundaryComponent() {
 
             <Button
               onPress={() => {
+                setIsLoading(true);
                 CLEAR_APP_CACHE();
                 Updates.reloadAsync();
               }}
@@ -75,6 +77,7 @@ export function ErrorBoundaryComponent() {
               text="Reload"
               icon="refresh"
               bold
+              isLoading={isLoading}
               large
             />
             <Button
