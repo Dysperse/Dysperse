@@ -961,7 +961,6 @@ const BottomSheetContent = ({
   useEffect(() => {
     return () => {
       unmounted.current = true;
-      // still flush any queued items (from older submits)
       if (addedTasks.current.length > 0) {
         for (let i = 0; i < addedTasks.current.length; i++) {
           mutateList(addedTasks.current[i]);
