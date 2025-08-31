@@ -1,4 +1,3 @@
-import { GoogleAuth } from "@/app/auth/(sign-in)/(login)/email";
 import { useSignupContext } from "@/app/auth/(sign-in)/_layout";
 import IconButton from "@/ui/IconButton";
 import Text from "@/ui/Text";
@@ -100,16 +99,6 @@ export const Intro = ({ form }) => {
             name="name"
           />
         </View>
-        <GoogleAuth
-          signup
-          onNewAccount={(res) => {
-            setValue("name", res.name);
-            setValue("email", res.email);
-            setValue("picture", res.picture);
-            setValue("isGoogle", true);
-            handleNext();
-          }}
-        />
       </View>
     </KeyboardAvoidingView>
   );

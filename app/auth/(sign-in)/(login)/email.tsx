@@ -27,7 +27,6 @@ import { Platform, StyleSheet, View } from "react-native";
 import { KeyboardAwareScrollView } from "react-native-keyboard-controller";
 import * as passkey from "react-native-passkeys";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
-import { Path, Svg } from "react-native-svg";
 import Toast from "react-native-toast-message";
 import { PasskeyAuth } from "..";
 import { rp } from "../../../(app)/settings/account/passkeys";
@@ -121,15 +120,17 @@ export function GoogleAuth({
           profileImageSize: 120,
         });
         await GoogleSignin.hasPlayServices();
-        const userInfo = await GoogleSignin.signIn();
-        //  LOG  {"idToken": "eyJhbGciOiJSUzI1NiIsImtpZCI6ImIyZjgwYzYzNDYwMGVkMTMwNzIxMDFhOGI0MjIwNDQzNDMzZGIyODIiLCJ0eXAiOiJKV1QifQ.eyJpc3MiOiJodHRwczovL2FjY291bnRzLmdvb2dsZS5jb20iLCJhenAiOiI5OTAwNDAyNTY2NjEtcWE0bmJqZTlmY2kwbzJzcGJjOTZ0cnA3bzZlZmYxdjUuYXBwcy5nb29nbGV1c2VyY29udGVudC5jb20iLCJhdWQiOiI5OTAwNDAyNTY2NjEta2Y0NjllOXJtbDJkYnE3N3E2ZjVnNnJwcm1namRsa2YuYXBwcy5nb29nbGV1c2VyY29udGVudC5jb20iLCJzdWIiOiIxMTE3MTAwNjM4NDU1MTcyNjY5MTgiLCJlbWFpbCI6Im1hbnVzdmF0aGd1cnVkYXRoQGdtYWlsLmNvbSIsImVtYWlsX3ZlcmlmaWVkIjp0cnVlLCJuYW1lIjoiTWFudSBHdXJ1ZGF0aCAoTWFudXN2YXRoKSIsInBpY3R1cmUiOiJodHRwczovL2xoMy5nb29nbGV1c2VyY29udGVudC5jb20vYS9BQ2c4b2NLbUc1U241WG1EMkxnWkdKSXZFNWRPeXlhMnd6V0h1bmx0bkxXYmJLb2NxNENfbzFtZD1zOTYtYyIsImdpdmVuX25hbWUiOiJNYW51IiwiZmFtaWx5X25hbWUiOiJHdXJ1ZGF0aCIsImlhdCI6MTcyNTQ5MDI2OSwiZXhwIjoxNzI1NDkzODY5fQ.win7PIMbdqk-nWG2e0EknHUyso8vIGw2t7SD1VqsFr2E-xeZ2tYpM4KG9vTKyCvHze_Vvk7KXDLsTXrkELrelDZ5yiLG-9NnLbkY94Dpn_34NkgY0znA1e231YPYbfOznKARfIr-tCKrNDq3vDx7JmgmoaaFd5X7_6nNXfw2xf_tGz6h-v5YLhPotn6XAPsBvevl4hptWMznjlJoOXsVssD-eMpff22J_iswbDW-BteQC7VxqQEc-FPLhQ_QrXDOaIpNPDSW163bWz8GBd-repeKva_IeOFZ_u6fpAdZlx9xF4k1fCIYDfS0rgjGCndXRa4pNm8JdEaerIfhvTD1oQ", "scopes": ["https://www.googleapis.com/auth/userinfo.profile", "https://www.googleapis.com/auth/userinfo.email", "openid", "profile", "https://www.googleapis.com/auth/calendar.readonly", "https://www.googleapis.com/auth/calendar.events.readonly", "email"], "serverAuthCode": "4/0AQlEd8wjICnjQA850BbJEZkAd2RGGj5483d46Wix0CfSVmdbi8XOjLbfFRBaWXxVkKgacQ", "user": {"email": "manusvathgurudath@gmail.com", "familyName": "Gurudath", "givenName": "Manu", "id": "111710063845517266918", "name": "Manu Gurudath (Manusvath)", "photo": "https://lh3.googleusercontent.com/a/ACg8ocKmG5Sn5XmD2LgZGJIvE5dOyya2wzWHunltnLWbbKocq4C_o1md=s96-c"}}
+        const response = await GoogleSignin.signIn();
+        if (response.type === "success") {
+          console.log(response);
+        }
 
         const data = await fetch(
           `${process.env.EXPO_PUBLIC_API_URL}${
             redirectPath || "/auth/login/google"
           }?${new URLSearchParams({
-            code: userInfo.serverAuthCode,
-            scope: userInfo.scopes.join(" "),
+            code: response.data.serverAuthCode,
+            scope: response.data.scopes.join(" "),
             returnSessionId: "true",
           })}`
         ).then((r) => r.json());
@@ -140,6 +141,8 @@ export function GoogleAuth({
             return onSuccess(data);
           }
           signIn(data.session);
+        } else if (data.isNew) {
+          onNewAccount(data);
         }
 
         setLoading(false);
@@ -158,46 +161,7 @@ export function GoogleAuth({
     spinnerColor: signup ? undefined : theme[2],
   });
 
-  return isIUSDChromebook ? null : children ? (
-    trigger
-  ) : (
-    <>
-      <Button
-        height={60}
-        variant="filled"
-        isLoading={loading}
-        spinnerColor={signup ? undefined : theme[2]}
-        onPress={handleClick}
-        containerStyle={{ width: "100%" }}
-        textStyle={signup ? undefined : { color: theme[2] }}
-        iconStyle={signup ? undefined : { color: theme[2] }}
-        backgroundColors={
-          signup
-            ? undefined
-            : {
-                default: theme[11],
-                hovered: theme[11],
-                pressed: theme[11],
-              }
-        }
-        text="Continue with Google"
-        icon={
-          (
-            <Svg
-              fill={theme[signup ? 11 : 2]}
-              width={24}
-              height={24}
-              viewBox="0 0 512 512"
-            >
-              <Path d="M473.16,221.48l-2.26-9.59H262.46v88.22H387c-12.93,61.4-72.93,93.72-121.94,93.72-35.66,0-73.25-15-98.13-39.11a140.08,140.08,0,0,1-41.8-98.88c0-37.16,16.7-74.33,41-98.78s61-38.13,97.49-38.13c41.79,0,71.74,22.19,82.94,32.31l62.69-62.36C390.86,72.72,340.34,32,261.6,32h0c-60.75,0-119,23.27-161.58,65.71C58,139.5,36.25,199.93,36.25,256S56.83,369.48,97.55,411.6C141.06,456.52,202.68,480,266.13,480c57.73,0,112.45-22.62,151.45-63.66,38.34-40.4,58.17-96.3,58.17-154.9C475.75,236.77,473.27,222.12,473.16,221.48Z" />
-            </Svg>
-          ) as any
-        }
-        bold
-        large
-      />
-    </>
-  );
+  return trigger;
 }
 
 export function PasskeyModal({ children }: { children: any }) {
@@ -226,9 +190,6 @@ export function PasskeyModal({ children }: { children: any }) {
             body: JSON.stringify({
               challenge,
               response: json,
-              // publicKey: bufferToBase64URLString(
-              //   json.response?.getPublicKey().toString()
-              // ),
             }),
           }
         ).then((res) => res.json());
