@@ -304,7 +304,6 @@ export function TaskNameInput({ fullscreen }: { fullscreen }) {
   const handleSave = () => {
     fullscreen.value = 0;
     if (name === task.name) return;
-    console.log("saved");
     setName(name.replaceAll("\n", ""));
     updateTask({ name: name.replaceAll("\n", "") });
   };

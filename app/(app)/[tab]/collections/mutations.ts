@@ -102,8 +102,6 @@ export const mutations = {
         if (!newTask) return;
         if (newTask.recurrenceRule) return mutate();
 
-        console.log(newTask);
-
         mutate(
           (oldData) => {
             const dateIndex = oldData.findIndex((column) =>
@@ -134,8 +132,11 @@ export const mutations = {
     },
     update: (mutate) => (newTask) => {
       try {
-        if (!newTask) return;
-        if (newTask.recurrenceRule) return mutate();
+        if (!newTask) {
+          console.log("couldn't find task");
+          return;
+        }
+        if (newTask.recurrenceRule || newTask.parentTaskId) return mutate();
 
         mutate(
           (oldData) => {
@@ -157,6 +158,8 @@ export const mutations = {
                     [newTask.parentTaskId]: {
                       ...oldColumn.entities[newTask.parentTaskId],
                       subtasks: {
+                        // ...(oldColumn.entities[newTask.parentTaskId]
+                        //   ?.subtasks || {}),
                         [newTask.id]: newTask,
                       },
                     },

@@ -10,7 +10,7 @@ export const getTaskCompletionStatus = (task, iteration): boolean => {
           dayjs(iteration.toString()).toISOString()
     );
   } else {
-    return task.completionInstances.length > 0;
+    return task.completionInstances?.length > 0;
   }
 };
 

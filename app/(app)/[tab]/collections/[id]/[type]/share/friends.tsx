@@ -36,7 +36,6 @@ export default function Page() {
           body: JSON.stringify({ email, id }),
         }
       );
-      console.log("Response from sending invites:", res);
       if (res.error) throw new Error(res);
       Toast.show({ type: "success", text1: "Invites sent!" });
       router.back();

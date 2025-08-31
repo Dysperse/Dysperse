@@ -115,7 +115,7 @@
     "react-native-countdown-circle-timer": "^3.2.1",
     "react-native-edge-to-edge": "1.6.0",
     "react-native-gesture-handler": "^2.24.0",
-    "react-native-keyboard-controller": "^1.18.5",
+    "react-native-keyboard-controller": "^1.18.4",
     "react-native-leaflet-view": "^0.1.2",
     "react-native-markdown-display": "^7.0.2",
     "react-native-otp-entry": "^1.8.5",

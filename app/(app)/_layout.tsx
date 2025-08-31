@@ -128,7 +128,7 @@ export function LastStateRestore({ isHome }: { isHome?: boolean }) {
       }
     }
     // weird sidebar bug when opening/closing
-    else if (!lastViewedTab || !desktopCollapsed || !breakpoints.md) {
+    else if (!lastViewedTab || !desktopCollapsed || !breakpoints.md || isHome) {
       router.replace("/home");
     }
   }, [desktopCollapsed, breakpoints, currentTab, data]);
