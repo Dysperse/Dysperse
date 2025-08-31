@@ -12,7 +12,6 @@ import Text from "@/ui/Text";
 import TextField from "@/ui/TextArea";
 import { addHslAlpha } from "@/ui/color";
 import { useColorTheme } from "@/ui/color/theme-provider";
-import * as ImagePicker from "expo-image-picker";
 import React, {
   cloneElement,
   useImperativeHandle,
@@ -125,48 +124,6 @@ function NoteInsertMenu({ isFocused, editorRef }) {
     flexDirection: "row",
     position: "absolute",
   }));
-
-  const pickImageAsync = async () => {
-    const result = await ImagePicker.launchImageLibraryAsync({
-      allowsEditing: true,
-      quality: 1,
-      mediaTypes: ImagePicker.MediaTypeOptions.Images,
-      presentationStyle: ImagePicker.UIImagePickerPresentationStyle.POPOVER,
-    });
-
-    if (!result.canceled) {
-      Toast.show({
-        type: "info",
-        props: { loading: true },
-        text1: "Uploading image...",
-        swipeable: false,
-        visibilityTime: 1e9,
-      });
-
-      // convert to File
-      const blob = await fetch(result.assets[0].uri).then((r) => r.blob());
-      const form = new FormData();
-
-      form.append(
-        "source",
-        new File([blob], "filename", {
-          type: "image/png",
-          lastModified: new Date().getTime(),
-        })
-      );
-
-      const res = await fetch("https://api.dysperse.com/upload", {
-        method: "POST",
-        body: form,
-      }).then((res) => res.json());
-
-      editorRef.current.insertImage(res.image.display_url);
-      Toast.hide();
-      Toast.show({ type: "success", text1: "Image attached!" });
-    } else {
-      // alert("You did not select any image.");
-    }
-  };
 
   return (
     <Animated.View style={insertMenuStyles}>
