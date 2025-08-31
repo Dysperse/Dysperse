@@ -110,6 +110,7 @@ function BottomSheet(props: DBottomSheetProps) {
       {...props}
     >
       <MenuProvider
+        skipInstanceCheck
         customStyles={{
           backdrop: {
             flex: 1,

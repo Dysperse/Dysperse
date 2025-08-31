@@ -935,13 +935,9 @@ const BottomSheetContent = ({
         { body: JSON.stringify(payload) }
       )
         .then((e) => {
-          if (unmounted.current) {
-            // modal got closed before response -> mutate immediately
-            mutateList(e);
-          } else {
-            // still mounted -> queue for cleanup (or mutate right away if you prefer)
-            addedTasks.current.push(e);
-          }
+          console.log(e);
+          if (unmounted.current) mutateList(e);
+          else addedTasks.current.push(e);
         })
         .then(() => badgingService?.current?.mutate())
         .catch(() => {
@@ -972,7 +968,7 @@ const BottomSheetContent = ({
         }
       }
     };
-  }, []);
+  }, [mutateList]);
 
   const handleSubmitButtonClick = () => {
     setTimeout(() => nameRef.current?.focus(), 1);
