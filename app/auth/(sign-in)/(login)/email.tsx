@@ -122,27 +122,26 @@ export function GoogleAuth({
         await GoogleSignin.hasPlayServices();
         const response = await GoogleSignin.signIn();
         if (response.type === "success") {
-          console.log(response);
-        }
-
-        const data = await fetch(
-          `${process.env.EXPO_PUBLIC_API_URL}${
+          const url = `${process.env.EXPO_PUBLIC_API_URL}${
             redirectPath || "/auth/login/google"
           }?${new URLSearchParams({
             code: response.data.serverAuthCode,
             scope: response.data.scopes.join(" "),
             returnSessionId: "true",
-          })}`
-        ).then((r) => r.json());
+          })}`;
+          const data = await fetch(url).then((r) => r.json());
 
-        if (data?.session) {
-          if (onSuccess) {
-            setLoading(false);
-            return onSuccess(data);
+          console.log(data);
+
+          if (data?.session) {
+            if (onSuccess) {
+              setLoading(false);
+              return onSuccess(data);
+            }
+            signIn(data.session);
+          } else if (data.isNew) {
+            onNewAccount(data);
           }
-          signIn(data.session);
-        } else if (data.isNew) {
-          onNewAccount(data);
         }
 
         setLoading(false);
