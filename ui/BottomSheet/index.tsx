@@ -109,17 +109,7 @@ function BottomSheet(props: DBottomSheetProps) {
       handleIndicatorStyle={{ backgroundColor: theme[5], width: 50 }}
       {...props}
     >
-      <MenuProvider
-        skipInstanceCheck
-        customStyles={{
-          backdrop: {
-            flex: 1,
-            opacity: 1,
-            ...(Platform.OS === "web" &&
-              ({ WebkitAppRegion: "no-drag" } as any)),
-          },
-        }}
-      >
+      <MenuProvider skipInstanceCheck>
         <ColorThemeProvider theme={theme}>
           <View
             {...(Platform.OS === "web" && { ["aria-modal"]: true })}
