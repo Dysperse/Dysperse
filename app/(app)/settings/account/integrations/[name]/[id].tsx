@@ -2,6 +2,7 @@ import LabelPicker from "@/components/labels/picker";
 import { useLabelColors } from "@/components/labels/useLabelColors";
 import { useUser } from "@/context/useUser";
 import { sendApiRequest } from "@/helpers/api";
+import { useResponsiveBreakpoints } from "@/helpers/useResponsiveBreakpoints";
 import Alert from "@/ui/Alert";
 import { Avatar } from "@/ui/Avatar";
 import { Button, ButtonText } from "@/ui/Button";
@@ -14,7 +15,7 @@ import Text from "@/ui/Text";
 import { useColorTheme } from "@/ui/color/theme-provider";
 import { Image } from "expo-image";
 import { router, useLocalSearchParams } from "expo-router";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import {
   Controller,
   FormProvider,
@@ -189,6 +190,7 @@ const CanvasCalendarCourseLabelPicker = ({
   ]);
 
   const { control } = useFormContext();
+  const breakpoints = useResponsiveBreakpoints();
 
   const CourseButton = ({
     value,
@@ -206,21 +208,31 @@ const CanvasCalendarCourseLabelPicker = ({
     return (
       <View
         style={{
-          flexDirection: "row",
+          flexDirection: !breakpoints.md ? "column" : "row",
           gap: 20,
           paddingHorizontal: 20,
           paddingVertical: 10,
-          alignItems: "center",
+          alignItems: breakpoints.md ? "center" : undefined,
+          marginBottom: breakpoints.md ? 0 : 30,
         }}
       >
-        <Emoji emoji={item.emoji} />
-        <View style={{ flex: 1 }}>
-          <Text weight={500}>{item.name}</Text>
-          {item.formalName && (
-            <Text style={{ fontSize: 12, opacity: 0.5 }}>
-              {item.formalName}
-            </Text>
-          )}
+        <View
+          style={{
+            flexDirection: "row",
+            gap: 20,
+            alignItems: "center",
+            flex: 1,
+          }}
+        >
+          <Emoji emoji={item.emoji} />
+          <View style={{ flex: 1 }}>
+            <Text weight={500}>{item.name}</Text>
+            {item.formalName && (
+              <Text style={{ fontSize: 12, opacity: 0.5 }}>
+                {item.formalName}
+              </Text>
+            )}
+          </View>
         </View>
         <LabelPicker
           autoFocus={false}
@@ -395,11 +407,8 @@ export default function Page() {
     }
   };
 
-  const [loading, setLoading] = useState(false);
-
   const onSubmit = async (data) => {
     try {
-      setLoading(true);
       await sendApiRequest(
         sessionToken,
         "PUT",
@@ -421,8 +430,6 @@ export default function Page() {
       Toast.show({ type: "success", text1: "Connected!" });
     } catch (e) {
       Toast.show({ type: "error" });
-    } finally {
-      setLoading(false);
     }
   };
 
@@ -461,32 +468,30 @@ export default function Page() {
             </View>
           </View>
           {integrationMetadata.id === "GOOGLE_CALENDAR" && (
-            <CalendarPicker onSave={methods.handleSubmit(onSubmit)()} />
+            <CalendarPicker onSave={methods.handleSubmit(onSubmit)} />
           )}
           {(integrationMetadata.id === "CANVAS_LMS" ||
             integrationMetadata.id === "NEW_CANVAS_LMS") && (
             <CanvasCalendarCourseLabelPicker
               type={integrationMetadata.id}
               integrationId={integration.id}
-              onSave={methods.handleSubmit(onSubmit)()}
+              onSave={methods.handleSubmit(onSubmit)}
               calendarUrl={integration.params?.calendarUrl}
             />
           )}
-          <View
-            style={{
-              flexDirection: "row",
-              marginVertical: 20,
-              justifyContent: "space-between",
-            }}
+          <ConfirmationModal
+            onSuccess={handleDelete}
+            title="Delete integration?"
+            secondary="Tasks connected to this integration will be permanently deleted from Dysperse!"
           >
-            <ConfirmationModal
-              onSuccess={handleDelete}
-              title="Delete integration?"
-              secondary="Tasks connected to this integration will be permanently deleted from Dysperse!"
-            >
-              <Button text="Delete" icon="delete" variant="outlined" large />
-            </ConfirmationModal>
-          </View>
+            <Button
+              text="Delete"
+              icon="delete"
+              variant="outlined"
+              large
+              containerStyle={{ marginTop: 20 }}
+            />
+          </ConfirmationModal>
         </View>
       </FormProvider>
     </ScrollView>
