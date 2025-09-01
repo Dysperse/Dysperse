@@ -95,10 +95,12 @@ export default function DropdownMenu({
   const trigger = cloneElement(children, {
     ref: triggerRef,
     onPress: () => {
+      children.props.onPress?.();
       modalRef.current.present();
       scale.value = 1;
     },
     onLongPress: () => {
+      children.props.onLongPress?.();
       modalRef.current.present();
       scale.value = 1;
     },
