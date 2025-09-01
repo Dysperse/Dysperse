@@ -1,6 +1,7 @@
 import { useHotkeys } from "@/helpers/useHotKeys";
 import { useResponsiveBreakpoints } from "@/helpers/useResponsiveBreakpoints";
 import { Button } from "@/ui/Button";
+import DropdownMenu from "@/ui/DropdownMenu";
 import Icon from "@/ui/Icon";
 import IconButton from "@/ui/IconButton";
 import Text from "@/ui/Text";
@@ -206,7 +207,17 @@ export function AgendaButtons({
           {monthMode ? (
             trigger
           ) : typeof handleMenuOpen === "undefined" ? (
-            <AgendaCalendarMenu weekMode={weekMode} />
+            <DropdownMenu
+              horizontalPlacement="center"
+              menuWidth={300}
+              options={[
+                {
+                  renderer: () => <AgendaCalendarMenu weekMode={weekMode} />,
+                },
+              ]}
+            >
+              {trigger}
+            </DropdownMenu>
           ) : (
             trigger
           )}
