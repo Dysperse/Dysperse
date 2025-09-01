@@ -394,6 +394,7 @@ function OpenTabsList() {
                 overDrag="vertical"
                 onOrderChange={() => impactAsync(ImpactFeedbackStyle.Light)}
                 activeItemScale={1.05}
+                inactiveItemOpacity={1}
                 dragActivationDelay={
                   Platform.OS === "web" && breakpoints.md ? 400 : undefined
                 }

@@ -9,7 +9,6 @@ import Emoji from "@/ui/Emoji";
 import Icon from "@/ui/Icon";
 import IconButton from "@/ui/IconButton";
 import Text from "@/ui/Text";
-import { addHslAlpha } from "@/ui/color";
 import { useColorTheme } from "@/ui/color/theme-provider";
 import capitalizeFirstLetter from "@/utils/capitalizeFirstLetter";
 import { showErrorToast } from "@/utils/errorToast";
@@ -294,7 +293,7 @@ function Tab({
                 hovered: theme[5],
               }
             : {
-                default: addHslAlpha(theme[3], 0),
+                default: theme[2],
                 pressed: theme[3],
                 hovered: theme[4],
               }
