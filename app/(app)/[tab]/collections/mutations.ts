@@ -55,28 +55,33 @@ export const mutations = {
               )?.id;
 
             if (labelId) {
-              const newLabels = oldData.labels.map((label: any) => {
-                if (label.id === labelId) {
-                  return {
-                    ...label,
-                    entities: {
-                      ...label.entities,
-                      [newTask.parentTaskId || newTask.id]: newTask.parentTaskId
+              return {
+                ...oldData,
+                labels: oldData.labels.map((label) => {
+                  if (label.id === labelId) {
+                    return {
+                      ...label,
+                      entities: newTask.parentTaskId
                         ? {
-                            ...label.entities[newTask.parentTaskId],
-                            subtasks: {
-                              ...label.entities[newTask.parentTaskId].subtasks,
-                              [newTask.parentTaskId]: newTask,
+                            ...label.entities,
+                            [newTask.parentTaskId]: {
+                              ...label.entities[newTask.parentTaskId],
+                              subtasks: {
+                                ...label.entities[newTask.parentTaskId]
+                                  .subtasks,
+                                [newTask.id]: newTask,
+                              },
                             },
                           }
-                        : newTask,
-                    },
-                  };
-                }
-                return label;
-              });
-
-              return { ...oldData, labels: newLabels };
+                        : {
+                            ...label.entities,
+                            [newTask.id]: newTask,
+                          },
+                    };
+                  }
+                  return label;
+                }),
+              };
             } else {
               return {
                 ...oldData,
