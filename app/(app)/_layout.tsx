@@ -15,8 +15,7 @@ import { GlobalTaskContextProvider } from "@/context/globalTaskContext";
 import { StorageContextProvider } from "@/context/storageContext";
 import { useUser } from "@/context/useUser";
 import { useResponsiveBreakpoints } from "@/helpers/useResponsiveBreakpoints";
-import Icon from "@/ui/Icon";
-import Spinner from "@/ui/Spinner";
+import ToastContainer from "@/ui/ToastContainer";
 import { useColor, useDarkMode } from "@/ui/color";
 import { ColorThemeProvider, useColorTheme } from "@/ui/color/theme-provider";
 import { BottomSheetModalProvider } from "@gorhom/bottom-sheet";
@@ -61,7 +60,7 @@ import { MenuProvider } from "react-native-popup-menu";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import SpotlightSearch from "react-native-spotlight-search";
 import "react-native-url-polyfill/auto";
-import { toast, Toaster } from "sonner-native";
+import { toast } from "sonner-native";
 import useSWR from "swr";
 
 dayjs.extend(isYesterday);
@@ -425,31 +424,7 @@ export default function AppLayout() {
                         </ThemeProvider>
                       </CommandPaletteProvider>
                     </GlobalTaskContextProvider>
-                    <Toaster
-                      style={{
-                        backgroundColor: theme[4],
-                        borderWidth: 2,
-                        borderColor: theme[6],
-                      }}
-                      icons={{
-                        error: <Icon>error</Icon>,
-                        info: <Icon>info</Icon>,
-                        loading: <Spinner />,
-                        success: <Icon>check_circle</Icon>,
-                        warning: <Icon>warning</Icon>,
-                      }}
-                      styles={{
-                        title: { color: theme[11], fontFamily: "body_800" },
-                        description: {
-                          color: theme[9],
-                          fontFamily: "body_500",
-                        },
-                        toastContainer: {
-                          maxWidth: 400,
-                        },
-                        toastContent: { alignItems: "center" },
-                      }}
-                    />
+                    <ToastContainer />
                   </MenuProvider>
                 </BottomSheetModalProvider>
               </FocusPanelProvider>

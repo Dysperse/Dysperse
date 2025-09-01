@@ -515,6 +515,7 @@ export default function SignIn() {
 
           if (sessionRequest.twoFactorRequired) {
             if (step === "2fa") {
+              toast.dismiss();
               toast.error("Incorrect 2fa code");
             }
             setStep("2fa");
@@ -522,6 +523,7 @@ export default function SignIn() {
           }
           console.log("Session Request", data, sessionRequest);
           if (!sessionRequest.session) {
+            toast.dismiss();
             toast.error(
               sessionRequest.error.includes("captcha")
                 ? sessionRequest.error

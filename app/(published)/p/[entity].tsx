@@ -13,17 +13,18 @@ import Logo from "@/ui/logo";
 import MenuPopover from "@/ui/MenuPopover";
 import Spinner from "@/ui/Spinner";
 import Text from "@/ui/Text";
+import ToastContainer from "@/ui/ToastContainer";
 import { BottomSheetModalProvider } from "@gorhom/bottom-sheet";
 import dayjs from "dayjs";
 import { setStringAsync } from "expo-clipboard";
 import { useLocalSearchParams } from "expo-router";
 import { shareAsync } from "expo-sharing";
-import { createContext, useCallback, useMemo } from "react";
+import React, { createContext, useCallback, useMemo } from "react";
 import { Linking, Platform, Pressable, View } from "react-native";
 import { ScrollView } from "react-native-gesture-handler";
 import { MenuProvider } from "react-native-popup-menu";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
-import { toast, Toaster } from "sonner-native";
+import { toast } from "sonner-native";
 import useSWR from "swr";
 
 const ics = require("ics");
@@ -333,7 +334,7 @@ export default function Page() {
               </MenuProvider>
             </BottomSheetModalProvider>
           )}
-          <Toaster />
+          <ToastContainer />
         </ColorThemeProvider>
       </PublishedEntityContext.Provider>
     </OnboardingProvider>
