@@ -112,9 +112,7 @@ function BottomSheet(props: DBottomSheetProps) {
           style={{ flex: 1 }}
         >
           <KeyboardAvoidingView
-            behavior={
-              props.keyboardControllerBehavior || "translate-with-padding"
-            }
+            behavior={props.keyboardControllerBehavior || "padding"}
             style={Platform.OS === "web" && { flex: 1 }}
           >
             {props.disableBackToClose !== true && Platform.OS === "android" && (
