@@ -481,7 +481,7 @@ export default function LabelPicker({
         sheetRef={ref}
         onClose={handleClose}
         maxWidth={(breakpoints.md ? 450 : "100%") as any}
-        snapPoints={[Platform.OS === "ios" ? "80%" : "100%"]}
+        snapPoints={[Platform.OS === "ios" ? "100%" : "100%"]}
         containerStyle={{
           maxWidth: 500,
           width: "100%",

@@ -31,7 +31,7 @@ export const CollectionLabelMenu = memo(function CollectionLabelMenu({
         }
       );
       await mutate();
-      toast.info("Saved!");
+      toast.success("Saved!");
     } catch (e) {
       showErrorToast();
     }
