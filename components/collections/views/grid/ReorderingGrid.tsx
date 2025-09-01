@@ -73,9 +73,8 @@ export function Grid() {
 
   return (
     <Sortable.Grid
-      dragActivationDelay={
-        Platform.OS === "web" && breakpoints.md ? 0 : undefined
-      }
+      inactiveItemOpacity={1}
+      dragActivationDelay={Platform.OS === "web" && breakpoints.md ? 0 : 20}
       columns={Math.ceil(labels.length / 2)}
       data={labels}
       renderItem={renderItem}
