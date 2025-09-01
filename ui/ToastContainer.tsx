@@ -8,6 +8,7 @@ export default function ToastContainer() {
 
   return (
     <Toaster
+      visibleToasts={1}
       style={{
         backgroundColor: theme[4],
         borderWidth: 2,
