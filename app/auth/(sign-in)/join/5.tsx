@@ -3,10 +3,10 @@ import { useResponsiveBreakpoints } from "@/helpers/useResponsiveBreakpoints";
 import { Button } from "@/ui/Button";
 import { useColor } from "@/ui/color";
 import { useColorTheme } from "@/ui/color/theme-provider";
+import DropdownMenu from "@/ui/DropdownMenu";
 import Icon from "@/ui/Icon";
 import { ListItemButton } from "@/ui/ListItemButton";
 import ListItemText from "@/ui/ListItemText";
-import MenuPopover from "@/ui/MenuPopover";
 import Spinner from "@/ui/Spinner";
 import Text from "@/ui/Text";
 import TextField from "@/ui/TextArea";
@@ -261,7 +261,7 @@ function Content() {
       >
         <Text variant="eyebrow">Birthday</Text>
         <View style={{ flexDirection: "row", gap: 10 }}>
-          <MenuPopover
+          <DropdownMenu
             options={Array.from({ length: 12 }, (_, i) => ({
               text:
                 dayjs().month(i).format("MMMM").charAt(0).toUpperCase() +
@@ -273,15 +273,16 @@ function Content() {
                 setBirthday(current.month(i).toDate());
               },
             }))}
-            scrollViewStyle={{ height: 300 }}
-            trigger={
-              <Button
-                variant="filled"
-                text={birthday ? dayjs(birthday).format("MMMM") : "Month"}
-              />
-            }
-          />
-          <MenuPopover
+            scrollable
+            horizontalPlacement="center"
+            containerStyle={{ height: 250 }}
+          >
+            <Button
+              variant="filled"
+              text={birthday ? dayjs(birthday).format("MMMM") : "Month"}
+            />
+          </DropdownMenu>
+          <DropdownMenu
             options={(() => {
               const month = birthday ? dayjs(birthday).month() : 0;
               const daysInMonth = dayjs().month(month).daysInMonth();
@@ -295,14 +296,15 @@ function Content() {
                 },
               }));
             })()}
-            scrollViewStyle={{ maxHeight: 300 }}
-            trigger={
-              <Button
-                variant="filled"
-                text={birthday ? dayjs(birthday).format("D") : "Day"}
-              />
-            }
-          />
+            scrollable
+            horizontalPlacement="right"
+            containerStyle={{ maxHeight: 250 }}
+          >
+            <Button
+              variant="filled"
+              text={birthday ? dayjs(birthday).format("D") : "Day"}
+            />
+          </DropdownMenu>
         </View>
       </Animated.View>
       <Animated.View

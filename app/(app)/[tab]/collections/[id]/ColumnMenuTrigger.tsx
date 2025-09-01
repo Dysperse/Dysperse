@@ -4,12 +4,10 @@ import { createTab } from "@/components/layout/openTab";
 import { useSession } from "@/context/AuthProvider";
 import { useUser } from "@/context/useUser";
 import ConfirmationModal from "@/ui/ConfirmationModal";
-import Icon from "@/ui/Icon";
-import MenuPopover, { MenuItem } from "@/ui/MenuPopover";
-import Text from "@/ui/Text";
+import DropdownMenu, { DropdownMenuItem } from "@/ui/DropdownMenu";
 import { showErrorToast } from "@/utils/errorToast";
 import { router, useLocalSearchParams, usePathname } from "expo-router";
-import { memo, ReactElement, useRef } from "react";
+import { memo, ReactElement } from "react";
 import { LabelEditModal } from "./LabelEditModal";
 
 export const ColumnMenuTrigger = memo(function ColumnMenuTrigger({
@@ -21,7 +19,6 @@ export const ColumnMenuTrigger = memo(function ColumnMenuTrigger({
   children: ReactElement;
   disabled?: boolean;
 }) {
-  const menuRef = useRef(null);
   const pathname = usePathname();
   const { session } = useSession();
   const { mutate } = useCollectionContext();
@@ -49,38 +46,28 @@ export const ColumnMenuTrigger = memo(function ColumnMenuTrigger({
           { revalidate: false }
         );
       }}
-      trigger={
-        <MenuItem>
-          <Icon>edit</Icon>
-          <Text variant="menuItem">Edit</Text>
-        </MenuItem>
-      }
+      trigger={<DropdownMenuItem icon="edit" text="Edit" />}
     />
   );
   return disabled ? (
     children
   ) : (
     <>
-      <MenuPopover
-        trigger={children}
-        menuRef={menuRef}
-        menuProps={{
-          rendererProps: { placement: "bottom" },
-        }}
+      <DropdownMenu
+        horizontalPlacement="center"
         options={[
           { renderer: () => editButton },
           id !== "all" && {
             icon: "back_hand",
             text: "Reorder",
-            callback: () => {
-              menuRef.current.close();
+            onPress: () => {
               router.push(pathname + "/reorder");
             },
           },
           {
             icon: "open_in_new",
             text: "Open label",
-            callback: () => {
+            onPress: () => {
               createTab(sessionToken, {
                 slug: "/[tab]/labels/[id]",
                 params: { type: "list", id: label.id },
@@ -117,15 +104,14 @@ export const ColumnMenuTrigger = memo(function ColumnMenuTrigger({
                 }}
                 height={350}
               >
-                <MenuItem>
-                  <Icon>delete</Icon>
-                  <Text variant="menuItem">Delete</Text>
-                </MenuItem>
+                <DropdownMenuItem icon="delete" text="Delete" />
               </ConfirmationModal>
             ),
           },
         ]}
-      />
+      >
+        {children}
+      </DropdownMenu>
     </>
   );
 });

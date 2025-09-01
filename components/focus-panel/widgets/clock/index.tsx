@@ -3,12 +3,12 @@ import { hslToHex } from "@/helpers/hslToHex";
 import { Avatar } from "@/ui/Avatar";
 import BottomSheet from "@/ui/BottomSheet";
 import { Button, ButtonText } from "@/ui/Button";
+import DropdownMenu from "@/ui/DropdownMenu";
 import Emoji from "@/ui/Emoji";
 import Icon from "@/ui/Icon";
 import IconButton from "@/ui/IconButton";
 import { ListItemButton } from "@/ui/ListItemButton";
 import ListItemText from "@/ui/ListItemText";
-import MenuPopover from "@/ui/MenuPopover";
 import Text, { getFontName } from "@/ui/Text";
 import TextField from "@/ui/TextArea";
 import { ColorThemeProvider, useColorTheme } from "@/ui/color/theme-provider";
@@ -558,12 +558,11 @@ export default function Clock({ widget, setParam }) {
 
   return (
     <View>
-      <MenuPopover
-        menuProps={{ style: { marginRight: "auto", marginLeft: -10 } }}
+      <DropdownMenu
         options={[
           ...["Clock", "Stopwatch", "Timer", "Pomodoro"].map((d) => ({
             text: d,
-            callback: () => setView(d as ClockViewType),
+            onPress: () => setView(d as ClockViewType),
             selected: d === view,
           })),
           ...(view === "Clock"
@@ -571,23 +570,26 @@ export default function Clock({ widget, setParam }) {
                 {
                   text: "Timezones",
                   icon: "explore",
-                  callback: () => timeZoneModalRef.current?.present?.(),
+                  onPress: () => timeZoneModalRef.current?.present?.(),
                 },
               ]
             : []),
         ]}
-        trigger={
-          <Button
-            dense
-            textProps={{ variant: "eyebrow" }}
-            text={view}
-            icon="expand_more"
-            iconPosition="end"
-            containerStyle={{ marginBottom: 5 }}
-            iconStyle={{ opacity: 0.6 }}
-          />
-        }
-      />
+      >
+        <Button
+          dense
+          textProps={{ variant: "eyebrow" }}
+          text={view}
+          icon="expand_more"
+          iconPosition="end"
+          containerStyle={{
+            marginBottom: 5,
+            marginLeft: -10,
+            marginRight: "auto",
+          }}
+          iconStyle={{ opacity: 0.6 }}
+        />
+      </DropdownMenu>
       <Pressable
         style={[
           {

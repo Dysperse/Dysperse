@@ -6,7 +6,6 @@ import { BottomSheetModalProvider } from "@gorhom/bottom-sheet";
 import { Redirect } from "expo-router";
 import React from "react";
 import { Dimensions, Platform } from "react-native";
-import { MenuProvider } from "react-native-popup-menu";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 export default function Layout() {
@@ -18,21 +17,19 @@ export default function Layout() {
 
   return (
     <BottomSheetModalProvider>
-      <MenuProvider>
-        <JsStack
-          id={undefined}
-          screenOptions={{
-            header: () => null,
-            headerTransparent: true,
-            gestureResponseDistance:
-              Platform.OS === "ios" ? Dimensions.get("window").width : 50,
-            gestureEnabled: true,
-            cardStyle: { backgroundColor: theme[1] },
-            cardOverlayEnabled: true,
-          }}
-        />
-        <ToastContainer />
-      </MenuProvider>
+      <JsStack
+        id={undefined}
+        screenOptions={{
+          header: () => null,
+          headerTransparent: true,
+          gestureResponseDistance:
+            Platform.OS === "ios" ? Dimensions.get("window").width : 50,
+          gestureEnabled: true,
+          cardStyle: { backgroundColor: theme[1] },
+          cardOverlayEnabled: true,
+        }}
+      />
+      <ToastContainer />
     </BottomSheetModalProvider>
   );
 }

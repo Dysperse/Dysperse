@@ -5,10 +5,10 @@ import { getTaskCompletionStatus } from "@/helpers/getTaskCompletionStatus";
 import { useResponsiveBreakpoints } from "@/helpers/useResponsiveBreakpoints";
 import { Avatar } from "@/ui/Avatar";
 import { Button } from "@/ui/Button";
+import DropdownMenu from "@/ui/DropdownMenu";
 import Emoji from "@/ui/Emoji";
 import Icon from "@/ui/Icon";
 import { ListItemButton } from "@/ui/ListItemButton";
-import MenuPopover from "@/ui/MenuPopover";
 import Text from "@/ui/Text";
 import { useColor } from "@/ui/color";
 import { useColorTheme } from "@/ui/color/theme-provider";
@@ -183,12 +183,16 @@ function TaskNoteChips({ note }) {
   return (
     <>
       {chips.filter((link) => link.text?.trim()).length > 3 ? (
-        <MenuPopover
+        <DropdownMenu
+          horizontalPlacement="center"
           containerStyle={{ width: 250 }}
           options={chips
             .filter((link) => link.text?.trim())
             .map((link) => ({
               text: link.text,
+              height: "auto",
+              textProps: { numberOfLines: 99 },
+              textStyle: { flex: 1 },
               icon: link.image ? (
                 <Avatar size={22} image={link.image} disabled />
               ) : (
@@ -203,15 +207,14 @@ function TaskNoteChips({ note }) {
               },
               onPress: () => Linking.openURL(link.image || link.href),
             }))}
-          trigger={
-            <Button
-              chip
-              text={`${chips.length} links`}
-              icon="expand_more"
-              iconPosition="end"
-            />
-          }
-        />
+        >
+          <Button
+            chip
+            text={`${chips.length} links`}
+            icon="expand_more"
+            iconPosition="end"
+          />
+        </DropdownMenu>
       ) : (
         chips
           .filter((link) => link.text?.trim())

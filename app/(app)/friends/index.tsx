@@ -408,7 +408,7 @@ function ContactBanner() {
               setHasContactsPermission(true);
             }
           }}
-          containerStyle={{ marginLeft: -15, marginRight: -5 }}
+          containerStyle={{ marginLeft: -10, marginRight: -5 }}
         />
       </View>
     )

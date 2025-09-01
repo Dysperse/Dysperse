@@ -10,15 +10,15 @@ import { useUser } from "@/context/useUser";
 import { sendApiRequest } from "@/helpers/api";
 import { useHotkeys } from "@/helpers/useHotKeys";
 import { useResponsiveBreakpoints } from "@/helpers/useResponsiveBreakpoints";
+import Divider from "@/ui/Divider";
+import DropdownMenu from "@/ui/DropdownMenu";
 import IconButton from "@/ui/IconButton";
-import MenuPopover from "@/ui/MenuPopover";
 import Text from "@/ui/Text";
 import dayjs from "dayjs";
 import { router, useGlobalSearchParams, usePathname } from "expo-router";
 import { openBrowserAsync } from "expo-web-browser";
 import { memo, useMemo, useRef } from "react";
 import { Platform, View } from "react-native";
-import { Menu } from "react-native-popup-menu";
 import { toast } from "sonner-native";
 import useSWR, { useSWRConfig } from "swr";
 import { CollectionContext, useCollectionContext } from "../context";
@@ -85,7 +85,7 @@ const CollectionNavbar = memo(function CollectionNavbar({
   const isReadOnly = access?.access === "READ_ONLY" || (!access && !session);
   const breakpoints = useResponsiveBreakpoints();
   const { id, days, fullscreen, tab, showAs } = useGlobalSearchParams();
-  const menuRef = useRef<Menu>(null);
+  const menuRef = useRef(null);
   const pathname = usePathname();
   const shareMenuRef = useRef(null);
 
@@ -197,16 +197,16 @@ const CollectionNavbar = memo(function CollectionNavbar({
           {
             text: "List",
             id: "planner",
-            callback: () => router.setParams({ showAs: null }),
+            onPress: () => router.setParams({ showAs: null }),
             selected: !showAs || showAs === "list",
           },
           {
             text: "Schedule",
             id: "planner",
-            callback: () => router.setParams({ showAs: "schedule" }),
+            onPress: () => router.setParams({ showAs: "schedule" }),
             selected: showAs === "schedule",
           },
-          { key: "1", id: "divider", divider: true },
+          { renderer: () => <Divider /> },
           {
             id: "text",
             renderer: () => (
@@ -225,17 +225,17 @@ const CollectionNavbar = memo(function CollectionNavbar({
           {
             text: "2 days",
             id: "2",
-            callback: () => router.setParams({ days: 2 }),
+            onPress: () => router.setParams({ days: 2 }),
           },
           {
             text: "3 days",
             id: "3",
-            callback: () => router.setParams({ days: 3 }),
+            onPress: () => router.setParams({ days: 3 }),
           },
           {
             text: "Week",
             id: "7",
-            callback: () => router.setParams({ days: null }),
+            onPress: () => router.setParams({ days: null }),
           },
         ].map((e) => ({
           ...e,
@@ -243,26 +243,26 @@ const CollectionNavbar = memo(function CollectionNavbar({
         }))
       : []),
     ...(type === "planner" && userSession.user.betaTester
-      ? [{ key: 2, divider: true }]
+      ? [{ renderer: () => <Divider /> }]
       : []),
     session &&
       !isAll && {
         icon: "edit",
         text: "Edit",
-        callback: () => router.push(pathname + "/customize"),
+        onPress: () => router.push(pathname + "/customize"),
       },
     session &&
       userSession.user.betaTester &&
       !isReadOnly && {
         icon: "upload",
         text: "Import tasks",
-        callback: () => router.push(pathname + "/upload"),
+        onPress: () => router.push(pathname + "/upload"),
       },
     session &&
       !isReadOnly && {
         icon: "printer",
         text: "Print",
-        callback: () =>
+        onPress: () =>
           toast.info("oh, look at you... ", {
             description:
               "you found a secret feature that's coming soon. stay tuned!",
@@ -273,20 +273,20 @@ const CollectionNavbar = memo(function CollectionNavbar({
       breakpoints.md && {
         icon: "pin_invoke",
         text: "Pop out",
-        callback: openPopOut,
+        onPress: openPopOut,
       },
 
     !breakpoints.md &&
       !isAll && {
         icon: "ios_share",
         text: "Share",
-        callback: () => router.push(pathname + "/share"),
+        onPress: () => router.push(pathname + "/share"),
       },
 
     data?.pinCode && {
       icon: "lock",
       text: "Lock now",
-      callback: handleLock,
+      onPress: handleLock,
     },
   ]
     .flat()
@@ -383,22 +383,21 @@ const CollectionNavbar = memo(function CollectionNavbar({
                     <View
                       style={breakpoints.md && !isAll && { marginRight: 10 }}
                     >
-                      <MenuPopover
-                        menuRef={menuRef}
+                      <DropdownMenu
+                        ref={menuRef}
                         closeOnSelect
                         {...(isReadOnly && { menuProps: { opened: false } })}
                         containerStyle={{
                           width: 175,
                           marginLeft: isAll ? -10 : 0,
                         }}
-                        menuProps={{
-                          rendererProps: { placement: "bottom" },
-                        }}
-                        trigger={<IconButton icon="pending" size={40} />}
+                        horizontalPlacement="right"
                         options={
                           (isReadOnly ? [] : collectionMenuOptions) as any
                         }
-                      />
+                      >
+                        <IconButton icon="pending" size={40} />
+                      </DropdownMenu>
                     </View>
                   </AttachStep>
                 )}

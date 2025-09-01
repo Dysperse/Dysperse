@@ -9,11 +9,11 @@ import { RRule } from "rrule";
 import { toast } from "sonner-native";
 import { Button, ButtonText } from "../Button";
 import { useColorTheme } from "../color/theme-provider";
+import DropdownMenu from "../DropdownMenu";
 import Icon from "../Icon";
 import IconButton from "../IconButton";
 import { ListItemButton } from "../ListItemButton";
 import ListItemText from "../ListItemText";
-import MenuPopover from "../MenuPopover";
 import Modal from "../Modal";
 import Text from "../Text";
 import TextField from "../TextArea";
@@ -50,7 +50,8 @@ const Every = ({ value, handleEdit }: { value; handleEdit }) => {
           }}
         />
         <View style={{ height: 50, flexShrink: 0 }}>
-          <MenuPopover
+          <DropdownMenu
+            horizontalPlacement="right"
             options={[
               { text: "Week", value: RRule.WEEKLY },
               { text: "Month", value: RRule.MONTHLY },
@@ -58,22 +59,21 @@ const Every = ({ value, handleEdit }: { value; handleEdit }) => {
             ].map((e) => ({
               ...e,
               selected: e.value === frequency,
-              callback: () => handleEdit("freq", e.value),
+              onPress: () => handleEdit("freq", e.value),
             }))}
-            trigger={
-              <Button
-                variant="filled"
-                large
-                height={50}
-                text={["Days", "Weeks", "Months", "Years"][
-                  3 - value?.freq
-                ]?.replace("s", interval === 1 ? "" : "s")}
-                iconPosition="end"
-                icon="expand_more"
-                bold
-              />
-            }
-          />
+          >
+            <Button
+              variant="filled"
+              large
+              height={50}
+              text={["Days", "Weeks", "Months", "Years"][
+                3 - value?.freq
+              ]?.replace("s", interval === 1 ? "" : "s")}
+              iconPosition="end"
+              icon="expand_more"
+              bold
+            />
+          </DropdownMenu>
         </View>
       </View>
     </View>

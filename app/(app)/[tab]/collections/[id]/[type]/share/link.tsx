@@ -9,12 +9,12 @@ import { sendApiRequest } from "@/helpers/api";
 import { useHotkeys } from "@/helpers/useHotKeys";
 import { Button } from "@/ui/Button";
 import Divider from "@/ui/Divider";
+import DropdownMenu from "@/ui/DropdownMenu";
 import ErrorAlert from "@/ui/Error";
 import Icon from "@/ui/Icon";
 import IconButton from "@/ui/IconButton";
 import { ListItemButton } from "@/ui/ListItemButton";
 import ListItemText from "@/ui/ListItemText";
-import MenuPopover from "@/ui/MenuPopover";
 import Spinner from "@/ui/Spinner";
 import Text from "@/ui/Text";
 import TextField from "@/ui/TextArea";
@@ -108,21 +108,24 @@ const Link = ({ collection }) => {
           <Text variant="eyebrow">Preferences</Text>
           <ListItemButton disabled style={{ marginHorizontal: -13 }}>
             <ListItemText primary="Default view" />
-            <MenuPopover
-              trigger={
-                <Button
-                  text={capitalizeFirstLetter(defaultView)}
-                  icon={COLLECTION_VIEWS[defaultView].icon}
-                  variant="filled"
-                />
-              }
+            <DropdownMenu
+              menuWidth={200}
+              containerStyle={{ maxHeight: 350 }}
+              scrollable
+              horizontalPlacement="right"
               options={Object.keys(COLLECTION_VIEWS).map((view) => ({
                 text: capitalizeFirstLetter(view),
                 icon: COLLECTION_VIEWS[view].icon,
                 selected: defaultView === view,
-                callback: () => setDefaultView(view),
+                onPress: () => setDefaultView(view),
               }))}
-            />
+            >
+              <Button
+                text={capitalizeFirstLetter(defaultView)}
+                icon={COLLECTION_VIEWS[defaultView].icon}
+                variant="filled"
+              />
+            </DropdownMenu>
           </ListItemButton>
           <Text variant="eyebrow" style={{ marginTop: 20 }}>
             Permissions

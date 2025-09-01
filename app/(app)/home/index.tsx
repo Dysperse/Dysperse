@@ -35,7 +35,7 @@ import { ImageBackground as ExpoImageBackground } from "expo-image";
 import { LinearGradient } from "expo-linear-gradient";
 import { router } from "expo-router";
 import { LexoRank } from "lexorank";
-import { Fragment, memo, useRef } from "react";
+import { Fragment, memo } from "react";
 import {
   Dimensions,
   Keyboard,
@@ -336,7 +336,7 @@ export function RenderWidget({ widget, index, small }) {
       icon: "move_up",
       text: "Move up",
       disabled: index === 0,
-      callback: () =>
+      onPress: () =>
         handleWidgetEdit(
           "order",
           index === 1
@@ -351,7 +351,7 @@ export function RenderWidget({ widget, index, small }) {
       icon: "move_down",
       text: "Move down",
       disabled: index === data.length - 1,
-      callback: () =>
+      onPress: () =>
         handleWidgetEdit(
           "order",
           index === data.length - 2
@@ -496,7 +496,6 @@ export function Widgets() {
 function Page() {
   const insets = useSafeAreaInsets();
   const breakpoints = useResponsiveBreakpoints();
-  const sr = useRef(null);
 
   return (
     <ContentWrapper noPaddingTop>

@@ -5,10 +5,10 @@ import { useResponsiveBreakpoints } from "@/helpers/useResponsiveBreakpoints";
 import { Button } from "@/ui/Button";
 import { addHslAlpha, useDarkMode } from "@/ui/color";
 import { useColorTheme } from "@/ui/color/theme-provider";
+import DropdownMenu from "@/ui/DropdownMenu";
 import ErrorAlert from "@/ui/Error";
 import Icon from "@/ui/Icon";
 import Logo from "@/ui/logo";
-import MenuPopover from "@/ui/MenuPopover";
 import Spinner from "@/ui/Spinner";
 import Text from "@/ui/Text";
 import { BlurView } from "expo-blur";
@@ -21,15 +21,19 @@ import useSWR from "swr";
 import { MenuButton } from "./home";
 
 function YearSelector({ years, year, setYear }) {
+  const menuRef = useRef(null);
+
   return (
-    <MenuPopover
-      trigger={<Button style={{ marginTop: 20 }} />}
+    <DropdownMenu
+      ref={menuRef}
       options={years.map((y) => ({
         text: y.toString(),
         selected: y === year,
         callback: () => setYear(y),
       }))}
-    />
+    >
+      <Button style={{ marginTop: 20 }} />
+    </DropdownMenu>
   );
 }
 
@@ -125,24 +129,20 @@ function Insights({ year }) {
         >
           <Text variant="eyebrow">Climate impact</Text>
 
-          <MenuPopover
-            trigger={<Button dense text="About" />}
-            containerStyle={{ width: 250 }}
+          <DropdownMenu
+            horizontalPlacement="right"
+            menuWidth={250}
             options={[
               {
-                renderer: () => (
-                  <View style={{ padding: 10 }}>
-                    <Text style={{ color: theme[11] }}>
-                      This data is calculated based on the number of tasks &
-                      collections you've created so far. It's an estimate of how
-                      much impact you would make if you were to use regular
-                      notebook instead of Dysperse.
-                    </Text>
-                  </View>
-                ),
+                containerStyle: { pointerEvents: "none" },
+                height: "auto",
+                textProps: { numberOfLines: 99 },
+                text: `This data is calculated based on the number of tasks & collections you've created so far. It's an estimate of how much impact you would make if you were to use regular notebook instead of Dysperse.`,
               },
             ]}
-          />
+          >
+            <Button dense text="About" />
+          </DropdownMenu>
         </View>
         <View style={{ flexDirection: "row", gap: 10 }}>
           <View style={cardStyles}>

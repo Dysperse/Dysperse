@@ -56,7 +56,6 @@ import {
 } from "react-native";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import DrawerLayout from "react-native-gesture-handler/ReanimatedDrawerLayout";
-import { MenuProvider } from "react-native-popup-menu";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import SpotlightSearch from "react-native-spotlight-search";
 import "react-native-url-polyfill/auto";
@@ -345,87 +344,76 @@ export default function AppLayout() {
             <OnboardingProvider>
               <FocusPanelProvider drawerRef={focusPanelRef}>
                 <BottomSheetModalProvider>
-                  <MenuProvider
-                    customStyles={{
-                      backdrop: {
-                        flex: 1,
-                        opacity: 1,
-                        ...(Platform.OS === "web" &&
-                          ({ WebkitAppRegion: "no-drag" } as any)),
-                      },
-                    }}
-                  >
-                    <GlobalTaskContextProvider>
-                      <CommandPaletteProvider>
-                        <ThemeProvider value={routerTheme}>
-                          <BadgingProvider>
-                            <NotificationsModal />
-                            <TabFriendModal />
-                            <ThemeProvider
-                              value={{
-                                ...DefaultTheme,
-                                colors: {
-                                  background: theme[2],
-                                  card: theme[2],
-                                  primary: theme[2],
-                                  border: theme[6],
-                                  text: theme[11],
-                                  notification: theme[9],
-                                },
-                              }}
-                            >
-                              {fullscreen ? (
-                                app
-                              ) : (
-                                <DrawerLayout
-                                  key={desktopCollapsed.toString()}
-                                  contentContainerStyle={{
-                                    backgroundColor: "transparent",
-                                    marginTop: -1,
-                                  }}
-                                  ref={sidebarRef}
-                                  onDrawerOpen={() => Keyboard.dismiss()}
-                                  onDrawerClose={() => {}}
-                                  drawerLockMode={
-                                    !desktopCollapsed && breakpoints.md
+                  <GlobalTaskContextProvider>
+                    <CommandPaletteProvider>
+                      <ThemeProvider value={routerTheme}>
+                        <BadgingProvider>
+                          <NotificationsModal />
+                          <TabFriendModal />
+                          <ThemeProvider
+                            value={{
+                              ...DefaultTheme,
+                              colors: {
+                                background: theme[2],
+                                card: theme[2],
+                                primary: theme[2],
+                                border: theme[6],
+                                text: theme[11],
+                                notification: theme[9],
+                              },
+                            }}
+                          >
+                            {fullscreen ? (
+                              app
+                            ) : (
+                              <DrawerLayout
+                                key={desktopCollapsed.toString()}
+                                contentContainerStyle={{
+                                  backgroundColor: "transparent",
+                                  marginTop: -1,
+                                }}
+                                ref={sidebarRef}
+                                onDrawerOpen={() => Keyboard.dismiss()}
+                                onDrawerClose={() => {}}
+                                drawerLockMode={
+                                  !desktopCollapsed && breakpoints.md
+                                    ? 2
+                                    : drawerLocked
+                                    ? 1
+                                    : 0
+                                }
+                                drawerType={
+                                  breakpoints.md
+                                    ? desktopCollapsed
                                       ? 2
-                                      : drawerLocked
-                                      ? 1
                                       : 0
-                                  }
-                                  drawerType={
-                                    breakpoints.md
-                                      ? desktopCollapsed
-                                        ? 2
-                                        : 0
-                                      : 1
-                                  }
-                                  overlayColor="transparent"
-                                  drawerWidth={
-                                    pathname.includes("/everything")
-                                      ? SECONDARY_SIDEBAR_WIDTH
-                                      : ORIGINAL_SIDEBAR_WIDTH
-                                  }
-                                  edgeWidth={
-                                    breakpoints.md
-                                      ? ORIGINAL_SIDEBAR_WIDTH
-                                      : pathname.includes("grid")
-                                      ? 10000
-                                      : width
-                                  }
-                                  renderNavigationView={renderNavigationView}
-                                >
-                                  <LastStateRestore />
-                                  {app}
-                                </DrawerLayout>
-                              )}
-                            </ThemeProvider>
-                          </BadgingProvider>
-                        </ThemeProvider>
-                      </CommandPaletteProvider>
-                    </GlobalTaskContextProvider>
-                    <ToastContainer />
-                  </MenuProvider>
+                                    : 1
+                                }
+                                overlayColor="transparent"
+                                drawerWidth={
+                                  pathname.includes("/everything")
+                                    ? SECONDARY_SIDEBAR_WIDTH
+                                    : ORIGINAL_SIDEBAR_WIDTH
+                                }
+                                edgeWidth={
+                                  breakpoints.md
+                                    ? ORIGINAL_SIDEBAR_WIDTH
+                                    : pathname.includes("grid")
+                                    ? 10000
+                                    : width
+                                }
+                                renderNavigationView={renderNavigationView}
+                              >
+                                <LastStateRestore />
+                                {app}
+                              </DrawerLayout>
+                            )}
+                          </ThemeProvider>
+                        </BadgingProvider>
+                      </ThemeProvider>
+                    </CommandPaletteProvider>
+                  </GlobalTaskContextProvider>
+                  <ToastContainer />
                 </BottomSheetModalProvider>
               </FocusPanelProvider>
             </OnboardingProvider>

@@ -51,6 +51,7 @@ export interface DButtonProps extends PressableProps {
   chip?: boolean;
   onDismiss?: any;
   dismissButtonProps?: IconButtonProps;
+  selected?: boolean;
 }
 
 export function ButtonText(props: DTextProps) {
@@ -269,6 +270,9 @@ export const Button = forwardRef<PressableProps, DButtonProps>((props, ref) => {
                     {props.icon}
                   </Icon>
                 ))}
+              {props.selected && (
+                <Icon style={{ marginLeft: "auto" }}>check</Icon>
+              )}
 
               {props.onDismiss && (
                 <IconButton

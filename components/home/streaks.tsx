@@ -1,7 +1,7 @@
 import { Avatar } from "@/ui/Avatar";
 import { Button } from "@/ui/Button";
+import DropdownMenu from "@/ui/DropdownMenu";
 import ErrorAlert from "@/ui/Error";
-import MenuPopover from "@/ui/MenuPopover";
 import Spinner from "@/ui/Spinner";
 import Text from "@/ui/Text";
 import { useColorTheme } from "@/ui/color/theme-provider";
@@ -93,31 +93,30 @@ function StreakGoal({ dense }: { dense?: boolean }) {
       ) : (
         <>
           {!dense && (
-            <MenuPopover
-              containerStyle={{ width: 150, marginLeft: 10, marginTop: -15 }}
-              menuProps={{
-                rendererProps: { placement: "bottom" },
-                style: { marginRight: "auto", marginLeft: -10 },
-              }}
+            <DropdownMenu
+              menuWidth={150}
               options={[
                 {
                   icon: "settings",
                   text: "Edit goal",
-                  callback: () => router.push("/settings/tasks"),
+                  onPress: () => router.push("/settings/tasks"),
                 },
               ]}
-              trigger={
-                <Button
-                  dense
-                  textProps={{ variant: "eyebrow" }}
-                  text="Streaks"
-                  icon="expand_more"
-                  iconPosition="end"
-                  containerStyle={{ marginBottom: 5 }}
-                  iconStyle={{ opacity: 0.6 }}
-                />
-              }
-            />
+            >
+              <Button
+                dense
+                textProps={{ variant: "eyebrow" }}
+                text="Streaks"
+                icon="expand_more"
+                iconPosition="end"
+                containerStyle={{
+                  marginBottom: 5,
+                  marginRight: "auto",
+                  marginLeft: -10,
+                }}
+                iconStyle={{ opacity: 0.6 }}
+              />
+            </DropdownMenu>
           )}
           <View
             style={[

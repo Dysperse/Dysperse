@@ -4,6 +4,7 @@ import { useUser } from "@/context/useUser";
 import { sendApiRequest } from "@/helpers/api";
 import { useResponsiveBreakpoints } from "@/helpers/useResponsiveBreakpoints";
 import { Button } from "@/ui/Button";
+import DropdownMenu from "@/ui/DropdownMenu";
 import Emoji from "@/ui/Emoji";
 import { EmojiPicker } from "@/ui/EmojiPicker";
 import ErrorAlert from "@/ui/Error";
@@ -11,7 +12,6 @@ import Icon from "@/ui/Icon";
 import IconButton from "@/ui/IconButton";
 import { ListItemButton } from "@/ui/ListItemButton";
 import ListItemText from "@/ui/ListItemText";
-import MenuPopover from "@/ui/MenuPopover";
 import Modal from "@/ui/Modal";
 import SkeletonContainer from "@/ui/Skeleton/container";
 import { LinearSkeletonArray } from "@/ui/Skeleton/linear";
@@ -362,25 +362,24 @@ function AiCollection({ aiPrompt, setSlide }) {
             alignItems: breakpoints.md ? undefined : "flex-start",
           }}
         >
-          <MenuPopover
+          <DropdownMenu
             options={[
               { text: "Help me organize" },
               { text: "Help me plan" },
             ].map((t) => ({
               ...t,
-              callback: () => toast.info(t.text),
+              onPress: () => toast.info(t.text),
             }))}
-            trigger={
-              <Button
-                textStyle={{ fontFamily: "body_600" }}
-                icon="expand_more"
-                text="Help me organize"
-                iconPosition="end"
-                buttonStyle={{ gap: 0 }}
-                style={{ marginRight: -5 }}
-              />
-            }
-          />
+          >
+            <Button
+              textStyle={{ fontFamily: "body_600" }}
+              icon="expand_more"
+              text="Help me organize"
+              iconPosition="end"
+              buttonStyle={{ gap: 0 }}
+              style={{ marginRight: -5 }}
+            />
+          </DropdownMenu>
         </View>
         <View
           style={{

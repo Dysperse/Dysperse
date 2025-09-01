@@ -1,8 +1,8 @@
 import MarkdownRenderer from "@/components/MarkdownRenderer";
 import { Button } from "@/ui/Button";
 import { useColorTheme } from "@/ui/color/theme-provider";
+import DropdownMenu from "@/ui/DropdownMenu";
 import ErrorAlert from "@/ui/Error";
-import MenuPopover from "@/ui/MenuPopover";
 import Spinner from "@/ui/Spinner";
 import Text from "@/ui/Text";
 import capitalizeFirstLetter from "@/utils/capitalizeFirstLetter";
@@ -40,39 +40,38 @@ export default function WordOfTheDay({ small, handlePin, widget }) {
     )
   ) : (
     <View>
-      <MenuPopover
-        menuProps={{
-          rendererProps: { placement: "bottom" },
-          style: { marginRight: "auto", marginLeft: -10 },
-        }}
+      <DropdownMenu
         containerStyle={{ marginLeft: 20, marginTop: -10, width: 250 }}
         options={[
           {
             text: widget.pinned ? "Pinned" : "Pin",
             icon: "push_pin",
-            callback: handlePin,
+            onPress: handlePin,
             selected: widget.pinned,
           },
           data && {
             text: "Open in Merriam-Webster",
             icon: "open_in_new",
-            callback: () => {
+            onPress: () => {
               Linking.openURL(data.link);
             },
           },
         ]}
-        trigger={
-          <Button
-            dense
-            textProps={{ variant: "eyebrow" }}
-            text="Word of the day"
-            icon="expand_more"
-            iconPosition="end"
-            containerStyle={{ marginBottom: 5 }}
-            iconStyle={{ opacity: 0.6 }}
-          />
-        }
-      />
+      >
+        <Button
+          dense
+          textProps={{ variant: "eyebrow" }}
+          text="Word of the day"
+          icon="expand_more"
+          iconPosition="end"
+          containerStyle={{
+            marginBottom: 5,
+            marginLeft: -10,
+            marginRight: "auto",
+          }}
+          iconStyle={{ opacity: 0.6 }}
+        />
+      </DropdownMenu>
       <View
         style={{
           gap: 0,

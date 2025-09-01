@@ -7,10 +7,10 @@ import { ProfilePicture } from "@/ui/Avatar";
 import { Button } from "@/ui/Button";
 import { useColor } from "@/ui/color";
 import { ColorThemeProvider } from "@/ui/color/theme-provider";
+import DropdownMenu from "@/ui/DropdownMenu";
 import Icon from "@/ui/Icon";
 import IconButton from "@/ui/IconButton";
 import Logo from "@/ui/logo";
-import MenuPopover from "@/ui/MenuPopover";
 import Spinner from "@/ui/Spinner";
 import Text from "@/ui/Text";
 import ToastContainer from "@/ui/ToastContainer";
@@ -22,8 +22,6 @@ import { shareAsync } from "expo-sharing";
 import React, { createContext, useCallback, useMemo } from "react";
 import { Linking, Platform, Pressable, View } from "react-native";
 import { ScrollView } from "react-native-gesture-handler";
-import { MenuProvider } from "react-native-popup-menu";
-import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { toast } from "sonner-native";
 import useSWR from "swr";
 
@@ -157,19 +155,11 @@ function AddToCalendar({ data }) {
         variant="filled"
         style={{ paddingHorizontal: 17 }}
       /> */}
-      <MenuPopover
-        trigger={
-          <Button
-            containerStyle={{ marginTop: 5 }}
-            icon="calendar_today"
-            text="Copy to Calendar"
-            variant="filled"
-          />
-        }
+      <DropdownMenu
         options={[
           {
             text: "Apple Calendar",
-            callback: () => {
+            onPress: () => {
               ics.createEvent(icalEvent, (error, value) => {
                 if (error) {
                   console.log(error);
@@ -185,7 +175,7 @@ function AddToCalendar({ data }) {
           },
           {
             text: "Google Calendar",
-            callback: () =>
+            onPress: () =>
               Linking.openURL(
                 `https://calendar.google.com/calendar/r/eventedit?${new URLSearchParams(
                   {
@@ -205,7 +195,7 @@ function AddToCalendar({ data }) {
           },
           {
             text: "Office 365",
-            callback: () =>
+            onPress: () =>
               Linking.openURL(
                 `https://outlook.office.com/calendar/0/deeplink/compose?${new URLSearchParams(
                   {
@@ -219,13 +209,19 @@ function AddToCalendar({ data }) {
               ),
           },
         ]}
-      />
+      >
+        <Button
+          containerStyle={{ marginTop: 5 }}
+          icon="calendar_today"
+          text="Copy to Calendar"
+          variant="filled"
+        />
+      </DropdownMenu>
     </View>
   );
 }
 
 export default function Page() {
-  const insets = useSafeAreaInsets();
   const theme = useColor("mint");
   const params = useLocalSearchParams();
   const { data, isLoading, error } = useSWR([
@@ -244,94 +240,91 @@ export default function Page() {
             <ErrorPage />
           ) : (
             <BottomSheetModalProvider>
-              <MenuProvider>
-                <ScrollView
-                  style={{
-                    backgroundColor: theme[1],
-                    height: 100,
-                  }}
-                  contentContainerStyle={{
-                    alignItems: "center",
-                    paddingBottom: 50,
-                    paddingHorizontal: 20,
-                  }}
-                >
-                  <Header />
-                  {!data?.name ? (
-                    <Spinner />
-                  ) : (
-                    <>
-                      <View
-                        style={{
-                          width: 500,
-                          maxWidth: "100%",
-                          backgroundColor: theme[2],
-                          borderWidth: 1,
-                          borderColor: theme[5],
-                          borderRadius: 20,
-                          marginBottom: 10,
-                          padding: 20,
-                          paddingTop: 21,
-                          overflow: "hidden",
-                        }}
-                      >
-                        <Text>
-                          You're viewing a task shared by{"  "}
-                          <View
-                            style={{
-                              flexDirection: "row",
-                              gap: 5,
-                              transform: [{ translateY: -1 }],
-                            }}
-                          >
-                            {data.space.members?.[0]?.user?.profile?.name && (
-                              <ProfilePicture
-                                size={24}
-                                image={
-                                  data.space.members?.[0]?.user?.profile
-                                    ?.picture
-                                }
-                                name={
-                                  data.space.members?.[0]?.user?.profile?.name
-                                }
-                              />
-                            )}
-                            <Text weight={700}>
-                              {data.space.members?.[0]?.user?.profile?.name ||
-                                "an anonymous Dysperse user"}
-                            </Text>
-                          </View>
-                        </Text>
-
-                        <AddToCalendar data={data} />
-                      </View>
-                      <View
-                        style={{
-                          width: 500,
-                          maxWidth: "100%",
-                          backgroundColor: theme[2],
-                          borderRadius: 20,
-                          borderWidth: 1,
-                          overflow: "hidden",
-                          borderColor: theme[5],
-                        }}
-                      >
-                        <TaskDrawerContext.Provider
-                          value={{
-                            dateRange: null,
-                            task: data,
-                            updateTask: () => {},
-                            mutateList: () => {},
-                            isReadOnly: true,
+              <ScrollView
+                style={{
+                  backgroundColor: theme[1],
+                  height: 100,
+                }}
+                contentContainerStyle={{
+                  alignItems: "center",
+                  paddingBottom: 50,
+                  paddingHorizontal: 20,
+                }}
+              >
+                <Header />
+                {!data?.name ? (
+                  <Spinner />
+                ) : (
+                  <>
+                    <View
+                      style={{
+                        width: 500,
+                        maxWidth: "100%",
+                        backgroundColor: theme[2],
+                        borderWidth: 1,
+                        borderColor: theme[5],
+                        borderRadius: 20,
+                        marginBottom: 10,
+                        padding: 20,
+                        paddingTop: 21,
+                        overflow: "hidden",
+                      }}
+                    >
+                      <Text>
+                        You're viewing a task shared by{"  "}
+                        <View
+                          style={{
+                            flexDirection: "row",
+                            gap: 5,
+                            transform: [{ translateY: -1 }],
                           }}
                         >
-                          <TaskDrawerContent handleClose={() => {}} />
-                        </TaskDrawerContext.Provider>
-                      </View>
-                    </>
-                  )}
-                </ScrollView>
-              </MenuProvider>
+                          {data.space.members?.[0]?.user?.profile?.name && (
+                            <ProfilePicture
+                              size={24}
+                              image={
+                                data.space.members?.[0]?.user?.profile?.picture
+                              }
+                              name={
+                                data.space.members?.[0]?.user?.profile?.name
+                              }
+                            />
+                          )}
+                          <Text weight={700}>
+                            {data.space.members?.[0]?.user?.profile?.name ||
+                              "an anonymous Dysperse user"}
+                          </Text>
+                        </View>
+                      </Text>
+
+                      <AddToCalendar data={data} />
+                    </View>
+                    <View
+                      style={{
+                        width: 500,
+                        maxWidth: "100%",
+                        backgroundColor: theme[2],
+                        borderRadius: 20,
+                        borderWidth: 1,
+                        overflow: "hidden",
+                        borderColor: theme[5],
+                      }}
+                    >
+                      <TaskDrawerContext.Provider
+                        value={{
+                          dateRange: null,
+                          task: data,
+                          updateTask: () => {},
+                          mutateList: () => {},
+                          isReadOnly: true,
+                        }}
+                      >
+                        <TaskDrawerContent handleClose={() => {}} />
+                      </TaskDrawerContext.Provider>
+                    </View>
+                  </>
+                )}
+              </ScrollView>
             </BottomSheetModalProvider>
           )}
           <ToastContainer />

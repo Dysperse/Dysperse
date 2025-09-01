@@ -8,14 +8,14 @@ import { useResponsiveBreakpoints } from "@/helpers/useResponsiveBreakpoints";
 import { Button, ButtonText } from "@/ui/Button";
 import { addHslAlpha } from "@/ui/color";
 import { useColorTheme } from "@/ui/color/theme-provider";
+import Divider from "@/ui/Divider";
+import DropdownMenu, { DropdownMenuItem } from "@/ui/DropdownMenu";
 import Emoji from "@/ui/Emoji";
 import ErrorAlert from "@/ui/Error";
 import Icon from "@/ui/Icon";
 import IconButton from "@/ui/IconButton";
 import { ListItemButton } from "@/ui/ListItemButton";
 import ListItemText from "@/ui/ListItemText";
-import MenuPopover, { MenuItem } from "@/ui/MenuPopover";
-import Modal from "@/ui/Modal";
 import { RecurrencePicker } from "@/ui/RecurrencePicker";
 import SkeletonContainer from "@/ui/Skeleton/container";
 import { LinearSkeletonArray } from "@/ui/Skeleton/linear";
@@ -49,66 +49,6 @@ export const notificationScaleText = [
   "8h",
   "1d",
 ];
-
-function TaskNotificationsButton({ task, updateTask }) {
-  const sheetRef = useRef(null);
-
-  return (
-    <>
-      <MenuItem onPress={() => sheetRef.current.present()}>
-        <Icon filled={task.notifications.length > 0}>
-          {task.notifications.length > 0
-            ? "notifications_active"
-            : "notifications_off"}
-        </Icon>
-        <Text variant="menuItem">
-          {task.notifications.length} notification
-          {task.notifications.length !== 1 && "s"}
-        </Text>
-      </MenuItem>
-      <Modal
-        animation="SCALE"
-        sheetRef={sheetRef}
-        innerStyles={{ padding: 20 }}
-        maxWidth={300}
-      >
-        <Text
-          style={{
-            textAlign: "center",
-            fontFamily: "serifText800",
-            fontSize: 35,
-            marginBottom: 20,
-            margin: 10,
-          }}
-        >
-          Remind me...
-        </Text>
-        {notificationScale
-          .map((n, i) => ({
-            text: notificationScaleText[i]
-              .replace("m", " minutes")
-              .replace("h", " hours")
-              .replace("d", " day"),
-            selected: task.notifications.includes(n),
-            callback: () =>
-              updateTask({
-                notifications: (task.notifications.includes(n)
-                  ? task.notifications.filter((i) => i !== n)
-                  : [...task.notifications, n]
-                ).sort(),
-              }),
-          }))
-          .map(({ text, selected, callback }) => (
-            <ListItemButton key={text} onPress={callback}>
-              <Icon filled={selected}>notifications</Icon>
-              <ListItemText primary={`${text} before`} />
-              {selected && <Icon>check</Icon>}
-            </ListItemButton>
-          ))}
-      </Modal>
-    </>
-  );
-}
 
 export function isValidHttpUrl(string) {
   let url;
@@ -497,23 +437,21 @@ function TaskLocationMenu() {
   );
 
   return task.location ? (
-    <MenuPopover
-      menuProps={{
-        style: { maxWidth: "100%" },
-        rendererProps: { placement: "top" },
-      }}
+    <DropdownMenu
+      verticalPlacement="top"
       containerStyle={{ marginBottom: -10, width: 190 }}
-      trigger={trigger}
       options={[
         {
           icon: "remove_circle",
           text: "Remove",
-          callback: () => {
+          onPress: () => {
             updateTask({ location: null });
           },
         },
       ]}
-    />
+    >
+      {trigger}
+    </DropdownMenu>
   ) : (
     !isReadOnly && (
       <LocationPickerModal
@@ -761,17 +699,14 @@ function TaskStoryPoints() {
   const menuRef = useRef(null);
 
   return (
-    <MenuPopover
-      menuRef={menuRef}
-      containerStyle={{ width: 200 }}
-      menuProps={{
-        style: { marginBottom: -2 },
-      }}
+    <DropdownMenu
+      ref={menuRef}
+      menuWidth={200}
       options={
         [
           ...legacyComplexityScale.map((n) => ({
             renderer: () => (
-              <MenuItem
+              <DropdownMenuItem
                 onPress={() => {
                   updateTask({ storyPoints: n });
                   menuRef.current?.close();
@@ -803,20 +738,20 @@ function TaskStoryPoints() {
                     }
                   </Text>
                 </View>
-                <Text variant="menuItem">
+                <ButtonText>
                   {
                     STORY_POINT_SCALE[
                       legacyComplexityScale.findIndex((i) => i === n)
                     ]
                   }
-                </Text>
-              </MenuItem>
+                </ButtonText>
+              </DropdownMenuItem>
             ),
           })),
-          task.storyPoints && { divider: true },
+          task.storyPoints && { renderer: () => <Divider /> },
           task.storyPoints && {
             renderer: () => (
-              <MenuItem
+              <DropdownMenuItem
                 onPress={() => {
                   updateTask({ storyPoints: null });
                   menuRef.current?.close();
@@ -835,25 +770,25 @@ function TaskStoryPoints() {
                   <Icon style={{ color: theme[11] }}>remove</Icon>
                 </View>
                 <Text variant="menuItem">Clear</Text>
-              </MenuItem>
+              </DropdownMenuItem>
             ),
           },
         ] as any
       }
-      trigger={
-        <Button
-          icon="exercise"
-          dense
-          style={{ gap: 10 }}
-          containerStyle={{ opacity: 0.6, marginRight: "auto" }}
-          text={
-            STORY_POINT_SCALE[
-              legacyComplexityScale.findIndex((i) => i === task.storyPoints)
-            ]
-          }
-        />
-      }
-    />
+      verticalPlacement="top"
+    >
+      <Button
+        icon="exercise"
+        dense
+        style={{ gap: 10 }}
+        containerStyle={{ opacity: 0.6, marginRight: "auto" }}
+        text={
+          STORY_POINT_SCALE[
+            legacyComplexityScale.findIndex((i) => i === task.storyPoints)
+          ]
+        }
+      />
+    </DropdownMenu>
   );
 }
 const src = (s) => (typeof s === "string" ? { uri: s } : s); // 🤷‍♂️

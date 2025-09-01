@@ -1,8 +1,7 @@
 import { useUser } from "@/context/useUser";
 import { Button } from "@/ui/Button";
 import ConfirmationModal from "@/ui/ConfirmationModal";
-import Icon from "@/ui/Icon";
-import MenuPopover, { MenuItem } from "@/ui/MenuPopover";
+import DropdownMenu, { DropdownMenuItem } from "@/ui/DropdownMenu";
 import Text from "@/ui/Text";
 import { useColorTheme } from "@/ui/color/theme-provider";
 import { Image } from "expo-image";
@@ -31,17 +30,13 @@ export default function Spotify({ small, handlePin, setParam, widget }) {
       style={{ flex: 1 }}
     >
       {!small && (
-        <MenuPopover
-          menuProps={{
-            style: { marginRight: "auto", marginLeft: -10 },
-            rendererProps: { placement: "bottom" },
-          }}
-          containerStyle={{ width: 250, marginLeft: 20, marginTop: -15 }}
+        <DropdownMenu
+          menuWidth={250}
           options={[
             {
               text: widget.pinned ? "Pinned" : "Pin",
               icon: "push_pin",
-              callback: handlePin,
+              onPress: handlePin,
               selected: widget.pinned,
             },
             {
@@ -51,26 +46,29 @@ export default function Spotify({ small, handlePin, setParam, widget }) {
                   secondary="You won't be able to see this widget when there are no upcoming tasks."
                   onSuccess={() => setParam("hideWhenEmpty", true)}
                 >
-                  <MenuItem>
-                    <Icon>visibility</Icon>
-                    <Text variant="menuItem">Hide when not playing?</Text>
-                  </MenuItem>
+                  <DropdownMenuItem
+                    icon="visibility"
+                    text="Hide when not playing?"
+                  />
                 </ConfirmationModal>
               ),
             },
           ]}
-          trigger={
-            <Button
-              dense
-              textProps={{ variant: "eyebrow" }}
-              text="Spotify"
-              icon="expand_more"
-              iconPosition="end"
-              containerStyle={{ marginBottom: 5 }}
-              iconStyle={{ opacity: 0.6 }}
-            />
-          }
-        />
+        >
+          <Button
+            dense
+            textProps={{ variant: "eyebrow" }}
+            text="Spotify"
+            icon="expand_more"
+            iconPosition="end"
+            containerStyle={{
+              marginBottom: 5,
+              marginRight: "auto",
+              marginLeft: -10,
+            }}
+            iconStyle={{ opacity: 0.6 }}
+          />
+        </DropdownMenu>
       )}
       {data?.error === "AUTHORIZATION_REQUIRED" ? (
         <Pressable
@@ -153,3 +151,4 @@ export default function Spotify({ small, handlePin, setParam, widget }) {
     </Pressable>
   );
 }
+

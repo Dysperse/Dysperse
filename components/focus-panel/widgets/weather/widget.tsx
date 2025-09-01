@@ -1,8 +1,8 @@
 import { useUser } from "@/context/useUser";
 import { Avatar } from "@/ui/Avatar";
 import { Button } from "@/ui/Button";
+import DropdownMenu from "@/ui/DropdownMenu";
 import Icon from "@/ui/Icon";
-import MenuPopover from "@/ui/MenuPopover";
 import Spinner from "@/ui/Spinner";
 import Text from "@/ui/Text";
 import { addHslAlpha } from "@/ui/color";
@@ -195,32 +195,30 @@ export default function WeatherWidget({
     </View>
   ) : (
     <Pressable onPress={onPressHandler}>
-      <MenuPopover
-        menuProps={{
-          rendererProps: { placement: "bottom" },
-          style: { marginRight: "auto", marginLeft: -10 },
-        }}
-        containerStyle={{ marginLeft: 20, marginTop: -10 }}
+      <DropdownMenu
         options={[
           {
             text: widget.pinned ? "Pinned" : "Pin",
             icon: "push_pin",
-            callback: handlePin,
+            onPress: handlePin,
             selected: widget.pinned,
           },
         ]}
-        trigger={
-          <Button
-            dense
-            textProps={{ variant: "eyebrow" }}
-            text="Weather"
-            icon="expand_more"
-            iconPosition="end"
-            containerStyle={{ marginBottom: 5 }}
-            iconStyle={{ opacity: 0.6 }}
-          />
-        }
-      />
+      >
+        <Button
+          dense
+          textProps={{ variant: "eyebrow" }}
+          text="Weather"
+          icon="expand_more"
+          iconPosition="end"
+          containerStyle={{
+            marginBottom: 5,
+            marginLeft: -10,
+            marginRight: "auto",
+          }}
+          iconStyle={{ opacity: 0.6 }}
+        />
+      </DropdownMenu>
       {error || permissionStatus === "denied" ? (
         <>
           <Icon size={40} style={{ marginLeft: -2 }}>

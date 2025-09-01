@@ -3,11 +3,11 @@ import { settingStyles } from "@/components/settings/settingsStyles";
 import { useUser } from "@/context/useUser";
 import { sendApiRequest } from "@/helpers/api";
 import { Button, ButtonText } from "@/ui/Button";
+import DropdownMenu from "@/ui/DropdownMenu";
 import ErrorAlert from "@/ui/Error";
 import Icon from "@/ui/Icon";
 import { ListItemButton } from "@/ui/ListItemButton";
 import ListItemText from "@/ui/ListItemText";
-import MenuPopover from "@/ui/MenuPopover";
 import SettingsScrollView from "@/ui/SettingsScrollView";
 import Text from "@/ui/Text";
 import { useColorTheme } from "@/ui/color/theme-provider";
@@ -65,53 +65,59 @@ function TasksSettings({ updateUserSettings }: any) {
       >
         <ListItemButton disabled onPress={() => {}}>
           <ListItemText primary="Week start" />
-          <MenuPopover
-            trigger={AccountMenuTrigger({
+          <DropdownMenu
+            horizontalPlacement="right"
+            options={[{ text: "Sunday" }, { text: "Monday" }].map((e) => ({
+              ...e,
+              selected: e.text.toUpperCase() === session.user.weekStart,
+              onPress: () =>
+                updateUserSettings("weekStart", e.text.toUpperCase()),
+            }))}
+          >
+            {AccountMenuTrigger({
               text: capitalizeFirstLetter(
                 session?.user?.weekStart?.toLowerCase()
               ),
             })}
-            options={[{ text: "Sunday" }, { text: "Monday" }].map((e) => ({
-              ...e,
-              selected: e.text.toUpperCase() === session.user.weekStart,
-              callback: () =>
-                updateUserSettings("weekStart", e.text.toUpperCase()),
-            }))}
-          />
+          </DropdownMenu>
         </ListItemButton>
         <ListItemButton disabled onPress={() => {}}>
           <ListItemText primary="Time display" />
-          <MenuPopover
-            trigger={AccountMenuTrigger({
-              text: session.user.militaryTime ? "24 hour" : "12 hour",
-            })}
+          <DropdownMenu
+            horizontalPlacement="right"
             options={[{ text: "12 hour" }, { text: "24 hour" }].map((e) => ({
               ...e,
               selected: session.user.militaryTime
                 ? e.text === "24 hour"
                 : e.text === "12 hour",
-              callback: () =>
+              onPress: () =>
                 updateUserSettings("militaryTime", !session.user.militaryTime),
             }))}
-          />
+          >
+            {AccountMenuTrigger({
+              text: session.user.militaryTime ? "24 hour" : "12 hour",
+            })}
+          </DropdownMenu>
         </ListItemButton>
         <ListItemButton disabled onPress={() => {}}>
           <ListItemText primary="Maps provider" />
-          <MenuPopover
-            trigger={AccountMenuTrigger({
-              text: `${capitalizeFirstLetter(
-                session.user.mapsProvider.toLowerCase()
-              )} maps`,
-            })}
+          <DropdownMenu
+            horizontalPlacement="right"
             options={[
               { text: "Google Maps", value: "GOOGLE" },
               { text: "Apple Maps", value: "APPLE" },
             ].map((e) => ({
               ...e,
               selected: e.value === session.user.mapsProvider,
-              callback: () => updateUserSettings("mapsProvider", e.value),
+              onPress: () => updateUserSettings("mapsProvider", e.value),
             }))}
-          />
+          >
+            {AccountMenuTrigger({
+              text: `${capitalizeFirstLetter(
+                session.user.mapsProvider.toLowerCase()
+              )} maps`,
+            })}
+          </DropdownMenu>
         </ListItemButton>
         <ListItemButton
           onPress={() =>
@@ -166,10 +172,8 @@ function GoalsSettings({ updateUserSettings }: { updateUserSettings: any }) {
       <Section>
         <ListItemButton disabled>
           <ListItemText primary="Daily task goal" />
-          <MenuPopover
-            trigger={AccountMenuTrigger({
-              text: `${session.user.dailyStreakGoal} tasks`,
-            })}
+          <DropdownMenu
+            horizontalPlacement="right"
             options={[
               { text: "3 tasks" },
               { text: "5 tasks" },
@@ -178,20 +182,22 @@ function GoalsSettings({ updateUserSettings }: { updateUserSettings: any }) {
               ...e,
               selected:
                 session.user.dailyStreakGoal === parseInt(e.text.split(" ")[0]),
-              callback: () =>
+              onPress: () =>
                 updateUserSettings(
                   "dailyStreakGoal",
                   parseInt(e.text.replace(" tasks", ""))
                 ),
             }))}
-          />
+          >
+            {AccountMenuTrigger({
+              text: `${session.user.dailyStreakGoal} tasks`,
+            })}
+          </DropdownMenu>
         </ListItemButton>
         <ListItemButton disabled>
           <ListItemText primary="Weekly task goal" />
-          <MenuPopover
-            trigger={AccountMenuTrigger({
-              text: `${session.user.weeklyStreakGoal} tasks`,
-            })}
+          <DropdownMenu
+            horizontalPlacement="right"
             options={[
               { text: "10 tasks" },
               { text: "15 tasks" },
@@ -203,13 +209,17 @@ function GoalsSettings({ updateUserSettings }: { updateUserSettings: any }) {
               selected:
                 session.user.weeklyStreakGoal ===
                 parseInt(e.text.split(" ")[0]),
-              callback: () =>
+              onPress: () =>
                 updateUserSettings(
                   "weeklyStreakGoal",
                   parseInt(e.text.replace(" tasks", ""))
                 ),
             }))}
-          />
+          >
+            {AccountMenuTrigger({
+              text: `${session.user.weeklyStreakGoal} tasks`,
+            })}
+          </DropdownMenu>
         </ListItemButton>
       </Section>
     </>

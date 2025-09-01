@@ -4,7 +4,7 @@ import { useSelectionContext } from "@/context/SelectionContext";
 import { sendApiRequest } from "@/helpers/api";
 import { useResponsiveBreakpoints } from "@/helpers/useResponsiveBreakpoints";
 import { Button } from "@/ui/Button";
-import MenuPopover from "@/ui/MenuPopover";
+import DropdownMenu from "@/ui/DropdownMenu";
 import Spinner from "@/ui/Spinner";
 import Text from "@/ui/Text";
 import { useColor } from "@/ui/color";
@@ -133,28 +133,29 @@ function Actions({ isLoading, setIsLoading }) {
       {selection.length === 1 ? (
         trigger
       ) : (
-        <MenuPopover
+        <DropdownMenu
           closeOnSelect
-          trigger={trigger}
-          menuProps={{ rendererProps: { placement: "bottom" } }}
+          horizontalPlacement="right"
           options={[
             {
               text: "Unpin",
               icon: "push_pin",
-              callback: () => handleSelect({ pinned: false }),
+              onPress: () => handleSelect({ pinned: false }),
             },
             {
               text: "Reschedule",
               icon: "calendar_today",
-              callback: () => dateModal.current.open(),
+              onPress: () => dateModal.current.open(),
             },
             {
               text: "Delete",
               icon: "delete",
-              callback: () => handleSelect({ trash: true }),
+              onPress: () => handleSelect({ trash: true }),
             },
           ]}
-        />
+        >
+          {trigger}
+        </DropdownMenu>
       )}
     </View>
   );

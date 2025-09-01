@@ -12,13 +12,14 @@ import { useResponsiveBreakpoints } from "@/helpers/useResponsiveBreakpoints";
 import { Avatar, ProfilePicture } from "@/ui/Avatar";
 import BottomSheet from "@/ui/BottomSheet";
 import { SafeFlashListFix } from "@/ui/BottomSheet/SafeFlashListFix";
+import Divider from "@/ui/Divider";
+import DropdownMenu from "@/ui/DropdownMenu";
 import Emoji from "@/ui/Emoji";
 import ErrorAlert from "@/ui/Error";
 import Icon from "@/ui/Icon";
 import IconButton from "@/ui/IconButton";
 import { ListItemButton } from "@/ui/ListItemButton";
 import ListItemText from "@/ui/ListItemText";
-import MenuPopover from "@/ui/MenuPopover";
 import Spinner from "@/ui/Spinner";
 import Text from "@/ui/Text";
 import TextField from "@/ui/TextArea";
@@ -403,9 +404,9 @@ const CollectionInvitedUser = ({ isReadOnly, mutateList, user }: any) => {
           />
         </ProfileModal>
         {!isReadOnly && (
-          <MenuPopover
-            trigger={<IconButton icon="more_horiz" />}
-            menuRef={ref}
+          <DropdownMenu
+            ref={ref}
+            horizontalPlacement="right"
             options={[
               ...[
                 { text: "View only", value: "READ_ONLY" },
@@ -413,7 +414,7 @@ const CollectionInvitedUser = ({ isReadOnly, mutateList, user }: any) => {
               ].map((button) => ({
                 ...button,
                 selected: user.access === button.value,
-                callback: async () => {
+                onPress: async () => {
                   await sendApiRequest(
                     session,
                     "PUT",
@@ -435,14 +436,15 @@ const CollectionInvitedUser = ({ isReadOnly, mutateList, user }: any) => {
                   toast.success("Access updated!");
                 },
               })),
-              { divider: true, key: "1" },
+              { renderer: () => <Divider /> },
               {
                 text: "Remove access",
-                value: "REMOVE",
-                callback: handleDelete,
+                onPress: handleDelete,
               },
             ]}
-          />
+          >
+            <IconButton icon="more_horiz" iconProps={{ bold: true }} />
+          </DropdownMenu>
         )}
       </ListItemButton>
     </ProfileModal>

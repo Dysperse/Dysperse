@@ -3,9 +3,9 @@ import { useUser } from "@/context/useUser";
 import { sendApiRequest } from "@/helpers/api";
 import { Button } from "@/ui/Button";
 import Divider from "@/ui/Divider";
+import DropdownMenu, { DropdownMenuItem } from "@/ui/DropdownMenu";
 import Icon from "@/ui/Icon";
 import IconButton from "@/ui/IconButton";
-import MenuPopover, { MenuItem } from "@/ui/MenuPopover";
 import Modal from "@/ui/Modal";
 import Spinner from "@/ui/Spinner";
 import Text from "@/ui/Text";
@@ -128,47 +128,31 @@ function NoteInsertMenu({ isFocused, editorRef }) {
 
   return (
     <Animated.View style={insertMenuStyles}>
-      <MenuPopover
-        trigger={
-          <Button
-            backgroundColors={{
-              default: addHslAlpha(theme[5], 0.7),
-              hovered: addHslAlpha(theme[5], 0.8),
-              pressed: addHslAlpha(theme[5], 0.9),
-            }}
-            icon="add"
-            text="Insert"
-            variant="filled"
-            dense
-          />
-        }
-        closeOnSelect
-        menuProps={{
-          onClose: () => editorRef.current.focus(),
-          rendererProps: { placement: "top" },
-        }}
+      <DropdownMenu
+        horizontalPlacement="right"
+        // onclose: editorRef.current.focus()
         options={[
           {
             renderer: () => (
               <View style={{ flexDirection: "row" }}>
-                <MenuItem
+                <DropdownMenuItem
                   onPress={() => editorRef.current.insertHeading(1)}
                   containerStyle={{ flex: 1, minWidth: 0 }}
                 >
                   <Icon>format_h1</Icon>
-                </MenuItem>
-                <MenuItem
+                </DropdownMenuItem>
+                <DropdownMenuItem
                   onPress={() => editorRef.current.insertHeading(2)}
                   containerStyle={{ flex: 1, minWidth: 0 }}
                 >
                   <Icon>format_h2</Icon>
-                </MenuItem>
-                <MenuItem
+                </DropdownMenuItem>
+                <DropdownMenuItem
                   onPress={() => editorRef.current.insertHeading(3)}
                   containerStyle={{ flex: 1, minWidth: 0 }}
                 >
                   <Icon>format_h3</Icon>
-                </MenuItem>
+                </DropdownMenuItem>
               </View>
             ),
           },
@@ -177,10 +161,7 @@ function NoteInsertMenu({ isFocused, editorRef }) {
               <LinkModal
                 onSubmit={(link) => editorRef.current.insertLink(link)}
               >
-                <MenuItem>
-                  <Icon>link</Icon>
-                  <Text variant="menuItem">Link</Text>
-                </MenuItem>
+                <DropdownMenuItem text="Link" icon="link" />
               </LinkModal>
             ),
           },
@@ -188,20 +169,32 @@ function NoteInsertMenu({ isFocused, editorRef }) {
           {
             icon: "format_list_bulleted",
             text: "Bullets",
-            callback: () => editorRef.current.toggleBulletList(),
+            onPress: () => editorRef.current.toggleBulletList(),
           },
           {
             icon: "code",
             text: "Code block",
-            callback: () => editorRef.current.toggleCodeBlock(),
+            onPress: () => editorRef.current.toggleCodeBlock(),
           },
           {
             icon: "horizontal_rule",
             text: "Divider",
-            callback: () => editorRef.current.setHorizontalRule(),
+            onPress: () => editorRef.current.setHorizontalRule(),
           },
         ]}
-      />
+      >
+        <Button
+          backgroundColors={{
+            default: addHslAlpha(theme[5], 0.7),
+            hovered: addHslAlpha(theme[5], 0.8),
+            pressed: addHslAlpha(theme[5], 0.9),
+          }}
+          icon="add"
+          text="Insert"
+          variant="filled"
+          dense
+        />
+      </DropdownMenu>
       <Button
         backgroundColors={{
           default: addHslAlpha(theme[5], 0.7),

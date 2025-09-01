@@ -9,11 +9,11 @@ import { SafeFlashListFix } from "@/ui/BottomSheet/SafeFlashListFix";
 import { Button } from "@/ui/Button";
 import { addHslAlpha } from "@/ui/color";
 import { useColorTheme } from "@/ui/color/theme-provider";
+import DropdownMenu from "@/ui/DropdownMenu";
 import ErrorAlert from "@/ui/Error";
 import IconButton from "@/ui/IconButton";
 import { ListItemButton } from "@/ui/ListItemButton";
 import ListItemText from "@/ui/ListItemText";
-import MenuPopover from "@/ui/MenuPopover";
 import RefreshControl from "@/ui/RefreshControl";
 import TextField from "@/ui/TextArea";
 import { FlashList } from "@shopify/flash-list";
@@ -336,39 +336,38 @@ function TaskList({ tasks }) {
           },
         ]}
       >
-        <MenuPopover
-          trigger={
-            <Button
-              icon="expand_more"
-              iconPosition="end"
-              text={
-                locationMode === "location"
-                  ? "Tasks with location"
-                  : locationMode === "no-location"
-                  ? "Tasks without location"
-                  : "All tasks"
-              }
-              variant="outlined"
-            />
-          }
+        <DropdownMenu
           options={[
             {
               icon: "done_all",
               text: "All",
-              callback: () => router.setParams({ locationMode: null }),
+              onPress: () => router.setParams({ locationMode: null }),
             },
             {
               icon: "location_on",
               text: "With location",
-              callback: () => router.setParams({ locationMode: "location" }),
+              onPress: () => router.setParams({ locationMode: "location" }),
             },
             {
               icon: "location_off",
               text: "Without location",
-              callback: () => router.setParams({ locationMode: "no-location" }),
+              onPress: () => router.setParams({ locationMode: "no-location" }),
             },
           ]}
-        />
+        >
+          <Button
+            icon="expand_more"
+            iconPosition="end"
+            text={
+              locationMode === "location"
+                ? "Tasks with location"
+                : locationMode === "no-location"
+                ? "Tasks without location"
+                : "All tasks"
+            }
+            variant="outlined"
+          />
+        </DropdownMenu>
         <View style={{ flex: 1 }} />
       </View>
 

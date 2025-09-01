@@ -3,7 +3,6 @@ import { useResponsiveBreakpoints } from "@/helpers/useResponsiveBreakpoints";
 import { Button } from "@/ui/Button";
 import Icon from "@/ui/Icon";
 import IconButton from "@/ui/IconButton";
-import MenuPopover from "@/ui/MenuPopover";
 import Text from "@/ui/Text";
 import { addHslAlpha } from "@/ui/color";
 import { useColorTheme } from "@/ui/color/theme-provider";
@@ -207,12 +206,7 @@ export function AgendaButtons({
           {monthMode ? (
             trigger
           ) : typeof handleMenuOpen === "undefined" ? (
-            <MenuPopover
-              trigger={trigger}
-              containerStyle={{ width: breakpoints.md ? 300 : "100%" }}
-            >
-              <AgendaCalendarMenu weekMode={weekMode} />
-            </MenuPopover>
+            <AgendaCalendarMenu weekMode={weekMode} />
           ) : (
             trigger
           )}

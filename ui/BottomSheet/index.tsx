@@ -8,7 +8,6 @@ import {
 import { RefObject, memo, useEffect } from "react";
 import { Platform, StyleSheet, View } from "react-native";
 import { KeyboardAvoidingView } from "react-native-keyboard-controller";
-import { MenuProvider } from "react-native-popup-menu";
 import { ColorThemeProvider, useColorTheme } from "../color/theme-provider";
 import { BottomSheetBackHandler } from "./BottomSheetBackHandler";
 import { BottomSheetBackdropComponent } from "./BottomSheetBackdropComponent";
@@ -107,30 +106,29 @@ function BottomSheet(props: DBottomSheetProps) {
       handleIndicatorStyle={{ backgroundColor: theme[5], width: 50 }}
       {...props}
     >
-      <MenuProvider skipInstanceCheck>
-        <ColorThemeProvider theme={theme}>
-          <View
-            {...(Platform.OS === "web" && { ["aria-modal"]: true })}
-            style={{ flex: 1 }}
+      <ColorThemeProvider theme={theme}>
+        <View
+          {...(Platform.OS === "web" && { ["aria-modal"]: true })}
+          style={{ flex: 1 }}
+        >
+          <KeyboardAvoidingView
+            behavior={
+              props.keyboardControllerBehavior || "translate-with-padding"
+            }
+            style={Platform.OS === "web" && { flex: 1 }}
           >
-            <KeyboardAvoidingView
-              behavior={
-                props.keyboardControllerBehavior || "translate-with-padding"
-              }
-              style={Platform.OS === "web" && { flex: 1 }}
-            >
-              {props.disableBackToClose !== true &&
-                Platform.OS === "android" && <BottomSheetBackHandler />}
-              {Platform.OS === "web" && props.disableEscapeToClose !== true && (
-                <BottomSheetEscapeHandler
-                  animationConfigs={props.animationConfigs}
-                />
-              )}
-              {props.children}
-            </KeyboardAvoidingView>
-          </View>
-        </ColorThemeProvider>
-      </MenuProvider>
+            {props.disableBackToClose !== true && Platform.OS === "android" && (
+              <BottomSheetBackHandler />
+            )}
+            {Platform.OS === "web" && props.disableEscapeToClose !== true && (
+              <BottomSheetEscapeHandler
+                animationConfigs={props.animationConfigs}
+              />
+            )}
+            {props.children}
+          </KeyboardAvoidingView>
+        </View>
+      </ColorThemeProvider>
     </BottomSheetModal>
   );
 }

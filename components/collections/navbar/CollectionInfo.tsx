@@ -3,12 +3,12 @@ import { useSession } from "@/context/AuthProvider";
 import { sendApiRequest } from "@/helpers/api";
 import Alert from "@/ui/Alert";
 import { Button, ButtonText } from "@/ui/Button";
+import DropdownMenu from "@/ui/DropdownMenu";
 import Emoji from "@/ui/Emoji";
 import { EmojiPicker } from "@/ui/EmojiPicker";
 import Icon from "@/ui/Icon";
 import { ListItemButton } from "@/ui/ListItemButton";
 import ListItemText from "@/ui/ListItemText";
-import MenuPopover from "@/ui/MenuPopover";
 import Spinner from "@/ui/Spinner";
 import Text from "@/ui/Text";
 import TextField from "@/ui/TextArea";
@@ -174,22 +174,23 @@ export const CollectionInfo = ({ collection }) => {
             primary="Default view"
             secondary="When new tabs are opened"
           />
-          <MenuPopover
-            trigger={
-              <Button variant="outlined">
-                <ButtonText>
-                  {capitalizeFirstLetter(data.defaultView)}
-                </ButtonText>
-                <Icon>expand_more</Icon>
-              </Button>
-            }
+          <DropdownMenu
             options={Object.keys(COLLECTION_VIEWS).map((key) => ({
               text: capitalizeFirstLetter(key),
               icon: COLLECTION_VIEWS[key].icon,
               selected: data.defaultView === key,
-              callback: () => updateCollection("defaultView", key),
+              onPress: () => updateCollection("defaultView", key),
             }))}
-          />
+            verticalPlacement="top"
+            horizontalPlacement="right"
+            scrollable
+            containerStyle={{ maxHeight: 200 }}
+          >
+            <Button variant="outlined">
+              <ButtonText>{capitalizeFirstLetter(data.defaultView)}</ButtonText>
+              <Icon>expand_more</Icon>
+            </Button>
+          </DropdownMenu>
         </ListItemButton>
       </View>
       {data.public && (
@@ -215,36 +216,36 @@ export const CollectionInfo = ({ collection }) => {
             </ListItemButton>
             <ListItemButton>
               <ListItemText primary="Category" />
-              <MenuPopover
-                scrollViewStyle={{
-                  maxHeight: 285,
-                }}
-                trigger={
-                  <Button variant="outlined">
-                    {data.category ? (
-                      <View style={{ flexDirection: "row", gap: 5 }}>
-                        <Icon size={20}>
-                          {
-                            collectionCategories.find(
-                              (category) => category.text === data.category
-                            ).icon
-                          }
-                        </Icon>
-                        <ButtonText>{data.category}</ButtonText>
-                      </View>
-                    ) : (
-                      <>
-                        <ButtonText>Select</ButtonText>
-                        <Icon>expand_more</Icon>
-                      </>
-                    )}
-                  </Button>
-                }
+              <DropdownMenu
+                horizontalPlacement="right"
+                verticalPlacement="top"
+                containerStyle={{ maxHeight: 285 }}
                 options={collectionCategories.map((category: any) => ({
                   ...category,
-                  callback: () => updateCollection("category", category.text),
+                  onPress: () => updateCollection("category", category.text),
                 }))}
-              />
+                scrollable
+              >
+                <Button variant="outlined">
+                  {data.category ? (
+                    <View style={{ flexDirection: "row", gap: 5 }}>
+                      <Icon size={20}>
+                        {
+                          collectionCategories.find(
+                            (category) => category.text === data.category
+                          ).icon
+                        }
+                      </Icon>
+                      <ButtonText>{data.category}</ButtonText>
+                    </View>
+                  ) : (
+                    <>
+                      <ButtonText>Select</ButtonText>
+                      <Icon>expand_more</Icon>
+                    </>
+                  )}
+                </Button>
+              </DropdownMenu>
             </ListItemButton>
             <ListItemButton
               onPress={() =>

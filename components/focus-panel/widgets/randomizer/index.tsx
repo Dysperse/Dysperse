@@ -1,7 +1,7 @@
 import { Avatar } from "@/ui/Avatar";
 import { Button, ButtonText } from "@/ui/Button";
+import DropdownMenu from "@/ui/DropdownMenu";
 import Icon from "@/ui/Icon";
-import MenuPopover from "@/ui/MenuPopover";
 import Text from "@/ui/Text";
 import { useColorTheme } from "@/ui/color/theme-provider";
 import { impactAsync, ImpactFeedbackStyle } from "expo-haptics";
@@ -173,32 +173,31 @@ export default function Randomizer({ widget, setParam }) {
 
   return (
     <View>
-      <MenuPopover
+      <DropdownMenu
         options={[
           {
             text: "Switch to " + (mode === "coin" ? "Dice" : "Coin"),
             icon: "casino",
-            callback: () => {
+            onPress: () => {
               setParam("mode", mode === "coin" ? "dice" : "coin");
               setMode(mode === "coin" ? "dice" : "coin");
             },
           },
         ]}
-        containerStyle={{ marginTop: -15 }}
-        trigger={
-          <Button
-            dense
-            containerStyle={{
-              marginRight: "auto",
-              marginBottom: 6,
-              marginLeft: -10,
-            }}
-          >
-            <Text variant="eyebrow">Randomizer</Text>
-            <Icon style={{ color: theme[11], opacity: 0.6 }}>expand_more</Icon>
-          </Button>
-        }
-      />
+      >
+        <Button
+          dense
+          containerStyle={{
+            marginRight: "auto",
+            marginBottom: 6,
+            marginLeft: -10,
+            marginTop: -15,
+          }}
+        >
+          <Text variant="eyebrow">Randomizer</Text>
+          <Icon style={{ color: theme[11], opacity: 0.6 }}>expand_more</Icon>
+        </Button>
+      </DropdownMenu>
       <View
         style={{
           padding: 20,

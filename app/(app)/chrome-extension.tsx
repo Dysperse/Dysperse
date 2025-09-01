@@ -6,10 +6,10 @@ import { sendApiRequest } from "@/helpers/api";
 import { ProfilePicture } from "@/ui/Avatar";
 import { Button, ButtonText } from "@/ui/Button";
 import { useColorTheme } from "@/ui/color/theme-provider";
+import DropdownMenu from "@/ui/DropdownMenu";
 import Icon from "@/ui/Icon";
 import IconButton from "@/ui/IconButton";
 import Logo from "@/ui/logo";
-import MenuPopover from "@/ui/MenuPopover";
 import dayjs from "dayjs";
 import { useGlobalSearchParams } from "expo-router";
 import React, { useState } from "react";
@@ -23,41 +23,36 @@ function Branding() {
     <View style={{ flexDirection: "row", padding: 20, alignItems: "center" }}>
       <Logo size={40} />
 
-      <MenuPopover
-        trigger={
-          <IconButton size={35}>
-            <ProfilePicture
-              name={session.user?.profile?.name || ""}
-              image={session.user?.profile?.picture}
-              size={35}
-              disabled
-              style={{}}
-            />
-          </IconButton>
-        }
-        menuProps={{
-          style: { marginLeft: "auto" },
-          rendererProps: { placement: "bottom" },
-        }}
-        containerStyle={{ width: 300 }}
+      <DropdownMenu
+        menuWidth={300}
+        horizontalPlacement="right"
         options={[
           {
             icon: "info",
             text: "About",
-            callback: () => Linking.openURL("https://dysperse.com"),
+            onPress: () => Linking.openURL("https://dysperse.com"),
           },
           {
             icon: "north_east",
             text: "Open Dysperse",
-            callback: () => Linking.openURL("https://go.dysperse.com"),
+            onPress: () => Linking.openURL("https://go.dysperse.com"),
           },
           {
             icon: "settings",
             text: "Settings",
-            callback: () => Linking.openURL("https://go.dysperse.com/settings"),
+            onPress: () => Linking.openURL("https://go.dysperse.com/settings"),
           },
         ]}
-      />
+      >
+        <IconButton size={35} style={{ marginLeft: "auto" }}>
+          <ProfilePicture
+            name={session.user?.profile?.name || ""}
+            image={session.user?.profile?.picture}
+            size={35}
+            disabled
+          />
+        </IconButton>
+      </DropdownMenu>
     </View>
   );
 }

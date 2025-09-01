@@ -1,7 +1,7 @@
 import { Button } from "@/ui/Button";
+import DropdownMenu from "@/ui/DropdownMenu";
 import ErrorAlert from "@/ui/Error";
 import Icon from "@/ui/Icon";
-import MenuPopover from "@/ui/MenuPopover";
 import Spinner from "@/ui/Spinner";
 import Text, { getFontName } from "@/ui/Text";
 import { useColorTheme } from "@/ui/color/theme-provider";
@@ -35,29 +35,27 @@ export default function Quotes() {
 
   return (
     <View>
-      <MenuPopover
+      <DropdownMenu
         options={[
           {
             text: "Refresh",
             icon: "refresh",
-            callback: handleRefresh,
+            onPress: handleRefresh,
           },
         ]}
-        containerStyle={{ marginTop: -15 }}
-        trigger={
-          <Button
-            dense
-            containerStyle={{
-              marginRight: "auto",
-              marginBottom: 6,
-              marginLeft: -10,
-            }}
-          >
-            <Text variant="eyebrow">Quotes</Text>
-            <Icon style={{ color: theme[11], opacity: 0.6 }}>expand_more</Icon>
-          </Button>
-        }
-      />
+      >
+        <Button
+          dense
+          containerStyle={{
+            marginRight: "auto",
+            marginBottom: 6,
+            marginLeft: -10,
+          }}
+        >
+          <Text variant="eyebrow">Quotes</Text>
+          <Icon style={{ color: theme[11], opacity: 0.6 }}>expand_more</Icon>
+        </Button>
+      </DropdownMenu>
       {error && <ErrorAlert />}
       <View
         style={[

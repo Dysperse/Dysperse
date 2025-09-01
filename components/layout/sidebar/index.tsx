@@ -7,10 +7,10 @@ import { sendApiRequest } from "@/helpers/api";
 import { useHotkeys } from "@/helpers/useHotKeys";
 import { useResponsiveBreakpoints } from "@/helpers/useResponsiveBreakpoints";
 import { Button } from "@/ui/Button";
+import DropdownMenu from "@/ui/DropdownMenu";
 import Emoji from "@/ui/Emoji";
 import Icon from "@/ui/Icon";
 import IconButton from "@/ui/IconButton";
-import MenuPopover from "@/ui/MenuPopover";
 import Modal from "@/ui/Modal";
 import Spinner from "@/ui/Spinner";
 import Text from "@/ui/Text";
@@ -344,115 +344,107 @@ export const LogoButton = memo(function LogoButton({
           </View>
         </View>
       </Modal>
-      <MenuPopover
-        menuProps={{
-          rendererProps: {
-            placement: "bottom",
-            anchorStyle: { opacity: 0 },
-          },
-        }}
-        menuRef={menuRef}
-        containerStyle={{
-          width:
-            Platform.OS === "web" &&
-            navigator.userAgent.indexOf("Windows") !== -1 &&
-            !globalThis.IN_DESKTOP_ENV
-              ? 230
-              : 190,
-          marginLeft: 10,
-          marginTop: -5,
-        }}
-        trigger={
-          <AttachStep index={3}>
-            <View style={{ borderRadius: 20, overflow: "hidden" }}>
-              <Button
-                onPress={() => {
-                  menuRef.current.open();
-                  if (Platform.OS !== "web")
-                    impactAsync(ImpactFeedbackStyle.Soft);
-                }}
-                android_ripple={{ color: theme[4] }}
-                height={60}
-                style={[
-                  {
-                    flexDirection: "row",
-                    alignItems: "center",
-                    paddingLeft: 3,
-                    gap: 0,
-                    paddingVertical: 10,
-                    borderRadius: 20,
+      <AttachStep index={3}>
+        <View style={{ borderRadius: 20, overflow: "hidden" }}>
+          <DropdownMenu
+            ref={menuRef}
+            menuWidth={
+              Platform.OS === "web" &&
+              navigator.userAgent.indexOf("Windows") !== -1 &&
+              !globalThis.IN_DESKTOP_ENV
+                ? 230
+                : 190
+            }
+            options={[
+              // detect windows
+              Platform.OS === "web" &&
+                navigator.userAgent.indexOf("Windows") !== -1 &&
+                !globalThis.IN_DESKTOP_ENV && {
+                  icon: "north_east",
+                  text: "Open in desktop app",
+                  onPress: async () => {
+                    window.location.href =
+                      `dysperse://` +
+                      new URL(window.location.href).pathname +
+                      new URL(window.location.href).search;
+                    desktopRef.current.present();
                   },
-                  Platform.OS === "web" &&
-                    ({ WebkitAppRegion: "no-drag" } as any),
-                ]}
-                containerStyle={{ borderRadius: 20 }}
-                backgroundColors={{
-                  default: theme[2],
-                  pressed: theme[3],
-                  hovered: theme[4],
-                }}
-              >
-                <Logo size={40} />
-                {session?.space?.space?._count?.integrations > 0 && (
-                  <SyncButton syncRef={syncRef} />
-                )}
-                <Icon style={{ color: theme[11] }}>expand_more</Icon>
-              </Button>
-            </View>
-          </AttachStep>
-        }
-        options={[
-          // detect windows
-          Platform.OS === "web" &&
-            navigator.userAgent.indexOf("Windows") !== -1 &&
-            !globalThis.IN_DESKTOP_ENV && {
-              icon: "north_east",
-              text: "Open in desktop app",
-              callback: async () => {
-                window.location.href =
-                  `dysperse://` +
-                  new URL(window.location.href).pathname +
-                  new URL(window.location.href).search;
-                desktopRef.current.present();
+                },
+              session?.space?.space?._count?.integrations > 0 && {
+                icon: "sync",
+                text: isLoading ? "Syncing..." : "Sync now",
+                disabled: isLoading,
+                onPress: async () => {
+                  setLoading(true);
+                  await syncRef.current.sync();
+                  setLoading(false);
+                },
               },
-            },
-          session?.space?.space?._count?.integrations > 0 && {
-            icon: "sync",
-            text: isLoading ? "Syncing..." : "Sync now",
-            disabled: isLoading,
-            callback: async () => {
-              setLoading(true);
-              await syncRef.current.sync();
-              setLoading(false);
-            },
-          },
-          {
-            icon: "settings",
-            text: "Settings",
-            callback: () => {
-              menuRef.current.close();
-              if (!breakpoints.md || desktopCollapsed)
-                sidebarRef.current.closeDrawer();
-              router.push(breakpoints.md ? "/settings/account" : "/settings");
-            },
-          },
-          {
-            icon: "question_mark",
-            text: "Help",
-            callback: openSupport,
-          },
-          {
-            icon: "lightbulb",
-            text: "Want a feature?",
-            callback: openFeedback,
-          },
-          {
-            icon: "heart_broken",
-            text: "Report a bug",
-            callback: openBug,
-          },
-        ]}
-      />
+              {
+                icon: "settings",
+                text: "Settings",
+                onPress: () => {
+                  menuRef.current.close();
+                  if (!breakpoints.md || desktopCollapsed)
+                    sidebarRef.current.closeDrawer();
+                  router.push(
+                    breakpoints.md ? "/settings/account" : "/settings"
+                  );
+                },
+              },
+              {
+                icon: "question_mark",
+                text: "Help",
+                onPress: openSupport,
+              },
+              {
+                icon: "lightbulb",
+                text: "Want a feature?",
+                onPress: openFeedback,
+              },
+              {
+                icon: "heart_broken",
+                text: "Report a bug",
+                onPress: openBug,
+              },
+            ]}
+          >
+            <Button
+              onPress={() => {
+                if (Platform.OS !== "web")
+                  impactAsync(ImpactFeedbackStyle.Soft);
+              }}
+              android_ripple={{ color: theme[4] }}
+              height={60}
+              style={[
+                {
+                  flexDirection: "row",
+                  alignItems: "center",
+                  paddingLeft: 3,
+                  gap: 0,
+                  paddingVertical: 10,
+                  borderRadius: 20,
+                },
+                Platform.OS === "web" &&
+                  ({ WebkitAppRegion: "no-drag" } as any),
+              ]}
+              containerStyle={{ borderRadius: 20 }}
+              backgroundColors={{
+                default: theme[2],
+                pressed: theme[3],
+                hovered: theme[4],
+              }}
+            >
+              <Logo size={40} />
+              {session?.space?.space?._count?.integrations > 0 && (
+                <SyncButton syncRef={syncRef} />
+              )}
+              <Icon style={{ color: theme[11] }}>expand_more</Icon>
+            </Button>
+          </DropdownMenu>
+        </View>
+      </AttachStep>
+
       <View
         style={{
           display: "flex",

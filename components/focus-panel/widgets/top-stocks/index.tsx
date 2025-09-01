@@ -1,7 +1,7 @@
 import { Button, ButtonText } from "@/ui/Button";
+import DropdownMenu from "@/ui/DropdownMenu";
 import ErrorAlert from "@/ui/Error";
 import Icon from "@/ui/Icon";
-import MenuPopover from "@/ui/MenuPopover";
 import Text from "@/ui/Text";
 import { useColor } from "@/ui/color";
 import { useColorTheme } from "@/ui/color/theme-provider";
@@ -167,32 +167,31 @@ export default function Widget({ small, handlePin, navigation, widget }) {
     </View>
   ) : (
     <View>
-      <MenuPopover
-        menuProps={{
-          style: { marginRight: "auto", marginLeft: -10 },
-          rendererProps: { placement: "bottom" },
-        }}
-        containerStyle={{ width: 220, marginLeft: 20, marginTop: -15 }}
+      <DropdownMenu
+        menuWidth={220}
         options={[
           {
             text: widget.pinned ? "Pinned" : "Pin",
             icon: "push_pin",
-            callback: handlePin,
+            onPress: handlePin,
             selected: widget.pinned,
           },
         ]}
-        trigger={
-          <Button
-            dense
-            textProps={{ variant: "eyebrow" }}
-            text="Top stocks"
-            icon="expand_more"
-            iconPosition="end"
-            containerStyle={{ marginBottom: 5 }}
-            iconStyle={{ opacity: 0.6 }}
-          />
-        }
-      />
+      >
+        <Button
+          dense
+          textProps={{ variant: "eyebrow" }}
+          text="Top stocks"
+          icon="expand_more"
+          iconPosition="end"
+          containerStyle={{
+            marginBottom: 5,
+            marginLeft: -10,
+            marginRight: "auto",
+          }}
+          iconStyle={{ opacity: 0.6 }}
+        />
+      </DropdownMenu>
       <Pressable
         style={{
           backgroundColor: theme[2],
@@ -230,3 +229,4 @@ export default function Widget({ small, handlePin, navigation, widget }) {
     </View>
   );
 }
+

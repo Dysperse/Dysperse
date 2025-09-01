@@ -1,8 +1,7 @@
 import Task from "@/components/task";
 import { Button } from "@/ui/Button";
 import ConfirmationModal from "@/ui/ConfirmationModal";
-import Icon from "@/ui/Icon";
-import MenuPopover, { MenuItem } from "@/ui/MenuPopover";
+import DropdownMenu, { DropdownMenuItem } from "@/ui/DropdownMenu";
 import Text from "@/ui/Text";
 import { useColorTheme } from "@/ui/color/theme-provider";
 import dayjs from "dayjs";
@@ -89,17 +88,13 @@ const UpNext = ({ widget, setParam, params, handlePin, small }) => {
     </View>
   ) : (
     <View>
-      <MenuPopover
-        menuProps={{
-          style: { marginRight: "auto", marginLeft: -10 },
-          rendererProps: { placement: "bottom" },
-        }}
-        containerStyle={{ width: 220, marginLeft: 20, marginTop: -15 }}
+      <DropdownMenu
+        menuWidth={220}
         options={[
           {
             text: widget.pinned ? "Pinned" : "Pin",
             icon: "push_pin",
-            callback: handlePin,
+            onPress: handlePin,
             selected: widget.pinned,
           },
           {
@@ -109,26 +104,26 @@ const UpNext = ({ widget, setParam, params, handlePin, small }) => {
                 secondary="You won't be able to see this widget when there are no upcoming tasks."
                 onSuccess={() => setParam("hideWhenEmpty", true)}
               >
-                <MenuItem>
-                  <Icon>visibility</Icon>
-                  <Text variant="menuItem">Hide when empty?</Text>
-                </MenuItem>
+                <DropdownMenuItem icon="visibility" text="Hide when empty?" />
               </ConfirmationModal>
             ),
           },
         ]}
-        trigger={
-          <Button
-            dense
-            textProps={{ variant: "eyebrow" }}
-            text="Up next"
-            icon="expand_more"
-            iconPosition="end"
-            containerStyle={{ marginBottom: 5 }}
-            iconStyle={{ opacity: 0.6 }}
-          />
-        }
-      />
+      >
+        <Button
+          dense
+          textProps={{ variant: "eyebrow" }}
+          text="Up next"
+          icon="expand_more"
+          iconPosition="end"
+          containerStyle={{
+            marginBottom: 5,
+            marginRight: "auto",
+            marginLeft: -10,
+          }}
+          iconStyle={{ opacity: 0.6 }}
+        />
+      </DropdownMenu>
       <View
         style={{
           backgroundColor: theme[2],

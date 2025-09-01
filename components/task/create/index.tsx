@@ -12,11 +12,11 @@ import { Avatar } from "@/ui/Avatar";
 import { Button } from "@/ui/Button";
 import { addHslAlpha, useColor, useDarkMode } from "@/ui/color";
 import { useColorTheme } from "@/ui/color/theme-provider";
+import DropdownMenu from "@/ui/DropdownMenu";
 import Emoji from "@/ui/Emoji";
 import { GrowingTextInput } from "@/ui/GrowingTextInput";
 import Icon from "@/ui/Icon";
 import IconButton from "@/ui/IconButton";
-import MenuPopover from "@/ui/MenuPopover";
 import Modal from "@/ui/Modal";
 import Spinner from "@/ui/Spinner";
 import Text from "@/ui/Text";
@@ -178,56 +178,52 @@ function Footer({
         </View>
       </AttachStep>
       {storyPoints && (
-        <MenuPopover
+        <DropdownMenu
           options={[
             {
               text: "Remove",
               icon: "remove_circle",
-              callback: () => setValue("storyPoints", null),
+              onPress: () => setValue("storyPoints", null),
             },
           ]}
-          menuProps={{
-            style: { marginRight: "auto" },
-          }}
-          trigger={
-            <Button
-              dense
-              style={{ gap: 10, opacity: 0.6 }}
-              text={
-                STORY_POINT_SCALE[
-                  legacyComplexityScale.findIndex((i) => i === storyPoints)
-                ]
-              }
-              icon="exercise"
-            />
-          }
-        />
+          verticalPlacement="top"
+        >
+          <Button
+            dense
+            containerStyle={{ marginRight: "auto" }}
+            style={{ gap: 10, opacity: 0.6 }}
+            text={
+              STORY_POINT_SCALE[
+                legacyComplexityScale.findIndex((i) => i === storyPoints)
+              ]
+            }
+            icon="exercise"
+          />
+        </DropdownMenu>
       )}
       {location && (
-        <MenuPopover
+        <DropdownMenu
+          verticalPlacement="top"
           options={[
             {
               text: "Remove",
               icon: "remove_circle",
-              callback: () => setValue("location", null),
+              onPress: () => setValue("location", null),
             },
           ]}
-          menuProps={{
-            style: { marginRight: "auto" },
-          }}
-          trigger={
-            <Button
-              dense
-              style={{ gap: 10, opacity: 0.6 }}
-              text={`${
-                location?.name?.substring(0, 20)?.replaceAll(",", "") ||
-                "Location"
-              }...`}
-              icon="near_me"
-              iconStyle={{ transform: [{ scale: 1.1 }] }}
-            />
-          }
-        />
+        >
+          <Button
+            dense
+            containerStyle={{ marginRight: "auto" }}
+            style={{ gap: 10, opacity: 0.6 }}
+            text={`${
+              location?.name?.substring(0, 20)?.replaceAll(",", "") ||
+              "Location"
+            }...`}
+            icon="near_me"
+            iconStyle={{ transform: [{ scale: 1.1 }] }}
+          />
+        </DropdownMenu>
       )}
     </View>
   );
