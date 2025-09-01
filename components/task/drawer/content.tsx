@@ -668,7 +668,7 @@ export function TaskDrawerContent({
         toast.dismiss();
         toast.success(t ? "Task deleted!" : "Task restored!", {
           duration: 4000,
-          action: (
+          close: (
             <Button
               text="Restore"
               dense
@@ -677,7 +677,6 @@ export function TaskDrawerContent({
                 hovered: theme[6],
                 pressed: theme[7],
               }}
-              containerStyle={{ marginTop: -10 }}
               onPress={() => handleDelete(false)}
             />
           ),

@@ -64,11 +64,17 @@ function TaskCheckbox({
     });
 
     toast.success(isCompleted ? "Marked incomplete" : "Marked complete", {
-      action: (
+      styles: {
+        toastContainer: { height: 10 },
+      },
+      close: (
         <Button
           icon="undo"
           dense
-          containerStyle={{ marginTop: -10 }}
+          containerStyle={{
+            position: "absolute",
+            right: 10,
+          }}
           text="Undo"
           backgroundColors={{
             default: theme[5],
