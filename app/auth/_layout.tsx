@@ -1,13 +1,12 @@
 import { JsStack } from "@/components/layout/_stack";
 import { useUser } from "@/context/useUser";
 import { useColorTheme } from "@/ui/color/theme-provider";
-import { toastConfig } from "@/ui/toast.config";
 import { BottomSheetModalProvider } from "@gorhom/bottom-sheet";
 import { Redirect } from "expo-router";
 import { Dimensions, Platform } from "react-native";
 import { MenuProvider } from "react-native-popup-menu";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
-import Toast from "react-native-toast-message";
+import { Toaster } from "sonner-native";
 
 export default function Layout() {
   const theme = useColorTheme();
@@ -31,7 +30,7 @@ export default function Layout() {
             cardOverlayEnabled: true,
           }}
         />
-        <Toast topOffset={insets.top + 15} config={toastConfig(theme)} />
+        <Toaster />
       </MenuProvider>
     </BottomSheetModalProvider>
   );

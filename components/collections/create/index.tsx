@@ -21,6 +21,7 @@ import TextField from "@/ui/TextArea";
 import { addHslAlpha, useDarkMode } from "@/ui/color";
 import { useColorTheme } from "@/ui/color/theme-provider";
 import capitalizeFirstLetter from "@/utils/capitalizeFirstLetter";
+import { showErrorToast } from "@/utils/errorToast";
 import { TEMPORARY_CONTENT_INSET_FIX } from "@/utils/temporary-scrolling-bug-fix";
 import { BottomSheetScrollView, useBottomSheet } from "@gorhom/bottom-sheet";
 import { Image } from "expo-image";
@@ -33,7 +34,7 @@ import Animated, {
   useSharedValue,
   withTiming,
 } from "react-native-reanimated";
-import Toast from "react-native-toast-message";
+import { toast } from "sonner-native";
 import useSWR from "swr";
 
 const styles = StyleSheet.create({
@@ -120,7 +121,7 @@ const Scratch = () => {
       forceClose({ duration: 1 });
     } catch (err) {
       console.log(err);
-      Toast.show({ type: "error" });
+      showErrorToast();
     } finally {
       setLoading(false);
     }
@@ -367,7 +368,7 @@ function AiCollection({ aiPrompt, setSlide }) {
               { text: "Help me plan" },
             ].map((t) => ({
               ...t,
-              callback: () => Toast.show({ text1: t.text }),
+              callback: () => toast.info(t.text),
             }))}
             trigger={
               <Button
@@ -556,7 +557,7 @@ function AiSlide({ aiPrompt, setSlide }) {
             />
             <Button
               onPress={() => {
-                Toast.show({ type: "info", text1: "Coming soon!" });
+                toast.info("Coming soon!");
               }}
               text="Continue"
               bold

@@ -10,11 +10,12 @@ import IconButton from "@/ui/IconButton";
 import Modal from "@/ui/Modal";
 import Text from "@/ui/Text";
 import TextField from "@/ui/TextArea";
+import { showErrorToast } from "@/utils/errorToast";
 import { BottomSheetModal } from "@gorhom/bottom-sheet";
 import { ReactElement, cloneElement, memo, useRef } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { InteractionManager, Pressable, View } from "react-native";
-import Toast from "react-native-toast-message";
+import { toast } from "sonner-native";
 
 export const LabelEditModal = memo(function LabelEditModal({
   label,
@@ -53,9 +54,9 @@ export const LabelEditModal = memo(function LabelEditModal({
         {},
         { body: JSON.stringify({ ...updatedLabel, id: label.id }) }
       );
-      Toast.show({ type: "success", text1: "Saved!" });
+      toast.success("Saved!");
     } catch {
-      Toast.show({ type: "error" });
+      showErrorToast();
     }
   };
 
@@ -71,7 +72,7 @@ export const LabelEditModal = memo(function LabelEditModal({
   const nameRef = useRef(null);
 
   const handleButtonClick = handleSubmit(onSubmit, () =>
-    Toast.show({ type: "error", text1: "Please type a name" })
+    toast.error("Please type a name")
   );
 
   return (

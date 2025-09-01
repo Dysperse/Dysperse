@@ -21,6 +21,7 @@ import { LinearSkeletonArray } from "@/ui/Skeleton/linear";
 import Text from "@/ui/Text";
 import { addHslAlpha, useColor } from "@/ui/color";
 import { useColorTheme } from "@/ui/color/theme-provider";
+import { showErrorToast } from "@/utils/errorToast";
 import { BottomSheetScrollView } from "@gorhom/bottom-sheet";
 import { setStringAsync } from "expo-clipboard";
 import { impactAsync, ImpactFeedbackStyle } from "expo-haptics";
@@ -34,7 +35,7 @@ import Animated, {
   useSharedValue,
   withSpring,
 } from "react-native-reanimated";
-import Toast from "react-native-toast-message";
+import { toast } from "sonner-native";
 import useSWR from "swr";
 import { useDebounce } from "use-debounce";
 import { TaskCompleteButton } from "./TaskCompleteButton";
@@ -102,7 +103,7 @@ function AISubtask({ task, updateTask }) {
       );
       modalRef.current?.close();
     } catch (e) {
-      Toast.show({ type: "error" });
+      showErrorToast();
     } finally {
       setIsCreationLoading(false);
     }
@@ -232,7 +233,7 @@ function AiExplanation({ task }) {
             })
             .catch(() => {
               setIsLoading(false);
-              Toast.show({ type: "error" });
+              showErrorToast();
             });
         }}
       >
@@ -371,7 +372,7 @@ function TaskMoreMenu({ handleDelete }) {
           session?.user?.betaTester && {
             icon: "content_copy",
             text: "Duplicate",
-            callback: () => Toast.show({ type: "info", text1: "Coming soon!" }),
+            callback: () => toast.info("Coming soon!"),
           },
           {
             icon: "ios_share",
@@ -382,11 +383,7 @@ function TaskMoreMenu({ handleDelete }) {
 
               setStringAsync(link);
               shareAsync(link, { dialogTitle: "Dysperse" });
-              if (Platform.OS === "web")
-                Toast.show({
-                  type: "success",
-                  text1: "Copied link to clipboard!",
-                });
+              if (Platform.OS === "web") toast.info("Copied link!");
 
               updateTask({ published: true });
             },
@@ -668,37 +665,26 @@ export function TaskDrawerContent({
       try {
         const t = typeof d === "boolean" ? d : !task.trash;
         updateTask({ trash: t });
-        Toast.show({
-          type: "success",
-          text1: t ? "Task deleted!" : "Task restored!",
-
-          props: {
-            renderTrailingIcon: !t
-              ? null
-              : () => (
-                  <IconButton
-                    icon="undo"
-                    size={40}
-                    style={{
-                      marginRight: 5,
-                      marginLeft: -10,
-                    }}
-                    backgroundColors={{
-                      default: theme[5],
-                      hovered: theme[6],
-                      pressed: theme[7],
-                    }}
-                    onPress={() => handleDelete(false)}
-                  />
-                ),
-          },
+        toast.dismiss();
+        toast.success(t ? "Task deleted!" : "Task restored!", {
+          duration: 4000,
+          action: (
+            <Button
+              text="Restore"
+              dense
+              backgroundColors={{
+                default: theme[5],
+                hovered: theme[6],
+                pressed: theme[7],
+              }}
+              containerStyle={{ marginTop: -10 }}
+              onPress={() => handleDelete(false)}
+            />
+          ),
         });
         forceClose();
       } catch (e) {
-        Toast.show({
-          type: "error",
-          text1: "Something went wrong. Please try again later",
-        });
+        showErrorToast();
       }
     },
     [updateTask, task, theme, forceClose]

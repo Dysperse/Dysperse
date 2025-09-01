@@ -7,7 +7,7 @@ import Text, { getFontName } from "@/ui/Text";
 import { useColorTheme } from "@/ui/color/theme-provider";
 import { useState } from "react";
 import { View } from "react-native";
-import Toast from "react-native-toast-message";
+import { toast } from "sonner-native";
 import useSWR from "swr";
 import { widgetStyles } from "../../widgetStyles";
 
@@ -26,7 +26,7 @@ export default function Quotes() {
   const handleRefresh = () => {
     if (!refreshed) {
       setRefreshed(true);
-      Toast.show({ type: "info", text1: "Quotes refresh every hour" });
+      toast.info("Quotes refresh every hour");
     }
     mutate();
   };

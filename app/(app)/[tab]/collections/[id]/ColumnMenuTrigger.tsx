@@ -7,9 +7,9 @@ import ConfirmationModal from "@/ui/ConfirmationModal";
 import Icon from "@/ui/Icon";
 import MenuPopover, { MenuItem } from "@/ui/MenuPopover";
 import Text from "@/ui/Text";
+import { showErrorToast } from "@/utils/errorToast";
 import { router, useLocalSearchParams, usePathname } from "expo-router";
 import { memo, ReactElement, useRef } from "react";
-import Toast from "react-native-toast-message";
 import { LabelEditModal } from "./LabelEditModal";
 
 export const ColumnMenuTrigger = memo(function ColumnMenuTrigger({
@@ -112,7 +112,7 @@ export const ColumnMenuTrigger = memo(function ColumnMenuTrigger({
                       { revalidate: false }
                     );
                   } catch {
-                    Toast.show({ type: "error" });
+                    showErrorToast();
                   }
                 }}
                 height={350}

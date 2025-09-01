@@ -3,12 +3,13 @@ import { sendApiRequest } from "@/helpers/api";
 import { useResponsiveBreakpoints } from "@/helpers/useResponsiveBreakpoints";
 import { Button } from "@/ui/Button";
 import Text from "@/ui/Text";
+import { showErrorToast } from "@/utils/errorToast";
 import { CameraView, useCameraPermissions } from "expo-camera";
 import * as Device from "expo-device";
 import { router } from "expo-router";
 import { useState } from "react";
 import { Platform, StyleSheet, View, useWindowDimensions } from "react-native";
-import Toast from "react-native-toast-message";
+import { toast } from "sonner-native";
 
 export default function Page() {
   const breakpoints = useResponsiveBreakpoints();
@@ -94,14 +95,14 @@ export default function Page() {
         if (res.error || !res.success) {
           throw new Error(res.error);
         }
-        Toast.show({ type: "success", text1: "Logged in successfully!" });
+        toast.success("Logged in successfully!");
         if (router.canGoBack()) router.back();
         else router.replace("/settings");
       }
     } catch (e) {
       console.error(e);
       setIsLoading(false);
-      Toast.show({ type: "error" });
+      showErrorToast();
     }
   };
 

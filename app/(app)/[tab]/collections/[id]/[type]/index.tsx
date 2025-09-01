@@ -35,6 +35,7 @@ import CircularSkeleton from "@/ui/Skeleton/circular";
 import LinearSkeleton, { LinearSkeletonArray } from "@/ui/Skeleton/linear";
 import Text from "@/ui/Text";
 import TextField from "@/ui/TextArea";
+import { showErrorToast } from "@/utils/errorToast";
 import { useDidUpdate } from "@/utils/useDidUpdate";
 import dayjs from "dayjs";
 import { BlurView } from "expo-blur";
@@ -56,7 +57,7 @@ import Animated, {
   withTiming,
 } from "react-native-reanimated";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
-import Toast from "react-native-toast-message";
+import { toast } from "sonner-native";
 import useSWR from "swr";
 import { mutations } from "../../mutations";
 import { Sidekick } from "./Sidekick";
@@ -280,13 +281,10 @@ function ResetPin({ handleClose }: any) {
         }
       );
       if (t?.error) {
-        Toast.show({ type: "error" });
+        showErrorToast();
         throw new Error(t.error);
       } else {
-        Toast.show({
-          type: "info",
-          text1: "Pin code for this collection has been removed",
-        });
+        toast.info("Pin code for this collection has been removed");
       }
       await mutate();
       handleClose();
@@ -395,7 +393,7 @@ function PasswordPrompt({ mutate }) {
       ref.current?.clear();
       shake();
       ref.current?.focus();
-      if (e.message !== "invalid") Toast.show({ type: "error" });
+      if (e.message !== "invalid") showErrorToast();
       console.log(e);
     }
   };

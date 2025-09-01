@@ -9,6 +9,7 @@ import IconButton from "@/ui/IconButton";
 import Modal from "@/ui/Modal";
 import Text from "@/ui/Text";
 import TextField from "@/ui/TextArea";
+import { showErrorToast } from "@/utils/errorToast";
 import { BottomSheetModal } from "@gorhom/bottom-sheet";
 import React, {
   ReactElement,
@@ -20,7 +21,7 @@ import React, {
 import { Controller, useForm } from "react-hook-form";
 import { Keyboard, Pressable, View } from "react-native";
 import { ScrollView } from "react-native-gesture-handler";
-import Toast from "react-native-toast-message";
+import { toast } from "sonner-native";
 import { useLabelColors } from "./useLabelColors";
 
 export function CreateLabelModal({
@@ -85,10 +86,7 @@ export function CreateLabelModal({
         }
       );
       onCreate?.(data);
-      Toast.show({
-        type: "success",
-        text1: "Created label!",
-      });
+      toast.success("Created label!");
       await mutate(data);
       setIsLoading(false);
       reset();
@@ -96,10 +94,7 @@ export function CreateLabelModal({
         handleClose();
       }, 500);
     } catch (e) {
-      Toast.show({
-        type: "error",
-        text1: "Something went wrong. Please try again later.",
-      });
+      showErrorToast();
       setIsLoading(false);
     }
   };
@@ -234,10 +229,7 @@ export function CreateLabelModal({
               onPress={() => {
                 Keyboard.dismiss();
                 if (Object.keys(errors).length > 0) {
-                  return Toast.show({
-                    type: "error",
-                    text1: "Type in a label name",
-                  });
+                  return toast.error("Type in a label name");
                 }
                 handleSubmit(onSubmit)();
               }}

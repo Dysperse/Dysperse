@@ -10,7 +10,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import { ImpactFeedbackStyle, impactAsync } from "expo-haptics";
 import React, { memo, useEffect, useRef, useState } from "react";
 import { Platform, View } from "react-native";
-import Toast from "react-native-toast-message";
+import { toast } from "sonner-native";
 
 const FocusPanel = memo(() => {
   const theme = useColorTheme();
@@ -34,10 +34,7 @@ const FocusPanel = memo(() => {
 
   const changeActiveWidget = async () => {
     if (pinnedWidgets.length === 1) {
-      Toast.show({
-        type: "info",
-        text1: "Tap and hold to edit",
-      });
+      toast.info("Tap and hold to edit");
     }
     if (Platform.OS !== "web") impactAsync(ImpactFeedbackStyle.Light);
     setActiveWidget((prev) => {

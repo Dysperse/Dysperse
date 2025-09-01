@@ -13,13 +13,13 @@ import RefreshControl from "@/ui/RefreshControl";
 import Spinner from "@/ui/Spinner";
 import Text from "@/ui/Text";
 import TextField from "@/ui/TextArea";
+import { showErrorToast } from "@/utils/errorToast";
 import { FlashList } from "@shopify/flash-list";
 import fuzzysort from "fuzzysort";
 import { useCallback, useState } from "react";
 import { Keyboard, Platform, StyleSheet, View } from "react-native";
 import { ScrollView } from "react-native-gesture-handler";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
-import Toast from "react-native-toast-message";
 import useSWR from "swr";
 import { MenuButton } from "../home";
 
@@ -146,7 +146,7 @@ export default function Trash() {
       });
       await sendApiRequest(session, "DELETE", "space/trash");
     } catch (e) {
-      Toast.show({ type: "error" });
+      showErrorToast();
       mutate(data, {
         revalidate: false,
         populateCache: () => data,

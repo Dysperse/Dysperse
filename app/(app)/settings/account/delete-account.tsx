@@ -8,11 +8,11 @@ import SettingsScrollView from "@/ui/SettingsScrollView";
 import Text from "@/ui/Text";
 import TextField from "@/ui/TextArea";
 import Turnstile from "@/ui/turnstile";
+import { showErrorToast } from "@/utils/errorToast";
 import { router } from "expo-router";
 import { useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { View } from "react-native";
-import Toast from "react-native-toast-message";
 
 function SubmitButton({ watch, submit, loading }) {
   const captcha = watch("captcha");
@@ -58,7 +58,7 @@ export default function Page() {
       if (t.success) signOut();
       else throw new Error("Something went wrong");
     } catch (error) {
-      Toast.show({ type: "error" });
+      showErrorToast();
       console.error(error);
       setLoading(false);
     }

@@ -19,7 +19,7 @@ import * as Application from "expo-application";
 import React, { useState } from "react";
 import { Platform, View } from "react-native";
 import * as passkey from "react-native-passkeys";
-import Toast from "react-native-toast-message";
+import { toast } from "sonner-native";
 import useSWR from "swr";
 
 export function bufferToBase64URLString(buffer: ArrayBuffer): string {
@@ -97,10 +97,8 @@ function CreatePasskey({ mutate }) {
       if (json?.rawId) setCredentialId(json.rawId);
       // if (json?.response) setCreationResponse(json.response);
 
-      Toast.show({
-        type: "success",
-        text1: "You're almost there!",
-        text2: "Please confirm one more time to complete the process.",
+      toast.success("You're almost there!", {
+        description: "Please confirm one more time to complete the process.",
       });
 
       const result = await passkey.get({
@@ -143,7 +141,7 @@ function CreatePasskey({ mutate }) {
 
       // console.log(verificationData);
 
-      Toast.show({ type: "success", text1: "Success!" });
+      toast.success("Saved!");
       setLoading(false);
     } catch (e) {
       console.error("create error", e);
@@ -247,7 +245,7 @@ export default function App() {
                           ),
                         { revalidate: false }
                       );
-                      Toast.show({ type: "success", text1: "Saved!" });
+                      toast.success("Saved!");
                     }}
                   />
                 }
@@ -262,7 +260,7 @@ export default function App() {
                   sendApiRequest(sessionToken, "DELETE", "user/passkeys", {
                     id: item.id,
                   });
-                  Toast.show({ type: "success", text1: "Deleted!" });
+                  toast.success("Deleted!");
                 }}
               />
             </ListItemButton>

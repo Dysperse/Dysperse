@@ -17,7 +17,7 @@ import { impactAsync, ImpactFeedbackStyle } from "expo-haptics";
 import { router, useGlobalSearchParams } from "expo-router";
 import { memo, useEffect, useRef } from "react";
 import { Platform, View } from "react-native";
-import Toast from "react-native-toast-message";
+import { toast } from "sonner-native";
 import { groupedViews } from ".";
 import { useCollectionContext } from "../context";
 import { NavbarEyebrow } from "./NavbarEyebrow";
@@ -88,10 +88,8 @@ export const ViewPicker = memo(({ isLoading }: { isLoading: any }) => {
             if (Platform.OS === "web" && breakpoints.md) {
               const t = localStorage.getItem("shiftShiftTip");
               if (t !== "true") {
-                Toast.show({
-                  type: "info",
-                  text1: "Pro tip",
-                  text2: "Press shift twice to open this dialog!",
+                toast.info("Pro tip", {
+                  description: "Press shift twice to open this dialog!",
                 });
                 localStorage.setItem("shiftShiftTip", "true");
               }

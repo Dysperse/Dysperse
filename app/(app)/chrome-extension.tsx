@@ -12,9 +12,9 @@ import Logo from "@/ui/logo";
 import MenuPopover from "@/ui/MenuPopover";
 import dayjs from "dayjs";
 import { useGlobalSearchParams } from "expo-router";
-import { useState } from "react";
+import React, { useState } from "react";
 import { Linking, Platform, View } from "react-native";
-import Toast from "react-native-toast-message";
+import { toast } from "sonner-native";
 
 function Branding() {
   const { session } = useUser();
@@ -93,52 +93,47 @@ export default function ChromeExtension() {
         }
       );
       badgingService.current.mutate();
-      Toast.show({
-        type: "success",
-        text1: "Saved webpage!",
-        props: {
-          renderTrailingIcon: () => (
-            <LabelPicker
-              label={task.label}
-              onClose={() => {}}
-              onOpen={() => Toast.hide()}
-              defaultCollection={task.collectionId}
-              disabled={Boolean(task.label?.integrationParams)}
-              setLabel={async (label) => {
-                await sendApiRequest(
-                  sessionToken,
-                  "PUT",
-                  "space/entity",
-                  {},
-                  {
-                    body: JSON.stringify({
-                      id: task.id,
-                      labelId: (label as any).id,
-                    }),
-                  }
-                );
-                badgingService.current.mutate();
+      toast.success("Saved webpage!", {
+        action: (
+          <LabelPicker
+            label={task.label}
+            onClose={() => {}}
+            onOpen={() => toast.dismiss()}
+            defaultCollection={task.collectionId}
+            disabled={Boolean(task.label?.integrationParams)}
+            setLabel={async (label) => {
+              await sendApiRequest(
+                sessionToken,
+                "PUT",
+                "space/entity",
+                {},
+                {
+                  body: JSON.stringify({
+                    id: task.id,
+                    labelId: (label as any).id,
+                  }),
+                }
+              );
+              badgingService.current.mutate();
+            }}
+          >
+            <Button
+              dense
+              icon="new_label"
+              containerStyle={{ marginTop: -10 }}
+              backgroundColors={{
+                default: theme[5],
+                hovered: theme[6],
+                pressed: theme[7],
               }}
-            >
-              <IconButton
-                icon="new_label"
-                size={40}
-                style={{
-                  marginRight: 5,
-                  marginLeft: -10,
-                }}
-                backgroundColors={{
-                  default: theme[5],
-                  hovered: theme[6],
-                  pressed: theme[7],
-                }}
-              />
-            </LabelPicker>
-          ),
-        },
+            />
+          </LabelPicker>
+        ),
       });
     } catch (e) {
-      Toast.show({ type: "error" });
+      toast.error("Something went wrong", {
+        description: "Please try again later",
+      });
     } finally {
       setLoading(false);
     }

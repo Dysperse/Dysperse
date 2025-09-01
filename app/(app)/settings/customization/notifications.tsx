@@ -12,12 +12,13 @@ import ListItemText from "@/ui/ListItemText";
 import SettingsScrollView from "@/ui/SettingsScrollView";
 import Spinner from "@/ui/Spinner";
 import Text from "@/ui/Text";
+import { showErrorToast } from "@/utils/errorToast";
 import Constants from "expo-constants";
 import * as Device from "expo-device";
 import * as Notifications from "expo-notifications";
 import { useCallback, useEffect, useState } from "react";
 import { Platform, View } from "react-native";
-import Toast from "react-native-toast-message";
+import { toast } from "sonner-native";
 import useSWR from "swr";
 import { Section } from "../tasks";
 
@@ -61,14 +62,14 @@ async function registerForPushNotificationsAsync() {
       }
       if (finalStatus !== "granted") {
         console.error("Permission not granted to get push token!");
-        Toast.show({ type: "error" });
+        showErrorToast();
         return;
       }
       const projectId =
         Constants?.expoConfig?.extra?.eas?.projectId ??
         Constants?.easConfig?.projectId;
       if (!projectId) {
-        Toast.show({ type: "error" });
+        showErrorToast();
       }
       try {
         const pushTokenString = (
@@ -77,15 +78,14 @@ async function registerForPushNotificationsAsync() {
           })
         ).data;
 
-        // Notifications.addNotificationResponseReceivedListener((response) => {});
         return pushTokenString;
       } catch (e: unknown) {
         console.log(e);
-        Toast.show({ type: "error" });
+        showErrorToast();
       }
     } else {
       console.error("Must use physical device for push notifications");
-      Toast.show({ type: "error" });
+      showErrorToast();
     }
   }
 }
@@ -345,10 +345,7 @@ export function SubscribeButton({
     }
 
     await mutate();
-    Toast.show({
-      type: "success",
-      text1: "You'll receive notifications on this device!",
-    });
+    toast.success("You'll receive notifications on this device!");
     await onSuccess?.();
     setIsLoading(false);
   };

@@ -20,6 +20,7 @@ import Text from "@/ui/Text";
 import { addHslAlpha } from "@/ui/color";
 import { useColorTheme } from "@/ui/color/theme-provider";
 import capitalizeFirstLetter from "@/utils/capitalizeFirstLetter";
+import { showErrorToast } from "@/utils/errorToast";
 import dayjs from "dayjs";
 import { impactAsync, ImpactFeedbackStyle } from "expo-haptics";
 import { LinearGradient } from "expo-linear-gradient";
@@ -33,7 +34,6 @@ import Animated, {
   withSpring,
 } from "react-native-reanimated";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
-import Toast from "react-native-toast-message";
 import useSWR from "swr";
 import { getTaskCompletionStatus } from "../../../helpers/getTaskCompletionStatus";
 import { SubmitButton } from "./2";
@@ -80,10 +80,7 @@ function CurrentTaskFooter({
       }
     ).catch(() => {
       onTaskUpdate(task);
-      Toast.show({
-        type: "error",
-        text1: "Something went wrong. Please try again later.",
-      });
+      showErrorToast();
     });
     badgingService.current.mutate();
   };

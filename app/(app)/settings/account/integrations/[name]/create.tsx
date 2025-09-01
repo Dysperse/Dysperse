@@ -7,6 +7,7 @@ import Text from "@/ui/Text";
 import TextField from "@/ui/TextArea";
 import { useColorTheme } from "@/ui/color/theme-provider";
 import Logo from "@/ui/logo";
+import { showErrorToast } from "@/utils/errorToast";
 import { Image } from "expo-image";
 import { router, useLocalSearchParams } from "expo-router";
 import { useState } from "react";
@@ -20,7 +21,7 @@ import { Keyboard, Platform, StyleSheet, View } from "react-native";
 import { ScrollView } from "react-native-gesture-handler";
 import { KeyboardAwareScrollView } from "react-native-keyboard-controller";
 import { Path, Svg } from "react-native-svg";
-import Toast from "react-native-toast-message";
+import { toast } from "sonner-native";
 import useSWR from "swr";
 
 const styles = StyleSheet.create({
@@ -377,10 +378,7 @@ export default function Page() {
         data.authorization.params[slide - 1]?.required &&
         !values.params[data.authorization.params[slide - 1].id]
       )
-        return Toast.show({
-          type: "error",
-          text1: "This field is required",
-        });
+        return toast.error("This field is required");
 
       setSlide(slide + 1);
     }
@@ -413,7 +411,7 @@ export default function Page() {
     } catch (e) {
       setSlide(0);
       console.error(e);
-      Toast.show({ type: "error" });
+      showErrorToast();
     }
   };
 

@@ -2,8 +2,8 @@ import { useSession } from "@/context/AuthProvider";
 import { useBadgingService } from "@/context/BadgingProvider";
 import { sendApiRequest } from "@/helpers/api";
 import { getTaskCompletionStatus } from "@/helpers/getTaskCompletionStatus";
+import { Button } from "@/ui/Button";
 import Icon from "@/ui/Icon";
-import IconButton from "@/ui/IconButton";
 import { addHslAlpha } from "@/ui/color";
 import { useColorTheme } from "@/ui/color/theme-provider";
 import dayjs from "dayjs";
@@ -15,7 +15,7 @@ import Animated, {
   useSharedValue,
   withSpring,
 } from "react-native-reanimated";
-import Toast from "react-native-toast-message";
+import { toast } from "sonner-native";
 
 function TaskCheckbox({
   task,
@@ -63,51 +63,45 @@ function TaskCheckbox({
       completionInstances: newArr,
     });
 
-    Toast.show({
-      type: "success",
-      text1: isCompleted ? "Marked incomplete" : "Marked complete",
-      props: {
-        renderTrailingIcon: () => (
-          <IconButton
-            icon="undo"
-            size={40}
-            style={{
-              marginRight: 5,
-              marginLeft: -10,
-            }}
-            backgroundColors={{
-              default: theme[5],
-              hovered: theme[6],
-              pressed: theme[7],
-            }}
-            onPress={() => {
-              impactAsync(ImpactFeedbackStyle.Heavy);
-              let newArr = !isCompleted
-                ? []
-                : [...task.completionInstances, true];
-              let iteration = null;
+    toast.success(isCompleted ? "Marked incomplete" : "Marked complete", {
+      action: (
+        <Button
+          icon="undo"
+          dense
+          containerStyle={{ marginTop: -10 }}
+          text="Undo"
+          backgroundColors={{
+            default: theme[5],
+            hovered: theme[6],
+            pressed: theme[7],
+          }}
+          onPress={() => {
+            impactAsync(ImpactFeedbackStyle.Heavy);
+            let newArr = !isCompleted
+              ? []
+              : [...task.completionInstances, true];
+            let iteration = null;
 
-              if (task.recurrenceRule) {
-                iteration = task.recurrenceDay;
-                newArr = isCompleted
-                  ? task.completionInstances.filter(
-                      (instance) =>
-                        dayjs(instance.iteration).toISOString() !==
-                        dayjs(task.recurrenceDay).toISOString()
-                    )
-                  : [...task.completionInstances, { iteration }];
-              }
+            if (task.recurrenceRule) {
+              iteration = task.recurrenceDay;
+              newArr = isCompleted
+                ? task.completionInstances.filter(
+                    (instance) =>
+                      dayjs(instance.iteration).toISOString() !==
+                      dayjs(task.recurrenceDay).toISOString()
+                  )
+                : [...task.completionInstances, { iteration }];
+            }
 
-              mutateList({
-                ...task,
-                completionInstances: newArr,
-              });
+            mutateList({
+              ...task,
+              completionInstances: newArr,
+            });
 
-              Toast.hide();
-            }}
-          />
-        ),
-      },
+            toast.dismiss();
+          }}
+        />
+      ),
     });
 
     await sendApiRequest(
@@ -152,9 +146,8 @@ function TaskCheckbox({
         onPress={() => {
           if (disabled) {
             if (task.recurrenceRule && !task.recurrenceDay)
-              return Toast.show({
-                type: "error",
-                text1: "Switch to a time-based view to complete this task",
+              return toast.info("This task is recurring", {
+                description: "Switch to a time-based view to mark as done",
               });
             return;
           }

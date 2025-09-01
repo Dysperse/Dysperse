@@ -21,7 +21,7 @@ import { Pressable, View } from "react-native";
 import Collapsible from "react-native-collapsible";
 import { CountdownCircleTimer } from "react-native-countdown-circle-timer";
 import { TextInput } from "react-native-gesture-handler";
-import Toast from "react-native-toast-message";
+import { toast } from "sonner-native";
 import timezones from "timezones-list";
 import { useFocusPanelContext } from "../../context";
 
@@ -243,10 +243,7 @@ const Timer = ({ params, setParam, pomodoro = false }) => {
                       setDuration(Number(match[1]) + Number(match[2]) / 60);
                       setPaused(false);
 
-                      Toast.show({
-                        type: "success",
-                        text1: "Timer set successfully!",
-                      });
+                      toast.info("Timer set!");
                     }
                   }}
                   key={remainingTime + restartInputKey + restartKey}

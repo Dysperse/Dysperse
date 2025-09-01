@@ -5,8 +5,8 @@ import { Calendar, toDateId } from "@marceloterreiro/flash-calendar";
 import dayjs from "dayjs";
 import { useEffect, useRef, useState } from "react";
 import { Keyboard, View } from "react-native";
-import Toast from "react-native-toast-message";
 import { RRule } from "rrule";
+import { toast } from "sonner-native";
 import { Button, ButtonText } from "../Button";
 import { useColorTheme } from "../color/theme-provider";
 import Icon from "../Icon";
@@ -300,10 +300,7 @@ function Ends({ value, setValue }) {
                 });
               } else if (e.nativeEvent.text) {
                 endsInputDateRef.current?.clear();
-                Toast.show({
-                  type: "error",
-                  text1: "Please type a valid date",
-                });
+                toast.error("Please type a valid date");
               }
             }}
           />
@@ -349,10 +346,7 @@ function Ends({ value, setValue }) {
                 });
               } else if (e.nativeEvent.text) {
                 endsInputCountRef.current?.clear();
-                Toast.show({
-                  type: "error",
-                  text1: "Please type a number",
-                });
+                toast.error("Please type in a number");
               }
             }}
           />

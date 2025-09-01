@@ -9,10 +9,10 @@ import SettingsScrollView from "@/ui/SettingsScrollView";
 import Text from "@/ui/Text";
 import { ColorTheme, useColor, useDarkMode } from "@/ui/color";
 import { ColorThemeProvider, useColorTheme } from "@/ui/color/theme-provider";
+import { showErrorToast } from "@/utils/errorToast";
 import { setAlternateAppIcon } from "expo-alternate-app-icons";
 import { Image } from "expo-image";
 import { Platform, TouchableOpacity, View } from "react-native";
-import Toast from "react-native-toast-message";
 
 function ThemedSlide({
   theme,
@@ -52,10 +52,7 @@ function ThemedSlide({
         }
       );
     } catch (e) {
-      Toast.show({
-        type: "error",
-        text1: "Something went wrong. Please try again later",
-      });
+      showErrorToast();
     }
   };
 
@@ -229,7 +226,7 @@ export default function Page() {
                   }
                 );
               } catch (e) {
-                Toast.show({ type: "error" });
+                showErrorToast();
                 mutate(() => session, { revalidate: false });
               }
             },

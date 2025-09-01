@@ -5,10 +5,11 @@ import { sendApiRequest } from "@/helpers/api";
 import { useColorTheme } from "@/ui/color/theme-provider";
 import Spinner from "@/ui/Spinner";
 import Text from "@/ui/Text";
+import { showErrorToast } from "@/utils/errorToast";
 import { useLocalSearchParams } from "expo-router";
 import { useEffect, useRef } from "react";
 import { View } from "react-native";
-import Toast from "react-native-toast-message";
+import { toast } from "sonner-native";
 
 export default function Page() {
   const theme = useColorTheme();
@@ -18,11 +19,11 @@ export default function Page() {
 
   useEffect(() => {
     if (!id) {
-      Toast.show({ type: "error", text1: "No template ID provided!" });
+      toast.error("No template ID provided!");
       return;
     }
     if (!session) {
-      Toast.show({ type: "error", text1: "You're not logged in!" });
+      toast.error("You're not logged in!");
       return;
     }
     if (created.current) return;
@@ -41,7 +42,7 @@ export default function Page() {
         });
       })
       .catch(() => {
-        Toast.show({ type: "error" });
+        showErrorToast();
       });
   }, [id, session]);
 
@@ -69,3 +70,4 @@ export default function Page() {
     </Content>
   );
 }
+

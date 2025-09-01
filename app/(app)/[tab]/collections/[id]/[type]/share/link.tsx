@@ -20,11 +20,12 @@ import Text from "@/ui/Text";
 import TextField from "@/ui/TextArea";
 import { useColorTheme } from "@/ui/color/theme-provider";
 import capitalizeFirstLetter from "@/utils/capitalizeFirstLetter";
+import { showErrorToast } from "@/utils/errorToast";
 import { setStringAsync } from "expo-clipboard";
 import { router, useLocalSearchParams } from "expo-router";
 import { useState } from "react";
 import { ScrollView, View } from "react-native";
-import Toast from "react-native-toast-message";
+import { toast } from "sonner-native";
 import useSWR from "swr";
 
 const Link = ({ collection }) => {
@@ -87,10 +88,7 @@ const Link = ({ collection }) => {
                     await setStringAsync(
                       `<iframe src="${url}" width="800px" height="400px" style="border: 2px solid #aaa;border-radius: 25px"></iframe>`
                     );
-                    Toast.show({
-                      type: "success",
-                      text1: "Embed code copied!",
-                    });
+                    toast.info("Embed code copied!");
                   }}
                   icon="code"
                   size={40}
@@ -98,7 +96,7 @@ const Link = ({ collection }) => {
                 <IconButton
                   onPress={async () => {
                     await setStringAsync(url);
-                    Toast.show({ type: "success", text1: "Link copied!" });
+                    toast.info("Link copied!");
                   }}
                   icon="content_copy"
                   variant="outlined"
@@ -161,7 +159,7 @@ const Link = ({ collection }) => {
                       }),
                     }
                   );
-                  if (res.error) return Toast.show({ type: "error" });
+                  if (res.error) return showErrorToast();
                   mutate(
                     {
                       ...data,
@@ -171,7 +169,7 @@ const Link = ({ collection }) => {
                     { revalidate: false }
                   );
                   setIsLoading(false);
-                  Toast.show({ type: "success", text1: "Access updated!" });
+                  toast.success("Access updated!");
                 }}
               >
                 <ListItemText

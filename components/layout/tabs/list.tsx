@@ -21,6 +21,7 @@ import Spinner from "@/ui/Spinner";
 import Text from "@/ui/Text";
 import { addHslAlpha, useColor } from "@/ui/color";
 import { useColorTheme } from "@/ui/color/theme-provider";
+import { showErrorToast } from "@/utils/errorToast";
 import { TEMPORARY_CONTENT_INSET_FIX } from "@/utils/temporary-scrolling-bug-fix";
 import * as Haptics from "expo-haptics";
 import { impactAsync, ImpactFeedbackStyle } from "expo-haptics";
@@ -31,7 +32,6 @@ import { Platform, Pressable, StyleSheet, View } from "react-native";
 import Animated, { useAnimatedRef } from "react-native-reanimated";
 import { reorderItems } from "react-native-reorderable-list";
 import Sortable from "react-native-sortables";
-import Toast from "react-native-toast-message";
 import useSWR from "swr";
 import PWAInstallerPrompt from "../PWAInstaller";
 import ReleaseModal from "../ReleaseModal";
@@ -192,11 +192,7 @@ function OpenTabsList() {
   // const data = raw.sort((a, b) => a.order.localeCompare(b.order));
 
   const handleSnapToIndex = (index: number) => {
-    if (error)
-      Toast.show({
-        type: "error",
-        text1: "Something went wrong. Please try again later.",
-      });
+    if (error) showErrorToast();
     if (!data) return;
     const _tab = data[index];
     if (tab === _tab.id) return;

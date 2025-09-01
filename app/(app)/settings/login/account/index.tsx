@@ -14,12 +14,13 @@ import Spinner from "@/ui/Spinner";
 import Text from "@/ui/Text";
 import TextField from "@/ui/TextArea";
 import { useColorTheme } from "@/ui/color/theme-provider";
+import { showErrorToast } from "@/utils/errorToast";
 import { BottomSheetModal, BottomSheetScrollView } from "@gorhom/bottom-sheet";
 import { router } from "expo-router";
 import { useCallback, useRef, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { View } from "react-native";
-import Toast from "react-native-toast-message";
+import { toast } from "sonner-native";
 
 function TwoFactorAuthSection() {
   const breakpoints = useResponsiveBreakpoints();
@@ -99,12 +100,12 @@ function EmailSection() {
           }
         );
         if (data.error) {
-          Toast.show({ type: "error", text1: data.error });
+          toast.error(data.error);
           return;
         }
         sheetRef.current.present();
       } catch (e) {
-        Toast.show({ type: "error" });
+        showErrorToast();
       } finally {
         setIsLoading(false);
       }
@@ -123,19 +124,16 @@ function EmailSection() {
         }
       );
       if (data.error) {
-        Toast.show({
-          type: "error",
-          text1: "Incorrect code. Please try again",
-        });
+        toast.error("Incorrect code.", { description: "Please try again" });
         return;
       }
       sheetRef.current.close();
-      Toast.show({ type: "success", text1: "Email updated!" });
+      toast.success("Email updated!");
       mutate((d) => ({ ...d, user: { ...d.user, email: values.email } }), {
         revalidate: false,
       });
     } catch (e) {
-      Toast.show({ type: "error" });
+      showErrorToast();
     } finally {
       setIsLoading(false);
     }
@@ -163,7 +161,7 @@ function EmailSection() {
                 style={{ flex: 1 }}
                 editable={!isLoading}
                 onSubmitEditing={handleSubmit(onSubmit, () =>
-                  Toast.show({ type: "error", text1: "Please enter an email" })
+                  toast.error("Please enter an email")
                 )}
                 variant="filled+outlined"
                 {...omit(["ref"], field)}
@@ -174,7 +172,7 @@ function EmailSection() {
                 size={40}
                 variant="filled"
                 onPress={handleSubmit(onSubmit, () =>
-                  Toast.show({ type: "error", text1: "Please enter an email" })
+                  toast.error("Please enter an email")
                 )}
                 style={{ borderWidth: 1, borderColor: theme[5] }}
               />
@@ -213,7 +211,7 @@ function EmailSection() {
             variant="filled"
             isLoading={isLoading}
             onPress={handleSubmit(onSubmit, () =>
-              Toast.show({ type: "error", text1: "Please enter a code" })
+              toast.error("Please enter a code")
             )}
           >
             <ButtonText weight={700} style={{ fontSize: 20 }}>
@@ -242,3 +240,4 @@ export default function Page() {
     </SettingsScrollView>
   );
 }
+

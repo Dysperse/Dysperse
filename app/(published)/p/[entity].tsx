@@ -13,7 +13,6 @@ import Logo from "@/ui/logo";
 import MenuPopover from "@/ui/MenuPopover";
 import Spinner from "@/ui/Spinner";
 import Text from "@/ui/Text";
-import { toastConfig } from "@/ui/toast.config";
 import { BottomSheetModalProvider } from "@gorhom/bottom-sheet";
 import dayjs from "dayjs";
 import { setStringAsync } from "expo-clipboard";
@@ -24,7 +23,7 @@ import { Linking, Platform, Pressable, View } from "react-native";
 import { ScrollView } from "react-native-gesture-handler";
 import { MenuProvider } from "react-native-popup-menu";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
-import Toast from "react-native-toast-message";
+import { toast, Toaster } from "sonner-native";
 import useSWR from "swr";
 
 const ics = require("ics");
@@ -38,7 +37,7 @@ const Header = () => {
   const handleShare = useCallback(() => {
     if (Platform.OS === "web" && !navigator.share) {
       setStringAsync(`https://dys.us.to/${params.entity}`);
-      Toast.show({ type: "info", text1: "Copied link to clipboard!" });
+      toast.info("Copied!");
     } else
       shareAsync(`https://dys.us.to/${params.entity}`, {
         dialogTitle: "Share Dysperse Task",
@@ -334,7 +333,7 @@ export default function Page() {
               </MenuProvider>
             </BottomSheetModalProvider>
           )}
-          <Toast topOffset={insets.top + 15} config={toastConfig(theme)} />
+          <Toaster />
         </ColorThemeProvider>
       </PublishedEntityContext.Provider>
     </OnboardingProvider>

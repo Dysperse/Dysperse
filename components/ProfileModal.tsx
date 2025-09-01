@@ -20,7 +20,7 @@ import dayjs from "dayjs";
 import { setStringAsync } from "expo-clipboard";
 import { cloneElement, useCallback, useRef, useState } from "react";
 import { useWindowDimensions, View } from "react-native";
-import Toast from "react-native-toast-message";
+import { toast } from "sonner-native";
 import useSWR, { useSWRConfig } from "swr";
 
 function ProfileModalContent({ email }) {
@@ -75,7 +75,7 @@ function ProfileModalContent({ email }) {
             <Button
               onPress={() => {
                 setStringAsync(data.email);
-                Toast.show({ type: "success", text1: "Copied to clipboard" });
+                toast.info("Copied!");
               }}
               icon="alternate_email"
               chip

@@ -7,10 +7,11 @@ import { useResponsiveBreakpoints } from "@/helpers/useResponsiveBreakpoints";
 import { Button } from "@/ui/Button";
 import OtpInput from "@/ui/OtpInput";
 import Text from "@/ui/Text";
+import { showErrorToast } from "@/utils/errorToast";
 import { router } from "expo-router";
 import { useState } from "react";
 import { StatusBar, View } from "react-native";
-import Toast from "react-native-toast-message";
+import { toast } from "sonner-native";
 
 function Content() {
   const { session } = useSession();
@@ -37,12 +38,9 @@ function Content() {
       );
       await mutate();
       router.dismissAll();
-      Toast.show({
-        type: "success",
-        text1: "PIN code " + (typeof r === "boolean" ? "removed" : "set"),
-      });
+      toast.success("PIN code " + (typeof r === "boolean" ? "removed" : "set"));
     } catch (e) {
-      Toast.show({ type: "error" });
+      showErrorToast();
       console.log(e);
     }
     router.back();

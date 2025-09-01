@@ -18,12 +18,12 @@ import Text from "@/ui/Text";
 import TextField from "@/ui/TextArea";
 import { useColorTheme } from "@/ui/color/theme-provider";
 import capitalizeFirstLetter from "@/utils/capitalizeFirstLetter";
+import { showErrorToast } from "@/utils/errorToast";
 import { FlashList } from "@shopify/flash-list";
 import { router } from "expo-router";
 import { useRef, useState } from "react";
 import { Keyboard, Platform, Pressable, StyleSheet, View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
-import Toast from "react-native-toast-message";
 import useSWR from "swr";
 import { MenuButton } from "../../home";
 
@@ -68,7 +68,7 @@ const OpenCollectionButton = ({ collection }) => {
           });
         } catch (e) {
           console.log(e);
-          Toast.show({ type: "error" });
+          showErrorToast();
         } finally {
           setLoading(false);
         }
@@ -99,7 +99,7 @@ export const CollectionDetails = ({
       setSelectedCollection(null);
     } catch (e) {
       console.log(e);
-      Toast.show({ type: "error" });
+      showErrorToast();
       mutateList();
     }
   };

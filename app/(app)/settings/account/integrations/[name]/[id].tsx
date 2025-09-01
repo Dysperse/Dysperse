@@ -13,6 +13,7 @@ import Icon from "@/ui/Icon";
 import Spinner from "@/ui/Spinner";
 import Text from "@/ui/Text";
 import { useColorTheme } from "@/ui/color/theme-provider";
+import { showErrorToast } from "@/utils/errorToast";
 import { Image } from "expo-image";
 import { router, useLocalSearchParams } from "expo-router";
 import { useEffect } from "react";
@@ -24,7 +25,7 @@ import {
 } from "react-hook-form";
 import { Platform, View } from "react-native";
 import { ScrollView } from "react-native-gesture-handler";
-import Toast from "react-native-toast-message";
+import { toast } from "sonner-native";
 import useSWR from "swr";
 
 const CalendarPicker = ({ onSave }) => {
@@ -401,9 +402,9 @@ export default function Page() {
         id,
       });
       router.replace("/settings/account/integrations/" + name);
-      Toast.show({ type: "success", text1: "Deleted!" });
-    } catch (e) {
-      Toast.show({ type: "error" });
+      toast.success("Deleted!");
+    } catch {
+      showErrorToast();
     }
   };
 
@@ -427,9 +428,9 @@ export default function Page() {
         }
       );
 
-      Toast.show({ type: "success", text1: "Connected!" });
+      toast.success("Connected!");
     } catch (e) {
-      Toast.show({ type: "error" });
+      showErrorToast();
     }
   };
 

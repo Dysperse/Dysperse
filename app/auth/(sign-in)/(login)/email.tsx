@@ -9,6 +9,7 @@ import TextField from "@/ui/TextArea";
 import { addHslAlpha } from "@/ui/color";
 import { useColorTheme } from "@/ui/color/theme-provider";
 import Turnstile from "@/ui/turnstile";
+import { showErrorToast } from "@/utils/errorToast";
 import { GoogleSignin } from "@react-native-google-signin/google-signin";
 import dayjs from "dayjs";
 import * as Device from "expo-device";
@@ -27,7 +28,7 @@ import { Platform, StyleSheet, View } from "react-native";
 import { KeyboardAwareScrollView } from "react-native-keyboard-controller";
 import * as passkey from "react-native-passkeys";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
-import Toast from "react-native-toast-message";
+import { toast } from "sonner-native";
 import { PasskeyAuth } from "..";
 import { rp } from "../../../(app)/settings/account/passkeys";
 import { authStyles } from "../../../../components/authStyles";
@@ -149,7 +150,7 @@ export function GoogleAuth({
     } catch (e) {
       setLoading(false);
       console.error(e);
-      Toast.show({ type: "error" });
+      showErrorToast();
     }
   };
 
@@ -196,9 +197,8 @@ export function PasskeyModal({ children }: { children: any }) {
         if (!result.session) throw new Error("No session");
         signIn(result.session);
       } catch (e) {
-        // setStep(0);
         console.error("Passkey Error!", e);
-        Toast.show({ type: "error" });
+        showErrorToast();
       } finally {
         setLoading(false);
       }
@@ -515,22 +515,18 @@ export default function SignIn() {
 
           if (sessionRequest.twoFactorRequired) {
             if (step === "2fa") {
-              Toast.show({
-                type: "error",
-                text1: "Incorrect 2fa code",
-              });
+              toast.error("Incorrect 2fa code");
             }
             setStep("2fa");
             return;
           }
           console.log("Session Request", data, sessionRequest);
           if (!sessionRequest.session) {
-            Toast.show({
-              type: "error",
-              text1: sessionRequest.error.includes("captcha")
+            toast.error(
+              sessionRequest.error.includes("captcha")
                 ? sessionRequest.error
-                : "Incorrect password",
-            });
+                : "Incorrect password"
+            );
             setStep("password");
             return;
           }
@@ -540,7 +536,7 @@ export default function SignIn() {
       } catch (e) {
         console.error(e);
         alert(e);
-        Toast.show({ type: "error" });
+        showErrorToast();
         setStep("email");
       }
     },

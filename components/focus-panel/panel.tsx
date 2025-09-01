@@ -6,9 +6,9 @@ import MenuPopover, { MenuOption } from "@/ui/MenuPopover";
 import Text from "@/ui/Text";
 import { useDarkMode } from "@/ui/color";
 import { useColorTheme } from "@/ui/color/theme-provider";
+import { showErrorToast } from "@/utils/errorToast";
 import { useNavigation } from "@react-navigation/native";
 import { View } from "react-native";
-import Toast from "react-native-toast-message";
 import useSWR from "swr";
 
 export type Widget =
@@ -49,7 +49,7 @@ export const Navbar = ({
         id: widgetId,
       });
     } catch (e) {
-      Toast.show({ type: "error" });
+      showErrorToast();
     }
   };
 

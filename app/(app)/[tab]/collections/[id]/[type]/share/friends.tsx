@@ -9,11 +9,12 @@ import { useColorTheme } from "@/ui/color/theme-provider";
 import Spinner from "@/ui/Spinner";
 import Text from "@/ui/Text";
 import TextField from "@/ui/TextArea";
+import { showErrorToast } from "@/utils/errorToast";
 import { BlurView } from "expo-blur";
 import { router, useLocalSearchParams } from "expo-router";
 import { useState } from "react";
 import { View } from "react-native";
-import Toast from "react-native-toast-message";
+import { toast } from "sonner-native";
 
 export default function Page() {
   const [isLoading, setIsLoading] = useState(false);
@@ -37,11 +38,11 @@ export default function Page() {
         }
       );
       if (res.error) throw new Error(res);
-      Toast.show({ type: "success", text1: "Invites sent!" });
+      toast.success("Invites sent!");
       router.back();
     } catch (e) {
       console.error("Error sending invites:", e.message);
-      Toast.show({ type: "error" });
+      showErrorToast();
       setIsLoading(false);
     }
   };
@@ -99,10 +100,7 @@ export default function Page() {
             const email =
               friend.user?.email || friend.profile?.email || friend.email;
             if (email === session.user?.email) {
-              Toast.show({
-                type: "error",
-                text1: "You can't invite yourself...",
-              });
+              toast.error("You can't invite yourself...");
               return;
             }
             setIsLoading(true);
@@ -138,3 +136,4 @@ export default function Page() {
     </>
   );
 }
+

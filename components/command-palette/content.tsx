@@ -12,6 +12,7 @@ import Text from "@/ui/Text";
 import TextField from "@/ui/TextArea";
 import { addHslAlpha } from "@/ui/color";
 import { useColorTheme } from "@/ui/color/theme-provider";
+import { showErrorToast } from "@/utils/errorToast";
 import { FlashList } from "@shopify/flash-list";
 import { LinearGradient } from "expo-linear-gradient";
 import { router, usePathname } from "expo-router";
@@ -19,7 +20,6 @@ import fuzzysort from "fuzzysort";
 import { memo, useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { Keyboard, Platform, ScrollView, View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
-import Toast from "react-native-toast-message";
 import useSWR from "swr";
 import { paletteItems } from "../layout/command-palette/list";
 import { createTab } from "../layout/openTab";
@@ -701,7 +701,7 @@ export default function CommandPaletteContent({ handleClose, defaultFilter }) {
         if (!breakpoints.md || desktopCollapsed)
           sidebarRef?.current?.closeDrawer?.();
       } catch {
-        Toast.show({ type: "error" });
+        showErrorToast();
       } finally {
         setLoading(false);
       }

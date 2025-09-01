@@ -7,6 +7,7 @@ import Modal from "@/ui/Modal";
 import LinearSkeleton from "@/ui/Skeleton/linear";
 import { addHslAlpha, useDarkMode } from "@/ui/color";
 import { useColorTheme } from "@/ui/color/theme-provider";
+import { showErrorToast } from "@/utils/errorToast";
 import { useBottomSheet } from "@gorhom/bottom-sheet";
 import { BlurView } from "expo-blur";
 import { useLocalSearchParams, usePathname } from "expo-router";
@@ -23,8 +24,6 @@ import {
   View,
   useWindowDimensions,
 } from "react-native";
-import { useSafeAreaInsets } from "react-native-safe-area-context";
-import Toast from "react-native-toast-message";
 import useSWR from "swr";
 import { TaskDrawerContent } from "./content";
 import { TaskDrawerContext } from "./context";
@@ -114,10 +113,7 @@ function TaskDrawerWrapper({
       ).catch(() => {
         badgingService.current.mutate();
         mutate(oldData, false);
-        Toast.show({
-          type: "error",
-          text1: "Something went wrong. Please try again later.",
-        });
+        showErrorToast();
       });
     },
     [data, mutate, id, sessionToken, badgingService]
@@ -253,7 +249,6 @@ export function TaskDrawer({
   }, [isReadOnly]);
 
   const tappedRef = useRef(0);
-  const insets = useSafeAreaInsets();
 
   const handleRefTap = () => {
     tappedRef.current++;

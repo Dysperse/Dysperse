@@ -7,11 +7,11 @@ import Spinner from "@/ui/Spinner";
 import Text from "@/ui/Text";
 import { addHslAlpha } from "@/ui/color";
 import { useColorTheme } from "@/ui/color/theme-provider";
+import { showErrorToast } from "@/utils/errorToast";
 import dayjs from "dayjs";
 import * as Location from "expo-location";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { InteractionManager, Pressable, View } from "react-native";
-import Toast from "react-native-toast-message";
 import useSWR from "swr";
 import { useFocusPanelContext } from "../../context";
 import weatherCodes from "./weatherCodes.json";
@@ -46,10 +46,7 @@ export default function WeatherWidget({
       const location = await Location.getCurrentPositionAsync({});
       setLocation(location);
     } else {
-      Toast.show({
-        type: "error",
-        text1: "Something went wrong",
-      });
+      showErrorToast();
     }
   };
 

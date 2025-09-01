@@ -7,13 +7,14 @@ import Text from "@/ui/Text";
 import TextField from "@/ui/TextArea";
 import { useColorTheme } from "@/ui/color/theme-provider";
 import Turnstile from "@/ui/turnstile";
+import { showErrorToast } from "@/utils/errorToast";
 import * as Device from "expo-device";
 import { router } from "expo-router";
 import { createContext, useContext, useEffect, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { Platform, StyleSheet, View } from "react-native";
 import { KeyboardAwareScrollView } from "react-native-keyboard-controller";
-import Toast from "react-native-toast-message";
+import { toast } from "sonner-native";
 import { authStyles } from "../../../../../components/authStyles";
 
 const PasswordContext = createContext(null);
@@ -151,7 +152,7 @@ const Token = ({ form }: any) => {
     }
     if (!values.captchaToken) {
       setLoading(false);
-      Toast.show({ type: "error" });
+      showErrorToast();
       setStep(1);
       return;
     }
@@ -166,10 +167,10 @@ const Token = ({ form }: any) => {
       .then((res) => {
         setLoading(false);
         if (res.error === "ERROR_USER_NOT_FOUND") {
-          Toast.show({ type: "error", text1: "User not found" });
+          toast.error("User not found");
           setStep(0);
         } else if (res.error) {
-          Toast.show({ type: "error", text1: res.error });
+          toast.error(res.error);
           setStep(1);
         } else if (!res.error) {
           form.setValue("captchaToken", "SENT");
@@ -177,7 +178,7 @@ const Token = ({ form }: any) => {
       })
       .catch(() => {
         setLoading(false);
-        Toast.show({ type: "error" });
+        showErrorToast();
         setStep(0);
       });
   }, [form, setStep]);
@@ -329,13 +330,10 @@ export default function Page() {
         }
       ).then((res) => res.json());
       if (data.error) {
-        Toast.show({
-          type: "error",
-          text1: "Please check your inputs and try again.",
-        });
+        toast.error("Please check your inputs and try again.");
         setStep(2);
       } else {
-        Toast.show({ type: "success", text1: "Password changed!" });
+        toast.success("Password changed!");
         signIn(data.id);
         router.replace("/home");
       }
@@ -346,10 +344,7 @@ export default function Page() {
     <PasswordContext.Provider
       value={{
         handleNext: form.handleSubmit(onSubmit, () => {
-          Toast.show({
-            type: "error",
-            text1: "Please check your inputs and try again.",
-          });
+          toast.error("Please check your inputs and try again.");
         }),
         handlePrev: () => setStep(step - 1),
         setStep,

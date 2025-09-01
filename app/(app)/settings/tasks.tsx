@@ -12,8 +12,9 @@ import SettingsScrollView from "@/ui/SettingsScrollView";
 import Text from "@/ui/Text";
 import { useColorTheme } from "@/ui/color/theme-provider";
 import capitalizeFirstLetter from "@/utils/capitalizeFirstLetter";
+import { showErrorToast } from "@/utils/errorToast";
 import { View } from "react-native";
-import Toast from "react-native-toast-message";
+import { toast } from "sonner-native";
 import useSWR from "swr";
 
 export function Section({ children }: any) {
@@ -243,10 +244,10 @@ export default function Page() {
         }
       );
 
-      Toast.show({ type: "success", text1: "Saved!" });
+      toast.success("Saved!");
     } catch (e) {
       console.error(e);
-      Toast.show({ type: "error" });
+      showErrorToast();
     }
   };
 

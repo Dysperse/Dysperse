@@ -8,6 +8,7 @@ import Spinner from "@/ui/Spinner";
 import Text from "@/ui/Text";
 import { useColor } from "@/ui/color";
 import { useColorTheme } from "@/ui/color/theme-provider";
+import { showErrorToast } from "@/utils/errorToast";
 import dayjs from "dayjs";
 import { LinearGradient } from "expo-linear-gradient";
 import * as Location from "expo-location";
@@ -15,7 +16,6 @@ import { router } from "expo-router";
 import { useCallback, useEffect, useState } from "react";
 import { Platform, StyleSheet, View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
-import Toast from "react-native-toast-message";
 import weatherCodes from "../../../components/focus-panel/widgets/weather/weatherCodes.json";
 import { getGreeting } from "../../../components/home/getGreeting";
 
@@ -171,10 +171,7 @@ const PermissionScreen = ({ onSuccess }) => {
     if (status === "granted") {
       onSuccess();
     } else {
-      Toast.show({
-        type: "error",
-        text1: "Something went wrong",
-      });
+      showErrorToast();
     }
   }, [onSuccess]);
 
@@ -251,10 +248,7 @@ export default function Page() {
       ).then((res) => res.json());
       return { place, weather, tasksDueToday };
     } else {
-      Toast.show({
-        type: "error",
-        text1: "Something went wrong",
-      });
+      showErrorToast();
     }
   }, [session, start]);
 

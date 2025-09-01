@@ -14,10 +14,10 @@ import Text from "@/ui/Text";
 import TextField from "@/ui/TextArea";
 import { useColorTheme } from "@/ui/color/theme-provider";
 import capitalizeFirstLetter from "@/utils/capitalizeFirstLetter";
+import { showErrorToast } from "@/utils/errorToast";
 import { router, usePathname } from "expo-router";
 import { useRef } from "react";
 import { Pressable, View } from "react-native";
-import Toast from "react-native-toast-message";
 import { CollectionLabelMenu } from "./CollectionLabelMenu";
 
 const collectionCategories = [
@@ -83,7 +83,7 @@ export const CollectionInfo = ({ collection }) => {
       if (res.error) throw new Error(res);
     } catch (e) {
       console.error(e);
-      Toast.show({ type: "error" });
+      showErrorToast();
     }
   };
 

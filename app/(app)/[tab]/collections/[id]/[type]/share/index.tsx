@@ -24,6 +24,7 @@ import Text from "@/ui/Text";
 import TextField from "@/ui/TextArea";
 import { useColorTheme } from "@/ui/color/theme-provider";
 import capitalizeFirstLetter from "@/utils/capitalizeFirstLetter";
+import { showErrorToast } from "@/utils/errorToast";
 import { BottomSheetModal } from "@gorhom/bottom-sheet";
 import { router, useLocalSearchParams, usePathname } from "expo-router";
 import { cloneElement, useEffect, useRef, useState } from "react";
@@ -34,7 +35,7 @@ import {
   StyleSheet,
   View,
 } from "react-native";
-import Toast from "react-native-toast-message";
+import { toast } from "sonner-native";
 import useSWR from "swr";
 
 const modalStyles = StyleSheet.create({
@@ -368,8 +369,8 @@ const CollectionInvitedUser = ({ isReadOnly, mutateList, user }: any) => {
       "space/collections/collection/share",
       { id: user.id }
     );
-    if (res.error) return Toast.show({ type: "error" });
-    Toast.show({ type: "success", text1: "Access removed" });
+    if (res.error) return showErrorToast();
+    toast.success("Access removed");
     mutateList(
       (d) => ({
         ...d,
@@ -431,7 +432,7 @@ const CollectionInvitedUser = ({ isReadOnly, mutateList, user }: any) => {
                       ),
                     };
                   });
-                  Toast.show({ type: "success", text1: "Access updated!" });
+                  toast.success("Access updated!");
                 },
               })),
               { divider: true, key: "1" },

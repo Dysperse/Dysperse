@@ -7,13 +7,13 @@ import { useResponsiveBreakpoints } from "@/helpers/useResponsiveBreakpoints";
 import { Button } from "@/ui/Button";
 import { addHslAlpha, useColor } from "@/ui/color";
 import { useColorTheme } from "@/ui/color/theme-provider";
+import { showErrorToast } from "@/utils/errorToast";
 import { useBottomSheet } from "@gorhom/bottom-sheet";
 import dayjs from "dayjs";
 import { impactAsync, ImpactFeedbackStyle } from "expo-haptics";
 import React from "react";
 import { Platform, View } from "react-native";
 import ConfettiCannon from "react-native-confetti-cannon";
-import Toast from "react-native-toast-message";
 import { useTaskDrawerContext } from "./context";
 
 export function TaskCompleteButton() {
@@ -79,10 +79,7 @@ export function TaskCompleteButton() {
       }
     } catch (e) {
       console.error(e);
-      Toast.show({
-        type: "error",
-        text1: "Something went wrong. Please try again later.",
-      });
+      showErrorToast();
     }
   };
 

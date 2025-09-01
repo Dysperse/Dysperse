@@ -1,8 +1,9 @@
 import { useSession } from "@/context/AuthProvider";
 import { sendApiRequest } from "@/helpers/api";
 import { Button } from "@/ui/Button";
+import { showErrorToast } from "@/utils/errorToast";
 import { memo, useState } from "react";
-import Toast from "react-native-toast-message";
+import { toast } from "sonner-native";
 import LabelPicker from "../../labels/picker";
 import { useCollectionContext } from "../context";
 
@@ -30,9 +31,9 @@ export const CollectionLabelMenu = memo(function CollectionLabelMenu({
         }
       );
       await mutate();
-      Toast.show({ type: "success", text1: "Saved!" });
+      toast.info("Saved!");
     } catch (e) {
-      Toast.show({ type: "error", text1: "Something went wrong" });
+      showErrorToast();
     }
   };
 

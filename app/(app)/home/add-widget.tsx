@@ -10,12 +10,13 @@ import ListItemText from "@/ui/ListItemText";
 import Spinner from "@/ui/Spinner";
 import Text from "@/ui/Text";
 import TextField from "@/ui/TextArea";
+import { showErrorToast } from "@/utils/errorToast";
 import { router } from "expo-router";
 import { LexoRank } from "lexorank";
 import React, { useRef, useState } from "react";
 import { View } from "react-native";
 import { FlatList, ScrollView } from "react-native-gesture-handler";
-import Toast from "react-native-toast-message";
+import { toast } from "sonner-native";
 import useSWR from "swr";
 import { MenuButton } from ".";
 
@@ -118,10 +119,7 @@ function Widgets() {
       mutate();
       router.back();
     } catch (e) {
-      Toast.show({
-        text1: "Something went wrong. Please try again later",
-        type: "error",
-      });
+      showErrorToast();
     } finally {
       setLoading(false);
     }
@@ -176,19 +174,13 @@ function Widgets() {
                 pressableStyle={{ padding: 5 }}
                 onPress={() => {
                   if (item.comingSoon) {
-                    return Toast.show({
-                      type: "info",
-                      text1: "Coming soon!",
-                    });
+                    return toast.info("Coming soon!");
                   }
                   if (
                     item.onlyOnce &&
                     data.find((d) => d.type === item.text.toLowerCase())
                   ) {
-                    return Toast.show({
-                      type: "info",
-                      text1: "You can only add this widget once",
-                    });
+                    return toast.info("You can only add this widget once.");
                   }
                   handleWidgetToggle((item.key || item.text) as Widget);
                   router.back();

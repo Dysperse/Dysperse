@@ -20,6 +20,7 @@ import MenuPopover from "@/ui/MenuPopover";
 import Modal from "@/ui/Modal";
 import Spinner from "@/ui/Spinner";
 import Text from "@/ui/Text";
+import { showErrorToast } from "@/utils/errorToast";
 import { BottomSheetModal, useBottomSheet } from "@gorhom/bottom-sheet";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import dayjs, { Dayjs } from "dayjs";
@@ -56,7 +57,7 @@ import Animated, {
   useSharedValue,
   withSpring,
 } from "react-native-reanimated";
-import Toast from "react-native-toast-message";
+import { toast } from "sonner-native";
 import useSWR from "swr";
 import { useDebounce } from "use-debounce";
 import { TaskAttachmentPicker } from "../drawer/attachment-picker";
@@ -752,16 +753,11 @@ function SpeechRecognition({ ref, setValue }) {
 
   useSpeechRecognitionEvent("start", () => {
     setRecognizing(true);
-    if (Platform.OS === "web")
-      Toast.show({
-        type: "info",
-        text1: "Listening...",
-        visibilityTime: 99999999,
-      });
+    if (Platform.OS === "web") toast.loading("Listening...");
   });
   useSpeechRecognitionEvent("end", () => {
     setRecognizing(false);
-    Toast.hide();
+    toast.dismiss();
   });
   useSpeechRecognitionEvent("result", (event) => {
     setValue(
@@ -940,21 +936,13 @@ const BottomSheetContent = ({
           else addedTasks.current.push(e);
         })
         .then(() => badgingService?.current?.mutate())
-        .catch(() => {
-          Toast.show({
-            type: "error",
-            text1: "Something went wrong. Please try again later.",
-          });
-        });
+        .catch(showErrorToast);
 
       reset(defaultValues);
-      Toast.show({ type: "success", text1: "Created task!" });
+      toast.success("Created task!");
       nameRef.current?.focus();
     } catch (e) {
-      Toast.show({
-        type: "error",
-        text1: "Something went wrong. Please try again later.",
-      });
+      showErrorToast();
     }
   };
 
@@ -973,12 +961,7 @@ const BottomSheetContent = ({
     setTimeout(() => nameRef.current?.focus(), 1);
     nameRef.current?.focus();
     if (!submitRef.current.isDisabled())
-      handleSubmit(onSubmit, () =>
-        Toast.show({
-          type: "error",
-          text1: "Type in a task name",
-        })
-      )();
+      handleSubmit(onSubmit, () => toast.error("Type in a task name"))();
   };
 
   return (

@@ -16,6 +16,7 @@ import Spinner from "@/ui/Spinner";
 import Text from "@/ui/Text";
 import { useColorTheme } from "@/ui/color/theme-provider";
 import Logo from "@/ui/logo";
+import { showErrorToast } from "@/utils/errorToast";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import dayjs from "dayjs";
 import * as BackgroundTask from "expo-background-task";
@@ -48,7 +49,7 @@ import Animated, {
   withSpring,
 } from "react-native-reanimated";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
-import Toast from "react-native-toast-message";
+import { toast } from "sonner-native";
 import useSWR, { useSWRConfig } from "swr";
 import LoadingErrors from "../LoadingErrors";
 import OpenTabsList from "../tabs/list";
@@ -204,7 +205,7 @@ const SyncButton = memo(function SyncButton({ syncRef }: any) {
         checkOpacity.value = 0;
       }, 3000);
     } catch (e) {
-      Toast.show({ type: "error" });
+      showErrorToast();
     } finally {
       setIsLoading(false);
     }
@@ -557,7 +558,7 @@ export const TimeZoneModal = () => {
               handleChangeDefault();
               if (process.env.NODE_ENV === "development")
                 return alert(dayjs.tz().format("dddd, MMMM D, YYYY h:mm A"));
-              Toast.show({ type: "info", text1: "Coming soon!" });
+              toast.info("Coming soon!");
             }}
             text={`Make ${dayjs.tz.guess()} my default`}
           />

@@ -16,7 +16,7 @@ import { useEffect, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { View } from "react-native";
 import QRCode from "react-native-qrcode-svg";
-import Toast from "react-native-toast-message";
+import { toast } from "sonner-native";
 
 export default function Page() {
   const breakpoints = useResponsiveBreakpoints();
@@ -72,10 +72,10 @@ export default function Page() {
         }
       );
       setLoading(false);
-      Toast.show({ type: "success", text1: "2FA enabled!" });
+      toast.success("2FA enabled!");
       router.push("/settings/account");
     } catch (err) {
-      Toast.show({ type: "error", text2: "Check your code?" });
+      toast.error("Check your code?");
       setError(err);
     } finally {
       setLoading(false);
@@ -143,11 +143,8 @@ export default function Page() {
                 containerStyle={{ marginVertical: 5 }}
                 onPress={async () => {
                   await Clipboard.setStringAsync(data.secret);
-
-                  Toast.show({
-                    type: "success",
-                    text1: "Copied setup key!",
-                    text2: "Paste it into your authenticator app.",
+                  toast.info("Copied!", {
+                    description: "Paste it into your authenticator app.",
                   });
                 }}
               >

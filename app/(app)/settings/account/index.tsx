@@ -16,6 +16,7 @@ import Text from "@/ui/Text";
 import TextField from "@/ui/TextArea";
 import { addHslAlpha } from "@/ui/color";
 import { useColorTheme } from "@/ui/color/theme-provider";
+import { showErrorToast } from "@/utils/errorToast";
 import { BottomSheetModal, BottomSheetScrollView } from "@gorhom/bottom-sheet";
 import dayjs from "dayjs";
 import * as ImagePicker from "expo-image-picker";
@@ -23,7 +24,7 @@ import { router } from "expo-router";
 import { cloneElement, useCallback, useRef, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { Platform, View } from "react-native";
-import Toast from "react-native-toast-message";
+import { toast } from "sonner-native";
 import useSWR from "swr";
 import { Section } from "../tasks";
 
@@ -64,7 +65,7 @@ export const pickImageAsync = async (setLoading, onChange) => {
     }
   } catch (e) {
     console.error("Error picking image:", e);
-    Toast.show({ type: "error" });
+    showErrorToast();
   } finally {
     setLoading(false);
   }
@@ -96,13 +97,13 @@ function EmailSection({ children }) {
           }
         );
         if (data.error) {
-          Toast.show({ type: "error", text1: data.error });
+          toast.error(data.error);
           return;
         }
         setIsVerifying(true);
         sheetRef.current.present();
       } catch (e) {
-        Toast.show({ type: "error" });
+        showErrorToast();
       } finally {
         setIsLoading(false);
       }
@@ -121,19 +122,16 @@ function EmailSection({ children }) {
         }
       );
       if (data.error) {
-        Toast.show({
-          type: "error",
-          text1: "Incorrect code. Please try again",
-        });
+        toast.error("Incorrect code", { description: "Please try again" });
         return;
       }
       sheetRef.current.close();
-      Toast.show({ type: "success", text1: "Email updated!" });
+      toast.success("Email updated!");
       mutate((d) => ({ ...d, user: { ...d.user, email: values.email } }), {
         revalidate: false,
       });
     } catch (e) {
-      Toast.show({ type: "error" });
+      showErrorToast();
     } finally {
       setIsLoading(false);
     }
@@ -188,10 +186,7 @@ function EmailSection({ children }) {
                       style={{ flex: 1, height: 50 }}
                       editable={!isLoading}
                       onSubmitEditing={handleSubmit(onSubmit, () =>
-                        Toast.show({
-                          type: "error",
-                          text1: "Please enter an email",
-                        })
+                        toast.error("Please enter an email")
                       )}
                       defaultValue={value}
                       onChangeText={onChange}
@@ -207,10 +202,7 @@ function EmailSection({ children }) {
                       containerStyle={{ marginTop: 20 }}
                       variant="filled"
                       onPress={handleSubmit(onSubmit, () =>
-                        Toast.show({
-                          type: "error",
-                          text1: "Please enter an email",
-                        })
+                        toast.error("Please enter an email")
                       )}
                     />
                     <Button
@@ -240,7 +232,7 @@ function EmailSection({ children }) {
                   required: true,
                   minLength: 8,
                 }}
-                render={({ field: { value, onChange } }) => (
+                render={({ field: { onChange } }) => (
                   <TextField
                     placeholder="Verification code"
                     variant="filled+outlined"
@@ -248,10 +240,7 @@ function EmailSection({ children }) {
                     style={{ flex: 1, height: 50 }}
                     editable={!isLoading}
                     onSubmitEditing={handleSubmit(onSubmit, () =>
-                      Toast.show({
-                        type: "error",
-                        text1: "Please enter a code",
-                      })
+                      toast.error("Please enter a code")
                     )}
                     defaultValue=""
                     onChangeText={onChange}
@@ -268,7 +257,7 @@ function EmailSection({ children }) {
                 variant="filled"
                 disabled={isLoading}
                 onPress={handleSubmit(onSubmit, () =>
-                  Toast.show({ type: "error", text1: "Please enter a code" })
+                  toast.error("Please enter a code")
                 )}
               />
               <Button
@@ -414,9 +403,9 @@ function ProfileBanner() {
         }),
         { revalidate: false }
       );
-      Toast.show({ type: "success", text1: "Saved!" });
+      toast.success("Saved!");
     } catch (e) {
-      Toast.show({ type: "error" });
+      showErrorToast();
     }
   };
 
@@ -574,7 +563,7 @@ function ResetHintsButton() {
           }),
         }
       );
-      Toast.show({ type: "success", text1: "Hints reset!" });
+      toast.success("Hints reset!");
       mutate(
         (d) => ({
           ...d,
@@ -586,7 +575,7 @@ function ResetHintsButton() {
         { revalidate: false }
       );
     } catch (e) {
-      Toast.show({ type: "error" });
+      showErrorToast();
     }
   };
 

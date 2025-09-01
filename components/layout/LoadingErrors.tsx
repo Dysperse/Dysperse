@@ -3,8 +3,8 @@ import { useUser } from "@/context/useUser";
 import { useResponsiveBreakpoints } from "@/helpers/useResponsiveBreakpoints";
 import { Button } from "@/ui/Button";
 import Spinner from "@/ui/Spinner";
-import { memo, React, useEffect } from "react";
-import Toast from "react-native-toast-message";
+import { memo, useEffect } from "react";
+import { toast } from "sonner-native";
 
 const LoadingErrors = memo(() => {
   const { error } = useUser();
@@ -13,13 +13,11 @@ const LoadingErrors = memo(() => {
 
   useEffect(() => {
     if (!breakpoints.md && (error || storageError)) {
-      Toast.show({
-        type: "error",
-        text1: "You're offline",
-        text2: "Please check your connection",
+      toast.info("You're offline", {
+        description: "Please check your connection",
       });
     } else {
-      Toast.hide();
+      toast.dismiss();
     }
   }, [error, storageError, breakpoints]);
 
@@ -40,3 +38,4 @@ const LoadingErrors = memo(() => {
 });
 
 export default LoadingErrors;
+

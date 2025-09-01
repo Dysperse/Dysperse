@@ -13,11 +13,12 @@ import Spinner from "@/ui/Spinner";
 import Text from "@/ui/Text";
 import { useDarkMode } from "@/ui/color";
 import { useColorTheme } from "@/ui/color/theme-provider";
+import { showErrorToast } from "@/utils/errorToast";
 import { FlashList } from "@shopify/flash-list";
 import dayjs from "dayjs";
 import { Image } from "expo-image";
 import { Platform, View } from "react-native";
-import Toast from "react-native-toast-message";
+import { toast } from "sonner-native";
 import useSWR, { KeyedMutator } from "swr";
 
 export function SessionCard({
@@ -40,9 +41,9 @@ export function SessionCard({
       mutate((data) => data.filter((i: any) => i.id !== session.id), {
         revalidate: false,
       });
-      Toast.show({ type: "success", text1: "Signed out!" });
+      toast.success("Signed out!");
     } catch (e) {
-      Toast.show({ type: "error" });
+      showErrorToast();
     }
   };
 
@@ -181,9 +182,9 @@ export default function Page() {
       mutate((d) => d.filter((i: any) => i.id === session), {
         revalidate: false,
       });
-      Toast.show({ type: "success", text1: "Signed out!" });
-    } catch (e) {
-      Toast.show({ type: "error" });
+      toast.success("Signed out!");
+    } catch {
+      showErrorToast();
     }
   };
 
@@ -232,3 +233,4 @@ export default function Page() {
     </SettingsScrollView>
   );
 }
+

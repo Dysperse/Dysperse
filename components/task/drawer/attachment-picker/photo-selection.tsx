@@ -9,7 +9,7 @@ import * as MediaLibrary from "expo-media-library";
 import { useEffect, useState } from "react";
 import { InteractionManager, View } from "react-native";
 import { FlatList } from "react-native-gesture-handler";
-import Toast from "react-native-toast-message";
+import { toast } from "sonner-native";
 import { useTaskDrawerContext } from "../context";
 
 export function PhotoSelection({ handleBack }) {
@@ -104,7 +104,7 @@ export function PhotoSelection({ handleBack }) {
                 });
               }
 
-              Toast.show({ type: "info", text1: "Coming soon!" });
+              toast.info("Coming soon!");
             }}
           >
             <Icon size={40}>add</Icon>

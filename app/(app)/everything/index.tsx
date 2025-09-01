@@ -21,6 +21,7 @@ import TextField from "@/ui/TextArea";
 import { useColor } from "@/ui/color";
 import { ColorThemeProvider, useColorTheme } from "@/ui/color/theme-provider";
 import capitalizeFirstLetter from "@/utils/capitalizeFirstLetter";
+import { showErrorToast } from "@/utils/errorToast";
 import { FlashList } from "@shopify/flash-list";
 import { LinearGradient } from "expo-linear-gradient";
 import { router, useLocalSearchParams } from "expo-router";
@@ -29,7 +30,6 @@ import { useState } from "react";
 import { Keyboard, Platform, StyleSheet, View } from "react-native";
 import { Pressable, ScrollView } from "react-native-gesture-handler";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
-import Toast from "react-native-toast-message";
 import useSWR, { KeyedMutator } from "swr";
 import { LabelEditModal } from "../[tab]/collections/[id]/LabelEditModal";
 import { MenuButton } from "../home";
@@ -64,7 +64,7 @@ export const handleLabelDelete = async (session, labelId) => {
     });
   } catch (e) {
     console.log(e);
-    Toast.show({ type: "error" });
+    showErrorToast();
   }
 };
 
@@ -99,7 +99,7 @@ export const LabelDetails = ({
     } catch (e) {
       mutateList();
       console.log(e);
-      Toast.show({ type: "error" });
+      showErrorToast();
     }
   };
 

@@ -13,6 +13,7 @@ import Text from "@/ui/Text";
 import { addHslAlpha } from "@/ui/color";
 import { useColorTheme } from "@/ui/color/theme-provider";
 import capitalizeFirstLetter from "@/utils/capitalizeFirstLetter";
+import { showErrorToast } from "@/utils/errorToast";
 import { useCallback, useEffect } from "react";
 import { View } from "react-native";
 import { ScrollView } from "react-native-gesture-handler";
@@ -22,7 +23,7 @@ import Animated, {
   withSpring,
 } from "react-native-reanimated";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
-import Toast from "react-native-toast-message";
+import { toast } from "sonner-native";
 import useSWR from "swr";
 import { MenuButton } from "../home";
 
@@ -149,9 +150,9 @@ export default function Page() {
     try {
       await sendApiRequest(sessionToken, "DELETE", "space/trash");
       await mutate();
-      Toast.show({ type: "success", text1: "Trash emptied!" });
+      toast.success("Trash emptied!");
     } catch (e) {
-      Toast.show({ type: "error" });
+      showErrorToast();
       await mutate();
     }
   }, [sessionToken, mutate]);
@@ -160,9 +161,9 @@ export default function Page() {
     try {
       await sendApiRequest(sessionToken, "GET", "space/deleteCompletedTasks");
       await mutate();
-      Toast.show({ type: "success", text1: "Trash emptied!" });
+      toast.success("Trash emptied!");
     } catch (e) {
-      Toast.show({ type: "error" });
+      showErrorToast();
       await mutate();
     }
   }, [sessionToken, mutate]);

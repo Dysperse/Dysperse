@@ -6,8 +6,8 @@ import { useColorTheme } from "@/ui/color/theme-provider";
 import IconButton from "@/ui/IconButton";
 import { ListItemButton } from "@/ui/ListItemButton";
 import ListItemText from "@/ui/ListItemText";
+import { showErrorToast } from "@/utils/errorToast";
 import { Linking, View } from "react-native";
-import Toast from "react-native-toast-message";
 
 export const PublishCollection = ({ collection }: any) => {
   const { data, mutate } = collection;
@@ -28,8 +28,7 @@ export const PublishCollection = ({ collection }: any) => {
       );
       if (res.error) throw new Error(res);
     } catch (e) {
-      console.error(e);
-      Toast.show({ type: "error" });
+      showErrorToast();
     }
   };
 

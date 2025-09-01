@@ -12,6 +12,7 @@ import Text from "@/ui/Text";
 import TextField from "@/ui/TextArea";
 import { addHslAlpha } from "@/ui/color";
 import { useColorTheme } from "@/ui/color/theme-provider";
+import { showErrorToast } from "@/utils/errorToast";
 import React, {
   cloneElement,
   useImperativeHandle,
@@ -25,7 +26,7 @@ import Animated, {
   useSharedValue,
   withSpring,
 } from "react-native-reanimated";
-import Toast from "react-native-toast-message";
+import { toast } from "sonner-native";
 import TaskNoteEditor from "./TaskNoteEditor";
 import { useTaskDrawerContext } from "./context";
 
@@ -55,7 +56,7 @@ function LinkModal({ children, onSubmit }) {
       });
       modalRef.current.close();
     } catch (e) {
-      Toast.show({ type: "error", text1: "Please insert a valid URL" });
+      toast.error("Invalid URL");
       setTimeout(() => {
         urlRef.current.focus();
       }, 400);
@@ -315,7 +316,7 @@ function AISimplification({ id, updateTask }) {
 
       updateTask({ note: res, hasSimplifiedNote: true });
     } catch (e) {
-      Toast.show({ type: "error" });
+      showErrorToast();
     } finally {
       setLoading(false);
     }

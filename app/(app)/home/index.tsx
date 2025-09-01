@@ -30,6 +30,7 @@ import Spinner from "@/ui/Spinner";
 import { addHslAlpha } from "@/ui/color";
 import { useColorTheme } from "@/ui/color/theme-provider";
 import Logo from "@/ui/logo";
+import { showErrorToast } from "@/utils/errorToast";
 import { ImageBackground as ExpoImageBackground } from "expo-image";
 import { LinearGradient } from "expo-linear-gradient";
 import { router } from "expo-router";
@@ -44,7 +45,6 @@ import {
 } from "react-native";
 import { KeyboardAwareScrollView } from "react-native-keyboard-controller";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
-import Toast from "react-native-toast-message";
 import useSWR from "swr";
 
 export const HOME_PATTERNS = [
@@ -299,7 +299,7 @@ export function RenderWidget({ widget, index, small }) {
         }
       );
     } catch (e) {
-      Toast.show({ type: "error" });
+      showErrorToast();
     }
   };
 
@@ -327,7 +327,7 @@ export function RenderWidget({ widget, index, small }) {
         }
       );
     } catch (e) {
-      Toast.show({ type: "error" });
+      showErrorToast();
     }
   };
 

@@ -1,7 +1,7 @@
+import { showErrorToast } from "@/utils/errorToast";
 import { BottomSheetModal, useBottomSheet } from "@gorhom/bottom-sheet";
 import { cloneElement, useCallback, useRef, useState } from "react";
 import { StyleSheet } from "react-native";
-import Toast from "react-native-toast-message";
 import { Button, ButtonText } from "../Button";
 import { useColorTheme } from "../color/theme-provider";
 import Modal from "../Modal";
@@ -68,7 +68,7 @@ function ConfirmationModalButton({
       await onSuccess?.();
       setTimeout(() => forceClose({ overshootClamping: true, damping: 1 }), 0);
     } catch (e) {
-      Toast.show({ type: "error" });
+      showErrorToast();
       console.log(e);
     } finally {
       setLoading(false);

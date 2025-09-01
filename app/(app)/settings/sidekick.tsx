@@ -12,12 +12,13 @@ import Modal from "@/ui/Modal";
 import SettingsScrollView from "@/ui/SettingsScrollView";
 import Text from "@/ui/Text";
 import TextField from "@/ui/TextArea";
+import { showErrorToast } from "@/utils/errorToast";
 import { BlurView } from "expo-blur";
 import { Image, ImageBackground } from "expo-image";
 import { cloneElement, ReactElement, useRef, useState } from "react";
 import { Platform, StyleProp, View, ViewStyle } from "react-native";
 import Accordion from "react-native-collapsible/Accordion";
-import Toast from "react-native-toast-message";
+import { toast } from "sonner-native";
 import useSWR from "swr";
 
 function AiIntegration({ data, section, mutate }) {
@@ -34,10 +35,10 @@ function AiIntegration({ data, section, mutate }) {
         token: apiKeyRef?.current.value,
       });
       await mutate();
-      Toast.show({ type: "success", text1: "Saved!" });
+      toast.success("Saved!");
     } catch {
       apiKeyRef.current.focus();
-      Toast.show({ type: "error" });
+      showErrorToast();
     } finally {
       setIsLoading(false);
     }

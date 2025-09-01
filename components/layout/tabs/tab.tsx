@@ -12,12 +12,13 @@ import Text from "@/ui/Text";
 import { addHslAlpha } from "@/ui/color";
 import { useColorTheme } from "@/ui/color/theme-provider";
 import capitalizeFirstLetter from "@/utils/capitalizeFirstLetter";
+import { showErrorToast } from "@/utils/errorToast";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import * as Haptics from "expo-haptics";
 import { router } from "expo-router";
 import React, { memo, useCallback, useMemo, useState } from "react";
 import { InteractionManager, Platform, StyleSheet, View } from "react-native";
-import Toast from "react-native-toast-message";
+import { toast } from "sonner-native";
 import { useTabMetadata } from "./useTabMetadata";
 
 const styles = StyleSheet.create({
@@ -65,9 +66,8 @@ function Tab({
       Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
       try {
         if (!tabs) {
-          return Toast.show({
-            type: "error",
-            text1: "Couldn't load tabs. Please try again later.",
+          return toast.error("Couldn't load tabs.", {
+            description: "Please try again later.",
           });
         }
         setIsClosedAnimation(true);
@@ -93,10 +93,7 @@ function Tab({
         });
       } catch (err) {
         setIsClosedAnimation(false);
-        Toast.show({
-          type: "error",
-          text1: "Something went wrong. Please try again later.",
-        });
+        showErrorToast();
         console.log(err);
       }
     },

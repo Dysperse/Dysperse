@@ -10,7 +10,7 @@ import Text from "@/ui/Text";
 import { router, useLocalSearchParams } from "expo-router";
 import { memo, useRef } from "react";
 import { Pressable, View } from "react-native";
-import Toast from "react-native-toast-message";
+import { toast } from "sonner-native";
 import { useCollectionContext } from "../context";
 
 export const CategoryLabelButtons = memo(() => {
@@ -105,8 +105,7 @@ export const CategoryLabelButtons = memo(() => {
             >
               <MenuItem
                 onPress={() => {
-                  if (!data.name)
-                    Toast.show({ type: "info", text1: "Coming soon" });
+                  if (!data.name) toast.info("Coming soon");
                 }}
               >
                 <Text variant="menuItem" weight={300}>

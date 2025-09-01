@@ -1,8 +1,9 @@
 import { Button } from "@/ui/Button";
 import { addHslAlpha } from "@/ui/color";
 import { useColorTheme } from "@/ui/color/theme-provider";
+import React from "react";
 import { Platform, View } from "react-native";
-import Toast from "react-native-toast-message";
+import { toast } from "sonner-native";
 import CreateTask from "../../create";
 import { useTaskDrawerContext } from "../context";
 
@@ -13,7 +14,7 @@ export function SubtaskCreation({ handleBack }) {
   return (
     <View style={{ width: "100%", flexDirection: "row", gap: 10 }}>
       <CreateTask
-        stackBehavior={Platform.OS==='web'?undefined:"replace"}
+        stackBehavior={Platform.OS === "web" ? undefined : "replace"}
         mutate={(t) => {
           updateTask({
             subtasks: {
@@ -25,11 +26,8 @@ export function SubtaskCreation({ handleBack }) {
         onPress={() => {
           if (Platform.OS === "web" && !localStorage.getItem("subtaskTip")) {
             localStorage.setItem("subtaskTip", "true");
-            Toast.show({
-              type: "info",
-              text1: "Pro tip",
-              text2: "Tap twice on a task to open this popup",
-              visibilityTime: 5000,
+            toast.info("Pro tip", {
+              description: "Tap twice on a task to open this popup",
             });
           }
         }}
@@ -52,3 +50,4 @@ export function SubtaskCreation({ handleBack }) {
     </View>
   );
 }
+

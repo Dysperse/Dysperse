@@ -15,7 +15,7 @@ import { Image } from "expo-image";
 import { router } from "expo-router";
 import { Fragment } from "react";
 import { Linking, Platform, View } from "react-native";
-import Toast from "react-native-toast-message";
+import { toast } from "sonner-native";
 import useSWR from "swr";
 
 function SpotifyIntegration({ children }) {
@@ -96,12 +96,11 @@ const IntegrationItem = ({ item, data }) => {
               setStringAsync(
                 "https://api.dysperse.com/ical/" + session.space?.id
               );
-              Toast.show({ type: "success", text1: "Copied to clipboard" });
+              toast.info("Copied!");
               return;
             }
             if (item.navigate === false) return;
-            if (item.comingSoon)
-              Toast.show({ type: "info", text1: "Coming soon!" });
+            if (item.comingSoon) toast.info("Coming soon!");
             else router.push(`/settings/account/integrations/${item.slug}`);
           }}
         >

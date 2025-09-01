@@ -29,8 +29,8 @@ import { LinearGradient } from "expo-linear-gradient";
 import { useGlobalSearchParams } from "expo-router";
 import React, { useRef } from "react";
 import { Linking, Platform, View } from "react-native";
-import Toast from "react-native-toast-message";
 import { RRule } from "rrule";
+import { toast } from "sonner-native";
 import useSWR from "swr";
 import CreateTask from "../create";
 import { useTaskDrawerContext } from "./context";
@@ -180,11 +180,8 @@ function SubtaskList() {
                       !localStorage.getItem("subtaskTip")
                     ) {
                       localStorage.setItem("subtaskTip", "true");
-                      Toast.show({
-                        type: "info",
-                        text1: "Pro tip",
-                        text2: "Tap twice on a task to open this popup",
-                        visibilityTime: 5000,
+                      toast.info("Pro tip", {
+                        description: "Tap twice on a task to open this popup",
                       });
                     }
                   }}
@@ -224,11 +221,8 @@ function SubtaskList() {
                     !localStorage.getItem("subtaskTip")
                   ) {
                     localStorage.setItem("subtaskTip", "true");
-                    Toast.show({
-                      type: "info",
-                      text1: "Pro tip",
-                      text2: "Tap twice on a task to open this popup",
-                      visibilityTime: 5000,
+                    toast.info("Pro tip", {
+                      description: "Tap twice on a task to open this popup",
                     });
                   }
                 }}

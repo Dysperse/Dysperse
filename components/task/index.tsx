@@ -25,7 +25,7 @@ import Animated, {
   useAnimatedStyle,
   withSpring,
 } from "react-native-reanimated";
-import Toast from "react-native-toast-message";
+import { toast } from "sonner-native";
 import TaskCheckbox from "./Checkbox";
 import DayTaskModal from "./DayTaskModal";
 import { TaskDrawer } from "./drawer";
@@ -199,10 +199,7 @@ function TaskNoteChips({ note }) {
                 if (Platform.OS === "web")
                   navigator.clipboard.writeText(link.href);
                 else setUrlAsync(link.href);
-                Toast.show({
-                  type: "info",
-                  text1: "Copied link to clipboard",
-                });
+                toast.info("Copied link!");
               },
               onPress: () => Linking.openURL(link.image || link.href),
             }))}
@@ -243,10 +240,7 @@ function TaskNoteChips({ note }) {
                   if (Platform.OS === "web")
                     navigator.clipboard.writeText(link.href);
                   else setUrlAsync(link.href);
-                  Toast.show({
-                    type: "info",
-                    text1: "Copied link to clipboard",
-                  });
+                  toast.info("Copied link to clipboard");
                 }}
                 textProps={{ numberOfLines: 1 }}
                 onPress={() => Linking.openURL(link.image || link.href)}
@@ -491,9 +485,8 @@ const Task = memo(function Task({
                       text="Repeats"
                       icon="loop"
                       onPress={() => {
-                        Toast.show({
-                          type: "info",
-                          text1: capitalizeFirstLetter(
+                        toast.info("This task is repeating", {
+                          description: capitalizeFirstLetter(
                             normalizeRecurrenceRuleObject(
                               task.recurrenceRule
                             ).toText()

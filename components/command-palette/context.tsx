@@ -14,7 +14,7 @@ import {
 } from "react";
 import { Platform } from "react-native";
 import SpotlightSearch from "react-native-spotlight-search";
-import Toast from "react-native-toast-message";
+import { toast } from "sonner-native";
 import useSWR from "swr";
 import { paletteItems } from "../layout/command-palette/list";
 import { createTab } from "../layout/openTab";
@@ -125,9 +125,9 @@ function IOSSpotlightSearch() {
             (section) =>
               section.title.toUpperCase().replaceAll(" ", "_") === domain
           );
-        if (!section) Toast.show({ type: "error", text1: "Item not found" });
+        if (!section) toast.error("Item not found");
         const item = section.items.find((item) => item.key === key);
-        if (!item) Toast.show({ type: "error", text1: "Item not found" });
+        if (!item) toast.error("Item not found");
 
         createTab(sessionToken, item);
       }

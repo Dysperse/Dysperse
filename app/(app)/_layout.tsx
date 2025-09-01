@@ -15,9 +15,10 @@ import { GlobalTaskContextProvider } from "@/context/globalTaskContext";
 import { StorageContextProvider } from "@/context/storageContext";
 import { useUser } from "@/context/useUser";
 import { useResponsiveBreakpoints } from "@/helpers/useResponsiveBreakpoints";
+import Icon from "@/ui/Icon";
+import Spinner from "@/ui/Spinner";
 import { useColor, useDarkMode } from "@/ui/color";
 import { ColorThemeProvider, useColorTheme } from "@/ui/color/theme-provider";
-import { toastConfig } from "@/ui/toast.config";
 import { BottomSheetModalProvider } from "@gorhom/bottom-sheet";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { DefaultTheme, ThemeProvider } from "@react-navigation/native";
@@ -59,8 +60,8 @@ import DrawerLayout from "react-native-gesture-handler/ReanimatedDrawerLayout";
 import { MenuProvider } from "react-native-popup-menu";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import SpotlightSearch from "react-native-spotlight-search";
-import Toast from "react-native-toast-message";
 import "react-native-url-polyfill/auto";
+import { toast, Toaster } from "sonner-native";
 import useSWR from "swr";
 
 dayjs.extend(isYesterday);
@@ -190,10 +191,8 @@ export default function AppLayout() {
 
   useEffect(() => {
     if (session && !isUserLoading && !sessionData?.user) {
-      Toast.show({
-        type: "error",
-        text1: "You've been signed out",
-        text2: "Please sign in again",
+      toast.error("You've been signed out!", {
+        description: "Please sign back in",
       });
       signOut();
       router.navigate("/auth");
@@ -426,9 +425,30 @@ export default function AppLayout() {
                         </ThemeProvider>
                       </CommandPaletteProvider>
                     </GlobalTaskContextProvider>
-                    <Toast
-                      topOffset={insets.top + 15}
-                      config={toastConfig(theme)}
+                    <Toaster
+                      style={{
+                        backgroundColor: theme[4],
+                        borderWidth: 2,
+                        borderColor: theme[6],
+                      }}
+                      icons={{
+                        error: <Icon>error</Icon>,
+                        info: <Icon>info</Icon>,
+                        loading: <Spinner />,
+                        success: <Icon>check_circle</Icon>,
+                        warning: <Icon>warning</Icon>,
+                      }}
+                      styles={{
+                        title: { color: theme[11], fontFamily: "body_800" },
+                        description: {
+                          color: theme[9],
+                          fontFamily: "body_500",
+                        },
+                        toastContainer: {
+                          maxWidth: 400,
+                        },
+                        toastContent: { alignItems: "center" },
+                      }}
                     />
                   </MenuProvider>
                 </BottomSheetModalProvider>

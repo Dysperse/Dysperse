@@ -8,6 +8,7 @@ import MenuPopover from "@/ui/MenuPopover";
 import Spinner from "@/ui/Spinner";
 import Text from "@/ui/Text";
 import { useColor } from "@/ui/color";
+import { showErrorToast } from "@/utils/errorToast";
 import { LinearGradient } from "expo-linear-gradient";
 import { useLocalSearchParams } from "expo-router";
 import { memo, useCallback, useRef, useState } from "react";
@@ -17,7 +18,7 @@ import Animated, {
   withSpring,
 } from "react-native-reanimated";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
-import Toast from "react-native-toast-message";
+import { toast } from "sonner-native";
 import { useSWRConfig } from "swr";
 import { TaskDateModal } from "../task/drawer/date-modal";
 import { COLLECTION_VIEWS } from "./command-palette/list";
@@ -86,8 +87,7 @@ function Actions({ isLoading, setIsLoading }) {
         await mutate(() => true);
         setSelection([]);
       } catch (e) {
-        console.log(e);
-        Toast.show({ type: "error" });
+        showErrorToast();
       } finally {
         setIsLoading(false);
       }
@@ -106,21 +106,16 @@ function Actions({ isLoading, setIsLoading }) {
       }}
       onPress={() => {
         if (selection.length === 1) {
-          Toast.show({
-            type: "info",
-            text1: "Coming soon!",
-          });
+          toast.info("Coming soon!");
         }
         if (!reorderMode) return;
         if (process.env.NODE_ENV === "development") {
           if (COLLECTION_VIEWS[type as string].type !== "Category Based") {
-            Toast.show({
-              type: "info",
-              text1:
-                "For now, you can only reorder tasks in category-based views",
-            });
+            toast.info(
+              "For now, you can only reorder tasks in category-based views"
+            );
             setReorderMode((t) => !t);
-          } else Toast.show({ type: "info", text1: "Coming soon!" });
+          } else toast.info("Coming soon!");
         }
       }}
     />

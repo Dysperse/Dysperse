@@ -8,6 +8,7 @@ import IconButton from "@/ui/IconButton";
 import Modal from "@/ui/Modal";
 import Spinner from "@/ui/Spinner";
 import Text from "@/ui/Text";
+import { showErrorToast } from "@/utils/errorToast";
 import { BottomSheetModal } from "@gorhom/bottom-sheet";
 import * as AppleAuthentication from "expo-apple-authentication";
 import { router } from "expo-router";
@@ -15,7 +16,7 @@ import { cloneElement, useEffect, useRef, useState } from "react";
 import { Platform, View } from "react-native";
 import QRCode from "react-native-qrcode-svg";
 import Svg, { Path } from "react-native-svg";
-import Toast from "react-native-toast-message";
+import { toast } from "sonner-native";
 import { GoogleAuth, PasskeyModal } from "./(login)/email";
 import { BannerImage } from "./_layout";
 
@@ -35,7 +36,7 @@ function QrLogin() {
         .catch(() => setError(true));
     } catch (e) {
       console.error(e);
-      Toast.show({ type: "error" });
+      showErrorToast();
     }
   }, []);
 
@@ -175,14 +176,7 @@ function AppleAuth() {
                 },
               });
             }
-            Toast.show({
-              type: "loading",
-              autoHide: false,
-              text1: "Signing in with Apple...",
-              props: {
-                renderTrailingIcon: () => <Spinner />,
-              },
-            });
+            toast.loading("Signing in with Apple...");
             try {
               const credential = await AppleAuthentication.signInAsync({
                 requestedScopes: [
@@ -199,10 +193,7 @@ function AppleAuth() {
               ).then((r) => r.json());
               if (data?.sessionId) signIn(data.sessionId);
               else if (data.isNew) {
-                Toast.show({
-                  type: "success",
-                  text1: "We couldn't find an account with that email",
-                });
+                toast.info("We couldn't find an account with that email");
                 router.push({
                   pathname: "/auth/join/2",
                   params: {
@@ -215,7 +206,7 @@ function AppleAuth() {
                 });
               }
             } catch (e) {
-              Toast.show({ type: "error" });
+              showErrorToast();
               console.log(e);
             }
           }}
@@ -340,10 +331,7 @@ export default function SignIn() {
         <AppleAuth />
         <GoogleAuth
           onNewAccount={(d) => {
-            Toast.show({
-              type: "success",
-              text1: "We couldn't find an account with that email",
-            });
+            toast.info("We couldn't find an account with that email");
             router.push({
               pathname: "/auth/join/2",
               params: {

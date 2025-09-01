@@ -2,10 +2,10 @@ import { LocationPickerModal } from "@/components/collections/views/map";
 import { Button } from "@/ui/Button";
 import { addHslAlpha } from "@/ui/color";
 import { useColorTheme } from "@/ui/color/theme-provider";
+import { showErrorToast } from "@/utils/errorToast";
 import * as Location from "expo-location";
 import { useState } from "react";
 import { View } from "react-native";
-import Toast from "react-native-toast-message";
 import { useTaskDrawerContext } from "../context";
 
 export function LocationSelector({ handleBack }) {
@@ -29,10 +29,7 @@ export function LocationSelector({ handleBack }) {
         `https://nominatim.openstreetmap.org/reverse?lat=${latitude}&lon=${longitude}&format=json`
       ).then((r) => r.json());
       if (!placeDetails || !placeDetails.place_id) {
-        Toast.show({
-          type: "error",
-          text1: "Could not find location",
-        });
+        showErrorToast();
         return;
       }
       updateTask({
@@ -44,10 +41,7 @@ export function LocationSelector({ handleBack }) {
       });
       handleBack();
     } else {
-      Toast.show({
-        type: "error",
-        text1: "Something went wrong",
-      });
+      showErrorToast();
     }
     setLoading(false);
   };
@@ -101,3 +95,4 @@ export function LocationSelector({ handleBack }) {
     </>
   );
 }
+
