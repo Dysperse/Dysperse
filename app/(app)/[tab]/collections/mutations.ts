@@ -9,11 +9,11 @@ export const mutations = {
 
         mutate(
           (oldData) => {
-            if (
-              !newTask?.label ||
-              oldData.labels.findIndex((l) => l.id === newTask?.label?.id) ===
-                -1
-            )
+            const labelId = newTask.parentTaskId
+              ? oldData.entities[newTask.parentTaskId]?.labelId
+              : newTask.labelId;
+
+            if (!labelId)
               return {
                 ...oldData,
                 entities: { ...oldData.entities, [newTask.id]: newTask },
@@ -22,8 +22,16 @@ export const mutations = {
             return {
               ...oldData,
               labels: oldData.labels.map((l) =>
-                l.id === newTask?.label?.id
-                  ? { ...l, entities: { ...l.entities, [newTask.id]: newTask } }
+                l.id === labelId
+                  ? {
+                      ...l,
+                      entities: {
+                        ...l.entities,
+                        [newTask.id]: newTask.parentTaskId
+                          ? oldData.entities[newTask.parentTaskId]
+                          : newTask,
+                      },
+                    }
                   : l
               ),
             };
@@ -104,7 +112,7 @@ export const mutations = {
 
         mutate(
           (oldData) => {
-            const dateIndex = oldData.findIndex((column) =>
+            const columnIndex = oldData.findIndex((column) =>
               dayjs(
                 newTask.parentTaskId
                   ? oldData.entities[newTask.parentTaskId]?.start
@@ -112,13 +120,30 @@ export const mutations = {
               ).isBetween(column.start, column.end, "day", "[]")
             );
 
-            if (dateIndex === -1) return;
+            if (columnIndex === -1) return;
 
             return oldData.map((oldColumn, index) => {
-              if (index === dateIndex)
+              if (index === columnIndex)
                 return {
                   ...oldColumn,
-                  entities: { ...oldColumn.entities, [newTask.id]: newTask },
+                  entities: {
+                    ...oldColumn.entities,
+                    [newTask.parentTaskId || newTask.id]: newTask.parentTaskId
+                      ? {
+                          // all the other properties of the parent task
+                          ...oldColumn.entities[newTask.parentTaskId],
+
+                          // all the subtasks of the parent task
+                          subtasks: {
+                            ...oldColumn.entities[newTask.parentTaskId]
+                              .subtasks,
+
+                            // Updated task
+                            [newTask.id]: newTask,
+                          },
+                        }
+                      : newTask,
+                  },
                 };
               return oldColumn;
             });
@@ -148,36 +173,26 @@ export const mutations = {
               ).isBetween(column.start, column.end, "day", "[]")
             );
 
-            return oldData.map((oldColumn, oldColumnIndex) => {
-              if (newTask.parentTaskId && oldColumnIndex === colIndex) {
-                // Update task in the parent column if it has a parentTaskId
+            return oldData.map((oldColumn, index) => {
+              if (index === colIndex) {
                 return {
                   ...oldColumn,
                   entities: {
                     ...oldColumn.entities,
-                    [newTask.parentTaskId]: {
-                      ...oldColumn.entities[newTask.parentTaskId],
-                      subtasks: {
-                        // ...(oldColumn.entities[newTask.parentTaskId]
-                        //   ?.subtasks || {}),
-                        [newTask.id]: newTask,
-                      },
-                    },
-                  },
-                };
-              } else if (!newTask.parentTaskId && oldColumnIndex === colIndex) {
-                // Add new task directly if there is no parentTaskId
-                return {
-                  ...oldColumn,
-                  entities: {
-                    ...oldColumn.entities,
-                    [newTask.id]: newTask,
+                    [newTask.parentTaskId || newTask.id]: newTask.parentTaskId
+                      ? {
+                          ...oldColumn.entities[newTask.parentTaskId],
+                          subtasks: {
+                            ...oldColumn.entities[newTask.parentTaskId]
+                              .subtasks,
+                            [newTask.id]: newTask,
+                          },
+                        }
+                      : newTask,
                   },
                 };
               }
-
-              const { [newTask.id]: _, ...restEntities } = oldColumn.entities;
-              return { ...oldColumn, entities: restEntities };
+              return oldColumn;
             });
           },
           { revalidate: false }
