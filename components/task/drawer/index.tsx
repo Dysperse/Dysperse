@@ -290,7 +290,6 @@ export function TaskDrawer({
           backgroundColor:
             Platform.OS === "android" ? undefined : "transparent",
           borderRadius: 40,
-          maxHeight: breakpoints.md ? height - 150 : height - 200,
         }}
         maxBackdropOpacity={breakpoints.md ? 0.05 : 0.1}
       >

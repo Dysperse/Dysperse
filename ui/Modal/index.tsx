@@ -125,6 +125,7 @@ const Modal = (
       {...((props.animation !== "SCALE" || Platform.OS === "web") && {
         animationConfigs,
       })}
+      keyboardControllerBehavior="padding"
       enablePanDownToClose={
         props.disablePan ? false : props.animation !== "SCALE"
       }

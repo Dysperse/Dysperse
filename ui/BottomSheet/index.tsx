@@ -24,6 +24,7 @@ export interface DBottomSheetProps extends BottomSheetProps {
   disableEscapeToClose?: boolean;
   disableBackdropPressToClose?: boolean;
   maxBackdropOpacity?: number;
+  keyboardControllerBehavior?: any;
 }
 
 const styles = StyleSheet.create({
@@ -113,7 +114,9 @@ function BottomSheet(props: DBottomSheetProps) {
             style={{ flex: 1 }}
           >
             <KeyboardAvoidingView
-              behavior="padding"
+              behavior={
+                props.keyboardControllerBehavior || "translate-with-padding"
+              }
               style={Platform.OS === "web" && { flex: 1 }}
             >
               {props.disableBackToClose !== true &&

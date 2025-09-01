@@ -2,7 +2,6 @@ import { Entity } from "@/components/collections/entity";
 import { CreateLabelModal } from "@/components/labels/createModal";
 import ContentWrapper from "@/components/layout/content";
 import { useSidebarContext } from "@/components/layout/sidebar/context";
-import MenuIcon from "@/components/menuIcon";
 import { useSession } from "@/context/AuthProvider";
 import { sendApiRequest } from "@/helpers/api";
 import { useHotkeys } from "@/helpers/useHotKeys";
@@ -20,10 +19,9 @@ import Text from "@/ui/Text";
 import TextField from "@/ui/TextArea";
 import { useColor } from "@/ui/color";
 import { ColorThemeProvider, useColorTheme } from "@/ui/color/theme-provider";
-import capitalizeFirstLetter from "@/utils/capitalizeFirstLetter";
 import { showErrorToast } from "@/utils/errorToast";
 import { FlashList } from "@shopify/flash-list";
-import { LinearGradient } from "expo-linear-gradient";
+import dayjs from "dayjs";
 import { router, useLocalSearchParams } from "expo-router";
 import fuzzysort from "fuzzysort";
 import { useState } from "react";
@@ -68,6 +66,27 @@ export const handleLabelDelete = async (session, labelId) => {
   }
 };
 
+function Card({ children }) {
+  const breakpoints = useResponsiveBreakpoints();
+  const theme = useColorTheme();
+
+  return (
+    <View
+      style={{
+        padding: 20,
+        gap: breakpoints.md ? 10 : 20,
+        flexDirection: breakpoints.md ? "row" : undefined,
+        backgroundColor: theme[2],
+        borderWidth: 2,
+        borderColor: theme[3],
+        borderRadius: 30,
+      }}
+    >
+      {children}
+    </View>
+  );
+}
+
 export const LabelDetails = ({
   setSelectedLabel,
   mutateList,
@@ -107,272 +126,254 @@ export const LabelDetails = ({
 
   return (
     label && (
-      <ScrollView
-        style={{ flex: 2 }}
-        showsVerticalScrollIndicator={Boolean(data?.entities)}
-        contentContainerStyle={{ backgroundColor: labelTheme[1] }}
-      >
-        <View
-          style={{
-            height: 1000,
-            marginTop: -1000,
-            backgroundColor: labelTheme[3],
-          }}
-        />
+      <>
         <ColorThemeProvider theme={labelTheme}>
-          <View
-            style={{
-              width: "100%",
-              flexDirection: "row",
-              backgroundColor: labelTheme[3],
-              padding: breakpoints.md ? 15 : 20,
-              paddingTop: (isTab ? insets.top : 0) + 20,
-              gap: 10,
-              justifyContent: "flex-end",
-            }}
+          {!breakpoints.md && (
+            <MenuButton addInsets={isTab} back={!isTab} gradient />
+          )}
+          <ScrollView
+            style={{ flex: 2 }}
+            showsVerticalScrollIndicator={Boolean(data?.entities)}
+            contentContainerStyle={{ backgroundColor: labelTheme[1] }}
           >
-            {!breakpoints.md && (
-              <IconButton
-                size={isTab ? 40 : 50}
-                icon={isTab ? <MenuIcon /> : "arrow_back_ios_new"}
-                variant={isTab ? "filled" : "outlined"}
-                style={{ marginRight: "auto" }}
-                onPress={
-                  isTab
-                    ? () => sidebarRef.current.openDrawer()
-                    : () => setSelectedLabel(null)
-                }
-              />
-            )}
-            {data && (
-              <LabelEditModal
-                label={data}
-                onLabelUpdate={(updatedLabel) =>
-                  mutateList(
-                    (d) =>
-                      d.map((l) =>
-                        l.id === updatedLabel.id ? { ...l, ...updatedLabel } : l
-                      ),
-                    {
-                      revalidate: false,
-                    }
-                  )
-                }
-                trigger={
-                  <IconButton
-                    size={isTab ? 40 : 50}
-                    variant={isTab ? undefined : "outlined"}
-                    icon="edit"
-                  />
-                }
-              />
-            )}
-            <ConfirmationModal
-              title="Delete label?"
-              secondary="Items won't be deleted"
-              onSuccess={handleDelete}
-              height={350}
-            >
-              <IconButton
-                variant={isTab ? undefined : "outlined"}
-                size={isTab ? 40 : 50}
-                icon="delete"
-              />
-            </ConfirmationModal>
-          </View>
-          <LinearGradient
-            style={[
-              {
-                height: 250,
-                paddingHorizontal: breakpoints.md ? 100 : 30,
-                padding: 20,
-                paddingTop: 0,
-                alignItems: "center",
-                justifyContent: "center",
-                flexDirection: breakpoints.md ? "row" : "column",
-                position: "relative",
-                gap: 25,
-              },
-              !breakpoints.md && {
-                paddingTop: 50,
-                height: 200,
-              },
-            ]}
-            colors={[labelTheme[3], labelTheme[2], labelTheme[1]]}
-          >
-            <Emoji emoji={label.emoji} size={60} />
+            <View
+              style={{
+                height: 1000,
+                marginTop: -1000,
+                backgroundColor: labelTheme[1],
+              }}
+            />
             <View
               style={[
-                !breakpoints.md && { width: "100%" },
-                { maxWidth: "100%" },
+                {
+                  padding: 20,
+                  paddingTop: isTab ? 150 : 100,
+                  paddingBottom: 10,
+                  alignItems: "center",
+                  justifyContent: "center",
+                  flexDirection: breakpoints.md ? "row" : "column",
+                  position: "relative",
+                  gap: 25,
+                },
               ]}
             >
-              <Text
+              <Emoji emoji={label.emoji} size={60} />
+              <View
                 style={[
-                  {
-                    fontSize: 40,
-                    color: labelTheme[11],
-                    fontFamily: "serifText800",
-                  },
-                  !breakpoints.md && { textAlign: "center" },
-                ]}
-                numberOfLines={1}
-                weight={900}
-              >
-                {label.name}
-              </Text>
-              <Text
-                style={[
-                  {
-                    fontSize: 20,
-                    color: labelTheme[11],
-                    opacity: 0.7,
-                  },
-                  !breakpoints.md && { textAlign: "center" },
+                  !breakpoints.md && { width: "100%" },
+                  { maxWidth: "100%" },
                 ]}
               >
-                {label._count.entities} item
-                {label._count.entities !== 1 ? "s" : ""}
-              </Text>
+                <Text
+                  style={[
+                    {
+                      fontSize: 40,
+                      color: labelTheme[11],
+                      fontFamily: "serifText700",
+                    },
+                    !breakpoints.md && { textAlign: "center" },
+                  ]}
+                  numberOfLines={1}
+                  weight={900}
+                >
+                  {label.name}
+                </Text>
+                <Text
+                  style={[
+                    {
+                      fontSize: 20,
+                      color: labelTheme[11],
+                      opacity: 0.7,
+                    },
+                    !breakpoints.md && { textAlign: "center" },
+                  ]}
+                >
+                  {label._count.entities} item
+                  {label._count.entities !== 1 ? "s" : ""}
+                </Text>
+              </View>
             </View>
-          </LinearGradient>
-          <View
-            style={{
-              padding: 20,
-              paddingHorizontal: breakpoints.md ? 50 : undefined,
-              marginTop: 20,
-            }}
-          >
             <View
               style={{
                 padding: 20,
-                gap: breakpoints.md ? 10 : 20,
-                flexDirection: breakpoints.md ? "row" : undefined,
-                backgroundColor: labelTheme[2],
-                borderWidth: 1,
-                borderColor: labelTheme[5],
-                borderRadius: 20,
+                paddingHorizontal: breakpoints.md ? 50 : undefined,
+                marginTop: 20,
+                gap: 20,
               }}
             >
-              <View style={{ flex: 1, gap: 5 }}>
-                <Text variant="eyebrow">Collections</Text>
-                {label.collections.length === 0 ? (
-                  <Text style={{ color: labelTheme[7] }} weight={600}>
-                    No collections found
-                  </Text>
-                ) : (
-                  <View
-                    style={{ flexWrap: "wrap", flexDirection: "row", gap: 15 }}
-                  >
-                    {label.collections.map((c) => (
+              <View style={{ flexDirection: "row", gap: 10 }}>
+                {data && (
+                  <LabelEditModal
+                    label={data}
+                    onLabelUpdate={(updatedLabel) =>
+                      mutateList(
+                        (d) =>
+                          d.map((l) =>
+                            l.id === updatedLabel.id
+                              ? { ...l, ...updatedLabel }
+                              : l
+                          ),
+                        {
+                          revalidate: false,
+                        }
+                      )
+                    }
+                    trigger={
                       <Button
-                        chip
-                        key={c.id}
-                        text={c.name}
                         large
-                        icon="folder"
+                        bold
+                        variant="filled"
+                        text="Edit"
+                        icon="edit"
+                        containerStyle={{ flex: 1 }}
                       />
-                    ))}
-                  </View>
+                    }
+                  />
                 )}
+                <ConfirmationModal
+                  title="Delete label?"
+                  secondary="Items won't be deleted"
+                  onSuccess={handleDelete}
+                  height={350}
+                >
+                  <Button
+                    large
+                    bold
+                    variant="filled"
+                    text="Delete"
+                    icon="delete"
+                    containerStyle={{ flex: 1 }}
+                  />
+                </ConfirmationModal>
               </View>
               {label.integration && (
-                <View style={{ flex: 1, gap: 5 }}>
-                  <Text
-                    variant="eyebrow"
-                    style={{ marginBottom: breakpoints.md ? 5 : 0 }}
-                  >
-                    Connected to
-                  </Text>
-                  <View
-                    style={{ flexWrap: "wrap", flexDirection: "row", gap: 15 }}
-                  >
-                    <Button
-                      chip
-                      large
-                      text={`${capitalizeFirstLetter(
-                        label.integration.name.replaceAll("-", " ")
-                      )}`}
-                      icon="sync_alt"
-                    />
+                <Card>
+                  <View style={{ flex: 1, gap: 5 }}>
+                    <View
+                      style={{
+                        flexWrap: "wrap",
+                        flexDirection: "row",
+                        gap: 15,
+                        alignItems: "center",
+                      }}
+                    >
+                      <View>
+                        <Text variant="eyebrow" style={{ marginRight: "auto" }}>
+                          Connected with{" "}
+                          {label.integration.name
+                            .replaceAll("-", " ")
+                            .replace("new canvas lms", "Canvas LMS")}
+                        </Text>
+                        <Text
+                          style={{
+                            marginTop: 5,
+                            color: labelTheme[11],
+                            opacity: 0.7,
+                          }}
+                        >
+                          Tasks from this integration will be imported into
+                          Dysperse. Last synced{" "}
+                          {dayjs(label.integration.lastSynced).fromNow()}
+                        </Text>
+                      </View>
+                    </View>
                   </View>
-                </View>
+                </Card>
               )}
+              <Card>
+                <View style={{ flex: 1, gap: 5 }}>
+                  <Text variant="eyebrow">Collections</Text>
+                  {label.collections.length === 0 ? (
+                    <Text style={{ color: labelTheme[7] }} weight={600}>
+                      You can group labels into collections to organize your
+                      tasks even better
+                    </Text>
+                  ) : (
+                    <View
+                      style={{
+                        flexWrap: "wrap",
+                        flexDirection: "row",
+                        gap: 15,
+                      }}
+                    >
+                      {label.collections.map((c) => (
+                        <Button
+                          chip
+                          key={c.id}
+                          text={c.name}
+                          large
+                          icon="folder"
+                        />
+                      ))}
+                    </View>
+                  )}
+                </View>
+              </Card>
+
+              <Card>
+                <Text variant="eyebrow">Items</Text>
+                <View style={{ marginHorizontal: -10, marginTop: -20 }}>
+                  {data?.entities ? (
+                    data?.entities?.length === 0 ? (
+                      <Text
+                        style={{ marginLeft: 10, color: labelTheme[7] }}
+                        weight={600}
+                      >
+                        No items found
+                      </Text>
+                    ) : (
+                      data.entities.map((entity) => (
+                        <Entity
+                          isReadOnly={false}
+                          item={entity}
+                          key={entity.id}
+                          onTaskUpdate={(newEntity) => {
+                            mutate(
+                              (oldData) => {
+                                const newData = oldData?.entities
+                                  .map((e) =>
+                                    e.id === newEntity.id ? newEntity : e
+                                  )
+                                  .sort(
+                                    (a, b) =>
+                                      a.completionInstances.length -
+                                      b.completionInstances.length
+                                  );
+                                return { ...oldData, entities: newData };
+                              },
+                              { revalidate: false }
+                            );
+                          }}
+                        />
+                      ))
+                    )
+                  ) : error ? (
+                    <ErrorAlert />
+                  ) : (
+                    <View
+                      style={{
+                        alignItems: "center",
+                        flex: 1,
+                        justifyContent: "center",
+                      }}
+                    >
+                      <Spinner />
+                    </View>
+                  )}
+                </View>
+              </Card>
             </View>
 
             <View
               style={{
-                padding: 20,
-                gap: 3,
-                backgroundColor: labelTheme[2],
-                borderWidth: 1,
-                borderColor: labelTheme[5],
-                borderRadius: 20,
-                marginTop: 20,
+                height: 1000,
+                marginBottom: -1000,
+                backgroundColor: labelTheme[1],
               }}
-            >
-              <Text variant="eyebrow">Items</Text>
-              <View style={{ marginHorizontal: -10 }}>
-                {data?.entities ? (
-                  data?.entities?.length === 0 ? (
-                    <Text
-                      style={{ marginLeft: 10, color: labelTheme[7] }}
-                      weight={600}
-                    >
-                      No items found
-                    </Text>
-                  ) : (
-                    data.entities.map((entity) => (
-                      <Entity
-                        isReadOnly={false}
-                        item={entity}
-                        key={entity.id}
-                        onTaskUpdate={(newEntity) => {
-                          mutate(
-                            (oldData) => {
-                              const newData = oldData?.entities
-                                .map((e) =>
-                                  e.id === newEntity.id ? newEntity : e
-                                )
-                                .sort(
-                                  (a, b) =>
-                                    a.completionInstances.length -
-                                    b.completionInstances.length
-                                );
-                              return { ...oldData, entities: newData };
-                            },
-                            { revalidate: false }
-                          );
-                        }}
-                      />
-                    ))
-                  )
-                ) : error ? (
-                  <ErrorAlert />
-                ) : (
-                  <View
-                    style={{
-                      alignItems: "center",
-                      flex: 1,
-                      justifyContent: "center",
-                    }}
-                  >
-                    <Spinner />
-                  </View>
-                )}
-              </View>
-            </View>
-          </View>
-
-          <View
-            style={{
-              height: 1000,
-              marginBottom: -1000,
-              backgroundColor: labelTheme[3],
-            }}
-          />
+            />
+          </ScrollView>
         </ColorThemeProvider>
-      </ScrollView>
+      </>
     )
   );
 };
