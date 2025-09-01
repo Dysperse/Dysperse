@@ -188,7 +188,10 @@ export default function DropdownMenu({
               {
                 width: menuWidth,
                 position: "absolute",
-                backgroundColor: addHslAlpha(theme[11], 0.1),
+                backgroundColor:
+                  Platform.OS === "android"
+                    ? theme[4]
+                    : addHslAlpha(theme[11], 0.1),
                 borderRadius: 20,
                 overflow: "hidden",
                 transformOrigin: `${
@@ -199,7 +202,7 @@ export default function DropdownMenu({
               containerStyle,
             ]}
           >
-            <BlurView intensity={35} tint="light">
+            <BlurView intensity={35} tint={isDark ? "dark" : "light"}>
               <ScrollView
                 scrollEnabled={scrollable}
                 bounces={scrollable}
