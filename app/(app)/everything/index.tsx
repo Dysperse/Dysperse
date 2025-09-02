@@ -75,7 +75,6 @@ function Card({ children }) {
       style={{
         padding: 20,
         gap: breakpoints.md ? 10 : 20,
-        flexDirection: breakpoints.md ? "row" : undefined,
         backgroundColor: theme[2],
         borderWidth: 2,
         borderColor: theme[3],
