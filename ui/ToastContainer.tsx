@@ -1,3 +1,4 @@
+import { Platform } from "react-native";
 import { Toaster } from "sonner-native";
 import Icon from "./Icon";
 import Spinner from "./Spinner";
@@ -13,6 +14,9 @@ export default function ToastContainer() {
         backgroundColor: theme[4],
         borderWidth: 2,
         borderColor: theme[6],
+        ...(Platform.OS === "web" && {
+          marginTop: "env(titlebar-area-height,0)",
+        }),
       }}
       icons={{
         error: <Icon>error</Icon>,
