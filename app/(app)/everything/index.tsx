@@ -247,35 +247,24 @@ export const LabelDetails = ({
               </View>
               {label.integration && (
                 <Card>
-                  <View style={{ flex: 1, gap: 5 }}>
-                    <View
+                  <View>
+                    <Text variant="eyebrow">
+                      Connected with{" "}
+                      {label.integration.name
+                        .replaceAll("-", " ")
+                        .replace("new canvas lms", "Canvas LMS")}
+                    </Text>
+                    <Text
                       style={{
-                        flexWrap: "wrap",
-                        flexDirection: "row",
-                        gap: 15,
-                        alignItems: "center",
+                        marginTop: 5,
+                        color: labelTheme[11],
+                        opacity: 0.7,
                       }}
                     >
-                      <View>
-                        <Text variant="eyebrow" style={{ marginRight: "auto" }}>
-                          Connected with{" "}
-                          {label.integration.name
-                            .replaceAll("-", " ")
-                            .replace("new canvas lms", "Canvas LMS")}
-                        </Text>
-                        <Text
-                          style={{
-                            marginTop: 5,
-                            color: labelTheme[11],
-                            opacity: 0.7,
-                          }}
-                        >
-                          Tasks from this integration will be imported into
-                          Dysperse. Last synced{" "}
-                          {dayjs(label.integration.lastSynced).fromNow()}
-                        </Text>
-                      </View>
-                    </View>
+                      Tasks from this integration will be imported into
+                      Dysperse. Last synced{" "}
+                      {dayjs(label.integration.lastSynced).fromNow()}
+                    </Text>
                   </View>
                 </Card>
               )}
