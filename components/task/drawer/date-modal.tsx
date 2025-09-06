@@ -300,6 +300,13 @@ function TaskDateModalContent({ task, updateTask }) {
           secondary: dayjs().add(1, "day").format("MMMM Do"),
           value: dayjs().add(1, "day").startOf("day"),
         },
+        // tomorrow
+        {
+          text: "-1",
+          primary: "Yesterday",
+          secondary: dayjs().subtract(1, "day").format("MMMM Do"),
+          value: dayjs().subtract(1, "day").startOf("day"),
+        },
         // in 3 days
         {
           text: "+3",

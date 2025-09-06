@@ -1,3 +1,4 @@
+import { omit } from "@/helpers/omit";
 import dayjs from "dayjs";
 
 export const mutations = {
@@ -197,7 +198,13 @@ export const mutations = {
                   },
                 };
               }
-              return oldColumn;
+              return {
+                ...oldColumn,
+                entities: omit(
+                  [newTask.parentTaskId || newTask.id],
+                  oldColumn.entities
+                ),
+              };
             });
           },
           { revalidate: false }
