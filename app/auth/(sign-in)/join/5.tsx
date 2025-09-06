@@ -273,9 +273,7 @@ function Content() {
                 setBirthday(current.month(i).toDate());
               },
             }))}
-            scrollable
             horizontalPlacement="center"
-            containerStyle={{ height: 250 }}
           >
             <Button
               variant="filled"
@@ -296,9 +294,7 @@ function Content() {
                 },
               }));
             })()}
-            scrollable
             horizontalPlacement="right"
-            containerStyle={{ maxHeight: 250 }}
           >
             <Button
               variant="filled"

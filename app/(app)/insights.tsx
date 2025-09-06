@@ -29,7 +29,7 @@ function YearSelector({ years, year, setYear }) {
       options={years.map((y) => ({
         text: y.toString(),
         selected: y === year,
-        callback: () => setYear(y),
+        onPress: () => setYear(y),
       }))}
     >
       <Button style={{ marginTop: 20 }} />

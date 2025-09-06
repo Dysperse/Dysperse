@@ -1,4 +1,8 @@
-import { BottomSheetModal, useBottomSheet } from "@gorhom/bottom-sheet";
+import {
+  BottomSheetModal,
+  BottomSheetScrollView,
+  useBottomSheet,
+} from "@gorhom/bottom-sheet";
 import { BlurView } from "expo-blur";
 import React, { cloneElement, ReactNode, RefObject, useRef } from "react";
 import {
@@ -8,12 +12,12 @@ import {
   StyleProp,
   ViewStyle,
 } from "react-native";
-import { ScrollView } from "react-native-gesture-handler";
 import Animated, {
   useAnimatedStyle,
   useSharedValue,
   withSpring,
 } from "react-native-reanimated";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 import BottomSheet from "../BottomSheet";
 import { Button, DButtonProps } from "../Button";
 import { addHslAlpha, useDarkMode } from "../color";
@@ -67,11 +71,10 @@ export default function DropdownMenu({
   verticalOffset = 5,
   closeOnSelect = true,
   containerStyle,
-  scrollable = false,
 }: {
   ref?: RefObject<BottomSheetModal>;
   children: any;
-  options: (DButtonProps | { renderer: () => ReactNode })[];
+  options: (DButtonProps & { renderer?: () => ReactNode })[];
   menuWidth?: number;
   verticalPlacement?: "top" | "bottom";
   horizontalPlacement?: "left" | "center" | "right";
@@ -79,8 +82,8 @@ export default function DropdownMenu({
   verticalOffset?: number;
   closeOnSelect?: boolean;
   containerStyle?: ViewStyle;
-  scrollable?: boolean;
 }) {
+  const insets = useSafeAreaInsets();
   const INITIAL_SCALE_VALUE = 0;
   const triggerRef = useRef(null);
   const theme = useColorTheme();
@@ -88,6 +91,7 @@ export default function DropdownMenu({
   const left = useSharedValue(0);
   const isDark = useDarkMode();
   const scale = useSharedValue(INITIAL_SCALE_VALUE);
+  const menuHeight = useSharedValue(Dimensions.get("window").height);
 
   const _modalRef = useRef<BottomSheetModal>(null);
   const modalRef = ref || _modalRef;
@@ -119,6 +123,13 @@ export default function DropdownMenu({
         //   }
         // }
 
+        menuHeight.value =
+          Dimensions.get("window").height -
+          y -
+          insets.bottom -
+          height -
+          verticalOffset * 2;
+
         switch (horizontalPlacement) {
           case "left":
             left.value = x + horizontalOffset;
@@ -135,6 +146,7 @@ export default function DropdownMenu({
           //   const t = Keyboard.isVisible() ? Keyboard.metrics().height : 0;
           // top is now the top of the trigger
           top.value = Dimensions.get("window").height - y + verticalOffset;
+          menuHeight.value = y - verticalOffset;
         }
       });
     },
@@ -154,6 +166,10 @@ export default function DropdownMenu({
               }),
       },
     ],
+  }));
+
+  const heightStyle = useAnimatedStyle(() => ({
+    maxHeight: menuHeight.value,
   }));
 
   const AnimatedPressable = Animated.createAnimatedComponent(Pressable);
@@ -202,28 +218,29 @@ export default function DropdownMenu({
               containerStyle,
             ]}
           >
-            <BlurView intensity={35} tint={isDark ? "dark" : "light"}>
-              <ScrollView
-                scrollEnabled={scrollable}
-                bounces={scrollable}
-                indicatorStyle={isDark ? "white" : "black"}
-                style={{ padding: 5 }}
-              >
-                {options
-                  .filter(Boolean)
-                  .map((item, index) =>
-                    item.renderer ? (
-                      item.renderer()
-                    ) : (
-                      <DropdownMenuItem
-                        key={index}
-                        closeOnSelect={closeOnSelect}
-                        {...item}
-                      />
-                    )
-                  )}
-              </ScrollView>
-            </BlurView>
+            <Animated.View style={[heightStyle]}>
+              <BlurView intensity={35} tint={isDark ? "dark" : "light"}>
+                <BottomSheetScrollView
+                  bounces={false}
+                  indicatorStyle={isDark ? "white" : "black"}
+                  style={{ padding: 5 }}
+                >
+                  {options
+                    .filter(Boolean)
+                    .map((item, index) =>
+                      item.renderer ? (
+                        item.renderer()
+                      ) : (
+                        <DropdownMenuItem
+                          key={index}
+                          closeOnSelect={closeOnSelect}
+                          {...item}
+                        />
+                      )
+                    )}
+                </BottomSheetScrollView>
+              </BlurView>
+            </Animated.View>
           </AnimatedPressable>
         </Pressable>
       </BottomSheet>

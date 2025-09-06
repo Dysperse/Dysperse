@@ -367,7 +367,7 @@ export function RenderWidget({ widget, index, small }) {
     // {
     //   icon: "remove_circle",
     //   text: "Remove",
-    //   callback: handleDelete,
+    //   onPress: handleDelete,
     // },
   ] as MenuOption[];
 
