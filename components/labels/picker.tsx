@@ -29,7 +29,7 @@ import React, {
   useRef,
   useState,
 } from "react";
-import { Platform, Pressable, useWindowDimensions, View } from "react-native";
+import { Keyboard, Pressable, useWindowDimensions, View } from "react-native";
 import Animated, {
   useAnimatedStyle,
   useSharedValue,
@@ -45,7 +45,8 @@ const Search = ({ query, setQuery, autoFocus }) => {
 
   useEffect(() => {
     if (autoFocus) {
-      searchRef.current.focus({ preventScroll: true });
+      Keyboard.dismiss();
+      setTimeout(() => searchRef.current.focus({ preventScroll: true }), 100);
     }
   }, [autoFocus]);
 
@@ -485,7 +486,7 @@ export default function LabelPicker({
         sheetRef={ref}
         onClose={handleClose}
         maxWidth={(breakpoints.md ? 450 : "100%") as any}
-        snapPoints={[Platform.OS === "ios" ? "100%" : "70%"]}
+        snapPoints={["70%"]}
         containerStyle={{
           maxWidth: 500,
           width: "100%",
@@ -493,6 +494,7 @@ export default function LabelPicker({
           transform: [{ translateX: "-50%" }],
         }}
         {...sheetProps}
+        keyboardBehavior="extend"
       >
         <LabelPickerContent
           disabledLabels={disabledLabels}

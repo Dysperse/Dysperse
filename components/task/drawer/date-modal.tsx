@@ -25,7 +25,7 @@ import React, {
   useRef,
   useState,
 } from "react";
-import { Keyboard, Platform, Pressable, View } from "react-native";
+import { Keyboard, Pressable, View } from "react-native";
 import Animated, {
   useAnimatedStyle,
   useSharedValue,
@@ -750,7 +750,7 @@ export function TaskDateModal({
     <>
       {trigger}
       <BottomSheet
-        snapPoints={Platform.OS === "web" ? ["75%"] : ["100%"]}
+        snapPoints={["75%"]}
         containerStyle={{
           marginTop: 40 + insets.top,
           maxWidth: 500,
