@@ -92,7 +92,11 @@ function CollectionChips({
 
   return (
     <View style={{ padding: 10, gap: 10 }}>
-      {collections?.length !== 0 && <Text variant="eyebrow">Collections</Text>}
+      {collections?.length !== 0 && (
+        <Text variant="eyebrow" style={{ marginTop: 10 }}>
+          Collections
+        </Text>
+      )}
       <BottomSheetFlatList
         horizontal
         ref={ref}
@@ -481,7 +485,7 @@ export default function LabelPicker({
         sheetRef={ref}
         onClose={handleClose}
         maxWidth={(breakpoints.md ? 450 : "100%") as any}
-        snapPoints={[Platform.OS === "ios" ? "100%" : "100%"]}
+        snapPoints={[Platform.OS === "ios" ? "100%" : "70%"]}
         containerStyle={{
           maxWidth: 500,
           width: "100%",

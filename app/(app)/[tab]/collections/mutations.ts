@@ -1,5 +1,10 @@
-import { omit } from "@/helpers/omit";
+import { omitSingle } from "@/helpers/omit";
 import dayjs from "dayjs";
+
+/**
+ * omitSingle() is used to remove tasks from collections when they are moved to another label
+ * omitSingle() is a more efficient version of omit() when only one key needs to be removed
+ */
 
 export const mutations = {
   categoryBased: {
@@ -80,7 +85,13 @@ export const mutations = {
                           },
                     };
                   }
-                  return label;
+                  return {
+                    ...label,
+                    entities: omitSingle(
+                      [newTask.parentTaskId || newTask.id],
+                      label.entities
+                    ),
+                  };
                 }),
               };
             } else {
@@ -151,7 +162,13 @@ export const mutations = {
                       : newTask,
                   },
                 };
-              return oldColumn;
+              return {
+                ...oldColumn,
+                entities: omitSingle(
+                  [newTask.parentTaskId || newTask.id],
+                  oldColumn.entities
+                ),
+              };
             });
           },
           { revalidate: false }
@@ -200,7 +217,7 @@ export const mutations = {
               }
               return {
                 ...oldColumn,
-                entities: omit(
+                entities: omitSingle(
                   [newTask.parentTaskId || newTask.id],
                   oldColumn.entities
                 ),
