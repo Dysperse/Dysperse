@@ -463,25 +463,32 @@ const Task = memo(function Task({
                       icon="access_time"
                     />
                   )}
-                  {showDate && task.start && (
-                    <DayTaskModal date={task.start} taskId={task.id}>
-                      <Button
-                        chip
-                        text={dayjs(task.start).format(
-                          task.dateOnly
-                            ? "MMM Do"
-                            : dayjs(task.start).minute() === 0
-                            ? session.user.militaryTime
-                              ? "MMM Do [@] H a"
-                              : "MMM Do [@] h a"
-                            : session.user.militaryTime
-                            ? "MMM Do [@] H:mm"
-                            : "MMM Do [@] h:mm a"
-                        )}
-                        icon={<Icon>calendar_today</Icon>}
-                      />
-                    </DayTaskModal>
-                  )}
+                  {(showDate || (!task.dateOnly && task.start)) &&
+                    task.start && (
+                      <DayTaskModal date={task.start} taskId={task.id}>
+                        <Button
+                          chip
+                          text={dayjs(task.start).format(
+                            showDate
+                              ? task.dateOnly
+                                ? "MMM Do"
+                                : dayjs(task.start).minute() === 0
+                                ? session.user.militaryTime
+                                  ? "MMM Do [@] H a"
+                                  : "MMM Do [@] h a"
+                                : session.user.militaryTime
+                                ? "MMM Do [@] H:mm"
+                                : "MMM Do [@] h:mm a"
+                              : session.user.militaryTime
+                              ? "H:mm"
+                              : "h:mm a"
+                          )}
+                          icon={
+                            task.dateOnly ? "calendar_today" : "access_time"
+                          }
+                        />
+                      </DayTaskModal>
+                    )}
                   {task.recurrenceRule && (
                     <Button
                       chip
