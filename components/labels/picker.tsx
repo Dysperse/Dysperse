@@ -486,7 +486,7 @@ export default function LabelPicker({
         sheetRef={ref}
         onClose={handleClose}
         maxWidth={(breakpoints.md ? 450 : "100%") as any}
-        snapPoints={["70%"]}
+        snapPoints={["50%"]}
         containerStyle={{
           maxWidth: 500,
           width: "100%",
@@ -494,7 +494,7 @@ export default function LabelPicker({
           transform: [{ translateX: "-50%" }],
         }}
         {...sheetProps}
-        keyboardBehavior="extend"
+        keyboardBehavior="interactive"
       >
         <LabelPickerContent
           disabledLabels={disabledLabels}
