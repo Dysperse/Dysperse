@@ -234,7 +234,6 @@ function Content() {
             placeholder="Pick something strong"
             onChangeText={setPassword}
             autoComplete="new-password"
-            defaultValue={store.password}
           />
         )}
         {!store.appleAuthFillPassword && (
@@ -244,7 +243,6 @@ function Content() {
             placeholder="Retype what you just entered above"
             onChangeText={setPasswordConfirm}
             autoComplete="new-password"
-            defaultValue={store.confirmPassword}
           />
         )}
       </Animated.View>
