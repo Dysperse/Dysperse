@@ -295,8 +295,9 @@ const Task = memo(function Task({
   const { globalTaskCreateRef, wrapperRef } = useGlobalTaskContext() || {};
 
   const handleSelect = () => {
-    impactAsync(ImpactFeedbackStyle.Light);
     if (isReadOnly || !setSelection) return;
+    impactAsync(ImpactFeedbackStyle.Light);
+
     setSelection((prev) =>
       prev.some((e) => e.id === task.id)
         ? prev.filter((e) => e.id !== task.id)
