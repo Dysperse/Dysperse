@@ -26,6 +26,7 @@ import Animated, {
   withSpring,
 } from "react-native-reanimated";
 import { toast } from "sonner-native";
+import { taskSortAlgorithm } from "../collections/views/skyline";
 import TaskCheckbox from "./Checkbox";
 import DayTaskModal from "./DayTaskModal";
 import { TaskDrawer } from "./drawer";
@@ -545,11 +546,11 @@ const Task = memo(function Task({
         </TaskDrawer>
       </Animated.View>
       {task.subtasks &&
-        Object.values(task.subtasks)
-          ?.filter((e) => !e.trash)
-          ?.map((subtask) => (
-            <Task key={subtask.id} task={subtask} onTaskUpdate={onTaskUpdate} />
-          ))}
+        taskSortAlgorithm(
+          Object.values(task.subtasks)?.filter((e) => !e.trash)
+        )?.map((subtask) => (
+          <Task key={subtask.id} task={subtask} onTaskUpdate={onTaskUpdate} />
+        ))}
     </>
   );
 });
