@@ -368,7 +368,13 @@ const Task = memo(function Task({
               paddingLeft: 15,
               paddingRight: 13,
               alignItems: "flex-start",
-              paddingVertical: breakpoints.md ? (dense ? 3 : 8) : 10,
+              paddingVertical: breakpoints.md
+                ? dense
+                  ? 3
+                  : 8
+                : dense
+                ? 7
+                : 10,
               ...(isSelected && !reorderMode && { backgroundColor: blue[4] }),
             }}
             style={[

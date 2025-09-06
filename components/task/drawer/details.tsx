@@ -169,7 +169,7 @@ function SubtaskList() {
                 defaultValues={{ parentTask: task }}
               >
                 <ListItemButton
-                  pressableStyle={{ gap: 10, paddingVertical: 10 }}
+                  pressableStyle={{ gap: 10, paddingVertical: 4 }}
                   style={{ marginLeft: 15, marginBottom: -5 }}
                 >
                   <Icon size={35} style={{ color: theme[12], opacity: 0.5 }}>
