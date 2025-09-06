@@ -256,7 +256,7 @@ function Email({
       }}
       contentContainerStyle={{
         flexGrow: 1,
-        paddingTop: breakpoints.md ? 60 : 20,
+        paddingTop: breakpoints.md ? 60 : Platform.OS === "android" ? 40 : 20,
       }}
     >
       <View style={{ gap: 10 }}>

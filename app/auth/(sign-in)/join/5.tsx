@@ -260,6 +260,8 @@ function Content() {
         <Text variant="eyebrow">Birthday</Text>
         <View style={{ flexDirection: "row", gap: 10 }}>
           <DropdownMenu
+            verticalOffset={5}
+            verticalPlacement="top"
             options={Array.from({ length: 12 }, (_, i) => ({
               text:
                 dayjs().month(i).format("MMMM").charAt(0).toUpperCase() +
@@ -279,6 +281,8 @@ function Content() {
             />
           </DropdownMenu>
           <DropdownMenu
+            verticalOffset={5}
+            verticalPlacement="top"
             options={(() => {
               const month = birthday ? dayjs(birthday).month() : 0;
               const daysInMonth = dayjs().month(month).daysInMonth();

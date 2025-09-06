@@ -4,9 +4,16 @@ import {
   useBottomSheet,
 } from "@gorhom/bottom-sheet";
 import { BlurView } from "expo-blur";
-import React, { cloneElement, ReactNode, RefObject, useRef } from "react";
+import React, {
+  cloneElement,
+  ReactNode,
+  RefObject,
+  useEffect,
+  useRef,
+} from "react";
 import {
   Dimensions,
+  InteractionManager,
   Platform,
   Pressable,
   StyleProp,
@@ -60,6 +67,17 @@ export function DropdownMenuItem(props) {
   );
 }
 
+function SetScaleValue({ scale, INITIAL_SCALE_VALUE }) {
+  useEffect(() => {
+    scale.value = 1;
+
+    return () => {
+      scale.value = INITIAL_SCALE_VALUE;
+    };
+  }, []);
+  return null;
+}
+
 export default function DropdownMenu({
   ref,
   children,
@@ -68,7 +86,7 @@ export default function DropdownMenu({
   verticalPlacement = "bottom",
   horizontalPlacement = "left",
   horizontalOffset = 0,
-  verticalOffset = 5,
+  verticalOffset = 0,
   closeOnSelect = true,
   containerStyle,
 }: {
@@ -101,16 +119,25 @@ export default function DropdownMenu({
     onPress: () => {
       children.props.onPress?.();
       modalRef.current.present();
-      scale.value = 1;
+      // weird android bug
+      if (Platform.OS === "android")
+        setTimeout(() => {
+          InteractionManager.runAfterInteractions(() => {
+            modalRef.current.present();
+          });
+        }, 400);
     },
     onLongPress: () => {
       children.props.onLongPress?.();
       modalRef.current.present();
-      scale.value = 1;
     },
     [Platform.OS === "web" ? "onMouseDown" : "onTouchStart"]: (e) => {
       triggerRef.current.measureInWindow((x, y, width, height) => {
-        top.value = y + height + verticalOffset;
+        top.value =
+          y +
+          height +
+          verticalOffset +
+          (Platform.OS === "android" ? insets.top : 0);
 
         // const windowWidth = Dimensions.get("window").width;
         // if (horizontalPlacement !== "center") {
@@ -127,8 +154,9 @@ export default function DropdownMenu({
           Dimensions.get("window").height -
           y -
           insets.bottom -
+          insets.top -
           height -
-          verticalOffset * 2;
+          verticalOffset;
 
         switch (horizontalPlacement) {
           case "left":
@@ -145,7 +173,8 @@ export default function DropdownMenu({
         if (verticalPlacement === "top") {
           //   const t = Keyboard.isVisible() ? Keyboard.metrics().height : 0;
           // top is now the top of the trigger
-          top.value = Dimensions.get("window").height - y + verticalOffset;
+          top.value =
+            Dimensions.get("window").height - y + verticalOffset - insets.top;
           menuHeight.value = y - verticalOffset;
         }
       });
@@ -155,6 +184,9 @@ export default function DropdownMenu({
   const positionStyle = useAnimatedStyle(() => ({
     [verticalPlacement === "top" ? "bottom" : "top"]: top.value,
     left: left.value,
+  }));
+
+  const transformStyle = useAnimatedStyle(() => ({
     transform: [
       {
         scale:
@@ -162,7 +194,7 @@ export default function DropdownMenu({
             ? INITIAL_SCALE_VALUE
             : withSpring(scale.value, {
                 stiffness: 400,
-                damping: 40,
+                damping: 27,
               }),
       },
     ],
@@ -183,11 +215,10 @@ export default function DropdownMenu({
         handleComponent={() => null}
         containerStyle={{ backgroundColor: "transparent" }}
         backgroundStyle={{ backgroundColor: "transparent" }}
-        animationConfigs={{ duration: 0.001, overshootClamping: true }}
+        animationConfigs={{ stiffness: 0 }}
         enablePanDownToClose={false}
         enableContentPanningGesture={false}
         maxBackdropOpacity={0}
-        onClose={() => (scale.value = INITIAL_SCALE_VALUE)}
       >
         <Pressable
           onPress={() => {
@@ -198,50 +229,63 @@ export default function DropdownMenu({
             height: "100%",
           }}
         >
-          <AnimatedPressable
+          <Animated.View
             style={[
+              transformStyle,
+              containerStyle,
               positionStyle,
               {
                 width: menuWidth,
-                position: "absolute",
-                backgroundColor:
-                  Platform.OS === "android"
-                    ? theme[4]
-                    : addHslAlpha(theme[11], 0.1),
-                borderRadius: 20,
-                overflow: "hidden",
+                flex: 1,
                 transformOrigin: `${
                   verticalPlacement === "top" ? "bottom" : "top"
                 } ${horizontalPlacement}`,
-                boxShadow: `0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1)`,
               },
-              containerStyle,
             ]}
           >
-            <Animated.View style={[heightStyle]}>
-              <BlurView intensity={35} tint={isDark ? "dark" : "light"}>
-                <BottomSheetScrollView
-                  bounces={false}
-                  indicatorStyle={isDark ? "white" : "black"}
-                  style={{ padding: 5 }}
-                >
-                  {options
-                    .filter(Boolean)
-                    .map((item, index) =>
-                      item.renderer ? (
-                        item.renderer()
-                      ) : (
-                        <DropdownMenuItem
-                          key={index}
-                          closeOnSelect={closeOnSelect}
-                          {...item}
-                        />
-                      )
-                    )}
-                </BottomSheetScrollView>
-              </BlurView>
-            </Animated.View>
-          </AnimatedPressable>
+            <AnimatedPressable
+              style={[
+                {
+                  marginTop: verticalPlacement === "top" ? "auto" : 0,
+                  backgroundColor:
+                    Platform.OS === "android"
+                      ? theme[4]
+                      : addHslAlpha(theme[11], 0.1),
+                  borderRadius: 20,
+                  overflow: "hidden",
+                  boxShadow: `0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1)`,
+                },
+              ]}
+            >
+              <Animated.View style={[heightStyle]}>
+                <BlurView intensity={35} tint={isDark ? "dark" : "light"}>
+                  <BottomSheetScrollView
+                    bounces={false}
+                    indicatorStyle={isDark ? "white" : "black"}
+                    style={{ padding: 5 }}
+                  >
+                    <SetScaleValue
+                      INITIAL_SCALE_VALUE={INITIAL_SCALE_VALUE}
+                      scale={scale}
+                    />
+                    {options
+                      .filter(Boolean)
+                      .map((item, index) =>
+                        item.renderer ? (
+                          item.renderer()
+                        ) : (
+                          <DropdownMenuItem
+                            key={index}
+                            closeOnSelect={closeOnSelect}
+                            {...item}
+                          />
+                        )
+                      )}
+                  </BottomSheetScrollView>
+                </BlurView>
+              </Animated.View>
+            </AnimatedPressable>
+          </Animated.View>
         </Pressable>
       </BottomSheet>
     </>

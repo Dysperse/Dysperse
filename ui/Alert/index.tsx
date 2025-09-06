@@ -55,20 +55,23 @@ export default function Alert({
         />
       )}
       <View style={{ flex: 1 }}>
-        <Text
-          style={{
-            textAlign: direction === "row" ? "left" : "center",
-            fontSize: dense ? 16 : 20,
-            fontStyle: italicize ? "italic" : "normal",
-          }}
-          weight={dense ? 400 : 800}
-        >
-          {title}
-        </Text>
+        {title && (
+          <Text
+            style={{
+              textAlign: direction === "row" ? "left" : "center",
+              fontSize: dense ? 16 : 20,
+              fontStyle: italicize ? "italic" : "normal",
+            }}
+            weight={dense ? 400 : 800}
+          >
+            {title}
+          </Text>
+        )}
         {subtitle && (
           <Text
             style={[
               styles.subtitle,
+              !title && { marginTop: 0 },
               {
                 textAlign: direction === "row" ? "left" : "center",
               },

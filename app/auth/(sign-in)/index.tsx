@@ -13,7 +13,7 @@ import { BottomSheetModal } from "@gorhom/bottom-sheet";
 import * as AppleAuthentication from "expo-apple-authentication";
 import { router } from "expo-router";
 import { cloneElement, useEffect, useRef, useState } from "react";
-import { Platform, View } from "react-native";
+import { Dimensions, Platform, View } from "react-native";
 import QRCode from "react-native-qrcode-svg";
 import Svg, { Path } from "react-native-svg";
 import { toast } from "sonner-native";
@@ -264,7 +264,11 @@ export default function SignIn() {
       <Text
         style={{
           opacity: 0.4,
-          fontSize: breakpoints.md ? 25 : 20,
+          fontSize: breakpoints.md
+            ? 25
+            : Dimensions.get("window").width < 365
+            ? 15
+            : 20,
           color: theme[11],
           textAlign: "center",
           marginBottom: 17,
