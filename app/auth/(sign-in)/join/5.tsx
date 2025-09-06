@@ -268,7 +268,7 @@ function Content() {
                 dayjs().month(i).format("MMMM").slice(1),
               value: i,
               selected: birthday && dayjs(birthday).month() === i,
-              callback: () => {
+              onPress: () => {
                 const current = birthday ? dayjs(birthday) : dayjs();
                 setBirthday(current.month(i).toDate());
               },
@@ -290,7 +290,7 @@ function Content() {
                 text: (i + 1).toString(),
                 value: i + 1,
                 selected: birthday && dayjs(birthday).date() === i + 1,
-                callback: () => {
+                onPress: () => {
                   const current = birthday ? dayjs(birthday) : dayjs();
                   setBirthday(current.date(i + 1).toDate());
                 },
