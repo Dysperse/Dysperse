@@ -1,7 +1,8 @@
 import { ArcSystemBar } from "@/components/layout/arcAnimations";
+import { Button } from "@/ui/Button";
 import { useColorTheme } from "@/ui/color/theme-provider";
 import Text from "@/ui/Text";
-import { View } from "react-native";
+import { Linking, View } from "react-native";
 import { ScrollView } from "react-native-gesture-handler";
 import { MenuButton } from "../../home";
 
@@ -78,6 +79,17 @@ export default function Page() {
             </Text>
           </View>
         ))}
+
+        <Button
+          large
+          bold
+          containerStyle={{ marginTop: 15 }}
+          variant="filled"
+          onPress={() => Linking.openURL("https://dysperse.com/templates")}
+          text="Explore templates"
+          icon="north_east"
+          iconPosition="end"
+        />
       </ScrollView>
     </>
   );
