@@ -193,8 +193,8 @@ export default function DropdownMenu({
           scale.value == INITIAL_SCALE_VALUE
             ? INITIAL_SCALE_VALUE
             : withSpring(scale.value, {
-                stiffness: 400,
-                damping: 27,
+                stiffness: 1500,
+                damping: 110,
               }),
       },
     ],

@@ -84,8 +84,8 @@ const Modal = (
             state.value === 0
               ? 0.8
               : withSpring(1, {
-                  stiffness: 400,
-                  damping: 50,
+                  stiffness: 1900,
+                  damping: 130,
                 }),
         },
       ],

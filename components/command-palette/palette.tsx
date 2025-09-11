@@ -16,7 +16,10 @@ export default function CommandPalette() {
       sheetRef={sheetRef}
       animation="SCALE"
       height={"100%"}
-      innerStyles={{ maxHeight: Math.min(600, height / 1.3) }}
+      innerStyles={{
+        ...(breakpoints.md && { height }),
+        maxHeight: Math.min(600, height / 1.3),
+      }}
       maxBackdropOpacity={isDark ? 0.3 : undefined}
       animationConfigs={{ duration: 0.0001 }}
       maxWidth={breakpoints.md ? 900 : width}

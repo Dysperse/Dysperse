@@ -49,10 +49,10 @@ function BottomSheetEscapeHandler({
       ...stack.current,
       () => {
         forceClose({
-          ...animationConfigs,
           overshootClamping: true,
           stiffness: 400,
           damping: 20,
+          ...animationConfigs,
         });
       },
     ];
