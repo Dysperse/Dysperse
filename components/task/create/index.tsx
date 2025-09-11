@@ -1057,7 +1057,10 @@ const BottomSheetContent = ({
               onPress={() => {
                 Keyboard.dismiss();
                 impactAsync(ImpactFeedbackStyle.Heavy);
-                setView((t) => (t === "HOME" ? "ATTACH" : "HOME"));
+                setTimeout(
+                  () => setView((t) => (t === "HOME" ? "ATTACH" : "HOME")),
+                  200
+                );
                 setTimeout(() => nameRef.current?.focus(), 20);
               }}
               containerStyle={
