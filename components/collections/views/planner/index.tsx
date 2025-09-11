@@ -154,7 +154,7 @@ function Agenda() {
                     closeTimeoutRef.current = setTimeout(() => {
                       setOpen(false);
                       closeTimeoutRef.current = null;
-                    }, 1000);
+                    }, 2000);
                   }}
                 />
               )}
