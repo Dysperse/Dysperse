@@ -39,7 +39,7 @@ const styles = StyleSheet.create({
 
 const animationConfig = {
   damping: 10,
-  stiffness: 400,
+  stiffness: 1800,
   overshootClamping: true,
 };
 
