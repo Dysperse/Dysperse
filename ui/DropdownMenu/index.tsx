@@ -174,7 +174,10 @@ export default function DropdownMenu({
           //   const t = Keyboard.isVisible() ? Keyboard.metrics().height : 0;
           // top is now the top of the trigger
           top.value =
-            Dimensions.get("window").height - y + verticalOffset - insets.top;
+            Dimensions.get("window").height -
+            y +
+            verticalOffset -
+            (Platform.OS === "android" ? insets.top : 0);
           menuHeight.value = y - verticalOffset;
         }
       });
@@ -194,7 +197,7 @@ export default function DropdownMenu({
             ? INITIAL_SCALE_VALUE
             : withSpring(scale.value, {
                 stiffness: 1500,
-                damping: 110,
+                damping: 125,
               }),
       },
     ],
@@ -291,3 +294,4 @@ export default function DropdownMenu({
     </>
   );
 }
+

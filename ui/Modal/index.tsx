@@ -57,8 +57,8 @@ const Modal = (
         ? { overshootClamping: true, duration: 0.0001 }
         : {
             overshootClamping: props.animation !== "BOTH",
-            stiffness: 400,
-            damping: props.animation === "BOTH" ? 35 : 40,
+            stiffness: 1500,
+            damping: props.animation === "BOTH" ? 125 : 40,
           },
     [props.animation]
   );

@@ -31,15 +31,15 @@ function Agenda() {
 
   const animatedCalendarStyle = useAnimatedStyle(() => ({
     marginTop: withSpring(state.value === 0 ? 0 : -450, {
-      damping: 27,
-      stiffness: 300,
+      damping: 125,
+      stiffness: 1500,
     }),
   }));
 
   const animatedSelectorStyle = useAnimatedStyle(() => ({
     marginBottom: withSpring(state.value === 0 ? -130 : 0, {
-      damping: 27,
-      stiffness: 300,
+      damping: 1500,
+      stiffness: 1500,
     }),
   }));
 

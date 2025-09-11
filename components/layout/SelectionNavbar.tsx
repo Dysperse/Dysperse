@@ -175,8 +175,8 @@ const SelectionNavbar = memo(function SelectionNavbar() {
     transform: [
       {
         translateY: withSpring(selection.length > 0 ? 0 : -(84 + insets.top), {
-          damping: 100,
-          stiffness: 400,
+          damping: 125,
+          stiffness: 1500,
         }),
       },
     ],

@@ -549,7 +549,7 @@ function CanvasLiveInfo() {
       >
         {data.submission?.score ? (
           <>
-            {data.submission?.score} points
+            {~~data.submission?.score} points
             <Text weight={700} style={{ fontSize: 20, opacity: 0.6 }}>
               {" "}
               out of {data.points_possible}{" "}

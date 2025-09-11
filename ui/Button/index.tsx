@@ -137,14 +137,15 @@ export const Button = forwardRef<PressableProps, DButtonProps>((props, ref) => {
         : addHslAlpha(theme[11], 0.2)),
   ];
 
+  const animationConfigs = {
+    damping: 125,
+    stiffness: 1500,
+  };
+
   const animatedStyle = useAnimatedStyle(() => ({
     transform: [
       {
-        scale: withSpring(state.value === 2 ? 0.95 : 1, {
-          damping: 10,
-          stiffness: 400,
-          overshootClamping: true,
-        }),
+        scale: withSpring(state.value === 2 ? 0.95 : 1, animationConfigs),
       },
     ],
     borderColor: withSpring(
@@ -152,11 +153,7 @@ export const Button = forwardRef<PressableProps, DButtonProps>((props, ref) => {
     ),
     backgroundColor: withSpring(
       interpolateColor(state.value, [0, 2], backgroundColors),
-      {
-        damping: 10,
-        stiffness: 400,
-        overshootClamping: true,
-      }
+      animationConfigs
     ),
   }));
 

@@ -1140,8 +1140,8 @@ const CreateTaskOuterContent = (props) => {
     transform: [
       {
         scale: withSpring(animation.value, {
-          damping: 23,
-          stiffness: 300,
+          damping: 125,
+          stiffness: 1500,
         }),
       },
     ],
