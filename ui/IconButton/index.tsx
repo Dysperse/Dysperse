@@ -101,7 +101,7 @@ const IconButton = forwardRef<typeof Pressable, IconButtonProps>(
         animationConfig
       ),
       transform: [
-        { scale: withSpring(state.value === 2 ? 0.9 : 1, animationConfig) },
+        { scale: withSpring(state.value === 2 ? 0.95 : 1, animationConfig) },
       ],
     }));
 
