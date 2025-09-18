@@ -87,21 +87,21 @@ function TaskDateModalContent({ task, updateTask }) {
 
   const selectedDateStyle = useAnimatedStyle(() => ({
     marginBottom: withSpring(active.value ? -70 : 10, {
-      damping: 20,
-      stiffness: 200,
+      damping: 125,
+      stiffness: 1500,
     }),
     paddingHorizontal: 20,
     pointerEvents: !active.value ? "auto" : "none",
     opacity: withSpring(!active.value ? 1 : 0, {
-      damping: 20,
-      stiffness: 200,
+      damping: 125,
+      stiffness: 1500,
     }),
   }));
 
   const opacityStyle = useAnimatedStyle(() => ({
     opacity: withSpring(!viewPickerHidden.value ? 1 : 0, {
-      damping: 20,
-      stiffness: 200,
+      damping: 125,
+      stiffness: 1500,
     }),
     transform: [{ scale: withSpring(!viewPickerHidden.value ? 1 : 0.8) }],
     pointerEvents: viewPickerHidden.value ? "none" : "auto",
@@ -357,8 +357,8 @@ function TaskDateModalContent({ task, updateTask }) {
     transform: [
       {
         translateX: withSpring(!active.value ? -13 : -63, {
-          damping: 20,
-          stiffness: 200,
+          damping: 125,
+          stiffness: 1500,
         }),
       },
     ],

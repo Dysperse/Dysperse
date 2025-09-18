@@ -55,9 +55,9 @@ const IconButton = forwardRef<typeof Pressable, IconButtonProps>(
     const state = useSharedValue(0);
 
     const animationConfig = props.animationConfigs || {
-      damping: 10,
-      stiffness: 400,
-      overshootClamping: true,
+      damping: 125,
+      stiffness: 1500,
+      // overshootClamping: true,
     };
 
     const backgroundColors = [

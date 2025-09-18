@@ -68,11 +68,9 @@ function BottomSheetEscapeHandler({
 function BottomSheet(props: DBottomSheetProps) {
   const theme = useColorTheme();
   const animationConfigs = useBottomSheetSpringConfigs({
-    damping: 30,
+    damping: 125,
     overshootClamping: false,
-    restDisplacementThreshold: 0.1,
-    restSpeedThreshold: 0.1,
-    stiffness: 400,
+    stiffness: 1500,
   });
 
   return (

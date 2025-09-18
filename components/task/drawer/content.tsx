@@ -219,8 +219,8 @@ function TaskPinButton() {
     if (Platform.OS !== "web") impactAsync(ImpactFeedbackStyle.Light);
     rotate.value = withSpring(!task.pinned ? -35 : 0, {
       mass: 1,
-      damping: 10,
-      stiffness: 200,
+      damping: 125,
+      stiffness: 1500,
       overshootClamping: false,
       restDisplacementThreshold: 0.01,
       restSpeedThreshold: 2,

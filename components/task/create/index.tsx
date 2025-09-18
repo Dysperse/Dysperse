@@ -1057,7 +1057,10 @@ const BottomSheetContent = ({
               onPress={() => {
                 Keyboard.dismiss();
                 impactAsync(ImpactFeedbackStyle.Heavy);
-                setView((t) => (t === "HOME" ? "ATTACH" : "HOME"));
+                setTimeout(
+                  () => setView((t) => (t === "HOME" ? "ATTACH" : "HOME")),
+                  200
+                );
                 setTimeout(() => nameRef.current?.focus(), 20);
               }}
               containerStyle={
@@ -1140,8 +1143,8 @@ const CreateTaskOuterContent = (props) => {
     transform: [
       {
         scale: withSpring(animation.value, {
-          damping: 23,
-          stiffness: 300,
+          damping: 125,
+          stiffness: 1500,
         }),
       },
     ],

@@ -11,6 +11,7 @@ export default function RefreshControl(props: RefreshControlProps) {
     <RefreshControlComponent
       progressBackgroundColor={theme[5]}
       colors={[theme[8]]}
+      titleColor={theme[8]}
       tintColor={theme[8]}
       {...props}
       onRefresh={() => {

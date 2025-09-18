@@ -1,5 +1,5 @@
 import { useSession } from "@/context/AuthProvider";
-import * as FileSystem from "expo-file-system";
+import { File, Paths } from "expo-file-system";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { AppState, InteractionManager, Platform } from "react-native";
 import "react-native-gesture-handler";
@@ -46,27 +46,17 @@ export function CLEAR_APP_CACHE() {
 
 async function fileSystemProvider(cacheData) {
   InteractionManager.runAfterInteractions(async () => {
-    const cacheDir = FileSystem.cacheDirectory + "dysperse-cache/";
-    const file = `${cacheDir}cache.json`;
+    const file = new File(Paths.cache, "dysperse-cache.json");
 
     async function ensureDirExists() {
-      const dirInfo = await FileSystem.getInfoAsync(cacheDir);
-      if (!dirInfo.exists) {
-        await FileSystem.makeDirectoryAsync(cacheDir, { intermediates: true });
-      }
+      if (!file.exists) file.create();
     }
 
     const map = cacheData || new Map();
-
-    if (map.size === 0) {
-      return;
-    }
+    if (map.size === 0) return;
 
     await ensureDirExists();
-    await FileSystem.writeAsStringAsync(
-      file,
-      JSON.stringify(Array.from(map.entries()))
-    );
+    file.write(JSON.stringify(Array.from(map.entries())));
   });
 }
 
@@ -98,11 +88,9 @@ export function SWRWrapper({ children }) {
     if (Platform.OS === "web") return;
     (async () => {
       if (cacheLoaded) return;
-      const cacheDir = FileSystem.cacheDirectory + "dysperse-cache/";
-      const file = `${cacheDir}cache.json`;
-      const fileInfo = await FileSystem.getInfoAsync(file);
-      if (fileInfo.exists) {
-        const data = await FileSystem.readAsStringAsync(file);
+      const file = new File(Paths.cache, "dysperse-cache.json");
+      if (file.exists) {
+        const data = await file.textSync();
         const entries = JSON.parse(data);
         cacheData.current = new Map(entries);
       } else {
