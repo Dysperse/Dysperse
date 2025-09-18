@@ -332,7 +332,6 @@ function SearchList({ collection, inputRef, listRef, handleClose }) {
                   ref={listRef}
                   keyboardShouldPersistTaps="handled"
                   data={filtered}
-                  style={{ backgroundColor: "red" }}
                   contentInset={TEMPORARY_CONTENT_INSET_FIX()}
                   contentContainerStyle={{
                     padding: 25,
