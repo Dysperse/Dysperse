@@ -185,12 +185,12 @@ function LabelPickerContent({
   const hideCreateStyle = useAnimatedStyle(() => ({
     width: 100,
     marginRight: withSpring(hideCreate.value === 1 ? -110 : 0, {
-      stiffness: 400,
-      damping: 30,
+      stiffness: 1400,
+      damping: 120,
     }),
     opacity: withSpring(hideCreate.value === 1 ? 0 : 1, {
-      stiffness: 400,
-      damping: 30,
+      stiffness: 1400,
+      damping: 120,
     }),
   }));
 
@@ -224,8 +224,11 @@ function LabelPickerContent({
         <View style={[labelPickerStyles.searchBox]}>
           {!hideBack && (
             <IconButton
-              onPress={handleClose}
-              icon="close"
+              onPress={() => {
+                if (query) setQuery("");
+                else handleClose();
+              }}
+              icon={query ? "arrow_back_ios_new" : "close"}
               size={50}
               variant="filled"
             />
