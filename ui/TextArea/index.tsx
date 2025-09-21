@@ -1,6 +1,6 @@
 import { BottomSheetTextInput } from "@gorhom/bottom-sheet";
 import { Ref } from "react";
-import { StyleProp, TextInputProps, TextStyle } from "react-native";
+import { Platform, StyleProp, TextInputProps, TextStyle } from "react-native";
 import { TextInput } from "react-native-gesture-handler";
 import { DTextProps, getFontName } from "../Text";
 import { useColorTheme } from "../color/theme-provider";
@@ -15,7 +15,10 @@ interface DTextInputProps extends TextInputProps {
 
 export default function TextField(props: DTextInputProps) {
   const theme = useColorTheme();
-  const Component = props.bottomSheet ? BottomSheetTextInput : TextInput;
+  const Component =
+    props.bottomSheet && Platform.OS !== "web"
+      ? BottomSheetTextInput
+      : TextInput;
 
   return (
     <Component
