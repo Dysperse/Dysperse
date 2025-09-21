@@ -46,6 +46,7 @@ export function CLEAR_APP_CACHE() {
 
 async function fileSystemProvider(cacheData) {
   InteractionManager.runAfterInteractions(async () => {
+    if (Platform.OS === "web") return;
     const file = new File(Paths.cache, "dysperse-cache.json");
 
     async function ensureDirExists() {

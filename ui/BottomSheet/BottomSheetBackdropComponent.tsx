@@ -12,9 +12,11 @@ export const BottomSheetBackdropComponent = ({
   style,
   dismissible,
   maxBackdropOpacity,
+  animationConfigs,
 }: BottomSheetBackdropProps & {
   dismissible: boolean;
   maxBackdropOpacity: number;
+  animationConfigs?: any;
 }) => {
   // animated variables
   const { forceClose, collapse, animatedIndex } = useBottomSheet();
@@ -39,7 +41,8 @@ export const BottomSheetBackdropComponent = ({
     if (Platform.OS !== "web") Keyboard.dismiss();
     if (Platform.OS !== "web" && Keyboard.isVisible())
       setTimeout(forceClose, 200);
-    else forceClose({ overshootClamping: true, damping: 1 });
+    else
+      forceClose(animationConfigs || { overshootClamping: true, damping: 1 });
   };
 
   return (
@@ -53,3 +56,4 @@ export const BottomSheetBackdropComponent = ({
     />
   );
 };
+

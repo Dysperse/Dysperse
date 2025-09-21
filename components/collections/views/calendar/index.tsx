@@ -269,9 +269,16 @@ function Date({ mutate, day, events, theme, dIdx, wIdx }) {
       <BottomSheet
         onClose={() => mutate()}
         sheetRef={drawerRef}
-        snapPoints={dayEvents.length == 0 ? [300] : ["50%", "90%"]}
+        snapPoints={
+          breakpoints.md
+            ? ["100%"]
+            : dayEvents.length == 0
+            ? [300]
+            : ["50%", "90%"]
+        }
         maxBackdropOpacity={0.1}
         handleIndicatorStyle={{
+          display: breakpoints.md ? "none" : "flex",
           height: 10,
           marginTop: 3,
           backgroundColor: theme[4],
@@ -284,10 +291,18 @@ function Date({ mutate, day, events, theme, dIdx, wIdx }) {
           borderRadius: 50,
           backgroundColor: theme[1],
         }}
-        containerStyle={{
-          marginHorizontal: 10,
-          borderRadius: 50,
-        }}
+        containerStyle={[
+          {
+            marginHorizontal: 10,
+            borderRadius: 50,
+          },
+          breakpoints.md && {
+            marginVertical: 20,
+            width: 400,
+            marginLeft: "auto",
+          },
+        ]}
+        animationConfigs={breakpoints.md ? { duration: 0.001 } : undefined}
         bottomInset={insets.bottom}
       >
         <View
