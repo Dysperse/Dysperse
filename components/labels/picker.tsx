@@ -174,6 +174,28 @@ function LabelPickerContent({
         .sort((a, b) => a.name.localeCompare(b.name)) || []
     : [];
 
+  const filteredData = Array.isArray(data)
+    ? fuzzysort
+        .go(query, data, { key: "name", all: true })
+        .map((t) => t.obj)
+        .sort(
+          (a, b) =>
+            (a.id === (label as any)?.id ||
+            (multiple && Array.isArray(label) && label.includes(a.id))
+              ? -1
+              : 1) -
+            (b.id === (label as any)?.id ||
+            (multiple && Array.isArray(label) && label.includes(b.id))
+              ? -1
+              : 1)
+        )
+        .filter((label) =>
+          selectedCollection
+            ? label.collections?.map((c) => c?.id).includes(selectedCollection)
+            : true
+        )
+    : [];
+
   const [selectedCollection, setSelectedCollection] = useState(() => {
     if (defaultCollection === "all") return null;
     const hasLabels = collections.some((c) => c.id === defaultCollection);
@@ -270,150 +292,135 @@ function LabelPickerContent({
         style={{ height: 30, zIndex: 99, marginBottom: -30, width: "100%" }}
       />
       {Array.isArray(data) ? (
-        <SafeFlashListFix
-          showsVerticalScrollIndicator={false}
-          estimatedItemSize={62}
-          data={fuzzysort
-            .go(query, data, { key: "name", all: true })
-            .map((t) => t.obj)
-            .sort(
-              // sort by selected on top
-              (a, b) =>
-                (a.id === (label as any)?.id ||
-                (multiple && Array.isArray(label) && label.includes(a.id))
-                  ? -1
-                  : 1) -
-                (b.id === (label as any)?.id ||
-                (multiple && Array.isArray(label) && label.includes(b.id))
-                  ? -1
-                  : 1)
-            )
-            .filter((label) =>
-              selectedCollection
-                ? label.collections
-                    ?.map((c) => c?.id)
-                    .includes(selectedCollection)
-                : true
-            )}
-          keyboardShouldPersistTaps="handled"
-          style={{ flex: 1 }}
-          ListHeaderComponent={
-            <>
-              <CollectionChips
-                collections={collections}
-                selectedCollection={selectedCollection}
-                setSelectedCollection={setSelectedCollection}
-              />
-              <View
-                style={{
-                  padding: 10,
-                  paddingBottom: 0,
-                  paddingTop: collections.length === 0 ? 0 : 10,
-                }}
-              >
-                {collections.length > 0 && (
-                  <Text variant="eyebrow">Labels</Text>
-                )}
-              </View>
-            </>
-          }
-          contentContainerStyle={{ paddingBottom: 100 }}
-          ListEmptyComponent={
-            <View
+        filteredData.length === 0 ? (
+          <View
+            style={{
+              justifyContent: "center",
+              alignItems: "center",
+              paddingHorizontal: 20,
+              gap: 5,
+              height: "100%",
+            }}
+          >
+            <Text
               style={{
-                justifyContent: "center",
-                alignItems: "center",
-                paddingHorizontal: 20,
-                gap: 5,
-                height: "100%",
-                marginTop: -20,
+                color: theme[11],
+                fontSize: 30,
+                fontFamily: "serifText700",
               }}
             >
-              <Text
-                style={{
-                  fontSize: 30,
-                  fontFamily: "serifText700",
-                }}
-              >
-                {query ? "No labels found" : "No labels yet"}
-              </Text>
-              <Text style={{ opacity: 0.6, textAlign: "center" }}>
-                {query
-                  ? "Try searching for something else"
-                  : "Labels are a great way to \n group things together"}
-              </Text>
-              {query === "" && (
-                <CreateLabelModal mutate={mutate}>
-                  <Button
-                    variant="filled"
-                    containerStyle={{ marginTop: 5 }}
-                    large
-                    text="Create one"
-                    icon="add"
-                  />
-                </CreateLabelModal>
-              )}
-            </View>
-          }
-          renderItem={({ item }: any) => {
-            const isSelected =
-              (label as any)?.id == item.id ||
-              (multiple && Array.isArray(label) && label.includes(item.id));
-
-            return (
-              <ListItemButton
-                disabled={disabled(item)}
-                onPress={() => {
-                  if (multiple && Array.isArray(label)) {
-                    if (label.includes(item.id) && typeof label === "object") {
-                      setLabel(label.filter((id) => id !== item.id));
-                    } else {
-                      setLabel([...label, item.id]);
-                    }
-                  } else {
-                    setLabel(
-                      label && item.id === (label as any)?.id ? null : item
-                    );
-                    setTimeout(handleClose, 0);
-                  }
-                }}
-                style={[
-                  { paddingVertical: 0, marginBottom: 5 },
-                  disabled(item) && item.integrationId && { opacity: 0.5 },
-                ]}
-                variant={isSelected ? "filled" : undefined}
-              >
-                <View
-                  style={[
-                    labelPickerStyles.labelDot,
-                    {
-                      backgroundColor: colors[item.color][5],
-                    },
-                  ]}
-                >
-                  <Emoji emoji={item.emoji} size={20} />
-                </View>
-                <ListItemText
-                  primary={item.name}
-                  secondary={
-                    disabled(item)
-                      ? !disabledLabels.includes(item.id)
-                        ? "Already connected with another integration"
-                        : "Already selected"
-                      : `${item._count.entities} item${
-                          item._count.entities !== 1 ? "s" : ""
-                        }`
-                  }
+              {query ? "No labels found" : "No labels yet"}
+            </Text>
+            <Text
+              style={{ color: theme[11], opacity: 0.6, textAlign: "center" }}
+            >
+              {query
+                ? "Try searching for something else"
+                : "Labels are a great way to \n group things together"}
+            </Text>
+            {query === "" && (
+              <CreateLabelModal mutate={mutate}>
+                <Button
+                  variant="filled"
+                  containerStyle={{ marginTop: 5 }}
+                  large
+                  text="Create one"
+                  icon="add"
                 />
-                {((label as any)?.id == item.id || multiple) && (
-                  <Icon filled={isSelected} size={30}>
-                    {isSelected ? "check_circle" : "circle"}
-                  </Icon>
-                )}
-              </ListItemButton>
-            );
-          }}
-        />
+              </CreateLabelModal>
+            )}
+          </View>
+        ) : (
+          <SafeFlashListFix
+            showsVerticalScrollIndicator={false}
+            estimatedItemSize={62}
+            data={filteredData}
+            keyboardShouldPersistTaps="handled"
+            style={{ flex: 1 }}
+            ListHeaderComponent={
+              <>
+                <CollectionChips
+                  collections={collections}
+                  selectedCollection={selectedCollection}
+                  setSelectedCollection={setSelectedCollection}
+                />
+                <View
+                  style={{
+                    padding: 10,
+                    paddingBottom: 0,
+                    paddingTop: collections.length === 0 ? 0 : 10,
+                  }}
+                >
+                  {collections.length > 0 && (
+                    <Text variant="eyebrow">Labels</Text>
+                  )}
+                </View>
+              </>
+            }
+            contentContainerStyle={{ paddingBottom: 100 }}
+            renderItem={({ item }: any) => {
+              const isSelected =
+                (label as any)?.id == item.id ||
+                (multiple && Array.isArray(label) && label.includes(item.id));
+
+              return (
+                <ListItemButton
+                  disabled={disabled(item)}
+                  onPress={() => {
+                    if (multiple && Array.isArray(label)) {
+                      if (
+                        label.includes(item.id) &&
+                        typeof label === "object"
+                      ) {
+                        setLabel(label.filter((id) => id !== item.id));
+                      } else {
+                        setLabel([...label, item.id]);
+                      }
+                    } else {
+                      setLabel(
+                        label && item.id === (label as any)?.id ? null : item
+                      );
+                      setTimeout(handleClose, 0);
+                    }
+                  }}
+                  style={[
+                    { paddingVertical: 0, marginBottom: 5 },
+                    disabled(item) && item.integrationId && { opacity: 0.5 },
+                  ]}
+                  variant={isSelected ? "filled" : undefined}
+                >
+                  <View
+                    style={[
+                      labelPickerStyles.labelDot,
+                      {
+                        backgroundColor: colors[item.color][5],
+                      },
+                    ]}
+                  >
+                    <Emoji emoji={item.emoji} size={20} />
+                  </View>
+                  <ListItemText
+                    primary={item.name}
+                    secondary={
+                      disabled(item)
+                        ? !disabledLabels.includes(item.id)
+                          ? "Already connected with another integration"
+                          : "Already selected"
+                        : `${item._count.entities} item${
+                            item._count.entities !== 1 ? "s" : ""
+                          }`
+                    }
+                  />
+                  {((label as any)?.id == item.id || multiple) && (
+                    <Icon filled={isSelected} size={30}>
+                      {isSelected ? "check_circle" : "circle"}
+                    </Icon>
+                  )}
+                </ListItemButton>
+              );
+            }}
+          />
+        )
       ) : (
         <View
           style={{

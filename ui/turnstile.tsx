@@ -13,7 +13,6 @@ const Turnstile = ({
       const newToken =
         Platform.OS === "web" ? event?.data : event?.nativeEvent?.data;
       if (newToken && newToken.length > 100) {
-        
         setToken(newToken);
       }
     },
@@ -82,7 +81,7 @@ const Turnstile = ({
           />
         </View>
         <Text
-          style={{ textAlign: "center" }}
+          style={{ textAlign: "center", opacity: 0.6 }}
           onPress={() =>
             document
               .getElementById("turnstile")
