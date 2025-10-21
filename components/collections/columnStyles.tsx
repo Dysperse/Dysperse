@@ -11,4 +11,3 @@ export const columnStyles = StyleSheet.create({
     paddingHorizontal: 25,
   },
 });
-

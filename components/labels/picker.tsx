@@ -174,6 +174,12 @@ function LabelPickerContent({
         .sort((a, b) => a.name.localeCompare(b.name)) || []
     : [];
 
+  const [selectedCollection, setSelectedCollection] = useState(() => {
+    if (defaultCollection === "all") return null;
+    const hasLabels = collections.some((c) => c.id === defaultCollection);
+    return hasLabels ? defaultCollection : null;
+  });
+
   const filteredData = Array.isArray(data)
     ? fuzzysort
         .go(query, data, { key: "name", all: true })
@@ -187,20 +193,14 @@ function LabelPickerContent({
             (b.id === (label as any)?.id ||
             (multiple && Array.isArray(label) && label.includes(b.id))
               ? -1
-              : 1)
+              : 1),
         )
         .filter((label) =>
           selectedCollection
             ? label.collections?.map((c) => c?.id).includes(selectedCollection)
-            : true
+            : true,
         )
     : [];
-
-  const [selectedCollection, setSelectedCollection] = useState(() => {
-    if (defaultCollection === "all") return null;
-    const hasLabels = collections.some((c) => c.id === defaultCollection);
-    return hasLabels ? defaultCollection : null;
-  });
 
   const hideCreate = useSharedValue(0);
 
@@ -378,7 +378,7 @@ function LabelPickerContent({
                       }
                     } else {
                       setLabel(
-                        label && item.id === (label as any)?.id ? null : item
+                        label && item.id === (label as any)?.id ? null : item,
                       );
                       setTimeout(handleClose, 0);
                     }
@@ -479,7 +479,9 @@ export default function LabelPicker({
   const handleClose = useCallback(async () => {
     await onClose?.();
     ref.current?.close(
-      breakpoints.md ? { duration: 0.0001, overshootClamping: true } : undefined
+      breakpoints.md
+        ? { duration: 0.0001, overshootClamping: true }
+        : undefined,
     );
   }, [ref, onClose]);
 
@@ -521,4 +523,3 @@ export default function LabelPicker({
     </>
   );
 }
-
