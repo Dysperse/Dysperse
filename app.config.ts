@@ -128,6 +128,8 @@ export default ({ config }: ConfigContext): ExpoConfig =>
         display: "standalone",
       },
       plugins: [
+        "expo-background-task",
+        "expo-web-browser",
         [
           "expo-contacts",
           {
@@ -303,6 +305,5 @@ export default ({ config }: ConfigContext): ExpoConfig =>
       url: "https://sentry.io/",
       project: "new-dashboard",
       organization: "dysperse",
-    }
+    },
   );
-
