@@ -367,6 +367,7 @@ export default function AppLayout() {
                               app
                             ) : (
                               <DrawerLayout
+                                enableTrackpadTwoFingerGesture
                                 key={desktopCollapsed.toString()}
                                 contentContainerStyle={{
                                   backgroundColor: "transparent",
@@ -379,8 +380,8 @@ export default function AppLayout() {
                                   !desktopCollapsed && breakpoints.md
                                     ? 2
                                     : drawerLocked
-                                    ? 1
-                                    : 0
+                                      ? 1
+                                      : 0
                                 }
                                 drawerType={
                                   breakpoints.md
@@ -399,8 +400,8 @@ export default function AppLayout() {
                                   breakpoints.md
                                     ? ORIGINAL_SIDEBAR_WIDTH
                                     : pathname.includes("grid")
-                                    ? 10000
-                                    : width
+                                      ? 10000
+                                      : width
                                 }
                                 renderNavigationView={renderNavigationView}
                               >
@@ -423,4 +424,3 @@ export default function AppLayout() {
     </WebAnimationComponent>
   );
 }
-
