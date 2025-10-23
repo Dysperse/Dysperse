@@ -219,8 +219,8 @@ function NoteFormatMenu({ isFocused, editorRef, formatMenuRef }) {
     opacity: isFocused.value,
     pointerEvents: isFocused.value ? "auto" : "none",
     marginTop: withSpring(isFocused.value ? 0 : -40, {
-      damping: 30,
-      stiffness: 400,
+      damping: 70,
+      stiffness: 800,
     }),
   }));
 
@@ -304,7 +304,7 @@ function AISimplification({ id, updateTask }) {
         {},
         {
           body: JSON.stringify({ id }),
-        }
+        },
       );
 
       updateTask({ note: res, hasSimplifiedNote: true });
@@ -389,7 +389,7 @@ export const TaskNote = ({
       [
         theme[5].replace(")", `, ${0})`).replace("hsl", "hsla"),
         theme[5].replace(")", `, ${0.3})`).replace("hsl", "hsla"),
-      ]
+      ],
     ),
   }));
   const [hasLoaded, setHasLoaded] = useState(false);
@@ -489,4 +489,3 @@ export const TaskNote = ({
     </>
   );
 };
-

@@ -152,7 +152,7 @@ TaskManager.defineTask(BACKGROUND_TASK_IDENTIFIER, async () => {
           "Content-Type": "application/json",
           Authorization: `Bearer ${token}`,
         },
-      }
+      },
     );
 
     if (!res.ok) {
@@ -388,7 +388,7 @@ export const LogoButton = memo(function LogoButton({
                   if (!breakpoints.md || desktopCollapsed)
                     sidebarRef.current.closeDrawer();
                   router.push(
-                    breakpoints.md ? "/settings/account" : "/settings"
+                    breakpoints.md ? "/settings/account" : "/settings",
                   );
                 },
               },
@@ -488,7 +488,7 @@ export const TimeZoneModal = () => {
         body: JSON.stringify({
           timeZone: dayjs.tz.guess(),
         }),
-      }
+      },
     );
 
     mutate((t) => ({ ...t, user: { ...t.user, timeZone: dayjs.tz.guess() } }), {
@@ -630,7 +630,7 @@ export const MiniLogo = ({ desktopSlide, onHoverIn }) => {
   const { fullscreen } = useGlobalSearchParams();
   const { desktopCollapsed, SIDEBAR_WIDTH } = useSidebarContext();
   const [titlebarHidden, setTitlebarHidden] = useState(
-    (navigator as any).windowControlsOverlay?.visible
+    (navigator as any).windowControlsOverlay?.visible,
   );
 
   useEffect(() => {
@@ -646,7 +646,7 @@ export const MiniLogo = ({ desktopSlide, onHoverIn }) => {
         ) {
           desktopSlide.value = -SIDEBAR_WIDTH.value;
         }
-      }
+      },
     );
     const t = (navigator as any).windowControlsOverlay;
     const listener = t
@@ -720,13 +720,13 @@ const PrimarySidebar = memo(function PrimarySidebar({ progressValue }: any) {
         });
         AsyncStorage.setItem(
           "desktopCollapsed",
-          (!desktopCollapsed).toString()
+          (!desktopCollapsed).toString(),
         );
       } else {
         sidebarRef.current.closeDrawer();
       }
     },
-    [desktopCollapsed, setDesktopCollapsed, sidebarRef, breakpoints]
+    [desktopCollapsed, setDesktopCollapsed, sidebarRef, breakpoints],
   );
 
   useHotkeys("ctrl+s", toggleHidden);
@@ -881,7 +881,7 @@ function SecondarySidebar({ scrollRef }) {
           icon="tag"
           onPress={() => {
             InteractionManager.runAfterInteractions(() =>
-              scrollRef.current?.scrollTo({ x: ORIGINAL_SIDEBAR_WIDTH + 15 })
+              scrollRef.current?.scrollTo({ x: ORIGINAL_SIDEBAR_WIDTH + 15 }),
             );
             router.push("/everything");
             if (Platform.OS !== "web") impactAsync(ImpactFeedbackStyle.Soft);
@@ -901,7 +901,7 @@ function SecondarySidebar({ scrollRef }) {
           icon="stack"
           onPress={() => {
             InteractionManager.runAfterInteractions(() =>
-              scrollRef.current?.scrollTo({ x: ORIGINAL_SIDEBAR_WIDTH + 15 })
+              scrollRef.current?.scrollTo({ x: ORIGINAL_SIDEBAR_WIDTH + 15 }),
             );
             router.push("/everything/collections");
             impactAsync(ImpactFeedbackStyle.Soft);
@@ -915,7 +915,7 @@ function SecondarySidebar({ scrollRef }) {
           text="Trash"
           onPress={() => {
             InteractionManager.runAfterInteractions(() =>
-              scrollRef.current?.scrollTo({ x: ORIGINAL_SIDEBAR_WIDTH + 15 })
+              scrollRef.current?.scrollTo({ x: ORIGINAL_SIDEBAR_WIDTH + 15 }),
             );
             router.push("/everything/trash");
             impactAsync(ImpactFeedbackStyle.Soft);
@@ -935,7 +935,7 @@ function SecondarySidebar({ scrollRef }) {
           text="Storage"
           onPress={() => {
             InteractionManager.runAfterInteractions(() =>
-              scrollRef.current?.scrollTo({ x: ORIGINAL_SIDEBAR_WIDTH + 15 })
+              scrollRef.current?.scrollTo({ x: ORIGINAL_SIDEBAR_WIDTH + 15 }),
             );
             router.push("/everything/storage");
             impactAsync(ImpactFeedbackStyle.Soft);
@@ -968,6 +968,10 @@ const Sidebar = ({ progressValue }: { progressValue?: any }) => {
     router.push("/settings");
   });
 
+  useHotkeys("esc", () => {
+    toast.dismiss();
+  });
+
   const SafeView = breakpoints.md
     ? (p) => <React.Fragment {...p} />
     : (p) => <View style={{ flex: 1 }} {...p} />;
@@ -989,7 +993,7 @@ const Sidebar = ({ progressValue }: { progressValue?: any }) => {
           SIDEBAR_WIDTH.value = ORIGINAL_SIDEBAR_WIDTH;
         }
       },
-      Platform.OS === "web" ? 400 : 0
+      Platform.OS === "web" ? 400 : 0,
     );
   }, [pathname]);
 
@@ -1015,7 +1019,7 @@ const Sidebar = ({ progressValue }: { progressValue?: any }) => {
           });
         else scrollRef.current?.scrollTo({ x: 0 });
       },
-      Platform.OS === "web" ? 1000 : 0
+      Platform.OS === "web" ? 1000 : 0,
     );
   }, []);
 
@@ -1070,4 +1074,3 @@ const Sidebar = ({ progressValue }: { progressValue?: any }) => {
 };
 
 export default memo(Sidebar);
-
