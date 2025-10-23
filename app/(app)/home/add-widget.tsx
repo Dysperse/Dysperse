@@ -114,7 +114,7 @@ function Widgets() {
               : LexoRank.middle().toString(),
             params: {},
           }),
-        }
+        },
       );
       mutate();
       router.back();
@@ -129,8 +129,8 @@ function Widgets() {
     t.widgets.some(
       (w: any) =>
         w.text.toLowerCase().includes(search.toLowerCase()) ||
-        w.secondary?.toLowerCase().includes(search.toLowerCase())
-    )
+        w.secondary?.toLowerCase().includes(search.toLowerCase()),
+    ),
   )
     .map((t) => [{ header: true, text: t.text }, ...t.widgets])
     .flat();
@@ -247,4 +247,3 @@ export default function Page() {
     </>
   );
 }
-
