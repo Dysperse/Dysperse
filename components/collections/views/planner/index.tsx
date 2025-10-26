@@ -38,7 +38,7 @@ function Agenda() {
 
   const animatedSelectorStyle = useAnimatedStyle(() => ({
     marginBottom: withSpring(state.value === 0 ? -130 : 0, {
-      damping: 1500,
+      damping: 125,
       stiffness: 1500,
     }),
   }));
@@ -84,15 +84,15 @@ function Agenda() {
       ? data.findIndex(
           (col) =>
             dayjs(params.start as any).toISOString() ===
-            dayjs(col.start).toISOString()
+            dayjs(col.start).toISOString(),
         )
       : -1;
   const column =
     Array.isArray(data) && colIndex !== -1
       ? data[colIndex]
       : Array.isArray(data)
-      ? data.find((col) => dayjs().isBetween(col.start, col.end))
-      : null;
+        ? data.find((col) => dayjs().isBetween(col.start, col.end))
+        : null;
 
   const agendaFallback = (
     <View
@@ -217,4 +217,3 @@ export default function Planner() {
     </AgendaContext.Provider>
   );
 }
-

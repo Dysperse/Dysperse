@@ -44,7 +44,7 @@ const Modal = (
     height?: ViewStyle["height"];
     transformCenter?: boolean;
     closeContainerStyles?: ViewStyle;
-  }
+  },
 ) => {
   const theme = useColorTheme();
   const state = useSharedValue(0);
@@ -58,9 +58,9 @@ const Modal = (
         : {
             overshootClamping: props.animation !== "BOTH",
             stiffness: 1500,
-            damping: props.animation === "BOTH" ? 125 : 40,
+            damping: props.animation === "BOTH" ? 125 : 900,
           },
-    [props.animation]
+    [props.animation],
   );
 
   const handleClose = useCallback(() => {
@@ -90,7 +90,7 @@ const Modal = (
         },
       ],
     }),
-    []
+    [],
   );
 
   const paddingValue = useSharedValue(insets.bottom);
@@ -192,4 +192,3 @@ const Modal = (
 };
 
 export default memo(Modal);
-

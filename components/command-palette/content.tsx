@@ -84,7 +84,7 @@ const PaletteItem = memo(
       </ListItemButton>
     );
   },
-  (prev, next) => prev.item === next.item
+  (prev, next) => prev.item === next.item,
 );
 
 const PaletteFilters = memo(({ filters, filter, setFilter }: any) => {
@@ -137,7 +137,12 @@ const PaletteFilters = memo(({ filters, filter, setFilter }: any) => {
             }}
             chip
             textStyle={{ fontSize: 15 }}
-            variant={filter !== name ? "outlined" : undefined}
+            backgroundColors={{
+              default: theme[filter !== name ? 2 : 5],
+              hovered: theme[filter !== name ? 2 : 5],
+              pressed: theme[filter !== name ? 2 : 5],
+            }}
+            variant="outlined"
             style={[filter === name && { backgroundColor: theme[5] }]}
           />
         ))}
@@ -287,8 +292,8 @@ function CommandPaletteList({
                     marginTop: showMore.includes(item.category)
                       ? -30
                       : Platform.OS === "ios"
-                      ? -50
-                      : -75,
+                        ? -50
+                        : -75,
                     justifyContent: "flex-end",
                     marginBottom: 10,
                     marginHorizontal: -20,
@@ -316,7 +321,7 @@ function CommandPaletteList({
                       setshowMore((prev) =>
                         prev.includes(item.category)
                           ? prev.filter((e) => e !== item.category)
-                          : [...prev, item.category]
+                          : [...prev, item.category],
                       );
                     }}
                   />
@@ -381,7 +386,7 @@ const PaletteHeader = memo(function PaletteHeader({
         icon={"close"}
       />
     ),
-    [handleClose, theme, breakpoints, query]
+    [handleClose, theme, breakpoints, query],
   );
   const handleKeyPress = (e) => {
     if (Platform.OS === "web") {
@@ -393,7 +398,7 @@ const PaletteHeader = memo(function PaletteHeader({
       setPreview(
         filtered.length > 0
           ? filtered.filter((t) => typeof t !== "string")[0]
-          : null
+          : null,
       );
   };
 
@@ -645,7 +650,7 @@ export default function CommandPaletteContent({ handleClose, defaultFilter }) {
               showMore: true,
               category: curr.title,
               key: curr.title + "more",
-            }
+            },
           );
         } else {
           acc.push(...items);
@@ -714,7 +719,7 @@ export default function CommandPaletteContent({ handleClose, defaultFilter }) {
       preview,
       sidebarRef,
       desktopCollapsed,
-    ]
+    ],
   );
 
   return (
@@ -789,4 +794,3 @@ export default function CommandPaletteContent({ handleClose, defaultFilter }) {
     </View>
   );
 }
-
