@@ -49,7 +49,7 @@ function Schedule({ tasks }) {
   function getOverlappingGroups(hourTasks) {
     // Sort by start time
     const sorted = [...hourTasks].sort(
-      (a, b) => getTaskRange(a).startMinutes - getTaskRange(b).startMinutes
+      (a, b) => getTaskRange(a).startMinutes - getTaskRange(b).startMinutes,
     );
     const groups = [];
     let group = [];
@@ -107,10 +107,10 @@ function Schedule({ tasks }) {
                 {hour === 0
                   ? "12AM"
                   : hour < 12
-                  ? `${hour}AM`
-                  : hour === 12
-                  ? "12PM"
-                  : `${hour - 12}PM`}
+                    ? `${hour}AM`
+                    : hour === 12
+                      ? "12PM"
+                      : `${hour - 12}PM`}
               </Text>
             </View>
             <View style={{ flex: 1, minHeight: 40, position: "relative" }}>
@@ -160,7 +160,7 @@ function Schedule({ tasks }) {
                       </Text>
                     </View>
                   );
-                })
+                }),
               )}
             </View>
           </View>
@@ -240,7 +240,7 @@ export function Column({
                 date: dayjs(column.start),
                 agendaOrder: LexoRank.parse(
                   column.entities[column.entities.length - 1]?.agendaOrder ||
-                    LexoRank.max().toString()
+                    LexoRank.max().toString(),
                 )
                   .genNext()
                   .toString(),
@@ -312,10 +312,10 @@ export function Column({
                           dayjs(column.start),
                           dayjs(column.end),
                           "day",
-                          "[]"
-                        )
+                          "[]",
+                        ),
                       )
-                    : task.completionInstances.length === 0
+                    : task.completionInstances.length === 0,
                 ) && (
                   <ColumnEmptyComponent
                     plannerFinished
@@ -341,4 +341,3 @@ export function Column({
     </View>
   );
 }
-

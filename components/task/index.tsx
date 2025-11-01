@@ -91,8 +91,8 @@ export const TaskLabelChip = ({
         large
           ? task.label.name
           : task.label.name.length > 10
-          ? `${task.label.name.slice(0, 10)}...`
-          : `${task.label.name}`
+            ? `${task.label.name.slice(0, 10)}...`
+            : `${task.label.name}`
       }
       backgroundColors={{
         default: theme[3],
@@ -178,7 +178,7 @@ function extractImagesFromHTML(htmlString) {
 function TaskNoteChips({ note }) {
   const chips = useMemo(
     () => [...extractLinksFromHTML(note), ...extractImagesFromHTML(note)],
-    [note]
+    [note],
   );
 
   return (
@@ -256,7 +256,7 @@ function TaskNoteChips({ note }) {
                   )
                 }
               />
-            )
+            ),
           )
       )}
     </>
@@ -302,13 +302,13 @@ const Task = memo(function Task({
     setSelection((prev) =>
       prev.some((e) => e.id === task.id)
         ? prev.filter((e) => e.id !== task.id)
-        : [...prev, task]
+        : [...prev, task],
     );
   };
 
   const isSelected = useMemo(
     () => selection?.some((e) => e.id === task.id),
-    [selection, task?.id]
+    [selection, task?.id],
   );
 
   const taskStyle = useAnimatedStyle(() => ({
@@ -375,8 +375,8 @@ const Task = memo(function Task({
                   ? 3
                   : 8
                 : dense
-                ? 7
-                : 10,
+                  ? 7
+                  : 10,
               ...(isSelected && !reorderMode && { backgroundColor: blue[4] }),
             }}
             style={[
@@ -481,15 +481,15 @@ const Task = memo(function Task({
                               ? task.dateOnly
                                 ? "MMM Do"
                                 : dayjs(task.start).minute() === 0
-                                ? session.user.militaryTime
-                                  ? "MMM Do [@] H a"
-                                  : "MMM Do [@] h a"
-                                : session.user.militaryTime
-                                ? "MMM Do [@] H:mm"
-                                : "MMM Do [@] h:mm a"
+                                  ? session.user.militaryTime
+                                    ? "MMM Do [@] H a"
+                                    : "MMM Do [@] h a"
+                                  : session.user.militaryTime
+                                    ? "MMM Do [@] H:mm"
+                                    : "MMM Do [@] h:mm a"
                               : session.user.militaryTime
-                              ? "H:mm"
-                              : "h:mm a"
+                                ? "H:mm"
+                                : "h:mm a",
                           )}
                           icon={
                             task.dateOnly ? "calendar_today" : "access_time"
@@ -506,8 +506,8 @@ const Task = memo(function Task({
                         toast.info("This task is repeating", {
                           description: capitalizeFirstLetter(
                             normalizeRecurrenceRuleObject(
-                              task.recurrenceRule
-                            ).toText()
+                              task.recurrenceRule,
+                            ).toText(),
                           ),
                         });
                       }}
@@ -547,7 +547,7 @@ const Task = memo(function Task({
       </Animated.View>
       {task.subtasks &&
         taskSortAlgorithm(
-          Object.values(task.subtasks)?.filter((e) => !e.trash)
+          Object.values(task.subtasks)?.filter((e) => !e.trash),
         )?.map((subtask) => (
           <Task key={subtask.id} task={subtask} onTaskUpdate={onTaskUpdate} />
         ))}
@@ -556,4 +556,3 @@ const Task = memo(function Task({
 });
 
 export default React.memo(Task);
-
