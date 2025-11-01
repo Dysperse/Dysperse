@@ -2,20 +2,24 @@ import { mutations } from "@/app/(app)/[tab]/collections/mutations";
 import { useCollectionContext } from "@/components/collections/context";
 import { Entity } from "@/components/collections/entity";
 import CreateTask from "@/components/task/create";
+import { useSelectionContext } from "@/context/SelectionContext";
 import { useUser } from "@/context/useUser";
 import { omit } from "@/helpers/omit";
 import { useResponsiveBreakpoints } from "@/helpers/useResponsiveBreakpoints";
 import { Button, ButtonText } from "@/ui/Button";
 import Icon from "@/ui/Icon";
 import RefreshControl from "@/ui/RefreshControl";
+import Text from "@/ui/Text";
 import { addHslAlpha } from "@/ui/color";
 import { useColorTheme } from "@/ui/color/theme-provider";
 import { TEMPORARY_CONTENT_INSET_FIX } from "@/utils/temporary-scrolling-bug-fix";
 import { FlashList } from "@shopify/flash-list";
 import { LinearGradient } from "expo-linear-gradient";
-import React, { useRef, useState } from "react";
+import { useLocalSearchParams } from "expo-router";
+import React, { useCallback, useRef, useState } from "react";
 import { Platform, useWindowDimensions, View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
+import Sortable, { SortableGridRenderItem } from "react-native-sortables";
 import { useDidUpdate } from "../../../../utils/useDidUpdate";
 import { ColumnEmptyComponent } from "../../emptyComponent";
 import { taskSortAlgorithm } from "../skyline";
@@ -35,6 +39,33 @@ export type ColumnProps =
       index?: number;
     };
 
+function ReorderableTaskList({
+  tasks,
+  key,
+}: {
+  tasks: Array<any>;
+  key: string[];
+}) {
+  const renderItem = useCallback<SortableGridRenderItem<string>>(
+    ({ item }) => (
+      <View>
+        <Text>{item}</Text>
+      </View>
+    ),
+    [],
+  );
+
+  return (
+    <Sortable.Grid
+      columns={1}
+      data={tasks} // Pass your data here
+      renderItem={renderItem}
+      rowGap={10}
+      columnGap={10}
+    />
+  );
+}
+
 export function Column(props: ColumnProps) {
   const theme = useColorTheme();
   const columnRef = useRef(null);
@@ -43,9 +74,11 @@ export function Column(props: ColumnProps) {
   const breakpoints = useResponsiveBreakpoints();
   const { mutate, access, data: collectionData } = useCollectionContext();
   const [refreshing] = useState(false);
+  const { reorderMode } = useSelectionContext();
+  const { id, view } = useLocalSearchParams();
 
   const [showCompleted, setShowCompleted] = useState(
-    collectionData.showCompleted
+    collectionData.showCompleted,
   );
 
   const isReadOnly = access?.access === "READ_ONLY";
@@ -55,8 +88,8 @@ export function Column(props: ColumnProps) {
       (e) =>
         (showCompleted
           ? true
-          : e.completionInstances.length === 0 || e.recurrenceRule) && !e.trash
-    )
+          : e.completionInstances.length === 0 || e.recurrenceRule) && !e.trash,
+    ),
   ).filter((t) => !t.parentTaskId);
 
   const hasItems = data.length > 0;
@@ -69,7 +102,7 @@ export function Column(props: ColumnProps) {
 
   const completeTasksExist =
     Object.values(props.label?.entities || props.entities).filter(
-      (e) => e.completionInstances.length > 0
+      (e) => e.completionInstances.length > 0,
     ).length > 0;
 
   const centerContent = data.length === 0;
@@ -148,9 +181,9 @@ export function Column(props: ColumnProps) {
           label={{
             ...props.label,
             entitiesLength: Object.values(
-              props.label?.entities || props?.entities || {}
+              props.label?.entities || props?.entities || {},
             ).filter(
-              (e) => e.completionInstances.length === 0 && !e.parentTaskId
+              (e) => e.completionInstances.length === 0 && !e.parentTaskId,
             ).length,
           }}
         />
@@ -216,6 +249,8 @@ export function Column(props: ColumnProps) {
           />
           {showCompletedTrigger}
         </View>
+      ) : reorderMode ? (
+        <ReorderableTaskList tasks={data} key={[id, view]} />
       ) : (
         <FlashList
           // onReorder={({ from, to }) => {
@@ -295,4 +330,3 @@ export function Column(props: ColumnProps) {
     </View>
   );
 }
-

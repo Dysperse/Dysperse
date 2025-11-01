@@ -22,6 +22,7 @@ import { toast } from "sonner-native";
 import { useSWRConfig } from "swr";
 import { TaskDateModal } from "../task/drawer/date-modal";
 import { COLLECTION_VIEWS } from "./command-palette/list";
+import { useUser } from "@/context/useUser";
 
 function NavbarHeader({ isLoading, setIsLoading }) {
   const { selection, setSelection, setReorderMode, reorderMode } =
@@ -59,7 +60,7 @@ function NavbarHeader({ isLoading, setIsLoading }) {
 }
 
 function Actions({ isLoading, setIsLoading }) {
-  const { session } = useSession();
+  const { session, sessionToken } = useUser();
   const { selection } = useSelectionContext();
   const { setSelection } = useSelectionContext();
   const blue = useColor("blue");
@@ -75,13 +76,13 @@ function Actions({ isLoading, setIsLoading }) {
       try {
         setIsLoading(true);
         await sendApiRequest(
-          session,
+          sessionToken,
           "PUT",
           "space/entity",
           {},
           {
             body: JSON.stringify({ id: selection.map((x) => x.id), ...t }),
-          }
+          },
         );
         badgingService.current.mutate();
         await mutate(() => true);
@@ -92,7 +93,14 @@ function Actions({ isLoading, setIsLoading }) {
         setIsLoading(false);
       }
     },
-    [selection, setSelection, session, setIsLoading, mutate, badgingService]
+    [
+      selection,
+      setSelection,
+      sessionToken,
+      setIsLoading,
+      mutate,
+      badgingService,
+    ],
   );
 
   const trigger = (
@@ -105,15 +113,15 @@ function Actions({ isLoading, setIsLoading }) {
         color: blue[11],
       }}
       onPress={() => {
-        if (selection.length === 1) {
-          toast.info("Coming soon!");
-        }
-        if (!reorderMode) return;
-        if (process.env.NODE_ENV === "development") {
+        if (selection.length === 1 && !session.user.betaTester)
+          return toast.info("Coming soon!");
+
+        if (session.user.betaTester) {
           if (COLLECTION_VIEWS[type as string].type !== "Category Based") {
             toast.info(
-              "For now, you can only reorder tasks in category-based views"
+              "For now, you can only reorder tasks in category-based views",
             );
+            alert(1);
             setReorderMode((t) => !t);
           } else toast.info("Coming soon!");
         }
@@ -222,4 +230,3 @@ const SelectionNavbar = memo(function SelectionNavbar() {
 });
 
 export default SelectionNavbar;
-
