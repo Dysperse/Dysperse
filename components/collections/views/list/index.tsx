@@ -16,10 +16,12 @@ import { Entity } from "../../entity";
 import { CollectionEmpty } from "../CollectionEmpty";
 import { KanbanHeader } from "../kanban/Header";
 import { taskSortAlgorithm } from "../skyline";
+import { useLocalSearchParams } from "expo-router";
 
 function ListItem({ d, data, item, listRef, mutate, onTaskUpdate, index }) {
   const theme = useColorTheme();
   const isDark = useDarkMode();
+  const { ungrouped } = useLocalSearchParams();
 
   if (item.empty) {
     return (
@@ -61,7 +63,7 @@ function ListItem({ d, data, item, listRef, mutate, onTaskUpdate, index }) {
               overflow: "hidden",
               backgroundColor: addHslAlpha(
                 theme[3],
-                Platform.OS === "android" ? 1 : 0.5
+                Platform.OS === "android" ? 1 : 0.5,
               ),
               borderRadius: 30,
               borderWidth: 0,
@@ -75,8 +77,8 @@ function ListItem({ d, data, item, listRef, mutate, onTaskUpdate, index }) {
                     ? "dark"
                     : "light"
                   : !isDark
-                  ? "prominent"
-                  : "systemMaterialDark"
+                    ? "prominent"
+                    : "systemMaterialDark"
               }
               style={{
                 borderRadius: 30,
@@ -92,7 +94,7 @@ function ListItem({ d, data, item, listRef, mutate, onTaskUpdate, index }) {
                   paddingBottom: 20,
                   backgroundColor: addHslAlpha(
                     theme[3],
-                    Platform.OS === "android" ? 1 : 0.5
+                    Platform.OS === "android" ? 1 : 0.5,
                   ),
                 }}
                 hideNavigation
@@ -101,10 +103,10 @@ function ListItem({ d, data, item, listRef, mutate, onTaskUpdate, index }) {
                   entitiesLength:
                     item.entitiesLength ||
                     Object.values(
-                      data.labels.find((l) => l.id === item.id)?.entities
+                      data.labels.find((l) => l.id === item.id)?.entities,
                     )?.filter(
                       (e) =>
-                        e.completionInstances.length === 0 && !e.parentTaskId
+                        e.completionInstances.length === 0 && !e.parentTaskId,
                     )?.length,
                 }}
                 grid
@@ -122,6 +124,7 @@ function ListItem({ d, data, item, listRef, mutate, onTaskUpdate, index }) {
         item={item}
         isReadOnly={false}
         showRelativeTime
+        showLabel={ungrouped === "true"}
       />
     );
   }
@@ -132,15 +135,16 @@ const incompleteEntitiesFilter = (e) =>
 
 export default function List() {
   const { data, mutate } = useCollectionContext();
+  const { ungrouped } = useLocalSearchParams();
 
   const shownEntities = taskSortAlgorithm(
     Object.values(data.entities).filter(
-      (e) => !e.trash && (incompleteEntitiesFilter(e) || data.showCompleted)
-    )
+      (e) => !e.trash && (incompleteEntitiesFilter(e) || data.showCompleted),
+    ),
   ).filter((t) => !t.parentTaskId);
 
   const labels = data.labels.sort(
-    (a, b) => data.listOrder.indexOf(a.id) - data.listOrder.indexOf(b.id)
+    (a, b) => data.listOrder.indexOf(a.id) - data.listOrder.indexOf(b.id),
   );
 
   const d = [
@@ -155,15 +159,18 @@ export default function List() {
       : []),
     ...(shownEntities || []),
     ...labels.reduce((acc, curr) => {
-      acc.push({ header: true, ...omit(["entities"], curr) });
+      if (ungrouped !== "true")
+        acc.push({ header: true, ...omit(["entities"], curr) });
+
       const t = taskSortAlgorithm(
         Object.values(curr.entities).filter(
-          (e) => !e.trash && (incompleteEntitiesFilter(e) || data.showCompleted)
-        )
+          (e) =>
+            !e.trash && (incompleteEntitiesFilter(e) || data.showCompleted),
+        ),
       );
 
       acc.push(...t);
-      if (t.length === 0) acc.push({ empty: true });
+      if (t.length === 0 && ungrouped !== "true") acc.push({ empty: true });
       return acc;
     }, []),
   ];
@@ -182,10 +189,11 @@ export default function List() {
         <FlashList
           data={d}
           ref={ref}
-          stickyHeaderIndices={d.reduce(
-            (acc, e, i) => (e.header ? [...acc, i] : acc),
-            []
-          )}
+          stickyHeaderIndices={
+            ungrouped === "true"
+              ? undefined
+              : d.reduce((acc, e, i) => (e.header ? [...acc, i] : acc), [])
+          }
           refreshControl={
             <RefreshControl refreshing={false} onRefresh={() => mutate()} />
           }
@@ -221,4 +229,3 @@ export default function List() {
     </View>
   );
 }
-

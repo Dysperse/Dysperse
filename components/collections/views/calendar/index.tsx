@@ -25,6 +25,7 @@ import useSWR from "swr";
 import { useCollectionContext } from "../../context";
 import { AgendaButtons } from "../../navbar/AgendaButtons";
 import { CalendarContext, useCalendarContext } from "./context";
+import { taskSortAlgorithm } from "../skyline";
 
 export interface MyCustomEventType {
   color: string;
@@ -34,7 +35,7 @@ const CalendarTaskDrawer = (
   props: Omit<TaskDrawerProps, "children" | "id" | "dateRange"> & {
     tasks: any[];
     ref: any;
-  }
+  },
 ) => {
   const drawerRef = useRef(null);
   const [taskId, setTaskId] = useState<string>("");
@@ -100,7 +101,7 @@ const Event = ({ event, day }) => {
         borderRadius: breakpoints.md ? 7 : 4,
         paddingHorizontal: 4,
         paddingVertical: 1,
-        backgroundColor: colorTheme[event.pinned ? 7 : 4],
+        backgroundColor: colorTheme[event.pinned && !hasCompleted ? 7 : 4],
         flexDirection: "row",
         alignItems: "center",
         gap: 4,
@@ -135,7 +136,7 @@ const Event = ({ event, day }) => {
             fontSize: breakpoints.md ? 13 : 10,
             textDecorationLine: hasCompleted ? "line-through" : "none",
             opacity: hasCompleted ? 0.6 : 1,
-            color: colorTheme[event.pinned ? 12 : 11],
+            color: colorTheme[event.pinned && !hasCompleted ? 12 : 11],
           }}
           weight={event.pinned ? 500 : 400}
           numberOfLines={1}
@@ -185,7 +186,7 @@ function Date({ mutate, day, events, theme, dIdx, wIdx }) {
       (event) =>
         dayjs(event.start).isSame(day, "day") ||
         (dayjs(event.start).isBefore(day, "day") &&
-          dayjs(event.end).isAfter(day, "day"))
+          dayjs(event.end).isAfter(day, "day")),
     );
   };
 
@@ -218,7 +219,7 @@ function Date({ mutate, day, events, theme, dIdx, wIdx }) {
           gap: 2,
           backgroundColor: addHslAlpha(
             theme[5],
-            (day.isToday() ? 0.2 : 0) + (pressed ? 0.2 : hovered ? 0.1 : 0)
+            (day.isToday() ? 0.2 : 0) + (pressed ? 0.2 : hovered ? 0.1 : 0),
           ),
           paddingBottom: 5,
           alignItems: "center",
@@ -235,13 +236,13 @@ function Date({ mutate, day, events, theme, dIdx, wIdx }) {
             createTaskSheetRef.current?.present();
             setTimeout(
               () => createTaskSheetRef.current?.setValue("date", dayjs(day)),
-              100
+              100,
             );
           }
         }}
       >
         <DateIndicator day={day} />
-        {dayEvents.slice(0, maxToShow).map((event) => (
+        {taskSortAlgorithm(dayEvents.slice(0, maxToShow)).map((event) => (
           <Event key={event.id} event={event} day={day} />
         ))}
         {dayEvents.length > maxToShow && (
@@ -273,8 +274,8 @@ function Date({ mutate, day, events, theme, dIdx, wIdx }) {
           breakpoints.md
             ? ["100%"]
             : dayEvents.length == 0
-            ? [300]
-            : ["50%", "90%"]
+              ? [300]
+              : ["50%", "90%"]
         }
         maxBackdropOpacity={0.1}
         handleIndicatorStyle={{
@@ -342,7 +343,7 @@ function Date({ mutate, day, events, theme, dIdx, wIdx }) {
                 setTimeout(
                   () =>
                     createTaskSheetRef.current?.setValue("date", dayjs(day)),
-                  100
+                  100,
                 );
               }}
               style={{ borderRadius: 20 }}
@@ -371,7 +372,7 @@ function Date({ mutate, day, events, theme, dIdx, wIdx }) {
             </View>
           ) : (
             <SafeFlashListFix
-              data={dayEvents}
+              data={taskSortAlgorithm(dayEvents)}
               keyExtractor={(item) => item.id}
               contentContainerStyle={{
                 paddingHorizontal: 15,
@@ -409,7 +410,7 @@ function CalendarContainer(props) {
   const days = useMemo(() => {
     const blanks = Array.from({ length: firstDayOfWeek }, () => null);
     const daysArr = Array.from({ length: daysInMonth }, (_, i) =>
-      firstDay.add(i, "day")
+      firstDay.add(i, "day"),
     );
     return [...blanks, ...daysArr];
   }, [firstDay, daysInMonth, firstDayOfWeek]);
@@ -534,7 +535,7 @@ export function Content() {
         Object.values(col?.entities || {}).map((task) => ({
           ...task,
           dateRange: [dayjs(col.start).toDate(), dayjs(col.end).toDate()],
-        }))
+        })),
       );
     }, [])
     .filter((t) => !t.trash);
@@ -545,7 +546,7 @@ export function Content() {
         .filter((e) => e.start || e.recurrenceRule)
         .map((task) => {
           const start = dayjs(
-            task.recurrenceRule ? task.recurrenceDay : task.start
+            task.recurrenceRule ? task.recurrenceDay : task.start,
           ).toDate();
 
           return {
@@ -557,13 +558,13 @@ export function Content() {
               : dayjs(
                   task.recurrenceRule
                     ? task.recurrenceDay
-                    : task.end || task.start
+                    : task.end || task.start,
                 )
                   .add(task.end ? 0 : 1, "hour")
                   .toDate(),
           };
         }),
-    [tasks]
+    [tasks],
   );
 
   const breakpoints = useResponsiveBreakpoints();
@@ -616,4 +617,3 @@ export default function Calendar() {
     </CalendarContext.Provider>
   );
 }
-

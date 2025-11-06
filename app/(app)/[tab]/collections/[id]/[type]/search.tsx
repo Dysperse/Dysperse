@@ -69,8 +69,8 @@ function SearchList({ collection, inputRef, listRef, handleClose }) {
     opacity: withSpring(clearValue.value),
     width: 100,
     marginRight: withSpring(interpolate(clearValue.value, [1, 0], [0, -100]), {
-      stiffness: 400,
-      damping: 30,
+      stiffness: 1400,
+      damping: 300,
     }),
   }));
 
@@ -115,17 +115,17 @@ function SearchList({ collection, inputRef, listRef, handleClose }) {
             ...Object.values(data.entities),
             ...data.labels.reduce(
               (acc, curr) => [...acc, ...Object.values(curr.entities)],
-              []
+              [],
             ),
           ]
         : [],
-      { keys: ["name", "note"] }
+      { keys: ["name", "note"] },
     )
     .map((t) => t.obj)
     .filter((item) => {
       const matchesFilters = activeFilters.length
         ? activeFilters.some((filter) =>
-            filters.find((f) => f.label === filter)?.filter(item)
+            filters.find((f) => f.label === filter)?.filter(item),
           )
         : true;
 
@@ -169,7 +169,7 @@ function SearchList({ collection, inputRef, listRef, handleClose }) {
           flex: 1,
           backgroundColor: addHslAlpha(
             theme[1],
-            Platform.OS === "android" ? 1 : 0.8
+            Platform.OS === "android" ? 1 : 0.8,
           ),
         }}
       >
@@ -270,22 +270,22 @@ function SearchList({ collection, inputRef, listRef, handleClose }) {
                     setActiveFilters((prev) =>
                       prev.includes(filter.label)
                         ? prev.filter((f) => f !== filter.label)
-                        : [...prev, filter.label]
+                        : [...prev, filter.label],
                     );
                     inputRef.current.focus();
                   }}
                   backgroundColors={{
                     default: addHslAlpha(
                       theme[9],
-                      activeFilters.includes(filter.label) ? 0.2 : 0.05
+                      activeFilters.includes(filter.label) ? 0.2 : 0.05,
                     ),
                     hovered: addHslAlpha(
                       theme[9],
-                      activeFilters.includes(filter.label) ? 0.3 : 0.1
+                      activeFilters.includes(filter.label) ? 0.3 : 0.1,
                     ),
                     pressed: addHslAlpha(
                       theme[9],
-                      activeFilters.includes(filter.label) ? 0.4 : 0.1
+                      activeFilters.includes(filter.label) ? 0.4 : 0.1,
                     ),
                   }}
                 />
@@ -377,7 +377,7 @@ export default function Page() {
           "space/collections/collection",
           id === "all" ? { all: "true", id: "??" } : { id },
         ]
-      : null
+      : null,
   );
 
   const contextValue: CollectionContext = {
@@ -406,4 +406,3 @@ export default function Page() {
     </>
   );
 }
-

@@ -56,7 +56,7 @@ export const groupedViews = Object.entries(COLLECTION_VIEWS).reduce(
     acc[type].push(view);
     return acc;
   },
-  {}
+  {},
 );
 
 function CollectionSidekick() {
@@ -84,7 +84,8 @@ const CollectionNavbar = memo(function CollectionNavbar({
   const { data, access, type, swrKey, ...ctx } = useCollectionContext();
   const isReadOnly = access?.access === "READ_ONLY" || (!access && !session);
   const breakpoints = useResponsiveBreakpoints();
-  const { id, days, fullscreen, tab, showAs } = useGlobalSearchParams();
+  const { id, days, fullscreen, tab, showAs, ungrouped } =
+    useGlobalSearchParams();
   const menuRef = useRef(null);
   const pathname = usePathname();
   const shareMenuRef = useRef(null);
@@ -115,7 +116,7 @@ const CollectionNavbar = memo(function CollectionNavbar({
         ...o,
         pinAuthorizationExpiresAt: dayjs().subtract(1, "year").toISOString(),
       }),
-      { revalidate: false }
+      { revalidate: false },
     );
 
     await sendApiRequest(
@@ -128,7 +129,7 @@ const CollectionNavbar = memo(function CollectionNavbar({
           id: data.id,
           pinAuthorizationExpiresAt: true,
         }),
-      }
+      },
     );
   };
 
@@ -145,7 +146,7 @@ const CollectionNavbar = memo(function CollectionNavbar({
     {
       ignoreEventWhen: () =>
         document.querySelectorAll('[aria-modal="true"]').length > 0,
-    }
+    },
   );
   useHotkeys(["ctrl+l", "ctrl+shift+l"], (e) => {
     if (id === "all") return;
@@ -169,15 +170,15 @@ const CollectionNavbar = memo(function CollectionNavbar({
             v === "skyline"
               ? e.key === "y"
               : v === "map"
-              ? e.key === "a"
-              : v[0].toLowerCase() === e.key
+                ? e.key === "a"
+                : v[0].toLowerCase() === e.key,
           ),
         });
     },
     {
       ignoreEventWhen: () =>
         document.querySelectorAll('[aria-modal="true"]').length > 0,
-    }
+    },
   );
 
   const collectionMenuOptions = [
@@ -288,6 +289,15 @@ const CollectionNavbar = memo(function CollectionNavbar({
       text: "Lock now",
       onPress: handleLock,
     },
+    type === "list" && {
+      renderer: () => <Divider />,
+    },
+    type === "list" && {
+      text: "Group by label",
+      onPress: () =>
+        router.setParams({ ungrouped: ungrouped === "true" ? null : "true" }),
+      selected: ungrouped !== "true",
+    },
   ]
     .flat()
     .filter((e) => e);
@@ -303,7 +313,7 @@ const CollectionNavbar = memo(function CollectionNavbar({
           icon={<MenuIcon />}
         />
       ),
-    [sidebarRef, breakpoints.md, desktopCollapsed]
+    [sidebarRef, breakpoints.md, desktopCollapsed],
   );
 
   return (
@@ -419,4 +429,3 @@ const CollectionNavbar = memo(function CollectionNavbar({
 });
 
 export default CollectionNavbar;
-
