@@ -77,10 +77,12 @@ export const TaskImportantChip = ({
 export const TaskLabelChip = ({
   task,
   large = false,
+  iconOnly = false,
 }: {
   task: any;
   published?: boolean;
   large?: boolean;
+  iconOnly?: boolean;
 }) => {
   const theme = useColor(task.label.color);
 
@@ -88,16 +90,18 @@ export const TaskLabelChip = ({
     <Button
       chip
       text={
-        large
-          ? task.label.name
-          : task.label.name.length > 10
-            ? `${task.label.name.slice(0, 10)}...`
-            : `${task.label.name}`
+        iconOnly
+          ? undefined
+          : large
+            ? task.label.name
+            : task.label.name.length > 100
+              ? `${task.label.name.slice(0, 10)}...`
+              : `${task.label.name}`
       }
       backgroundColors={{
-        default: theme[3],
-        hovered: theme[4],
-        pressed: theme[5],
+        default: theme[4],
+        hovered: theme[5],
+        pressed: theme[6],
       }}
       onPress={() => router.push(`/everything/labels/${task.label.id}`)}
       icon={<Emoji size={large ? 23 : 17} emoji={task.label.emoji} />}
@@ -133,13 +137,9 @@ function extractLinksFromHTML(htmlString) {
     let text = innerHTML.replace(/<[^>]+>/g, ""); // Remove any HTML tags within the link text
     let icon = "link";
 
-    if (text === match[1]) {
-      try {
-        text = new URL(text).hostname;
-      } catch (e) {
-        // If the URL is invalid, keep the original text
-      }
-    }
+    try {
+      text = new URL(match[1]).hostname;
+    } catch (e) {}
 
     if (videoChatPlatforms.some((platform) => text.includes(platform))) {
       text = "Join meeting";
@@ -183,7 +183,7 @@ function TaskNoteChips({ note }) {
 
   return (
     <>
-      {chips.filter((link) => link.text?.trim()).length > 3 ? (
+      {chips.filter((link) => link.text?.trim()).length > 1 ? (
         <DropdownMenu
           horizontalPlacement="center"
           containerStyle={{ width: 250 }}
@@ -209,12 +209,7 @@ function TaskNoteChips({ note }) {
               onPress: () => Linking.openURL(link.image || link.href),
             }))}
         >
-          <Button
-            chip
-            text={`${chips.length} links`}
-            icon="expand_more"
-            iconPosition="end"
-          />
+          <Button chip text={`${chips.length}`} icon="note_stack" />
         </DropdownMenu>
       ) : (
         chips
@@ -260,6 +255,43 @@ function TaskNoteChips({ note }) {
           )
       )}
     </>
+  );
+}
+
+function TaskName({ isCompleted, task }) {
+  const theme = useColorTheme();
+
+  return (
+    <Text
+      weight={task.pinned ? 700 : undefined}
+      style={[
+        {
+          flex: 1,
+          ...(isCompleted && {
+            textDecorationLine: "line-through",
+          }),
+        },
+        isCompleted && { opacity: 0.4 },
+      ]}
+    >
+      {task.pinned && (
+        <Icon
+          size={16}
+          filled
+          bold
+          style={{
+            verticalAlign: "middle",
+            display: "inline-flex",
+            marginRight: 4,
+            transform: [{ translateY: -3 }, { rotate: "-45deg" }],
+            color: theme[12],
+          }}
+        >
+          push_pin
+        </Icon>
+      )}
+      {task.name.trim()}
+    </Text>
   );
 }
 
@@ -329,7 +361,6 @@ const Task = memo(function Task({
     task.note ||
     ((showRelativeTime || !task.dateOnly) && task.start) ||
     (showDate && task.start) ||
-    task.pinned ||
     task.recurrenceRule;
 
   return (
@@ -416,19 +447,7 @@ const Task = memo(function Task({
               )}
             </View>
             <View style={{ flex: 1, alignItems: "flex-start" }}>
-              <Text
-                style={[
-                  {
-                    flex: 1,
-                    ...(isCompleted && {
-                      textDecorationLine: "line-through",
-                    }),
-                  },
-                  isCompleted && { opacity: 0.4 },
-                ]}
-              >
-                {task.name}
-              </Text>
+              <TaskName isCompleted={isCompleted} task={task} />
               <View
                 style={[
                   {
@@ -458,7 +477,18 @@ const Task = memo(function Task({
                     display: hasChip ? "flex" : "none",
                   }}
                 >
-                  {task.pinned && <TaskImportantChip />}
+                  {showLabel && task.label && (
+                    <TaskLabelChip
+                      iconOnly={
+                        (showRelativeTime && !task.dateOnly && task.start) ||
+                        ((showDate || (!task.dateOnly && task.start)) &&
+                          task.start) ||
+                        task.recurrenceRule ||
+                        task.attachments?.length > 0
+                      }
+                      task={task}
+                    />
+                  )}
                   {showRelativeTime && !task.dateOnly && task.start && (
                     <Button
                       chip
@@ -466,7 +496,11 @@ const Task = memo(function Task({
                       text={
                         showRelativeTime
                           ? dayjs(task.start).fromNow()
-                          : dayjs(task.start).format("h:mm a")
+                          : dayjs(task.start).format(
+                              dayjs(task.start).minute() === 0
+                                ? "hA"
+                                : "h:mm a",
+                            )
                       }
                       icon="access_time"
                     />
@@ -489,7 +523,9 @@ const Task = memo(function Task({
                                     : "MMM Do [@] h:mm a"
                               : session.user.militaryTime
                                 ? "H:mm"
-                                : "h:mm a",
+                                : dayjs(task.start).minute() === 0
+                                  ? "hA"
+                                  : "h:mm a",
                           )}
                           icon={
                             task.dateOnly ? "calendar_today" : "access_time"
@@ -513,7 +549,6 @@ const Task = memo(function Task({
                       }}
                     />
                   )}
-                  {showLabel && task.label && <TaskLabelChip task={task} />}
                   <TaskNoteChips note={task.note} />
                   {task.attachments?.length > 0 && (
                     <>
