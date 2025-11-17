@@ -234,6 +234,7 @@ export default function Trash() {
                 }
                 style={{
                   flex: 1,
+                  paddingTop: 20,
                   height: "100%",
                 }}
                 refreshControl={
