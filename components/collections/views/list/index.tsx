@@ -148,7 +148,7 @@ export default function List() {
   );
 
   const d = [
-    { create: true },
+    ungrouped === "true" ? undefined : { create: true },
     ...(shownEntities.length > 0 && labels.length > 0
       ? [
           {
@@ -172,7 +172,7 @@ export default function List() {
       if (t.length === 0 && ungrouped !== "true") acc.push({ empty: true });
       return acc;
     }, []),
-  ];
+  ].filter(Boolean);
 
   if (d.length === 1) {
     d.push({ empty: true });
@@ -186,7 +186,7 @@ export default function List() {
         <CollectionEmpty />
       ) : (
         <FlashList
-          data={d}
+          data={ungrouped ? [{ create: true }, ...taskSortAlgorithm(d)] : d}
           ref={ref}
           stickyHeaderIndices={
             ungrouped === "true"
