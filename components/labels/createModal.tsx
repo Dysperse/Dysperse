@@ -101,6 +101,14 @@ export function CreateLabelModal({
 
   const { isReached } = useStorageContext();
 
+  const handleSubmitButton = () => {
+    Keyboard.dismiss();
+    if (Object.keys(errors).length > 0) {
+      return toast.error("Type in a label name");
+    }
+    handleSubmit(onSubmit)();
+  };
+
   return isReached ? null : (
     <>
       {trigger}
@@ -158,6 +166,7 @@ export function CreateLabelModal({
                 }}
                 render={({ field: { onChange, onBlur, value } }) => (
                   <TextField
+                    onSubmitEditing={handleSubmitButton}
                     placeholder="Label name"
                     onBlur={onBlur}
                     onChangeText={onChange}
@@ -226,13 +235,7 @@ export function CreateLabelModal({
               />
             </View>
             <Button
-              onPress={() => {
-                Keyboard.dismiss();
-                if (Object.keys(errors).length > 0) {
-                  return toast.error("Type in a label name");
-                }
-                handleSubmit(onSubmit)();
-              }}
+              onPress={handleSubmitButton}
               height={60}
               variant="filled"
               isLoading={isLoading}
