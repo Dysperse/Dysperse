@@ -6,6 +6,11 @@ export const COLLECTION_VIEWS = {
     description: "The good old trusty to-do list",
     type: "Category Based",
   },
+  table: {
+    icon: "table_chart",
+    description: "Organize tasks in a spreadsheet",
+    type: "Category Based",
+  },
   kanban: {
     icon: "view_kanban",
     description: "Organize tasks by category",

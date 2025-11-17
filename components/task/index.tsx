@@ -78,11 +78,13 @@ export const TaskLabelChip = ({
   task,
   large = false,
   iconOnly = false,
+  fill = false,
 }: {
   task: any;
   published?: boolean;
   large?: boolean;
   iconOnly?: boolean;
+  fill?: boolean;
 }) => {
   const theme = useColor(task.label.color);
 
@@ -99,10 +101,13 @@ export const TaskLabelChip = ({
           : `${task.label.name}`
       }
       backgroundColors={{
-        default: theme[4],
+        default: theme[fill ? 3 : 4],
         hovered: theme[5],
         pressed: theme[6],
       }}
+      height={fill ? "100%" : undefined}
+      style={fill && { justifyContent: "flex-start" }}
+      containerStyle={fill && { borderRadius: 0 }}
       onPress={() => router.push(`/everything/labels/${task.label.id}`)}
       icon={<Emoji size={large ? 23 : 17} emoji={task.label.emoji} />}
       textStyle={{ color: theme[11] }}

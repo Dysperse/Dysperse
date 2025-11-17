@@ -16,6 +16,7 @@ import Matrix from "@/components/collections/views/matrix";
 import Planner from "@/components/collections/views/planner";
 import Skyline from "@/components/collections/views/skyline";
 import Stream from "@/components/collections/views/stream";
+import Table from "@/components/collections/views/table";
 import Workload from "@/components/collections/views/workload";
 import { COLLECTION_VIEWS } from "@/components/layout/command-palette/list";
 import ContentWrapper from "@/components/layout/content";
@@ -678,6 +679,9 @@ export default function Page({ isPublic }: { isPublic: boolean }) {
       break;
     case "matrix":
       content = <Matrix />;
+      break;
+    case "table":
+      content = <Table />;
       break;
     case "calendar":
       content = <Calendar />;
